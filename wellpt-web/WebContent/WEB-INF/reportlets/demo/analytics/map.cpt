@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20130114" releaseVersion="7.0.3">
+<TableDataMap>
+<TableData name="ds1" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT province,sum(sum) FROM [business]A
+group by province]]></Query>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<WebPageContent>
+<ToolBars>
+<ToolBarManager>
+<Location>
+<Embed position="1"/>
+</Location>
+<ToolBar>
+<Widget class="com.fr.report.web.ui.impl.page.First">
+<WidgetName name="a6f169a8-51cf-43ff-8f08-d82c0b5a378b"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-First')}]]></Text>
+<IconName>
+<![CDATA[first]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.page.Previous">
+<WidgetName name="8a11dd9f-4418-4363-ad43-fd66188a7134"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Previous')}]]></Text>
+<IconName>
+<![CDATA[previous]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.page.PageNavi">
+<WidgetName name="62875bb0-d136-4432-b01f-2f325abafc2e"/>
+<WidgetAttr/>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.page.Next">
+<WidgetName name="71ae043b-804e-4f42-83e9-6bb7a4eb9990"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Next')}]]></Text>
+<IconName>
+<![CDATA[next]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.page.Last">
+<WidgetName name="0b29aefd-4deb-44e3-bef4-70e83e64ead3"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Last')}]]></Text>
+<IconName>
+<![CDATA[last]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.FlashPrint">
+<WidgetName name="017a542d-3cb0-4231-b41e-227b8d769e6d"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Utils-Print[Client]A')}]]></Text>
+<IconName>
+<![CDATA[flashprint]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.Print">
+<WidgetName name="354f82d3-8182-40d6-bc72-4f0b273f2ed9"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Print')}]]></Text>
+<IconName>
+<![CDATA[print]]></IconName>
+<PrintButtons/>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.Export">
+<WidgetName name="61114dec-b743-4820-9c2b-d3960f5dd51e"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Export')}]]></Text>
+<IconName>
+<![CDATA[export]]></IconName>
+<Buttons pdf="true" excelP="true" excelO="true" excelS="true" word="true" image="true" html="true"/>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.Email">
+<WidgetName name="7db8c748-8c2a-4cd0-a11d-8b366f46ead2"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Email')}]]></Text>
+<IconName>
+<![CDATA[email]]></IconName>
+</Widget>
+</ToolBar>
+</ToolBarManager>
+</ToolBars>
+<WebPage isPage="false" isShowAsImage="false" isAutoScale="false" isTDHeavy="false"/>
+</WebPageContent>
+</ReportWebAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" cs="10" rs="27">
+<O t="CC">
+<LayoutAttr selectedIndex="0"/>
+<Chart name="Default">
+<Chart class="com.fr.chart.chartattr.Chart">
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-16777216"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<ChartAttr isJSDraw="true"/>
+<Title>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<O>
+<![CDATA[]]></O>
+<TextAttr>
+<Attr alignText="0">
+<FRFont name="宋体" style="0" size="72"/>
+</Attr>
+</TextAttr>
+<TitleVisible value="true" position="0"/>
+</Title>
+<Plot class="com.fr.chart.chartattr.MapPlot">
+<MapPlot>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-16777216"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr isNullValueBreak="true" autoRefreshPerSecond="-1" plotStyle="2"/>
+<newHotTooltipStyle>
+<AttrContents>
+<Attr showLine="false" position="1" seriesLabel="${SERIES}${BR}${CATEGORY}${BR}${VALUE}"/>
+<Format class="java.text.DecimalFormat">
+<![CDATA[#0.00]]></Format>
+<PercentFormat>
+<Format class="java.text.DecimalFormat">
+<![CDATA[#0.00%]]></Format>
+</PercentFormat>
+</AttrContents>
+</newHotTooltipStyle>
+<ConditionCollection>
+<DefaultAttr class="com.fr.chart.chartglyph.ConditionAttr">
+<ConditionAttr name="">
+<AttrList>
+<Attr class="com.fr.chart.base.AttrContents">
+<AttrContents>
+<Attr showLine="false" position="1" seriesLabel="${CATEGORY}"/>
+<TextAttr>
+<Attr alignText="0">
+<FRFont name="黑体" style="0" size="72"/>
+</Attr>
+</TextAttr>
+</AttrContents>
+</Attr>
+</AttrList>
+</ConditionAttr>
+</DefaultAttr>
+</ConditionCollection>
+<Legend>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-16777216"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr position="3" visible="true"/>
+<FRFont name="宋体" style="0" size="72"/>
+</Legend>
+<DataSheet>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="1" isRoundBorder="false"/>
+<newColor borderColor="-16777216"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr isVisible="false"/>
+</DataSheet>
+<NameJavaScriptGroup>
+<NameJavaScript name="JavaScript1">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters>
+<Parameter>
+<Attributes name="province"/>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=AREA_NAME]]></Attributes>
+</O>
+</Parameter>
+</Parameters>
+<Content>
+<![CDATA[var pa=parent.FR.SessionMgr.getContentPane();
+pa.getWidgetByName("iframeEditor1").setValue("ReportServer?reportlet=/demo/analytics/business.cpt&__showtoolbar__=false&province="+FR.cjkEncode(province)+"");
+pa.getWidgetByName("iframeEditor2").setValue("ReportServer?reportlet=/demo/analytics/light.cpt&__showtoolbar__=false&province="+FR.cjkEncode(province)+"");
+pa.getWidgetByName("area").setValue(province);]]></Content>
+</JavaScript>
+</NameJavaScript>
+</NameJavaScriptGroup>
+<newPlotFillStyle>
+<AttrFillStyle>
+<Attr/>
+</AttrFillStyle>
+</newPlotFillStyle>
+<newattr201212 mapName="中国"/>
+<MapHotAreaColor>
+<MC_Attr minValue="0.0" maxValue="1600.0" useType="0" areaNumber="3" mainColor="-13408513"/>
+<ColorList>
+<AreaColor>
+<AC_Attr minValue="1333.3333333333333" maxValue="2000.0" color="-13408513"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="666.6666666666666" maxValue="1333.3333333333333" color="-1724684545"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="0.0" maxValue="666.6666666666666" color="842229503"/>
+</AreaColor>
+</ColorList>
+</MapHotAreaColor>
+</MapPlot>
+</Plot>
+</Chart>
+</Chart>
+<MapSingleLayerTableDefinition>
+<Top topCate="-1" topValue="-1" isDiscardOtherCate="false" isDiscardOtherSeries="false" isDiscardNullCate="false" isDiscardNullSeries="false"/>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[ds1]]></Name>
+</TableData>
+<SeriesDefinition>
+<SeriesName>
+<O>
+<![CDATA[province]]></O>
+</SeriesName>
+<SeriesValue>
+<O>
+<![CDATA[Expr1001]]></O>
+</SeriesValue>
+</SeriesDefinition>
+</MapSingleLayerTableDefinition>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="30240000" height="23184000"/>
+<Margin top="286560" left="574560" bottom="286560" right="574560"/>
+</PaperSetting>
+</ReportSettings>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+</ReportParameterAttr>
+<StyleList/>
+<DesignerVersion DesignerVersion="HAD"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

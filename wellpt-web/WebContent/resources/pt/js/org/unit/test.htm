@@ -1,0 +1,35 @@
+<html>
+<head>
+<script src='UnitTree.js'></script>
+<script>
+	function test1(){
+		var laValue = PromptUnit(null,document.all.ID_SendToD.value,document.all.ID_SendTo.value,"选择收件人",true);
+		if(laValue!=null){
+			document.all.ID_SendToD.value = laValue["name"];
+			document.all.ID_SendTo.value = laValue["id"];
+		}
+	}
+	function test2(){
+		var laName = new Array();
+		laName.push(document.all.ID_SendToD.value);
+		laName.push(document.all.ID_CopyToD.value);
+		var laID = new Array();
+		laID.push(document.all.ID_SendTo.value);
+		laID.push(document.all.ID_CopyTo.value);
+		var laValue = PromptUnit("收件人;抄 送",laName,laID,"选择收件人",true,1,"21",true,"MyUnit",true,"U014;U015;U016");
+		if(laValue!=null){
+			document.all.ID_SendToD.value = laValue["name"][0];
+			document.all.ID_SendTo.value = laValue["id"][0];
+			document.all.ID_CopyToD.value = laValue["name"][1];
+			document.all.ID_CopyTo.value = laValue["id"][1];
+		}
+	}
+</script>
+</head>
+<body scroll=no>
+收件人:<textarea id="ID_SendToD" width="45%"></textarea><textarea id="ID_SendTo" width="45%"></textarea><br>
+抄 送:<textarea id="ID_CopyToD" width="45%"></textarea><textarea id="ID_CopyTo" width="45%"></textarea><br>
+<input type=button onclick='test1();' value="单个">
+<input type=button onclick='test2();' value="多个">
+</body>
+</html>

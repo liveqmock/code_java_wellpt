@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20130114" releaseVersion="7.0.3">
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[723900,1143000,762000,1905000,952500,1714500,1257300,723900,1066800,723900,609600,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[2743200,4762500,1409700,4190400,1371600,4190400,1104900,4190400,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="1" r="1" s="0">
+<O>
+<![CDATA[用户上报系统说明：]]></O>
+<Expand/>
+</C>
+<C c="2" r="1" cs="6" s="1">
+<O>
+<![CDATA[XX集团是做光伏产业的，此上报系统名称为——全集团硅料清库存销售计划。]]></O>
+<Expand/>
+</C>
+<C c="8" r="1" s="1">
+<Expand/>
+</C>
+<C c="1" r="2" rs="2" s="0">
+<O>
+<![CDATA[用户上报流程说明：]]></O>
+<Expand/>
+</C>
+<C c="2" r="2" cs="7" s="2">
+<O>
+<![CDATA[XX集团共有4个产品部门，分别遵守以下流程。]]></O>
+<Expand/>
+</C>
+<C c="2" r="3" cs="7" s="1">
+<O>
+<![CDATA[xx生产录入(chilu1)-->xx生产审核(chibu1)-->xx销售录入(schilu1)-->xx销售审核-->公司总审计(zonghe)-->领导查看(lingdao)]]></O>
+<Expand/>
+</C>
+<C c="1" r="4" cs="6">
+<O>
+<![CDATA[注：下图方框中的内容分别为：用户名，密码，职能]]></O>
+<Expand/>
+</C>
+<C c="4" r="5" cs="3">
+<O>
+<![CDATA[使用说明请查看在线帮助文档：]]></O>
+<Expand/>
+</C>
+<C c="7" r="5" cs="2" s="3">
+<O>
+<![CDATA[http://www.finereporthelp.com]]></O>
+<NameJavaScriptGroup>
+<NameJavaScript name="网页链接1">
+<JavaScript class="com.fr.js.WebHyperlink">
+<JavaScript class="com.fr.js.WebHyperlink">
+<Parameters/>
+<TargetFrame>
+<![CDATA[_blank]]></TargetFrame>
+<Features width="600" height="400"/>
+<URL>
+<![CDATA[http://www.finereporthelp.com/help/3/10/0/1.html]]></URL>
+</JavaScript>
+</JavaScript>
+</NameJavaScript>
+</NameJavaScriptGroup>
+<Expand/>
+</C>
+<C c="3" r="6" s="4">
+<O>
+<![CDATA[lingdao]]></O>
+<Expand/>
+</C>
+<C c="4" r="6" s="5">
+<O t="I">
+<![CDATA[123]]></O>
+<Expand/>
+</C>
+<C c="5" r="6" s="6">
+<O>
+<![CDATA[领导]]></O>
+<Expand/>
+</C>
+<C c="3" r="7" cs="3" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="1" r="8" s="8">
+<Expand/>
+</C>
+<C c="2" r="8" s="9">
+<Expand/>
+</C>
+<C c="3" r="8" s="10">
+<O>
+<![CDATA[zonghe]]></O>
+<Expand/>
+</C>
+<C c="4" r="8" s="10">
+<O t="I">
+<![CDATA[123]]></O>
+<Expand/>
+</C>
+<C c="5" r="8" s="9">
+<O>
+<![CDATA[总审计]]></O>
+<Expand/>
+</C>
+<C c="6" r="8" s="9">
+<Expand/>
+</C>
+<C c="7" r="8" s="11">
+<Expand/>
+</C>
+<C c="1" r="9" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="3" r="9" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="5" r="9" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="7" r="9" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="1" r="10" s="12">
+<O>
+<![CDATA[schibu1      123]]></O>
+<Expand/>
+</C>
+<C c="3" r="10" s="12">
+<O>
+<![CDATA[sliaobu1      123]]></O>
+<Expand/>
+</C>
+<C c="5" r="10" s="12">
+<O>
+<![CDATA[spianbu1      123]]></O>
+<Expand/>
+</C>
+<C c="7" r="10" s="12">
+<O>
+<![CDATA[sjianbu1      123]]></O>
+<Expand/>
+</C>
+<C c="1" r="11" s="13">
+<O>
+<![CDATA[电池销售审核]]></O>
+<Expand/>
+</C>
+<C c="3" r="11" s="13">
+<O>
+<![CDATA[硅料销售审核]]></O>
+<Expand/>
+</C>
+<C c="5" r="11" s="13">
+<O>
+<![CDATA[硅片销售审核]]></O>
+<Expand/>
+</C>
+<C c="7" r="11" s="13">
+<O>
+<![CDATA[组件销售审核]]></O>
+<Expand/>
+</C>
+<C c="1" r="12" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="3" r="12" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="5" r="12" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="7" r="12" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="1" r="13" s="12">
+<O>
+<![CDATA[schiru1      123]]></O>
+<Expand/>
+</C>
+<C c="3" r="13" s="12">
+<O>
+<![CDATA[sliaoru1      123]]></O>
+<Expand/>
+</C>
+<C c="5" r="13" s="12">
+<O>
+<![CDATA[spianru1      123]]></O>
+<Expand/>
+</C>
+<C c="7" r="13" s="12">
+<O>
+<![CDATA[sjianru1      123]]></O>
+<Expand/>
+</C>
+<C c="1" r="14" s="13">
+<O>
+<![CDATA[电池销售录入]]></O>
+<Expand/>
+</C>
+<C c="3" r="14" s="13">
+<O>
+<![CDATA[硅料销售录入]]></O>
+<Expand/>
+</C>
+<C c="5" r="14" s="13">
+<O>
+<![CDATA[硅片销售录入]]></O>
+<Expand/>
+</C>
+<C c="7" r="14" s="13">
+<O>
+<![CDATA[组件销售录入]]></O>
+<Expand/>
+</C>
+<C c="1" r="15" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="3" r="15" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="5" r="15" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="7" r="15" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="1" r="16" s="12">
+<O>
+<![CDATA[chibu1       123]]></O>
+<Expand/>
+</C>
+<C c="3" r="16" s="12">
+<O>
+<![CDATA[liaobu1       123]]></O>
+<Expand/>
+</C>
+<C c="5" r="16" s="12">
+<O>
+<![CDATA[pianbu1       123]]></O>
+<Expand/>
+</C>
+<C c="7" r="16" s="12">
+<O>
+<![CDATA[jianbu1       123]]></O>
+<Expand/>
+</C>
+<C c="1" r="17" s="13">
+<O>
+<![CDATA[电池生产审核]]></O>
+<Expand/>
+</C>
+<C c="3" r="17" s="13">
+<O>
+<![CDATA[硅料生产审核]]></O>
+<Expand/>
+</C>
+<C c="5" r="17" s="13">
+<O>
+<![CDATA[硅片生产审核]]></O>
+<Expand/>
+</C>
+<C c="7" r="17" s="13">
+<O>
+<![CDATA[组件生产审核]]></O>
+<Expand/>
+</C>
+<C c="1" r="18" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="3" r="18" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="5" r="18" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="7" r="18" s="7">
+<O>
+<![CDATA[↑]]></O>
+<Expand/>
+</C>
+<C c="1" r="19" s="12">
+<O>
+<![CDATA[chilu1       123]]></O>
+<Expand/>
+</C>
+<C c="2" r="19">
+<Expand/>
+</C>
+<C c="3" r="19" s="12">
+<O>
+<![CDATA[liaolu1       123]]></O>
+<Expand/>
+</C>
+<C c="5" r="19" s="12">
+<O>
+<![CDATA[pianlu1       123]]></O>
+<Expand/>
+</C>
+<C c="7" r="19" s="12">
+<O>
+<![CDATA[jianlu1       123]]></O>
+<Expand/>
+</C>
+<C c="1" r="20" s="13">
+<O>
+<![CDATA[电池生产录入]]></O>
+<Expand/>
+</C>
+<C c="3" r="20" s="13">
+<O>
+<![CDATA[硅料生产录入]]></O>
+<Expand/>
+</C>
+<C c="5" r="20" s="13">
+<O>
+<![CDATA[硅片生产录入]]></O>
+<Expand/>
+</C>
+<C c="7" r="20" s="13">
+<O>
+<![CDATA[组件生产录入]]></O>
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting orientation="1">
+<Margin top="986400" left="2743200" bottom="986400" right="2743200"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+</ReportParameterAttr>
+<StyleList>
+<Style imageLayout="1">
+<FRFont name="微软雅黑" style="1" size="72" foreground="-16776961"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72" foreground="-13408513"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style imageLayout="1">
+<FRFont name="新宋体" style="0" size="72" foreground="-13408513"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72" foreground="-16776961" underline="1"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-6697729"/>
+<Bottom style="1" color="-6697729"/>
+<Left style="1" color="-6697729"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-6697729"/>
+<Bottom style="1" color="-6697729"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-6697729"/>
+<Bottom style="1" color="-6697729"/>
+<Right style="1" color="-6697729"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-16724737"/>
+<Bottom style="1" color="-16724737"/>
+<Left style="1" color="-16724737"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-16724737"/>
+<Bottom style="1" color="-16724737"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-16724737"/>
+<Bottom style="1" color="-16724737"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-16724737"/>
+<Bottom style="1" color="-16724737"/>
+<Right style="1" color="-16724737"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-6697729"/>
+<Left style="1" color="-6697729"/>
+<Right style="1" color="-6697729"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Bottom style="1" color="-6697729"/>
+<Left style="1" color="-6697729"/>
+<Right style="1" color="-6697729"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAD"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

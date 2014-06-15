@@ -1,0 +1,11 @@
+1、引入的js、css文件一律不带版本号、后缀custom、all、min、source、_vx.x等修饰符
+如jquery-ui-1.9.2.custom.js不能引入，要增加文件jquery-ui.js引入
+
+2、js、css文件引入的目录一律不带版本号、后缀custom、all、min、source、_vx.x等修饰符
+如jquery/1.8/jquery.js不能引入，要要目录jquery下增加文件jquery.js引入
+
+3、js、css框架的修改要增加相应目录下的changelog.txt文件跟踪记录
+
+4、jquery.js的引用一律使用jquery目录下的jquery.js
+
+5、wellpt的js、css、images等静态文件放到wellpt目录下，其他系统如oa放到相应的welloa目录下

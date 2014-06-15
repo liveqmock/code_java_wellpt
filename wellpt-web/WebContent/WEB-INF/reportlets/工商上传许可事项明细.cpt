@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20131111" releaseVersion="7.0.5">
+<TableDataMap>
+<TableData name="GSXKMX" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[/*工商上传许可事项明细*/  
+select m.unit_id as 组织机构代码,unit.name as 单位名称, m.matter as 许可事项,count(m.uuid) as 许可数量
+  from is_exchange_data         d,
+       is_exchange_data_batch   b,
+       is_exchange_send_monitor s,
+       is_exchange_data_monitor m,
+       WELL_PT.Unit_Common_Unit unit
+ where d.batch_id = b.uuid
+   and s.data_uuid = d.uuid
+   and s.uuid = m.send_id
+   and m.unit_id = unit.id
+   and b.type_id = '004140203SZ'
+   and d.valid_data = 'yes'
+   and b.from_id = '004140203'
+   and m.unit_id is not null
+   and m.unit_id != '00413820X'
+   and m.cancel_status = 'default'
+    ${if(len(开始日期) == 0,"","and trunc(d.create_time) >= trunc(to_date( '" + 开始日期 + "', 'yyyyMMdd'))")}
+    ${if(len(结束日期) == 0,"and trunc(d.create_time) <= trunc(to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd'))","and trunc(d.create_time) <= trunc(to_date( '" + 结束日期 + "', 'yyyyMMdd'))")}
+ group by m.unit_id,m.matter,unit.name
+ order by 单位名称 ,许可数量 desc]]></Query>
+</TableData>
+<TableData name="公共库单位（无厦门市）" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select u.id,u.name from WELL_PT.UNIT_COMMON_UNIT u where u.id !='XM']]></Query>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<ServerPrinter/>
+<WebPageContent>
+<ToolBars>
+<ToolBarManager>
+<Location>
+<Embed position="1"/>
+</Location>
+<ToolBar>
+<Widget class="com.fr.report.web.button.page.First">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-First')}]]></Text>
+<IconName>
+<![CDATA[first]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Previous">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Previous')}]]></Text>
+<IconName>
+<![CDATA[previous]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.PageNavi">
+<WidgetAttr/>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Next">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Next')}]]></Text>
+<IconName>
+<![CDATA[next]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Last">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Last')}]]></Text>
+<IconName>
+<![CDATA[last]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.FlashPrint">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Utils-Print[Client]A')}]]></Text>
+<IconName>
+<![CDATA[flashprint]]></IconName>
+</Widget>
+<Widget class="com.fr.form.ui.CustomToolBarButton">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Export')}]]></Text>
+<IconName>
+<![CDATA[export]]></IconName>
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters>
+<Parameter>
+<Attributes name="today"/>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=format(today(),"yyyy-MM-dd")]]></Attributes>
+</O>
+</Parameter>
+</Parameters>
+<Content>
+<![CDATA[var start=window.form.getWidgetByName("开始日期").getValue();
+var end=window.form.getWidgetByName("结束日期").getValue();
+var unit=window.form.getWidgetByName("单位名称").getValue();
+var matters=window.form.getWidgetByName("许可事项").getValue();
+window.open(FR.cjkEncode('ReportServer?reportlet=工商上传许可事项明细.cpt&开始日期='+start+'&结束日期='+end+'&单位名称='+unit+'&许可事项='+matters+'&format=excel&extype=simple&__filename__='+today+''+'工商上传许可事项明细'));
+]]></Content>
+</JavaScript>
+</Widget>
+<Widget class="com.fr.report.web.button.Print">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Print')}]]></Text>
+<IconName>
+<![CDATA[print]]></IconName>
+<PrintButtons/>
+</Widget>
+<Widget class="com.fr.report.web.button.Email">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Email')}]]></Text>
+<IconName>
+<![CDATA[email]]></IconName>
+</Widget>
+</ToolBar>
+</ToolBarManager>
+<ToolBarManager>
+<Location>
+<Embed position="3"/>
+</Location>
+<ToolBar>
+<Widget class="com.fr.report.web.button.page.First">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-First')}]]></Text>
+<IconName>
+<![CDATA[first]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Previous">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Previous')}]]></Text>
+<IconName>
+<![CDATA[previous]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.PageNavi">
+<WidgetAttr/>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Next">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Next')}]]></Text>
+<IconName>
+<![CDATA[next]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Last">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Last')}]]></Text>
+<IconName>
+<![CDATA[last]]></IconName>
+</Widget>
+</ToolBar>
+</ToolBarManager>
+</ToolBars>
+<WebPage isPage="false" isShowAsImage="false" isAutoScale="false" isTDHeavy="false"/>
+</WebPageContent>
+</ReportWebAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[1371600,1409700,723900,723900,723900,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[1371600,8382000,3429000,11201400,4305300,0,2743200,2743200,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" s="0">
+<O>
+<![CDATA[序号]]></O>
+<Expand/>
+</C>
+<C c="1" r="0" s="0">
+<O>
+<![CDATA[单位名称]]></O>
+<Expand/>
+</C>
+<C c="2" r="0" s="0">
+<O>
+<![CDATA[组织机构代码]]></O>
+<Expand/>
+</C>
+<C c="3" r="0" s="0">
+<O>
+<![CDATA[许可事项]]></O>
+<Expand/>
+</C>
+<C c="4" r="0" s="0">
+<O>
+<![CDATA[许可数量]]></O>
+<Expand/>
+</C>
+<C c="0" r="1" s="1">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=seq()]]></Attributes>
+</O>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ValueHighlightAction">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=row() - 1]]></Attributes>
+</O>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand leftParentDefault="false" left="B2"/>
+</C>
+<C c="1" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="GSXKMX" columnName="单位名称"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[单位名称]]></CNAME>
+<Compare op="0">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=if(len($单位名称) = 0, nofilter, $单位名称)]]></Attributes>
+</O>
+</Compare>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[许可事项]]></CNAME>
+<Compare op="0">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=if(len($许可事项) = 0, nofilter, $许可事项)]]></Attributes>
+</O>
+</Compare>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[len($$$) = 0]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand dir="0"/>
+</C>
+<C c="2" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="GSXKMX" columnName="组织机构代码"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="GSXKMX" columnName="许可事项"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[许可事项]]></CNAME>
+<Compare op="0">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=if(len($许可事项) = 0, nofilter, $许可事项)]]></Attributes>
+</O>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="4" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="GSXKMX" columnName="许可数量"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="5" r="1">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=if(left(B2, 3) = "厦门市", 1, if(find("区", B2) > 0, 3, 2))]]></Attributes>
+</O>
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="36000000" height="42768000"/>
+<Margin top="0" left="144000" bottom="986400" right="2743200"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="false" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+<ParameterUI class="com.fr.form.main.parameter.FormParameterUI">
+<Layout class="com.fr.form.ui.container.WAbsoluteLayout">
+<WidgetName name="para"/>
+<WidgetAttr/>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label开始日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[开始日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="50" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="开始日期"/>
+<WidgetAttr/>
+<DateAttr format="yyyyMMdd"/>
+<widgetValue>
+<O t="Date">
+<![CDATA[1388505600000]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="130" y="25" width="181" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.parameter.FormSubmitButton">
+<Listener event="afterinit">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[window.form = this.options.form;]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="Search"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[查询]]></Text>
+<Hotkeys>
+<![CDATA[enter]]></Hotkeys>
+</InnerWidget>
+<BoundsAttr x="608" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label结束日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[结束日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="334" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="结束日期"/>
+<WidgetAttr/>
+<DateAttr format="yyyyMMdd"/>
+<widgetValue>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=TODAY()]]></Attributes>
+</O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="414" y="25" width="172" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label单位名称"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[单位名称:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="50" y="60" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<WidgetName name="单位名称"/>
+<WidgetAttr/>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="NAME" viName="NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[公共库单位（无厦门市）]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="130" y="60" width="181" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label许可事项"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[许可事项:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="334" y="60" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<WidgetName name="许可事项"/>
+<WidgetAttr/>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="许可事项" viName="许可事项"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[GSXKMX]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="414" y="60" width="172" height="21"/>
+</Widget>
+<LCAttr vgap="0" hgap="0"/>
+</Layout>
+<DesignAttr width="1000" height="94"/>
+</ParameterUI>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="单位名称"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="许可事项"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</ReportParameterAttr>
+<StyleList>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="ColorBackground" color="-1577999"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAF"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

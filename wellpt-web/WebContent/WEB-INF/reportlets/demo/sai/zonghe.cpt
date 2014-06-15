@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20130114" releaseVersion="7.0.3">
+<TableDataMap>
+<TableData name="ds11" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select d.datet,d.ensale as chiensale,d.trsale as chitrsale,d.bamoney as chihui 
+from [sale-dianchi]A d
+where d.action='部门通过' and d.action2='部门通过']]></Query>
+</TableData>
+</TableDataMap>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[457200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="2" r="0" cs="9" rs="2" s="0">
+<O>
+<![CDATA[公司五月份四大产品总审核]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="2" s="1">
+<O>
+<![CDATA[日期]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="2" s="1">
+<O>
+<![CDATA[类型]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="2" s="1">
+<O>
+<![CDATA[电池]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="4" r="2" s="1">
+<O>
+<![CDATA[硅片]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="5" r="2" s="1">
+<O>
+<![CDATA[硅料]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="6" r="2" s="1">
+<O>
+<![CDATA[组件]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="7" r="2" s="1">
+<O>
+<![CDATA[电池累计]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="8" r="2" s="1">
+<O>
+<![CDATA[硅片累计]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="9" r="2" s="1">
+<O>
+<![CDATA[硅料累计]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="10" r="2" s="1">
+<O>
+<![CDATA[组件累计]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="3" rs="3" s="1">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="datet"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="2" r="3" s="1">
+<O>
+<![CDATA[可销售量]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="3" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="chiensale"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="4" r="3" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="pianensale"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="5" r="3" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="liaoensale"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="6" r="3" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="jianensale"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="7" r="3" s="2">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=D4+H4[B4:-1]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="8" r="3" s="2">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=E4+I4[B4:-1]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="9" r="3" s="2">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=F4+J4[B4:-1]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="10" r="3" s="2">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=G4+K4[B4:-1]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="4" s="1">
+<O>
+<![CDATA[销售量]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="4" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="chitrsale"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="4" r="4" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="piantrsale"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="5" r="4" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="liaotrsale"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="6" r="4" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="jiantrsale"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="7" r="4" s="2">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=D5+H5[B4:-1]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="8" r="4" s="2">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=E5+I5[B4:-1]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="9" r="4" s="2">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=F5+J5[B4:-1]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="10" r="4" s="2">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=G5+K5[B4:-1]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="5" s="1">
+<O>
+<![CDATA[回款额]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="5" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="chihui"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="4" r="5" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="pianhui"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="5" r="5" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="liaohui"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="6" r="5" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds11" columnName="jianhui"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="7" r="5" s="2">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=D6+H6[B4:-1]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="8" r="5" s="2">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=E6+I6[B4:-1]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="9" r="5" s="2">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=F6+J6[B4:-1]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="10" r="5" s="2">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=G6+K6[B4:-1]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="6" r="8" cs="2">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Widget class="com.fr.form.ui.FreeButton">
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="FRDemo"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="zonghe"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="1" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="chiesleiji" isKey="false" skipUnmodified="true">
+<ColumnRow column="7" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="pianesleiji" isKey="false" skipUnmodified="true">
+<ColumnRow column="8" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="liaoesleiji" isKey="false" skipUnmodified="true">
+<ColumnRow column="9" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="jianesleiji" isKey="false" skipUnmodified="true">
+<ColumnRow column="10" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="chisleiji" isKey="false" skipUnmodified="true">
+<ColumnRow column="7" row="4"/>
+</ColumnConfig>
+<ColumnConfig name="piansleiji" isKey="false" skipUnmodified="true">
+<ColumnRow column="8" row="4"/>
+</ColumnConfig>
+<ColumnConfig name="liaosleiji" isKey="false" skipUnmodified="true">
+<ColumnRow column="9" row="4"/>
+</ColumnConfig>
+<ColumnConfig name="jiansleiji" isKey="false" skipUnmodified="true">
+<ColumnRow column="10" row="4"/>
+</ColumnConfig>
+<ColumnConfig name="chibaleiji" isKey="false" skipUnmodified="true">
+<ColumnRow column="7" row="5"/>
+</ColumnConfig>
+<ColumnConfig name="pianbaleiji" isKey="false" skipUnmodified="true">
+<ColumnRow column="8" row="5"/>
+</ColumnConfig>
+<ColumnConfig name="liaobaleiji" isKey="false" skipUnmodified="true">
+<ColumnRow column="9" row="5"/>
+</ColumnConfig>
+<ColumnConfig name="jianbaleiji" isKey="false" skipUnmodified="true">
+<ColumnRow column="10" row="5"/>
+</ColumnConfig>
+</DMLConfig>
+</JavaScript>
+</Listener>
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="FRDemo"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="sai-guiliao"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="1" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="action" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[合格]]></O>
+</ColumnConfig>
+<ColumnConfig name="action2" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[合格]]></O>
+</ColumnConfig>
+</DMLConfig>
+</JavaScript>
+</Listener>
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="FRDemo"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="sai-guipian"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="1" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="action" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[合格]]></O>
+</ColumnConfig>
+<ColumnConfig name="action2" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[合格]]></O>
+</ColumnConfig>
+</DMLConfig>
+</JavaScript>
+</Listener>
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="FRDemo"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="sai-zujian"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="1" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="action" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[合格]]></O>
+</ColumnConfig>
+<ColumnConfig name="action2" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[合格]]></O>
+</ColumnConfig>
+</DMLConfig>
+</JavaScript>
+</Listener>
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="FRDemo"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="sale-dianchi"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="1" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="action" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[合格]]></O>
+</ColumnConfig>
+<ColumnConfig name="action2" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[合格]]></O>
+</ColumnConfig>
+</DMLConfig>
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[self.location.reload();]]></Content>
+</JavaScript>
+</JavaScript>
+</Listener>
+<WidgetAttr/>
+<Text>
+<![CDATA[同意]]></Text>
+</Widget>
+<Expand/>
+</C>
+<C c="9" r="8" cs="2">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Widget class="com.fr.form.ui.FreeButton">
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="FRDemo"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="sai-guiliao"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="1" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="action" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[退回]]></O>
+</ColumnConfig>
+<ColumnConfig name="action2" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[退回]]></O>
+</ColumnConfig>
+</DMLConfig>
+</JavaScript>
+</Listener>
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="FRDemo"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="sai-guipian"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="1" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="action" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[退回]]></O>
+</ColumnConfig>
+<ColumnConfig name="action2" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[退回]]></O>
+</ColumnConfig>
+</DMLConfig>
+</JavaScript>
+</Listener>
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="JDBC6"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="sai-zujian"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="1" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="action" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[退回]]></O>
+</ColumnConfig>
+<ColumnConfig name="action2" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[退回]]></O>
+</ColumnConfig>
+</DMLConfig>
+</JavaScript>
+</Listener>
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="FRDemo"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="sale-dianchi"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="1" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="action" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[退回]]></O>
+</ColumnConfig>
+<ColumnConfig name="action2" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[退回]]></O>
+</ColumnConfig>
+</DMLConfig>
+</JavaScript>
+</Listener>
+<Listener event="click">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[self.location.reload();]]></Content>
+</JavaScript>
+</Listener>
+<WidgetAttr/>
+<Text>
+<![CDATA[不合格]]></Text>
+</Widget>
+<Expand/>
+</C>
+<C c="4" r="9">
+<O>
+<![CDATA[ ]]></O>
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting/>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+</ReportParameterAttr>
+<StyleList>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="宋体" style="0" size="96" foreground="-13408513"/>
+<Background name="ColorBackground" color="-1"/>
+<Border>
+<Top style="1" color="-16724737"/>
+<Bottom style="1" color="-16724737"/>
+<Left style="1" color="-16724737"/>
+<Right style="1" color="-16724737"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="ColorBackground" color="-1577999"/>
+<Border>
+<Top style="1" color="-6697729"/>
+<Bottom style="1" color="-6697729"/>
+<Left style="1" color="-6697729"/>
+<Right style="1" color="-6697729"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-16724737"/>
+<Bottom style="1" color="-16724737"/>
+<Left style="1" color="-16724737"/>
+<Right style="1" color="-16724737"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAD"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20131111" releaseVersion="7.0.5">
+<TableDataMap>
+<TableData name="WTSSSZTDW" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select commonunit1_.id as 单位ID, commonunit1_.name as 单位名称
+  from WELL_PT.unit_common_unit_tree commonunit0_
+ inner join WELL_PT.unit_common_unit commonunit1_
+    on commonunit0_.unit_uuid = commonunit1_.uuid,
+ WELL_PT.unit_common_unit commonunit6_
+ where commonunit0_.unit_uuid = commonunit6_.uuid
+   and (exists (select businessun2_.uuid
+                  from WELL_PT.unit_business_tree businessun2_,
+                       WELL_PT.unit_common_unit   commonunit3_,
+                       WELL_PT.unit_common_unit   commonunit4_,
+                       WELL_PT.unit_business_type businessty5_
+                 where businessun2_.unit_uuid = commonunit3_.uuid
+                   and commonunit0_.unit_uuid = commonunit4_.uuid
+                   and businessun2_.business_type_uuid = businessty5_.uuid
+                   and commonunit3_.id = commonunit4_.id
+                   and businessty5_.id = 'SSGL'))
+   and commonunit1_.id not in
+       (select m.unit_id as 组织结构代码
+          from is_exchange_data         d,
+                is_exchange_data_batch   b,
+                is_exchange_send_monitor s,
+                is_exchange_data_monitor m,
+                WELL_PT.Unit_Common_Unit unit
+         where d.batch_id = b.uuid
+           and s.data_uuid = d.uuid
+           and s.uuid = m.send_id
+           and m.unit_id = unit.id
+           and b.type_id = '004140203SZ'
+           and d.valid_data = 'yes'
+           and b.from_id = '004140203'
+           and d.create_time < to_date('20140306', 'yyyyMMdd')
+           and m.unit_id is not null
+           ${if(len(开始日期) == 0,"","and trunc(d.create_time) >= trunc(to_date( '" + 开始日期 + "', 'yyyyMMdd'))")}
+   		 ${if(len(结束日期) == 0,"and trunc(d.create_time) <= trunc(to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd'))","and trunc(d.create_time) <= trunc(to_date( '" + 结束日期 + "', 'yyyyMMdd'))")}
+         group by m.unit_id, unit.name)
+ order by commonunit6_.code asc
+]]></Query>
+</TableData>
+</TableDataMap>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[1371600,1371600,723900,723900,723900,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[1371600,8420100,3619500,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" s="0">
+<O>
+<![CDATA[序号]]></O>
+<Expand/>
+</C>
+<C c="1" r="0" s="0">
+<O>
+<![CDATA[单位名称]]></O>
+<Expand/>
+</C>
+<C c="2" r="0" s="0">
+<O>
+<![CDATA[组织机构代码]]></O>
+<Expand/>
+</C>
+<C c="0" r="1" s="1">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=seq()]]></Attributes>
+</O>
+<Expand extendable="1" leftParentDefault="false" left="B2"/>
+</C>
+<C c="1" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="WTSSSZTDW" columnName="单位名称"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="2" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="WTSSSZTDW" columnName="单位ID"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="6" r="18">
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="36000000" height="42768000"/>
+<Margin top="0" left="144000" bottom="986400" right="2743200"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="false" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+<ParameterUI class="com.fr.form.main.parameter.FormParameterUI">
+<Layout class="com.fr.form.ui.container.WAbsoluteLayout">
+<WidgetName name="para"/>
+<WidgetAttr/>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label开始日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[开始日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="92" y="25" width="91" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="开始日期"/>
+<WidgetAttr/>
+<DateAttr format="yyyyMMdd"/>
+<widgetValue>
+<O t="Date">
+<![CDATA[1388505600000]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="183" y="25" width="130" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label结束日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[结束日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="335" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="结束日期"/>
+<WidgetAttr/>
+<DateAttr format="yyyyMMdd"/>
+<widgetValue>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=TODAY()]]></Attributes>
+</O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="415" y="25" width="134" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.parameter.FormSubmitButton">
+<WidgetName name="Search"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[查询]]></Text>
+<Hotkeys>
+<![CDATA[enter]]></Hotkeys>
+</InnerWidget>
+<BoundsAttr x="561" y="25" width="80" height="21"/>
+</Widget>
+<LCAttr vgap="0" hgap="0"/>
+</Layout>
+<DesignAttr width="1000" height="57"/>
+</ParameterUI>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</ReportParameterAttr>
+<StyleList>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="ColorBackground" color="-1577999"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAF"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

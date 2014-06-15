@@ -1,0 +1,12 @@
+.weekList {
+	background: none repeat scroll 0 0 #E2E7EF;
+    color: #434343;
+    display: block;
+    font-family: "Microsoft YaHei";
+    font-size: 18px;
+    height: 80px;
+    margin: 5px;
+    padding-top: 30px;
+    text-align: center;
+}
+

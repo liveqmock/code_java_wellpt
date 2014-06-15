@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<sql-query name="topDyFormDefinitionTreeQuery2">
+	<![CDATA[
+		select form_def.uuid as uuid,
+			form_def.name as name, 
+			form_def.displayName as displayName, 
+			form_def.version as version, 
+			form_def.moduleName as moduleName,
+			form_def.moduleId as moduleId, 
+			form_def.code as code,
+			form_def.code as code
+		from DyFormDefinition form_def
+		where form_def.formDisplay = '1' and exists(
+			select code,max(version) from DyFormDefinition o 
+			group by code 
+			having o.code = form_def.code and max(version) = form_def.version
+		)
+		<if isNotBlank(name) || isNotBlank(displayName) || isNotBlank(version) || isNotBlank(moduleName) || isNotBlank(moduleId) || isNotBlank(code) || isNotBlank(code)>
+			and (1 = 2
+				<if isNotBlank(name)>
+					or form_def.name like '%' || :name || '%'
+				</if>
+				<if isNotBlank(displayName)>
+					or form_def.displayName like '%' || :displayName || '%'
+				</if>
+				<if isNotBlank(version)>
+					or form_def.version = :version
+				</if>
+				<if isNotBlank(moduleName)>
+					or form_def.moduleName like '%' || :moduleName || '%'
+				</if>
+				<if isNotBlank(moduleId)>
+					or form_def.moduleId like '%' || :moduleId || '%'
+				</if>
+				<if isNotBlank(code)>
+					or form_def.code like '%' || :code || '%'
+				</if>
+				<if isNotBlank(code)>
+					or form_def.code like '%' || :code || '%'
+				</if>
+			)
+		</if>
+		order by form_def.code, form_def.displayName
+	]]>
+	</sql-query>
+</hibernate-mapping>

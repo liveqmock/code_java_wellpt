@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>工作计划请示单任务详单</title>
+
+<!-- <script type="text/javascript" src="../../resources/easyui/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="../../resources/easyui/jquery.easyui.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../resources/easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="../../resources/easyui/themes/icon.css"> -->
+
+</head>
+
+<body>
+	<!-- 表类型(tableType):1主表,2从表 -->
+	<table width="100%" border="1" tableType="1" id="001" editType="1">
+	  
+	  <tr>
+	    <td class="label">任务名称</td>
+	    <td>
+	    	<input name="task_name" id="task_name" type="text" value="">
+	    </td>
+	    <td class="label">任务类型</td>
+	    <td>
+	    <select name="task_type" id="task_type" style="width:133px;">
+				<option value="1">福州</option>
+				<option value="2">厦门</option>
+			</select>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td class="label">任务状态</td>
+	    <td>
+	    	<select name="task_state" id="task_state" style="width:133px;">
+				<option value="1">福州</option>
+				<option value="2">厦门</option>
+			</select>
+	    </td>
+	    <td class="label">目标与要求</td>
+	    <td>
+			<input type="text" name="target" id="target">
+	    </td>
+	  </tr>
+	  <tr>
+	    <td class="label">计划开始时间</td>
+	    <td>
+	    	<input type="text" name="plan_begin_time" id="plan_begin_time">
+	    </td>
+	    <td class="label">计划完成时间</td>
+	    <td>
+			<input type="text" name="plan_end_time" id="plan_end_time">
+	    </td>
+	  </tr>
+	   
+	  <tr>
+	    <td class="label">预估工作量(天)</td>
+	    <td colspan="3">
+			 	<input type="text" name="plan_work_count" id="plan_work_count">
+	    </td>
+	    
+	  </tr>
+	</table>
+</body>
+</html>

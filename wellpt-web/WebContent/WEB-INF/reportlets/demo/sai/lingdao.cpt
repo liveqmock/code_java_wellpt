@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20130114" releaseVersion="7.0.3">
+<TableDataMap>
+<TableData name="ds1" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT * FROM [zonghe]A]]></Query>
+</TableData>
+</TableDataMap>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[1219200,1600200,914400,876300,914400,876300,914400,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[2743200,6210300,4838700,4876800,5067300,5105400,2743200,2743200,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="1" r="0" cs="3" s="0">
+<O>
+<![CDATA[备注：实际累计销售量和回款统计指从5月1号始的累计数统计。]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="1" cs="5" s="1">
+<O>
+<![CDATA[全集团硅产品清库存项目5月份执行情况汇总表]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="2" s="2">
+<O>
+<![CDATA[类别]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="2" s="2">
+<O>
+<![CDATA[硅料]]></O>
+<Expand/>
+</C>
+<C c="3" r="2" s="2">
+<O>
+<![CDATA[硅片]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="4" r="2" s="2">
+<O>
+<![CDATA[电池]]></O>
+<Expand/>
+</C>
+<C c="5" r="2" s="2">
+<O>
+<![CDATA[组件]]></O>
+<Expand/>
+</C>
+<C c="1" r="3" s="3">
+<O>
+<![CDATA[销售责任人]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="3" s="3">
+<O>
+<![CDATA[宋翠明]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="3" s="3">
+<O>
+<![CDATA[程裂萍]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="4" r="3" s="3">
+<O>
+<![CDATA[王伟康]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="5" r="3" s="3">
+<O>
+<![CDATA[国外：TINA 国内：纪任帅]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="4" s="4">
+<O>
+<![CDATA[5月份硅产品清库存指标]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="4" s="5">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="liaoesleiji"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[month(datet) = 5]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[day(datet) = 4]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.SummaryGrouper">
+<FN>
+<![CDATA[com.fr.data.util.function.SumFunction]]></FN>
+</RG>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="4" s="5">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="pianesleiji"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[month(todate(datet)) = 5]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[day(datet) = 4]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.SummaryGrouper">
+<FN>
+<![CDATA[com.fr.data.util.function.SumFunction]]></FN>
+</RG>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="4" r="4" s="5">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="chiesleiji"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[month(datet) = 5]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[day(datet) = 4]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.SummaryGrouper">
+<FN>
+<![CDATA[com.fr.data.util.function.SumFunction]]></FN>
+</RG>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="5" r="4" s="5">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="jianesleiji"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[month(datet) = 5]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[day(datet) = 4]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.SummaryGrouper">
+<FN>
+<![CDATA[com.fr.data.util.function.SumFunction]]></FN>
+</RG>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="5" s="4">
+<O>
+<![CDATA[5.4累计实际销售量]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="5" s="5">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="liaosleiji"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[1]]></CNUMBER>
+<CNAME>
+<![CDATA[datet]]></CNAME>
+<Compare op="0">
+<O>
+<![CDATA[2012-05-04]]></O>
+</Compare>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="3" r="5" s="5">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="piansleiji"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="4" r="5" s="5">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="chisleiji"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="5" r="5" s="5">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="jiansleiji"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="1" r="6" s="4">
+<O>
+<![CDATA[5.4累计实际回款额(万元)]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="liaobaleiji"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[1]]></CNUMBER>
+<CNAME>
+<![CDATA[datet]]></CNAME>
+<Compare op="0">
+<O>
+<![CDATA[2012-05-04]]></O>
+</Compare>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="3" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="pianbaleiji"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="4" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="chibaleiji"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="5" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="jianbaleiji"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="0"/>
+</C>
+<C c="1" r="7" s="6">
+<O>
+<![CDATA[全集团最新可卖库存]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="7" s="4">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="7" s="4">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="4" r="7" s="4">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="5" r="7" s="4">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="43200000" height="42768000"/>
+<Margin top="986400" left="2743200" bottom="986400" right="2743200"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+</ReportParameterAttr>
+<StyleList>
+<Style imageLayout="1">
+<FRFont name="微软雅黑" style="0" size="80" foreground="-65536"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="宋体" style="1" size="96"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="ColorBackground" color="-1577999"/>
+<Border>
+<Top style="1" color="-6697729"/>
+<Bottom style="1" color="-6697729"/>
+<Left style="1" color="-6697729"/>
+<Right style="1" color="-6697729"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-6697729"/>
+<Bottom style="1" color="-6697729"/>
+<Left style="1" color="-6697729"/>
+<Right style="1" color="-6697729"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-6697729"/>
+<Bottom style="1" color="-6697729"/>
+<Left style="1" color="-6697729"/>
+<Right style="1" color="-6697729"/>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-6697729"/>
+<Bottom style="1" color="-6697729"/>
+<Left style="1" color="-6697729"/>
+<Right style="1" color="-6697729"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="1" size="80"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-6697729"/>
+<Bottom style="1" color="-6697729"/>
+<Left style="1" color="-6697729"/>
+<Right style="1" color="-6697729"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAD"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

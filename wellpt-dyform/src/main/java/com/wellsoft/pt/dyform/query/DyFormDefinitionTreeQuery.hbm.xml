@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<sql-query name="dyFormDefinitionTreeQuery">
+	<![CDATA[
+		select form_def.uuid as uuid,
+			form_def.name as name, 
+			form_def.displayName as displayName, 
+			form_def.version as version, 
+			form_def.moduleName as moduleName,
+			form_def.moduleId as moduleId, 
+			form_def.outerId as outerId,
+			form_def.code as code
+		from DyFormDefinition form_def where form_def.uuid != :parentUuid and form_def.outerId = :outerId 
+		<if isNotBlank(name) || isNotBlank(displayName) || isNotBlank(version) || isNotBlank(moduleName) || isNotBlank(moduleId) || isNotBlank(outerId) || isNotBlank(code)>
+			and (1 = 2
+				<if isNotBlank(name)>
+					or form_def.name like '%' || :name || '%'
+				</if>
+				<if isNotBlank(displayName)>
+					or form_def.displayName like '%' || :displayName || '%'
+				</if>
+				<if isNotBlank(version)>
+					or form_def.version = :version
+				</if>
+				<if isNotBlank(moduleName)>
+					or form_def.moduleName like '%' || :moduleName || '%'
+				</if>
+				<if isNotBlank(moduleId)>
+					or form_def.moduleId like '%' || :moduleId || '%'
+				</if>
+				<if isNotBlank(outerId)>
+					or form_def.outerId like '%' || :outerId || '%'
+				</if>
+				<if isNotBlank(code)>
+					or form_def.code like '%' || :code || '%'
+				</if>
+			)
+		</if>
+		order by form_def.version desc, form_def.code
+	]]>
+	</sql-query>
+</hibernate-mapping>

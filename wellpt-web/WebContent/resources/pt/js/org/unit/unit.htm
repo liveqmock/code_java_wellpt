@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<script type="text/javascript" src="./../../../../jquery/jquery.js"></script>
+<script type="text/javascript" src="./../../../../pt/js/global.js"></script>
+<script type="text/javascript" src="./../../../../chosen/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="./../../../../../pt/workflow/js/jquery.workflow.js"></script>
+<link type='text/css' rel='stylesheet' href='./../../../../chosen/chosen.min.css'>
+<link type='text/css' rel='stylesheet' href='Dialog.css'>
+<script>
+	document.write("<title>" + ((window.dialogArguments!=null && window.dialogArguments["Title"]!=null && window.dialogArguments["Title"]!="")?window.dialogArguments["Title"]:"选择人员") + "</title>");
+	var dialogIndex = window.dialogArguments["index"];
+	window.ctx = window.dialogArguments["ctx"];
+</script>
+<script src='UnitTree.js'></script>
+<!-- <script src='menu.js'></script> -->
+<script type="text/javascript">
+	$(function(){
+		UnitOnloadEvent();
+		
+		$("#UnitType").chosen({disable_search_threshold: 10});
+		
+		//确定事件
+		$("#ok").click(function(e){
+			OKClick();
+			window.parent.unitDialogs[dialogIndex].dialog("close");
+		});
+		//取消事件
+		$("#cancel").click(function(){
+			goUnitTree.returnValue = null;
+			window.parent.unitDialogs[dialogIndex].dialog("close");
+		});
+		
+		//下拉框单位类型改变
+		$("#UnitType").change(function(){
+			UnitTypeChangeEvent($(this).val());	
+		});
+		//查询输入框按下事件
+		$("#KeyWords").keypress(function(e){
+			var keyCode = e.which;
+			if(keyCode == 13){
+				bSearch();
+			}
+			return true;
+		});
+		//查询按钮点击事件
+		$("#ID_Search").click(function(){
+			bSearch();
+		});
+		//清空查询
+		$("#ID_EmptySearch").click(function(){
+			bEmptySearch();
+		});
+	});
+</script>
+</head>
+<body style="overflow-x: hidden; overflow-y: hidden; magin:0; padding:0;">
+<form>
+<div class="unit-type"><select class="unit-select" id="UnitType" name="UnitType"></select>
+</div>
+<div class="unit-content">
+<div style="height: 100%;width:485px; float: left;border: 1px #DADADA solid;background-color: #F6F6F6;">
+	<div style="height: 30px;margin-top: 10px;">
+		<div id="keySearch" style="float: left;">
+		<input style="display: none;">
+		<input id="KeyWords" name="KeyWords" value="" style="width:200px; margin-left: 15px;">
+		&nbsp;&nbsp;<input type=button class="unit-btn-blue unit-btn-orange" id="ID_Search" style="text-align: center;padding: 0 0 3px 5px;" value="搜索 ">
+		</div>
+		<div style="float: right;text-align: right;padding-right: 15px;"><select name="MSurname" onchange="MSurnameChangeEvent(this.value);" style="display: none;"></select>
+		成员<span id="ID_MMemberCount">0</span>个
+		</div>
+		<div class="clear">
+		</div>
+	</div>
+	<div class="unit-table" style="width: 470px;margin-left: 15px;background-color: #F6F6F6;">
+		<div style="float: left;width: 250px;">
+			<div id="ID_LTree" class="left-tree"></div>
+			<div class="form_operate" style="margin-top: 10px;">
+<input type=button id="ID_LSelectAll" value="全选" onclick="SelectAll(true,goUnitTree.LTree);">
+<input type=button id="ID_LUnSelectAll" value="不选" onclick="SelectAll(false,goUnitTree.LTree);">
+<input type=button id="ID_LExpandAll" value="展开" onclick="ExpandAll();">
+<input type=button id="ID_LCollapseAll" value="折叠" onclick="CollapseAll();">
+<input type=checkbox id="ID_ShowRole" onclick="ShowRole(this.checked);" style="vertical-align:middle;width:14px;height:14px;line-height:14px;padding: 0px; margin: 0px;"><label id="ID_LabShowRole" for="ID_ShowRole">&nbsp;显示岗位</label>
+					</div>
+	</div>
+	<div style="float: left; width: 200px;margin-left: 5px;background-color: #F6F6F6;">
+			<div id='ID_MTree' class="left-tree"></div>
+			<div class="form_operate" style="margin-top: 10px;">
+<input type=button id="ID_MSelectAll" value="全选" onclick="SelectAll(true,goUnitTree.MTree);">
+<input type=button id="ID_MUnSelectAll" value="不选" onclick="SelectAll(false,goUnitTree.MTree);">
+<input type=button id="ID_MPrevPage" value="上页" onclick="MTreeCurPage(false);" style="display:none;">
+<input type=button id="ID_MNextPage" value="下页" onclick="MTreeCurPage(true);" style="display:none;">
+					</div>
+		</div>
+	<div class="clear"></div>
+</div>
+</div>
+<div style="height: 100%;width: 300px; float: right;border: 1px #DADADA solid;background-color: #F6F6F6;">
+	<div style="height: 30px;margin-top: 10px;text-align: right;padding-right: 15px;">
+		已选择<span id="ID_RMemberCount">0</span>个
+	</div>
+	<div class="unit-table" style="width: 270px;margin-left: 15px;background-color: #F6F6F6;">
+			<div id='ID_RTree' class="left-tree"></div>
+			<div class="form_operate" style="margin-top: 10px;">
+<input type=button id="ID_RDeleteSelected" value="删除" onclick="SelectedDelete();">
+<input type=button id="ID_EmptySelected" value="清空" onclick="SelectedEmpty()">
+<input type=button id="ID_RMoveUpSelected" value="上移" onclick="SelectedMove(true);">
+<input type=button id="ID_RMoveDownSelected" value="下移" onclick="SelectedMove(false);">
+<input type=button id="ID_RMoveToSelected" value="移至" onclick="showMenu('ID_RMoveMenuItem',80);" style="display:none">
+<span id="ID_RMoveMenu" style="display:none"></span>
+					</div>
+	</div>
+</div>
+<div class="clear"></div>
+</div>
+</form>
+<div id="hPromptDoing" style="display: none;"></div>
+<div class="unit-footer" style="margin-top: 12px;">
+	<div style="padding-top: 14px;text-align: center;">
+	<input type=button id="ok" class="unit-btn-blue unit-btn-orange" style="padding-bottom: 3px" value="确定"/>
+	<input type=button id="cancel" class="unit-btn-gray unit-btn-orange" style="padding-bottom: 3px" value="取消"/>
+	</div>
+</div>
+</body>
+</html>

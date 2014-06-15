@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>公文交换补充发送</title>
+<style>
+.dytable_form {font: 12px/1.5 arial;}
+.dytable_form .post-sign .filter{width:880px;margin:15px auto 0;}
+.dytable_form .post-sign .filter-form{height:40px;}
+.dytable_form .post-sign .filter-form li{float:left;display:inline;margin:0 37px 0 18px;padding:4px 12px;border:1px solid #d7d7d7;line-height:25px;color:#0f599c;}
+.post-sign .post-sign .filter-form li input{margin-left:13px;padding:3px 5px 4px;line-height:18px;border:0 none;border-left:1px solid #d7d7d7;}
+
+.dytable_form .post-sign .post-detail{width:880px;margin:15px auto 0;}
+.dytable_form .post-sign .post-detail table{width:100%;margin-top:10px;}
+.dytable_form .post-sign .post-detail td{height:29px;padding:0 15px;border-right:1px solid #fff;}
+.dytable_form .post-sign .post-detail .Label{width:110px;}
+.dytable_form .post-sign .post-detail .odd td{background:#f7f7f7;white-space: nowrap;}
+.dytable_form .post-sign .post-detail .odd td select {padding: 0;margin: 0;width:133px;}
+
+.dytable_form .post-sign .post-info{margin-top:2px;}
+.dytable_form .post-sign .post-info .post-hd{height:30px;padding:0 10px;background:#0f599c;}
+.dytable_form .post-sign .post-info .post-hd h3{float:left;font-weight:normal;color:#fff;margin: 0;padding: 0;}
+.dytable_form .post-sign .post-info .post-hd .extral{float:right;margin-top:5px;color:#fff;cursor: pointer;margin-left:12px;margin-top:2px;}
+.dytable_form .post-sign .post-info .post-hd .extral .body_col {border:0px outset;background-color:#0F599C;color: #FFFFFF;cursor: pointer;}
+.dytable_form .post-sign .post-info .post-hd a:link,.post-sign .post-info .post-hd a:visited{margin:0 8px;color:#fff;}
+.dytable_form .post-sign .post-info .post-bd{padding:15px 0;}
+.dytable_form .post-sign .post-info .attach-list{height:100px;}
+.dytable_form .post-sign .post-info .attach-list li{float:left;width:120px;text-align:center;list-style: none outside none;}
+.dytable_form .post-sign .post-info .attach-list .bar{border: 1px solid;}
+.dytable_form .post-sign .post-info .attach-list a img{width:64px;height:64px;padding:10px;border:1px solid #d4d0c8;}
+.dytable_form .post-sign .post-info .attach-list a{text-decoration:none;color:#434343;}
+.dytable_form .post-sign .post-info .attach-list span{display:block;line-height:25px;text-align:center;}
+.dytable_form .post-sign .post-detail .title {background: none repeat scroll 0 0 #0F599C;color:#fff;}
+</style>
+</head>
+
+<body>
+<div class="dytable_form">
+<div class="post-sign">	
+<div class="post-detail">
+	<!-- 表类型(tableType):1主表,2从表 -->
+	<table width="100%" tableType="1" id="001" editType="1">
+		<tr class="title">
+	    	<td class="Label" colspan="4">基本信息</td>
+	  	</tr>
+		<tr class="odd">
+			<td class="label">发送意见</td>
+			<td class="value" colspan=3><textarea name="dy_opinion" id="dy_opinion"></textarea></td>
+		</tr>
+		<tr>
+			<td class="label">签收时限</td>
+			<td class="value"><input name="dy_sign_limit" id="dy_sign_limit" type="text" value=""></td>
+			<td class="label">反馈时限</td>
+			<td class="value"><input name="dy_feedback_limit" id="dy_feedback_limit" type="text" value="" /></td>
+		</tr>
+		<tr class="title">
+	    	<td class="Label" colspan="4">发送对象</td>
+	  	</tr>
+		<tr class="odd">
+			<td class="label">发送人</td>
+			<td class="value">{当前登录人}</td>
+			<td class="label">发送时间</td>
+			<td class="value">{当前时间}</td>
+		</tr>		
+		<tr>
+			<td class="label">主送人员</td>
+			<td class="value" colspan="3">
+			<input name="dy_sendee_user" id="dy_sendee_user" type="text" value="" style="width: 100%">
+			</td>
+		</tr>
+		<tr class="odd">
+			<td class="label">抄送人员</td>
+			<td class="value" colspan="3">
+			<input name="dy_copy_user" id="dy_copy_user" type="text" value="" style="width: 100%">
+			</td>
+		</tr>
+		<tr class="title">
+			<td class="Label" colspan="4">
+			<div class="post-info">
+			<div class="post-hd">
+			<h3>附件</h3><div class="extral"><button id="file_upload" name="file_upload">上传</button></div>
+			</div></div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="4"> <div class="post-info">
+				<div id="cccc" class="post-bd"> 
+	               </div>
+			   </div>
+			</td>
+	  	</tr>
+	</table>
+</div>
+</div>
+</div>
+</body>
+</html>

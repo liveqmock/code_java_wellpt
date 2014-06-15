@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20130114" releaseVersion="7.0.3">
+<TableDataMap>
+<TableData name="ds1" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT * FROM [map_机场区域分布]A]]></Query>
+</TableData>
+</TableDataMap>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[3162300,876300,838200,723900,4495800,723900,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[1257300,4495800,3276600,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,1219200,609600,2247900,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" s="0">
+<Expand/>
+</C>
+<C c="1" r="0" s="0">
+<Expand/>
+</C>
+<C c="2" r="0" s="0">
+<Expand/>
+</C>
+<C c="3" r="0" cs="11" rs="5" s="0">
+<O t="CC">
+<LayoutAttr selectedIndex="0"/>
+<Chart name="Default">
+<Chart class="com.fr.chart.chartattr.Chart">
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-6908266"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<ChartAttr isJSDraw="true"/>
+<Title>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-6908266"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<O>
+<![CDATA[机场商务柜台人流量统计]]></O>
+<TextAttr>
+<Attr alignText="0">
+<FRFont name="微软雅黑" style="0" size="112"/>
+</Attr>
+</TextAttr>
+<TitleVisible value="false" position="0"/>
+</Title>
+<Plot class="com.fr.chart.chartattr.MapPlot">
+<MapPlot>
+<GI>
+<AttrBackground>
+<Background name="ColorBackground" color="-2496786"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr isNullValueBreak="true" autoRefreshPerSecond="0" plotStyle="1"/>
+<newHotTooltipStyle>
+<AttrContents>
+<Attr showLine="false" position="1" seriesLabel="${VALUE}"/>
+<Format class="java.text.DecimalFormat">
+<![CDATA[#0.00]]></Format>
+<PercentFormat>
+<Format class="java.text.DecimalFormat">
+<![CDATA[#0.00%]]></Format>
+</PercentFormat>
+</AttrContents>
+</newHotTooltipStyle>
+<ConditionCollection>
+<DefaultAttr class="com.fr.chart.chartglyph.ConditionAttr">
+<ConditionAttr name=""/>
+</DefaultAttr>
+</ConditionCollection>
+<Legend>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-6908266"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr position="4" visible="true"/>
+<FRFont name="微软雅黑" style="0" size="72"/>
+</Legend>
+<DataSheet>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="1" isRoundBorder="false"/>
+<newColor borderColor="-16777216"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr isVisible="false"/>
+</DataSheet>
+<newPlotFillStyle>
+<AttrFillStyle>
+<Attr/>
+</AttrFillStyle>
+</newPlotFillStyle>
+<newattr201212 mapName="机场商务柜台"/>
+<MapHotAreaColor>
+<MC_Attr minValue="0.0" maxValue="6070.0" useType="1" areaNumber="5" mainColor="-26368"/>
+<ColorList>
+<AreaColor>
+<AC_Attr minValue="7500.0" maxValue="6000.0" color="-26368"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="6000.0" maxValue="4500.0" color="-855664384"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="4500.0" maxValue="3000.0" color="-1711302400"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="3000.0" maxValue="1500.0" color="1711249664"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="1500.0" maxValue="0.0" color="855611648"/>
+</AreaColor>
+</ColorList>
+</MapHotAreaColor>
+</MapPlot>
+</Plot>
+</Chart>
+</Chart>
+<MapSingleLayerTableDefinition>
+<Top topCate="-1" topValue="-1" isDiscardOtherCate="false" isDiscardOtherSeries="false" isDiscardNullCate="false" isDiscardNullSeries="false"/>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[ds1]]></Name>
+</TableData>
+<SeriesDefinition>
+<SeriesName>
+<O>
+<![CDATA[区域]]></O>
+</SeriesName>
+<SeriesValue>
+<O>
+<![CDATA[人流量]]></O>
+</SeriesValue>
+</SeriesDefinition>
+</MapSingleLayerTableDefinition>
+</O>
+<Expand leftParentDefault="false"/>
+</C>
+<C c="0" r="1" s="0">
+<Expand/>
+</C>
+<C c="1" r="1" s="1">
+<O>
+<![CDATA[机场柜台]]></O>
+<Expand/>
+</C>
+<C c="2" r="1" s="2">
+<O>
+<![CDATA[人流量]]></O>
+<Expand/>
+</C>
+<C c="0" r="2" s="0">
+<Expand/>
+</C>
+<C c="1" r="2" s="3">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="区域"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[row() % 2 = 0]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.BackgroundHighlightAction">
+<Scope val="1"/>
+<Background name="ColorBackground" color="-6697984"/>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="0"/>
+</C>
+<C c="2" r="2" s="4">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="人流量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="0" r="3" s="0">
+<Expand/>
+</C>
+<C c="1" r="3" s="0">
+<Expand/>
+</C>
+<C c="2" r="3" s="0">
+<Expand/>
+</C>
+<C c="0" r="4" s="0">
+<Expand/>
+</C>
+<C c="1" r="4" s="0">
+<Expand/>
+</C>
+<C c="2" r="4" s="0">
+<Expand/>
+</C>
+<C c="0" r="5" cs="14" s="0">
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="40032000" height="20160000"/>
+<Margin top="986400" left="295200" bottom="410400" right="295200"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+</ReportParameterAttr>
+<StyleList>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="ColorBackground" color="-4136101"/>
+<Border/>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="微软雅黑" style="0" size="96"/>
+<Background name="ColorBackground" color="-4136101"/>
+<Border>
+<Bottom style="1"/>
+<Right style="1"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="微软雅黑" style="0" size="96"/>
+<Background name="ColorBackground" color="-4136101"/>
+<Border>
+<Bottom style="1"/>
+<Left style="1"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="微软雅黑" style="0" size="96"/>
+<Background name="ColorBackground" color="-4136101"/>
+<Border>
+<Top style="1"/>
+<Right style="1"/>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1">
+<FRFont name="微软雅黑" style="0" size="96"/>
+<Background name="ColorBackground" color="-4136101"/>
+<Border>
+<Top style="1"/>
+<Left style="1"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAD"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

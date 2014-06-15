@@ -1,0 +1,773 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20131111" releaseVersion="7.0.5">
+<TableDataMap>
+<TableData name="GSSCZT" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[/*商事主体信息*/
+select count(*) as 工商上传商事主体数量
+  from IS_EXCHANGE_DATA d,IS_EXCHANGE_DATA_BATCH b
+ where d.batch_id = b.uuid
+   and b.from_id = '004140203'
+   and b.type_id = '004140203SZ'
+   and d.valid_data = 'yes'
+   ${if(len(开始日期) == 0,"","and trunc(d.create_time) >= trunc(to_date( '" + 开始日期 + "', 'yyyyMMdd'))")}
+    ${if(len(结束日期) == 0,"and trunc(d.create_time) <= trunc(to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd'))","and trunc(d.create_time) <= trunc(to_date( '" + 结束日期 + "', 'yyyyMMdd'))")}
+   order by b.create_time desc]]></Query>
+</TableData>
+<TableData name="HZXKSXQY" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[/*涉及企业*/
+select count(*) as 后置许可事项企业数量 from(select d.reserved_text1
+  from IS_EXCHANGE_DATA d, IS_EXCHANGE_DATA_BATCH b
+ where d.batch_id = b.uuid
+   and b.type_id = '004140203SZ'
+   and b.from_id = '004140203'
+   and d.newest_data = 'yes'
+    ${if(len(开始日期) == 0,"","and trunc(d.create_time) >= trunc(to_date( '" + 开始日期 + "', 'yyyyMMdd'))")}
+   ${if(len(结束日期) == 0,"and trunc(d.create_time) <= trunc(to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd'))","and trunc(d.create_time) <= trunc(to_date( '" + 结束日期 + "', 'yyyyMMdd'))")}
+  group by d.reserved_text1)]]></Query>
+</TableData>
+<TableData name="HZXKSX" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[  select count(*) as 后置许可事项数量
+  from(select count(*) 
+  from USERFORM_SSXX_XGXK x
+  where dwmc is not null
+  ${if(len(开始日期) == 0,"","and trunc(x.create_time) >= trunc(to_date( '" + 开始日期 + "', 'yyyyMMdd'))")}
+  ${if(len(结束日期) == 0,"and trunc(x.create_time) <= trunc(to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd'))","and trunc(x.create_time) <= trunc(to_date( '" + 结束日期 + "', 'yyyyMMdd'))")}
+  group by x.XKJYXMMC)]]></Query>
+</TableData>
+<TableData name="SCXKDW" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select u.name as 上传许可单位,b.from_id
+  from IS_EXCHANGE_DATA d,IS_EXCHANGE_DATA_BATCH b,WELL_PT.UNIT_COMMON_UNIT u  where d.batch_id = b.uuid
+   and b.type_id = '000000000XK'
+   and d.newest_data = 'yes'
+   and u.id = b.from_id
+    ${if(len(开始日期) == 0,"","and trunc(d.create_time) >= trunc(to_date( '" + 开始日期 + "', 'yyyyMMdd'))")}
+    ${if(len(结束日期) == 0,"and trunc(d.create_time) <= trunc(to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd'))","and trunc(d.create_time) <= trunc(to_date( '" + 结束日期 + "', 'yyyyMMdd'))")}
+group by b.from_id,u.name]]></Query>
+</TableData>
+<TableData name="YDLQSDW" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[ /*已登录签收单位名称*/
+  select u.name as 已登录签收单位名称, m.unit_id as 单位Id
+  from IS_EXCHANGE_DATA d,IS_EXCHANGE_DATA_BATCH b,IS_EXCHANGE_DATA_MONITOR m,is_exchange_send_monitor s,WELL_PT.UNIT_COMMON_UNIT u
+  where d.batch_id = b.uuid
+   and m.send_id = s.uuid
+   and s.data_uuid=d.uuid
+   and b.type_id = '004140203SZ'
+   and b.from_id= '004140203'
+   and u.id = m.unit_id
+   and (m.receive_node='sign'or m.receive_node='back' or m.receive_node='reply' or m.receive_node='transfer')
+    ${if(len(开始日期) == 0,"","and trunc(d.create_time) >= trunc(to_date( '" + 开始日期 + "', 'yyyyMMdd'))")}
+   ${if(len(结束日期) == 0,"and trunc(d.create_time) <= trunc(to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd'))","and trunc(d.create_time) <= trunc(to_date( '" + 结束日期 + "', 'yyyyMMdd'))")}
+   group by m.unit_id,u.name]]></Query>
+</TableData>
+<TableData name="XKZZL" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[/*上传行政许可证种类*/
+   select x.zzmc  as 证照名称,count(d.uuid) as 数量,count(d.uuid)/(select count(*) as 行政许可总量
+    from is_exchange_data d, is_exchange_data_batch b,userform_ssxx_xzxk x,WELL_PT.Unit_Common_Unit unit
+  where b.type_id = '000000000XK'
+    and d.batch_id = b.uuid
+    and d.valid_data = 'yes'
+    and d.form_data_id=x.uuid
+    and b.from_id=unit.id
+    ${if(len(开始日期) == 0,"","and trunc(d.create_time) >= trunc(to_date( '" + 开始日期 + "', 'yyyyMMdd'))")}
+    ${if(len(结束日期) == 0,"and trunc(d.create_time) <= trunc(to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd'))","and trunc(d.create_time) <= trunc(to_date( '" + 结束日期 + "', 'yyyyMMdd'))")}
+
+) as 所占百分比
+   from is_exchange_data d, is_exchange_data_batch b,userform_ssxx_xzxk x,WELL_PT.Unit_Common_Unit unit
+    where b.type_id = '000000000XK'
+    and d.batch_id = b.uuid
+    and d.valid_data = 'yes'
+    and d.form_data_id=x.uuid
+    and b.from_id=unit.id
+     ${if(len(开始日期) == 0,"","and trunc(d.create_time) >= trunc(to_date( '" + 开始日期 + "', 'yyyyMMdd'))")}
+    ${if(len(结束日期) == 0,"and trunc(d.create_time) <= trunc(to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd'))","and trunc(d.create_time) <= trunc(to_date( '" + 结束日期 + "', 'yyyyMMdd'))")}
+    group by x.zzmc
+    order by 数量 desc
+]]></Query>
+</TableData>
+<TableData name="XZXKZL" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[ /*上传行政许可总量*/    
+  select count(*) as 行政许可总量
+    from is_exchange_data d, is_exchange_data_batch b,userform_ssxx_xzxk x,WELL_PT.Unit_Common_Unit unit
+  where b.type_id = '000000000XK'
+    and d.batch_id = b.uuid
+    and d.valid_data = 'yes'
+    and d.form_data_id=x.uuid
+    and b.from_id=unit.id
+    ${if(len(开始日期) == 0,"","and trunc(d.create_time) >= trunc(to_date( '" + 开始日期 + "', 'yyyyMMdd'))")}
+    ${if(len(结束日期) == 0,"and trunc(d.create_time) <= trunc(to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd'))","and trunc(d.create_time) <= trunc(to_date( '" + 结束日期 + "', 'yyyyMMdd'))")}
+]]></Query>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<ServerPrinter/>
+<WebPageContent>
+<ToolBars>
+<ToolBarManager>
+<Location>
+<Embed position="1"/>
+</Location>
+<ToolBar>
+<Widget class="com.fr.report.web.button.page.First">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-First')}]]></Text>
+<IconName>
+<![CDATA[first]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Previous">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Previous')}]]></Text>
+<IconName>
+<![CDATA[previous]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.PageNavi">
+<WidgetAttr/>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Next">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Next')}]]></Text>
+<IconName>
+<![CDATA[next]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Last">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Last')}]]></Text>
+<IconName>
+<![CDATA[last]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.FlashPrint">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Utils-Print[Client]A')}]]></Text>
+<IconName>
+<![CDATA[flashprint]]></IconName>
+</Widget>
+<Widget class="com.fr.form.ui.CustomToolBarButton">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Export')}]]></Text>
+<IconName>
+<![CDATA[export]]></IconName>
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters>
+<Parameter>
+<Attributes name="today"/>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=format(today(),"yyyy-MM-dd")]]></Attributes>
+</O>
+</Parameter>
+<Parameter>
+<Attributes name="parm1"/>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=$开始日期]]></Attributes>
+</O>
+</Parameter>
+<Parameter>
+<Attributes name="parm2"/>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=$结束日期]]></Attributes>
+</O>
+</Parameter>
+</Parameters>
+<Content>
+<![CDATA[var temp = 'ReportServer?reportlet=上传数据情况.cpt&format=excel&开始日期='+parm1+'&结束日期='+parm2+'&extype=simple&__filename__='+today+'上传数据情况';
+window.open(FR.cjkEncode(temp));]]></Content>
+</JavaScript>
+</Widget>
+<Widget class="com.fr.report.web.button.Print">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Print')}]]></Text>
+<IconName>
+<![CDATA[print]]></IconName>
+<PrintButtons/>
+</Widget>
+<Widget class="com.fr.report.web.button.Email">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Email')}]]></Text>
+<IconName>
+<![CDATA[email]]></IconName>
+</Widget>
+</ToolBar>
+</ToolBarManager>
+</ToolBars>
+<WebPage isPage="false" isShowAsImage="false" isAutoScale="false" isTDHeavy="true"/>
+</WebPageContent>
+</ReportWebAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[2171700,723900,1371600,1371600,1371600,1371600,723900,800100,1371600,1409700,1371600,1676400,1371600,1371600,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[1371600,6286500,2438400,190500,1371600,8382000,190500,1371600,7239000,2438400,2705100,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" cs="9" s="0">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=CONCATENATE(format($开始日期, "yyyy年MM月dd日"), "—", format($结束日期, "yyyy年MM月dd日"), "共有 ", WorkDays($开始日期, $结束日期), " 个工作日，平台上传数据情况如下：")]]></Attributes>
+</O>
+<Expand/>
+</C>
+<C c="0" r="1" cs="9" s="1">
+<O>
+<![CDATA[        市工商局上传：]]></O>
+<Expand/>
+</C>
+<C c="0" r="2" rs="4" s="1">
+<CellGUIAttr showAsHTML="true"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="2" s="2">
+<O>
+<![CDATA[内容]]></O>
+<Expand/>
+</C>
+<C c="2" r="2" s="2">
+<O>
+<![CDATA[数量]]></O>
+<Expand/>
+</C>
+<C c="3" r="2" cs="2" s="2">
+<O>
+<![CDATA[日均]]></O>
+<Expand/>
+</C>
+<C c="8" r="2" s="1">
+<Expand/>
+</C>
+<C c="1" r="3" s="3">
+<O>
+<![CDATA[商事主体信息]]></O>
+<Expand/>
+</C>
+<C c="2" r="3" s="3">
+<O t="DSColumn">
+<Attributes dsName="GSSCZT" columnName="工商上传商事主体数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="3" cs="2" s="3">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=round((C4 / WorkDays($开始日期, $结束日期)), 0)]]></Attributes>
+</O>
+<Expand/>
+</C>
+<C c="1" r="4" s="3">
+<O>
+<![CDATA[后置许可事项]]></O>
+<Expand/>
+</C>
+<C c="2" r="4" s="3">
+<O t="DSColumn">
+<Attributes dsName="HZXKSX" columnName="后置许可事项数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="4" cs="2" s="3">
+<Expand/>
+</C>
+<C c="5" r="4" s="1">
+<Expand/>
+</C>
+<C c="8" r="4" s="1">
+<Expand/>
+</C>
+<C c="1" r="5" s="3">
+<O>
+<![CDATA[涉及企业]]></O>
+<Expand/>
+</C>
+<C c="2" r="5" s="3">
+<O t="DSColumn">
+<Attributes dsName="HZXKSXQY" columnName="后置许可事项企业数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="5" cs="2" s="3">
+<Expand/>
+</C>
+<C c="5" r="5" s="1">
+<Expand/>
+</C>
+<C c="8" r="5" s="1">
+<Expand/>
+</C>
+<C c="0" r="6" cs="9" s="1">
+<Expand/>
+</C>
+<C c="0" r="7" cs="9" s="1">
+<O>
+<![CDATA[        涉及的 41 个后置许可单位：]]></O>
+<Expand/>
+</C>
+<C c="0" r="8" rs="3" s="1">
+<Expand/>
+</C>
+<C c="1" r="8" s="2">
+<O>
+<![CDATA[内容]]></O>
+<Expand/>
+</C>
+<C c="2" r="8" s="2">
+<O>
+<![CDATA[数量]]></O>
+<Expand/>
+</C>
+<C c="5" r="8" s="1">
+<Expand/>
+</C>
+<C c="8" r="8" s="1">
+<Expand/>
+</C>
+<C c="1" r="9" s="3">
+<O>
+<![CDATA[有登录平台签收业务单位]]></O>
+<Expand/>
+</C>
+<C c="2" r="9" s="3">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=count(B14)]]></Attributes>
+</O>
+<Expand/>
+</C>
+<C c="5" r="9" s="1">
+<Expand/>
+</C>
+<C c="8" r="9" s="1">
+<Expand/>
+</C>
+<C c="1" r="10" s="3">
+<O>
+<![CDATA[上传了许可数据的单位]]></O>
+<Expand/>
+</C>
+<C c="2" r="10" s="3">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=count(F14)]]></Attributes>
+</O>
+<Expand/>
+</C>
+<C c="5" r="10" s="1">
+<Expand/>
+</C>
+<C c="8" r="10" s="1">
+<Expand/>
+</C>
+<C c="0" r="11" cs="9" s="1">
+<O>
+<![CDATA[有登录平台签收的单位：                                    上传许可的单位：                                              ]]></O>
+<Expand/>
+</C>
+<C c="0" r="12" s="2">
+<O>
+<![CDATA[序号]]></O>
+<Expand/>
+</C>
+<C c="1" r="12" cs="2" s="2">
+<O>
+<![CDATA[单位名称]]></O>
+<Expand/>
+</C>
+<C c="4" r="12" s="2">
+<O>
+<![CDATA[序号]]></O>
+<Expand/>
+</C>
+<C c="5" r="12" s="2">
+<O>
+<![CDATA[单位名称]]></O>
+<Expand/>
+</C>
+<C c="0" r="13" s="4">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=seq(1)]]></Attributes>
+</O>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[len($$$) = 0]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.BorderHighlightAction">
+<Border topLine="1" topColor="-1" bottomLine="1" bottomColor="-1" leftLine="1" leftColor="-1" rightLine="1" rightColor="-1"/>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand extendable="1" leftParentDefault="false" left="B14"/>
+</C>
+<C c="1" r="13" cs="2" s="3">
+<O t="DSColumn">
+<Attributes dsName="YDLQSDW" columnName="已登录签收单位名称"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[len($$$) = 0]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.BorderHighlightAction">
+<Border topLine="1" topColor="-1" bottomLine="1" bottomColor="-1" leftLine="1" leftColor="-1" rightLine="1" rightColor="-1"/>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="0" leftParentDefault="false"/>
+</C>
+<C c="4" r="13" s="4">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=seq(2)]]></Attributes>
+</O>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[len($$$) = 0]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.BorderHighlightAction">
+<Border topLine="1" topColor="-1" bottomLine="1" bottomColor="-1" leftLine="1" leftColor="-1" rightLine="1" rightColor="-1"/>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand leftParentDefault="false" left="F14"/>
+</C>
+<C c="5" r="13" s="3">
+<O t="DSColumn">
+<Attributes dsName="SCXKDW" columnName="上传许可单位"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[len($$$) = 0]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.BorderHighlightAction">
+<Border topLine="1" topColor="-1" bottomLine="1" bottomColor="-1" leftLine="1" leftColor="-1" rightLine="1" rightColor="-1"/>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="0" leftParentDefault="false"/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="40320000" height="42768000"/>
+<Margin top="1440000" left="1440000" bottom="986400" right="1440000"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="false" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+<ParameterUI class="com.fr.form.main.parameter.FormParameterUI">
+<Layout class="com.fr.form.ui.container.WAbsoluteLayout">
+<WidgetName name="para"/>
+<WidgetAttr/>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label开始日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[开始日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="50" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="开始日期"/>
+<WidgetAttr/>
+<DateAttr format="yyyyMMdd"/>
+<widgetValue>
+<O t="Date">
+<![CDATA[1388505600000]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="130" y="25" width="179" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.parameter.FormSubmitButton">
+<WidgetName name="Search"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[查询]]></Text>
+<Hotkeys>
+<![CDATA[enter]]></Hotkeys>
+</InnerWidget>
+<BoundsAttr x="632" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label结束日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[结束日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="339" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="结束日期"/>
+<WidgetAttr/>
+<DateAttr format="yyyyMMdd"/>
+<widgetValue>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=TODAY()]]></Attributes>
+</O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="419" y="25" width="180" height="21"/>
+</Widget>
+<LCAttr vgap="0" hgap="0"/>
+</Layout>
+<DesignAttr width="1000" height="63"/>
+</ParameterUI>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="工作日数"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</ReportParameterAttr>
+<StyleList>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="27">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="ColorBackground" color="-1577999"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAF"/>
+<PreviewType PreviewType="1"/>
+</WorkBook>

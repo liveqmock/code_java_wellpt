@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>WorkFow</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor="#FFFFFF">
+<table width="90%" border="0" cellspacing="4" cellpadding="4">
+  <tr> 
+    <td> <table width="100%" border="0" cellspacing="0" cellpadding="4">
+        <tr bgcolor="#000000"> 
+          <td bgcolor="#EFEFEF">
+          <div align="center"><b>流程定制详解</b></div></td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr> 
+    <td width="98%" valign="top">      <p>&nbsp;</p> 
+      <hr>
+      <p><span class="text60"> <span class="text6">&nbsp;</span>&nbsp;&nbsp;</span></p>
+      <h2 class="text60">一）新建流程</h2>
+      <p class="text60">　　流程定制包括流程定义、流向定义、环节定义三部分。</p>
+      <h3 class="text60">1）流程定义：</h3>
+      <p class="text60">　　在图形化流程绘制窗口中，点击鼠标右键，选择“流程属性”，弹出设置流程属性对话框，包括流程名称、流程分类、流程代号（不能为空）、权限设置、消息分发以及归档设置等，设置方法同文本型流程定义。</p>
+      <p>&nbsp;</p>
+      <h3 class="text60">2）环节定义：</h3>
+      <p class="text60">　　在左侧图形中选择开始结点<img width="24" height="24" src="2_clip_image002_0000.jpg">（有且仅有一个）、环节结点<img width="27" height="23" src="2_clip_image004_0000.jpg">或<img width="25" height="24" src="2_clip_image006.jpg">（条件分支）或<img width="27" height="25" src="2_clip_image008.jpg">（子流程）、结束结点<img width="24" height="24" src="2_clip_image002_0001.jpg">（非自由流程必须有结束节点或者转入新流程节点）。</p>
+      <p class="text60">选择一个环节结点，点击鼠标右键，选择“环节属性”，弹出设置环节属性对话框，包括环节名称（名称必须有且唯一）、环节编号、办理权限与时限、督办设置以及信息记录等，设置方法同文本型流程定义。</p>
+      <h3 class="text60">3）流向定义：</h3>
+      <p class="text60">　　在应用上，可以实现直流、分流、条件分流、主办/协办、并流、可选并流、任意流程之间的嵌套等，真正的全面满足用户的各种复杂的流程需求。</p>
+      <p align="left" class="text60">　　在设置流向属性时，应遵循以下原则：<br>
+          <samp>1、流向名称必须有且唯一；<br>
+  2、开始节点不能没有流向指向目标节点；<br>
+  3、开始节点不能作为流向的目标节点；<br>
+        4、当流程为非自由流程时，非结束节点或者新流程节点必须存在指向其他节点的流向；<br>
+        5、流程的结束节点或者新流程节点有且仅有一个来源流向；<br>
+      6、当现在确定归档设置时，归档目标数据库不能为空；</samp><strong>&nbsp;</strong></p>
+      <p class="text60"><strong>直流：</strong></p>
+      <p class="text60"><img src="2_clip_image010.jpg" width="554" height="344" align="middle"></p>
+      <p class="text60"><img src="2_clip_image012.jpg" width="554" height="344" align="middle"></p>
+      <p class="text60"><br>
+          <strong>条件分支：</strong></p>
+      <p class="text60">　　条件分支流向的源节点必须是判断点。<br>
+        <img src="2_clip_image014.jpg" width="553" height="332" align="middle"></p>
+      <p class="text60"><strong><strong><img src="2_clip_image016.gif" width="552" height="332" align="middle"></strong>&nbsp;</strong></p>
+      <p class="text60"><strong><img src="2_clip_image018.jpg" width="553" height="332" align="middle"></strong></p>
+      <p class="text60"><strong><img width="553" height="332" src="2_clip_image020.jpg"></strong></p>
+      <p class="text60">　　如果在条件定义时选择“缺省流向”，表示当工作“比较域”中的值不满足条件流向中的比较值时，工作将按缺省流向进行流转。</p>
+      <p class="text60"><strong>辅流：</strong></p>
+      <p class="text60"><strong>辅流向：</strong></p>
+      <p class="text60"><strong><img width="553" height="327" src="2_clip_image022.jpg"></strong></p>
+      <p class="text60"><strong><img src="2_clip_image024.jpg" width="553" height="328" align="middle"></strong></p>
+      <p class="text60"><strong><img src="2_clip_image026.jpg" width="554" height="328" align="middle"></strong></p>
+      <p class="text60"><strong><img src="2_clip_image028.jpg" width="553" height="327" align="middle"></strong></p>
+      <p class="text60"><strong>主流向：</strong></p>
+      <p class="text60"><strong><img src="2_clip_image030.jpg" width="553" height="327" align="middle"></strong></p>
+      <p class="text60"><strong><img src="2_clip_image032.jpg" width="553" height="327" align="middle"></strong></p>
+      <p class="text60"><strong><img src="2_clip_image034.jpg" width="553" height="327" align="middle"></strong></p>
+      <p class="text60"><strong><img src="2_clip_image036.jpg" width="553" height="326" align="middle"></strong></p>
+      <h2 class="text60">二）流程嵌套：</h2>
+      <p class="text60">　　要求：该流程除“开始”环节外，必须至少有一个环节：</p>
+      <p class="text60">　　实现方法：将新流程<img width="27" height="25" src="2_clip_image037.jpg">作为该流程的末环节，并作相关属性设置即可，如下：</p>
+      <p class="text60"><img src="2_clip_image039.jpg" width="553" height="318" align="middle"></p>
+      <h2 class="text60">三）等价流程</h2>
+      <p class="text60">　　WELL-OA独创等价流程的概念，即：对于流转模式相同的流程，比如出差管理流程和请假管理流程，我们只需定义其中一个流程的环节和流向，另外一个流程只需在流程定义的“等价流程”中输入或选择已定义好的流程名称，该流程中的工作将按等价流程的流转模式流转。</p>
+      <p class="text60">　　实现方法：新建一个只有流程属性、没有环节及流向属性的流程，将其“等价流程”的值设置为一个已经存在的流程即可，如下：</p>
+      <p class="text60"><img src="2_clip_image041.jpg" width="554" height="400" align="middle"></p>
+      <h2 class="text60">四）编辑图形化流程</h2>
+      <p class="text60">　　在流程定义视图中，选择一个或多个图形化工作流文档，直接编辑，后保存。</p>
+      <h2 class="text60">五）删除图形化流程</h2>
+      <p class="text60">　　在流程定义视图中，选择一个或多个图形化工作流文档，点击操作条上的〖删除〗按钮。</p>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">&nbsp;</td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,6 @@
+1、修复工作流使用IE浏览器的庶罩问题
+jquery.artDialog.source.js
+568行
+lockMaskWrap[0].style.cssText = sizeCss + ';position:fixed;z-index:'
+改为
+lockMaskWrap[0].style.cssText = sizeCss + ';position:absolute;z-index:'

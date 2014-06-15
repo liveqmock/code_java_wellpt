@@ -1,0 +1,869 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20131111" releaseVersion="7.0.5">
+<TableDataMap>
+<TableData name="工商发送明细" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="收件单位"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select
+        z.zch as 注册号,
+        z.ztmc as 商事主体名称,
+        z.lsztmc as 隶属商事主体名称,
+        z.fddbr as 法定代表人,
+        z.fddbrzwdm as 法定代表人职务代码,
+        z.fddbrzwmc as 法定代表人职务名称,
+        z.fddbrzjhm as 法定代表人证件号码,
+        z.jyhw as 经营范围,
+        z.xkjyhw as 许可经营范围,
+        z.zs as 住所,
+        z.lxdh as 联系电话,
+        z.llrxx as 联络人,
+        z.rjcze as 认缴出资额,
+        z.rjczedw as 实缴出资额单位及币种,
+        z.ztlx as 商事主体类型,
+        z.ztlxdm as 商事主体类型代码,
+        z.clrq as 成立日期,
+        z.yyqx as 营业期限,
+        z.hzrq as 核准日期,
+        z.djjg as 登记机关,
+        z.djjgdm as 登记机关代码,
+        z.nbqk as 年报情况,
+        z.ztzt as 主体状态,
+        z.ztztdm as 主体状态代码,
+        z.zc as 章程,
+        z.qtwj as 附件,
+        m.matter_id as 事项代码,
+        m.matter as 事项名称,
+        m.create_time as 发送时间,
+        u.name as 收件单位
+  from IS_EXCHANGE_DATA_MONITOR m,WELL_PT.UNIT_COMMON_UNIT u,is_exchange_data d,is_exchange_data_batch b,is_exchange_send_monitor s,userform_ssxx_ztdj z
+ where d.batch_id = b.uuid
+   and s.data_uuid = d.uuid
+   and z.uuid = d.form_data_id
+   and s.uuid = m.send_id
+   and u.id = m.unit_id
+   and b.type_id = '004140203SZ'
+   and b.from_id = '004140203'
+   and d.valid_data = 'yes'
+   and m.cancel_status='default'
+   ${if(len(开始日期) == 0,"","and trunc(d.create_time) >= trunc(to_date( '" + 开始日期 + "', 'yyyy-MM-dd'))")}
+   ${if(len(结束日期) == 0,"and trunc(d.create_time) <= trunc(to_date( '" +format(today(),"yyyy-MM-dd")+ "', 'yyyy-MM-dd'))","and trunc(d.create_time) <= trunc(to_date( '" + 结束日期 + "', 'yyyy-MM-dd'))")}
+   ${if(len(收件单位) == 0,"and m.unit_id = '004139907'","and m.unit_id = '" + 收件单位 + "'")}
+   order by m.create_time asc]]></Query>
+</TableData>
+<TableData name="公共库单位（无厦门市）" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select u.id,u.name from WELL_PT.UNIT_COMMON_UNIT u where u.id !='XM']]></Query>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<ServerPrinter/>
+<WebPageContent>
+<ToolBars>
+<ToolBarManager>
+<Location>
+<Embed position="1"/>
+</Location>
+<ToolBar>
+<Widget class="com.fr.report.web.button.page.First">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-First')}]]></Text>
+<IconName>
+<![CDATA[first]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Previous">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Previous')}]]></Text>
+<IconName>
+<![CDATA[previous]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.PageNavi">
+<WidgetAttr/>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Next">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Next')}]]></Text>
+<IconName>
+<![CDATA[next]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Last">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Last')}]]></Text>
+<IconName>
+<![CDATA[last]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.FlashPrint">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Utils-Print[Client]A')}]]></Text>
+<IconName>
+<![CDATA[flashprint]]></IconName>
+</Widget>
+<Widget class="com.fr.form.ui.CustomToolBarButton">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Export')}]]></Text>
+<IconName>
+<![CDATA[export]]></IconName>
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters>
+<Parameter>
+<Attributes name="today"/>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=format(today(),"yyyy-MM-dd")]]></Attributes>
+</O>
+</Parameter>
+</Parameters>
+<Content>
+<![CDATA[var start=window.form.getWidgetByName("开始日期").getValue();
+var end=window.form.getWidgetByName("结束日期").getValue();
+var unit=window.form.getWidgetByName("收件单位").getValue();
+window.open(FR.cjkEncode('ReportServer?reportlet=工商发送明细.cpt&开始日期='+start+'&结束日期='+end+'&收件单位='+unit+'&format=excel&extype=simple&__filename__='+today+''+'工商发送明细'));
+]]></Content>
+</JavaScript>
+</Widget>
+<Widget class="com.fr.report.web.button.Print">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Print')}]]></Text>
+<IconName>
+<![CDATA[print]]></IconName>
+<PrintButtons/>
+</Widget>
+<Widget class="com.fr.report.web.button.Email">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Email')}]]></Text>
+<IconName>
+<![CDATA[email]]></IconName>
+</Widget>
+</ToolBar>
+</ToolBarManager>
+<ToolBarManager>
+<Location>
+<Embed position="3"/>
+</Location>
+<ToolBar>
+<Widget class="com.fr.report.web.button.page.First">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-First')}]]></Text>
+<IconName>
+<![CDATA[first]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Previous">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Previous')}]]></Text>
+<IconName>
+<![CDATA[previous]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.PageNavi">
+<WidgetAttr/>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Next">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Next')}]]></Text>
+<IconName>
+<![CDATA[next]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Last">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Last')}]]></Text>
+<IconName>
+<![CDATA[last]]></IconName>
+</Widget>
+</ToolBar>
+</ToolBarManager>
+</ToolBars>
+<WebPage isPage="false" isShowAsImage="false" isAutoScale="false" isTDHeavy="false"/>
+</WebPageContent>
+</ReportWebAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[1371600,1409700,723900,723900,723900,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[1371600,4876800,7429500,4686300,2743200,4419600,4572000,5676900,7848600,3124200,4724400,4229100,2743200,2743200,4876800,3200400,4038600,3238500,3810000,3657600,7315200,3238500,2743200,2743200,3352800,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" s="0">
+<O>
+<![CDATA[序号]]></O>
+<Expand/>
+</C>
+<C c="1" r="0" s="0">
+<O>
+<![CDATA[注册号]]></O>
+<Expand/>
+</C>
+<C c="2" r="0" s="0">
+<O>
+<![CDATA[商事主体名称]]></O>
+<Expand/>
+</C>
+<C c="3" r="0" s="0">
+<O>
+<![CDATA[隶属商事主体名称]]></O>
+<Expand/>
+</C>
+<C c="4" r="0" s="0">
+<O>
+<![CDATA[法定代表人]]></O>
+<Expand/>
+</C>
+<C c="5" r="0" s="0">
+<O>
+<![CDATA[法定代表人职务代码]]></O>
+<Expand/>
+</C>
+<C c="6" r="0" s="0">
+<O>
+<![CDATA[法定代表人职务名称]]></O>
+<Expand/>
+</C>
+<C c="7" r="0" s="0">
+<O>
+<![CDATA[法定代表人证件号码]]></O>
+<Expand/>
+</C>
+<C c="8" r="0" s="0">
+<O>
+<![CDATA[经营范围]]></O>
+<Expand/>
+</C>
+<C c="9" r="0" s="0">
+<O>
+<![CDATA[许可经营范围]]></O>
+<Expand/>
+</C>
+<C c="10" r="0" s="0">
+<O>
+<![CDATA[住所]]></O>
+<Expand/>
+</C>
+<C c="11" r="0" s="0">
+<O>
+<![CDATA[联系电话]]></O>
+<Expand/>
+</C>
+<C c="12" r="0" s="0">
+<O>
+<![CDATA[联络人]]></O>
+<Expand/>
+</C>
+<C c="13" r="0" s="0">
+<O>
+<![CDATA[认缴出资额]]></O>
+<Expand/>
+</C>
+<C c="14" r="0" s="0">
+<O>
+<![CDATA[实缴出资额单位及币种]]></O>
+<Expand/>
+</C>
+<C c="15" r="0" s="0">
+<O>
+<![CDATA[商事主体类型]]></O>
+<Expand/>
+</C>
+<C c="16" r="0" s="0">
+<O>
+<![CDATA[商事主体类型代码]]></O>
+<Expand/>
+</C>
+<C c="17" r="0" s="0">
+<O>
+<![CDATA[成立日期]]></O>
+<Expand/>
+</C>
+<C c="18" r="0" s="0">
+<O>
+<![CDATA[营业期限]]></O>
+<Expand/>
+</C>
+<C c="19" r="0" s="0">
+<O>
+<![CDATA[核准日期]]></O>
+<Expand/>
+</C>
+<C c="20" r="0" s="0">
+<O>
+<![CDATA[登记机关]]></O>
+<Expand/>
+</C>
+<C c="21" r="0" s="0">
+<O>
+<![CDATA[登记机关代码]]></O>
+<Expand/>
+</C>
+<C c="22" r="0" s="0">
+<O>
+<![CDATA[年报情况]]></O>
+<Expand/>
+</C>
+<C c="23" r="0" s="0">
+<O>
+<![CDATA[主体状态]]></O>
+<Expand/>
+</C>
+<C c="24" r="0" s="0">
+<O>
+<![CDATA[主体状态代码]]></O>
+<Expand/>
+</C>
+<C c="25" r="0" s="0">
+<O>
+<![CDATA[章程]]></O>
+<Expand/>
+</C>
+<C c="26" r="0" s="0">
+<O>
+<![CDATA[附件]]></O>
+<Expand/>
+</C>
+<C c="27" r="0" s="0">
+<O>
+<![CDATA[事项代码]]></O>
+<Expand/>
+</C>
+<C c="28" r="0" s="0">
+<O>
+<![CDATA[事项名称]]></O>
+<Expand/>
+</C>
+<C c="29" r="0" s="0">
+<O>
+<![CDATA[发送时间]]></O>
+<Expand/>
+</C>
+<C c="0" r="1" s="1">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=seq()]]></Attributes>
+</O>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ValueHighlightAction">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=row() - 1]]></Attributes>
+</O>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand extendable="1" leftParentDefault="false" left="B2"/>
+</C>
+<C c="1" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="注册号"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[len($$$) = 0]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand dir="0"/>
+</C>
+<C c="2" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="商事主体名称"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="隶属商事主体名称"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="4" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="法定代表人"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="5" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="法定代表人职务代码"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="6" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="法定代表人职务名称"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="7" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="法定代表人证件号码"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="8" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="经营范围"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="9" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="许可经营范围"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="10" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="住所"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="11" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="联系电话"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="12" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="联络人"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="13" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="认缴出资额"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="14" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="实缴出资额单位及币种"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="15" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="商事主体类型"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="16" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="商事主体类型代码"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="17" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="成立日期"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="18" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="营业期限"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="19" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="核准日期"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="20" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="登记机关"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="21" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="登记机关代码"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="22" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="年报情况"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="23" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="主体状态"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="24" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="主体状态代码"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="25" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="章程"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="26" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="附件"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="27" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="事项代码"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="28" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="事项名称"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="29" r="1" s="2">
+<O t="DSColumn">
+<Attributes dsName="工商发送明细" columnName="发送时间"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="4" s="3"/>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="403200000" height="403200000"/>
+<Margin top="0" left="144000" bottom="986400" right="2743200"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="false" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+<ParameterUI class="com.fr.form.main.parameter.FormParameterUI">
+<Layout class="com.fr.form.ui.container.WAbsoluteLayout">
+<WidgetName name="para"/>
+<WidgetAttr/>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label开始日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[开始日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="55" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="开始日期"/>
+<WidgetAttr/>
+<DateAttr format="yyyyMMdd"/>
+<widgetValue>
+<O t="Date">
+<![CDATA[1388505600000]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="135" y="25" width="177" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.parameter.FormSubmitButton">
+<Listener event="afterinit">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[window.form = this.options.form;]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="Search"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[查询]]></Text>
+<Hotkeys>
+<![CDATA[enter]]></Hotkeys>
+</InnerWidget>
+<BoundsAttr x="621" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label结束日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[结束日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="334" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="结束日期"/>
+<WidgetAttr/>
+<DateAttr format="yyyyMMdd"/>
+<widgetValue>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=TODAY()]]></Attributes>
+</O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="414" y="25" width="178" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label收件单位"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[收件单位:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="55" y="58" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<WidgetName name="收件单位"/>
+<WidgetAttr/>
+<allowBlank>
+<![CDATA[false]]></allowBlank>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="ID" viName="NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[公共库单位（无厦门市）]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<O>
+<![CDATA[厦门市卫生局]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="135" y="58" width="177" height="21"/>
+</Widget>
+<LCAttr vgap="0" hgap="0"/>
+</Layout>
+<DesignAttr width="1000" height="89"/>
+</ParameterUI>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="收件单位"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</ReportParameterAttr>
+<StyleList>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="ColorBackground" color="-1577999"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+<Style imageLayout="1" paddingLeft="5">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAF"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

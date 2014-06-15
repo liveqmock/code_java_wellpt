@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20131111" releaseVersion="7.0.5">
+<TableDataMap>
+<TableData name="ExchangeDataMonitor_JSYQHZ" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from XZSP_TEST8.IS_EXCHANGE_DATA_MONITOR m join XZSP_TEST8.IS_EXCHANGE_DATA d on m.data_id = d.uuid join XZSP_TEST8.IS_EXCHANGE_DATA_BATCH b on d.batch_id = b.uuid where ((b.limit_time < (select sysdate from dual) and m.reply_status = 'default') or m.reply_limit_status = 1 )]]></Query>
+</TableData>
+<TableData name="ExchangeDataMonitor_JSHZ" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from XZSP_TEST8.IS_EXCHANGE_DATA_MONITOR m join XZSP_TEST8.IS_EXCHANGE_DATA d on m.data_id = d.uuid join XZSP_TEST8.IS_EXCHANGE_DATA_BATCH b on d.batch_id = b.uuid]]></Query>
+</TableData>
+<TableData name="Exchange_data_type_dict" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from XZSP_TEST8.IS_EXCHANGE_DATA_TYPE t where t.id in (select type_id from XZSP_TEST8.IS_EXCHANGE_DATA_BATCH)]]></Query>
+</TableData>
+</TableDataMap>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[1409700,1409700,723900,723900,723900,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[9144000,0,0,0,0,3048000,3048000,2743200,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" s="0">
+<O>
+<![CDATA[单位名称]]></O>
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="0" s="0">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="0" s="0">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="0" s="0">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="4" r="0" s="0">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="5" r="0" s="0">
+<O>
+<![CDATA[接收数量]]></O>
+<Expand/>
+</C>
+<C c="6" r="0" s="0">
+<O>
+<![CDATA[逾期数量]]></O>
+<Expand/>
+</C>
+<C c="0" r="1" s="1">
+<O t="DSColumn">
+<Attributes dsName="公共库单位_dict" columnName="NAME"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[ID]]></CNAME>
+<Compare op="0">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=if(len($单位名称) = 0, nofilter, $单位名称)]]></Attributes>
+</O>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<Expand dir="0" order="2">
+<SortFormula>
+<![CDATA[G2 * 1000 + F2 * 5 + 0 - B2]]></SortFormula>
+</Expand>
+</C>
+<C c="1" r="1" s="1">
+<O t="DSColumn">
+<Attributes dsName="公共库单位_dict" columnName="CODE"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="1" s="1">
+<O t="DSColumn">
+<Attributes dsName="Exchange_data_type_dict" columnName="ID"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNAME>
+<![CDATA[ID]]></CNAME>
+<Compare op="0">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=if(len($数据类型) = 0, nofilter, $数据类型)]]></Attributes>
+</O>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<Expand leftParentDefault="false" left="A2"/>
+</C>
+<C c="3" r="1" s="1">
+<O t="DSColumn">
+<Attributes dsName="ExchangeDataMonitor_JSHZ" columnName="DATA_ID"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNAME>
+<![CDATA[RESERVED_TEXT2]]></CNAME>
+<Compare op="0">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=if(len($事项名称) = 0, nofilter, $事项名称)]]></Attributes>
+</O>
+</Compare>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[UNIT_ID]]></CNAME>
+<Compare op="0">
+<SimpleDSColumn dsName="公共库单位_dict" columnName="ID"/>
+</Compare>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[TYPE_ID]]></CNAME>
+<Compare op="0">
+<SimpleDSColumn dsName="Exchange_data_type_dict" columnName="ID"/>
+</Compare>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand leftParentDefault="false" left="C2"/>
+</C>
+<C c="4" r="1" s="1">
+<O t="DSColumn">
+<Attributes dsName="ExchangeDataMonitor_JSYQHZ" columnName="DATA_ID"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNAME>
+<![CDATA[REPLY_TIME]]></CNAME>
+<Compare op="3">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=if(len($开始日期) = 0, nofilter, $开始日期)]]></Attributes>
+</O>
+</Compare>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[REPLY_TIME]]></CNAME>
+<Compare op="5">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=if(len($结束日期) = 0, nofilter, $结束日期)]]></Attributes>
+</O>
+</Compare>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNAME>
+<![CDATA[RESERVED_TEXT2]]></CNAME>
+<Compare op="0">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=if(len($事项名称) = 0, nofilter, $事项名称)]]></Attributes>
+</O>
+</Compare>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[TYPE_ID]]></CNAME>
+<Compare op="0">
+<SimpleDSColumn dsName="Exchange_data_type_dict" columnName="ID"/>
+</Compare>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[UNIT_ID]]></CNAME>
+<Compare op="0">
+<SimpleDSColumn dsName="公共库单位_dict" columnName="ID"/>
+</Compare>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand leftParentDefault="false" left="C2"/>
+</C>
+<C c="5" r="1" s="1">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=count(D2)]]></Attributes>
+</O>
+<Expand/>
+</C>
+<C c="6" r="1" s="1">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=count(E2)]]></Attributes>
+</O>
+<Expand order="2">
+<SortFormula>
+<![CDATA[G2 * 10]]></SortFormula>
+</Expand>
+</C>
+<C c="1" r="2">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="2">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="3">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="3">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="4">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="4">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="5">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="5">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="6">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="6">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="7">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="7">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="8">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="8">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="9">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="9">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="10">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="10">
+<CellGUIAttr adjustmode="0"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="7" r="10" s="2">
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting/>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="false" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+<ParameterUI class="com.fr.form.main.parameter.FormParameterUI">
+<Layout class="com.fr.form.ui.container.WAbsoluteLayout">
+<WidgetName name="para"/>
+<WidgetAttr/>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label事项名称"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[事项名称:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="577" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<WidgetName name="事项名称"/>
+<WidgetAttr/>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="RESERVED_TEXT2" viName="RESERVED_TEXT2"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[ExchangeDataMonitor_JSHZ]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="657" y="25" width="139" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label数据类型"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[数据类型:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="309" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<WidgetName name="数据类型"/>
+<WidgetAttr/>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="ID" viName="NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[Exchange_data_type_dict]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="389" y="25" width="157" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label单位名称"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[单位名称:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="309" y="50" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<WidgetName name="单位名称"/>
+<WidgetAttr/>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="ID" viName="NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[公共库单位_dict]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="389" y="50" width="157" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label开始日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[开始日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="50" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="开始日期"/>
+<WidgetAttr/>
+<DateAttr/>
+<widgetValue/>
+</InnerWidget>
+<BoundsAttr x="130" y="25" width="149" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label结束日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[结束日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="50" y="50" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="结束日期"/>
+<WidgetAttr/>
+<DateAttr/>
+<widgetValue/>
+</InnerWidget>
+<BoundsAttr x="130" y="50" width="149" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.parameter.FormSubmitButton">
+<WidgetName name="Search"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[查询]]></Text>
+<Hotkeys>
+<![CDATA[enter]]></Hotkeys>
+</InnerWidget>
+<BoundsAttr x="592" y="50" width="80" height="21"/>
+</Widget>
+<LCAttr vgap="0" hgap="0"/>
+</Layout>
+</ParameterUI>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="单位名称"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="数据类型"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="事项名称"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</ReportParameterAttr>
+<StyleList>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="ColorBackground" color="-1577999"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+<Style imageLayout="1" paddingLeft="5">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAF"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

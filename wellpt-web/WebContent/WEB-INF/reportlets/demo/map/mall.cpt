@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20130114" releaseVersion="7.0.3">
+<TableDataMap>
+<TableData name="ds1" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT * FROM [map_柜台信息]A]]></Query>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<ServerPrinter/>
+<WebPageContent>
+<ToolBars/>
+<WebPage isPage="false" isShowAsImage="false" isAutoScale="false" isTDHeavy="false"/>
+</WebPageContent>
+</ReportWebAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,609600,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[2743200,2743200,2743200,2743200,2743200,2743200,2743200,1219200,2743200,1447800,38100,952500,2209800,2171700,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="1" r="0" cs="11" rs="19">
+<O t="CC">
+<LayoutAttr selectedIndex="0"/>
+<Chart name="Default">
+<Chart class="com.fr.chart.chartattr.Chart">
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="2" isRoundBorder="true"/>
+<newColor borderColor="-16777216"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<ChartAttr isJSDraw="true"/>
+<Title>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-6908266"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<O>
+<![CDATA[人民商场服装柜台分布]]></O>
+<TextAttr>
+<Attr alignText="0">
+<FRFont name="微软雅黑" style="1" size="96"/>
+</Attr>
+</TextAttr>
+<TitleVisible value="true" position="0"/>
+</Title>
+<Plot class="com.fr.chart.chartattr.MapPlot">
+<MapPlot>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr isNullValueBreak="true" autoRefreshPerSecond="-1" plotStyle="0"/>
+<newHotTooltipStyle>
+<AttrContents>
+<Attr showLine="false" position="1" seriesLabel="${SERIES}${BR}${CATEGORY}${BR}${VALUE}"/>
+<Format class="java.text.DecimalFormat">
+<![CDATA[#0.00]]></Format>
+<PercentFormat>
+<Format class="java.text.DecimalFormat">
+<![CDATA[#0.00%]]></Format>
+</PercentFormat>
+</AttrContents>
+</newHotTooltipStyle>
+<ConditionCollection>
+<DefaultAttr class="com.fr.chart.chartglyph.ConditionAttr">
+<ConditionAttr name="">
+<AttrList>
+<Attr class="com.fr.chart.base.AttrContents">
+<AttrContents>
+<Attr showLine="false" position="1" seriesLabel="${CATEGORY}"/>
+<TextAttr>
+<Attr alignText="0">
+<FRFont name="宋体" style="0" size="72"/>
+</Attr>
+</TextAttr>
+</AttrContents>
+</Attr>
+</AttrList>
+</ConditionAttr>
+</DefaultAttr>
+</ConditionCollection>
+<Legend>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-6908266"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr position="4" visible="false"/>
+<FRFont name="宋体" style="0" size="72"/>
+</Legend>
+<DataSheet>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="1" isRoundBorder="false"/>
+<newColor borderColor="-16777216"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr isVisible="false"/>
+</DataSheet>
+<NameJavaScriptGroup>
+<NameJavaScript name="网络报表1">
+<JavaScript class="com.fr.js.ReportletHyperlink">
+<JavaScript class="com.fr.js.ReportletHyperlink">
+<Parameters>
+<Parameter>
+<Attributes name="p"/>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=AREA_NAME]]></Attributes>
+</O>
+</Parameter>
+</Parameters>
+<TargetFrame>
+<![CDATA[IFRAMEEDITOR1]]></TargetFrame>
+<Features width="600" height="400"/>
+<ReportletName>
+<![CDATA[/demo/map/mall_detail.cpt]]></ReportletName>
+</JavaScript>
+</JavaScript>
+</NameJavaScript>
+</NameJavaScriptGroup>
+<newPlotFillStyle>
+<AttrFillStyle>
+<Attr/>
+</AttrFillStyle>
+</newPlotFillStyle>
+<newattr201212 mapName="商场柜台"/>
+<MapHotAreaColor>
+<MC_Attr minValue="0.0" maxValue="1600.0" useType="1" areaNumber="3" mainColor="-236032"/>
+<ColorList>
+<AreaColor>
+<AC_Attr minValue="150.0" maxValue="80.0" color="-236032"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="80.0" maxValue="55.0" color="-13408513"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="55.0" maxValue="0.0" color="-13159"/>
+</AreaColor>
+</ColorList>
+</MapHotAreaColor>
+</MapPlot>
+</Plot>
+</Chart>
+</Chart>
+<MapSingleLayerTableDefinition>
+<Top topCate="-1" topValue="-1" isDiscardOtherCate="false" isDiscardOtherSeries="false" isDiscardNullCate="false" isDiscardNullSeries="false"/>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[ds1]]></Name>
+</TableData>
+<SeriesDefinition>
+<SeriesName>
+<O>
+<![CDATA[柜台号]]></O>
+</SeriesName>
+<SeriesValue>
+<O>
+<![CDATA[柜位面积]]></O>
+</SeriesValue>
+</SeriesDefinition>
+</MapSingleLayerTableDefinition>
+</O>
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="25632000" height="13680000"/>
+<Margin top="0" left="0" bottom="0" right="0"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+</ReportParameterAttr>
+<StyleList/>
+<DesignerVersion DesignerVersion="HAD"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

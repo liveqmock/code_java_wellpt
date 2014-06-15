@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20130114" releaseVersion="7.0.3">
+<TableDataMap>
+<TableData name="ds1" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT 省份,sum(销售额),sum(利润额),sum(运营费用),sum(税费) FROM [地图]A group by 省份 order by sum(利润额) asc]]></Query>
+</TableData>
+<TableData name="Embedded1" class="com.fr.data.impl.EmbeddedTableData">
+<Parameters/>
+<ColumnNames>
+<![CDATA[ColName1,,.,,ColName2]]></ColumnNames>
+<ColumnTypes>
+<![CDATA[java.lang.String,java.lang.Integer]]></ColumnTypes>
+<RowData>
+<![CDATA[--Wn3!$D[P_&02WYg(XHA'CI+]Ah$SmMRbFGY]A8^>M[pP_*7*`[HlsIo~
+]]></RowData>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<ServerPrinter/>
+<WebPageContent>
+<ToolBars/>
+<WebPage isPage="false" isShowAsImage="false" isAutoScale="false" isTDHeavy="false"/>
+</WebPageContent>
+</ReportWebAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[304800,723900,723900,723900,419100,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,114300,38100,647700,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[2209800,2743200,1562100,2743200,2743200,2743200,2743200,2743200,2743200,1143000,0,0,9448800,2095500,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" cs="14">
+<Expand/>
+</C>
+<C c="0" r="1" rs="26">
+<Expand/>
+</C>
+<C c="1" r="1" cs="12" rs="26">
+<O t="CC">
+<LayoutAttr selectedIndex="0"/>
+<Chart name="Default">
+<Chart class="com.fr.chart.chartattr.Chart">
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="2" isRoundBorder="true"/>
+<newColor borderColor="-4144960"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<ChartAttr isJSDraw="true"/>
+<Title>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-6908266"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<O>
+<![CDATA[南京市苏果超市分布图]]></O>
+<TextAttr>
+<Attr alignText="0">
+<FRFont name="微软雅黑" style="1" size="112"/>
+</Attr>
+</TextAttr>
+<TitleVisible value="true" position="2"/>
+</Title>
+<Plot class="com.fr.chart.chartattr.MapPlot">
+<MapPlot>
+<GI>
+<AttrBackground>
+<Background name="ColorBackground" color="-16777216"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr isNullValueBreak="true" autoRefreshPerSecond="-1" plotStyle="1"/>
+<newHotTooltipStyle>
+<AttrContents>
+<Attr showLine="false" position="1" seriesLabel="${SERIES}${BR}${CATEGORY}${BR}${VALUE}"/>
+<Format class="java.text.DecimalFormat">
+<![CDATA[#0.00]]></Format>
+<PercentFormat>
+<Format class="java.text.DecimalFormat">
+<![CDATA[#0.00%]]></Format>
+</PercentFormat>
+</AttrContents>
+</newHotTooltipStyle>
+<ConditionCollection>
+<DefaultAttr class="com.fr.chart.chartglyph.ConditionAttr">
+<ConditionAttr name=""/>
+</DefaultAttr>
+</ConditionCollection>
+<Legend>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-6908266"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr position="4" visible="false"/>
+<FRFont name="宋体" style="0" size="72"/>
+</Legend>
+<DataSheet>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="1" isRoundBorder="false"/>
+<newColor borderColor="-16777216"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr isVisible="false"/>
+</DataSheet>
+<newPlotFillStyle>
+<AttrFillStyle>
+<Attr/>
+</AttrFillStyle>
+</newPlotFillStyle>
+<newattr201212 mapName="超市分布"/>
+<MapHotAreaColor>
+<MC_Attr minValue="0.0" maxValue="300.0" useType="1" areaNumber="2" mainColor="-65536"/>
+<ColorList>
+<AreaColor>
+<AC_Attr minValue="600.0" maxValue="200.0" color="-65536"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="200.0" maxValue="100.0" color="-6426"/>
+</AreaColor>
+</ColorList>
+</MapHotAreaColor>
+</MapPlot>
+</Plot>
+</Chart>
+</Chart>
+<MapSingleLayerTableDefinition>
+<Top topCate="-1" topValue="-1" isDiscardOtherCate="false" isDiscardOtherSeries="false" isDiscardNullCate="false" isDiscardNullSeries="false"/>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[Embedded1]]></Name>
+</TableData>
+<SeriesDefinition>
+<SeriesName>
+<O>
+<![CDATA[ColName1]]></O>
+</SeriesName>
+<SeriesValue>
+<O>
+<![CDATA[ColName2]]></O>
+</SeriesValue>
+</SeriesDefinition>
+</MapSingleLayerTableDefinition>
+</O>
+<Expand/>
+</C>
+<C c="13" r="1" rs="28">
+<Expand/>
+</C>
+<C c="0" r="27" cs="13" rs="2">
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="40896000" height="19440000"/>
+<Margin top="410400" left="295200" bottom="122400" right="295200"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+</ReportParameterAttr>
+<StyleList/>
+<DesignerVersion DesignerVersion="HAD"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

@@ -1,0 +1,33 @@
+参数说明
+type=D(末端部门)/U(末端人员)
+all=2(全部树型节点)/1(当只有一个根节点时多返回一级子节点，否则返回多个根节点即可)/0(返回包括给定节点和其直接子节点)
+login=1/0
+
+1、获取所有组织单位类型
+function sSetUnitType(psType){
+	xmlhttp.open("GET","./Type.xml?t="+Math.random(), false);
+	xmlhttp.send('');
+}
+
+2、	请求参数login、all，请求体psType
+function bCreateTree(psType,pbExpandAll){
+	var xmlhttp = oGetXmlHttpRequest();
+	xmlhttp.open("POST","unit_tree!unitXml.action?login="+(goUnitTree.initArg["LoginStatus"]?"1":"0")+"&all="+(pbExpandAll?"2":"1")+"&t="+Math.random(), false);
+	xmlhttp.send(psType);
+}
+
+3、没有组织单位类型, 请求参数login、all，请求体loDiv.id
+function toggle(poObj){
+	xmlhttp.open("POST","unit_tree!unitXml.action?&all=0&login="+(goUnitTree.initArg["LoginStatus"]?"1":"0")+"&t="+Math.random(), false);
+	xmlhttp.send(loDiv.id);
+}
+
+4、	请求参数type、login，请求体psID
+function bSetMTree(psID){
+	xmlhttp.open("POST","unit_tree!unitXml.action?type="+(goUnitTree.curType=="Dept"?"D":"U")+"&login="+(goUnitTree.initArg["LoginStatus"]?"1":"0")+"&t="+Math.random(), false);
+	xmlhttp.send(psID);
+}
+
+UnitTree.js缺少的函数
+bSearch();
+bEmptySearch();

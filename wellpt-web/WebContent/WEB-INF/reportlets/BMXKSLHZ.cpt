@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20131111" releaseVersion="7.0.5">
+<ReportWebAttr>
+<ServerPrinter/>
+<WebPageContent>
+<ToolBars/>
+<WebPage isPage="false" isShowAsImage="false" isAutoScale="false" isTDHeavy="false"/>
+</WebPageContent>
+</ReportWebAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[6896100,0,0,3429000,2743200,2743200,2743200,2743200,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" s="0">
+<O>
+<![CDATA[单位名称]]></O>
+<Expand/>
+</C>
+<C c="1" r="0" s="0"/>
+<C c="2" r="0" s="0"/>
+<C c="3" r="0" s="0">
+<O>
+<![CDATA[数量]]></O>
+<Expand/>
+</C>
+<C c="0" r="1" s="0">
+<O t="DSColumn">
+<Attributes dsName="公共库单位" columnName="NAME"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex order="1"/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<SortFormula>
+<![CDATA[code]]></SortFormula>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<Expand dir="0" order="2">
+<SortFormula>
+<![CDATA[D2]]></SortFormula>
+</Expand>
+</C>
+<C c="1" r="1" s="0">
+<O t="DSColumn">
+<Attributes dsName="ExchangeDataBatch" columnName="UUID"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[FROM_ID]]></CNAME>
+<Compare op="0">
+<SimpleDSColumn dsName="公共库单位" columnName="ID"/>
+</Compare>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[TYPE_ID]]></CNAME>
+<Compare op="0">
+<O>
+<![CDATA[000000000XK]]></O>
+</Compare>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<Expand/>
+</C>
+<C c="2" r="1" s="0">
+<O t="DSColumn">
+<Attributes dsName="ExchangeData" columnName="BATCH_ID"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[BATCH_ID]]></CNAME>
+<Compare op="0">
+<SimpleDSColumn dsName="ExchangeDataBatch" columnName="UUID"/>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<Expand leftParentDefault="false" left="B2"/>
+</C>
+<C c="3" r="1" s="0">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=count(C2)]]></Attributes>
+</O>
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting/>
+</ReportSettings>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+</ReportParameterAttr>
+<StyleList>
+<Style horizontal_alignment="2" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAF"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

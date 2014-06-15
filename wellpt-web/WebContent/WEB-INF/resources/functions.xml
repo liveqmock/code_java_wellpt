@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FunctionManager xmlVersion="20131111" releaseVersion="7.0.5">
+<FunctionDefList>
+<FunctionDef name="gauthority">
+<Class className="com.fr.test.gauthority"/>
+<Description>
+<![CDATA[]]></Description>
+</FunctionDef>
+<FunctionDef name="WorkDays">
+<Class className="com.wellsoft.pt.report.support.WorkDays"/>
+<Description>
+<![CDATA[获取某段日期内的工作日数]]></Description>
+</FunctionDef>
+</FunctionDefList>
+</FunctionManager>

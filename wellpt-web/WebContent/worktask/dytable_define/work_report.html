@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>工作报告请示单</title>
+
+<!-- <script type="text/javascript" src="../../resources/easyui/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="../../resources/easyui/jquery.easyui.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../resources/easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="../../resources/easyui/themes/icon.css"> -->
+</head>
+
+<body>
+	<!-- 表类型(tableType):1主表,2从表 -->
+	<table width="100%" border="1" tableType="1" tableEnName="main_table"
+		tableCnName="主表" editType="1">
+		<tr>
+			<td width="20%" class="label">报告类型</td>
+			<td width="30%"><select data-rel="chosen" id="type1"
+				name="type1">
+					<option value="1">周报告</option>
+					<option value="2">月报告</option>
+					<option value="3">季度报告</option>
+					<option value="4">年度报告</option>
+			</select></td>
+			<td width="20%" class="label">报告进度</td>
+			<td width="30%"><select data-rel="chosen" name="type2"
+				id="type2">
+					<option value="9">9周</option>
+					<option value="10">10周</option>
+					<option value="11">11周</option>
+					<option value="12">12周</option>
+					<option value="13">13周</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td width="20%" class="label">起草人</td>
+			<td width="30%">{当前登录人}</td>
+			<td width="20%" class="label">起草时间</td>
+			<td width="30%">{当前时间}</td>
+		</tr>
+		<tr>
+			<td class="label">岗位</td>
+			<td><input name="post" id="post" type="text" value=""></td>
+			<td class="label">总评*</td>
+			<td><select name="evluate_m" id="evluate_m">
+					<option value="1">福州</option>
+					<option value="2">厦门</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td class="label">任务总数</td>
+			<td><input type="text" name="task_all_count" id="task_all_count" />个</td>
+			<td class="label">优秀*</td>
+			<td><input type="text" name="execellent_count"
+				id="execellent_count" />个</td>
+		</tr>
+
+		<tr>
+			<td class="label">合格*</td>
+			<td><input type="text" name="good_count" id="good_count" />个</td>
+			<td class="label">不合格*</td>
+			<td><input type="text" name="bad_count" id="bad_count" />个</td>
+		</tr>
+		<tr>
+			<td class="label">按计划</td>
+			<td><input type="text" name="plan_count" id="plan_count" />个</td>
+			<td class="label">延期*</td>
+			<td><input type="text" name="delay_count" id="delay_count" />个</td>
+		</tr>
+
+		<tr>
+			<td class="label">评语</td>
+			<td colspan="3"><textarea name="memo" id="memo"
+					style="width: 80%; height: 80px;"></textarea></td>
+
+		</tr>
+	</table>
+	工作计划:
+	<br>
+
+	<!-- 从表单设计放置位置,th标签中的width属性根据实际进行修改,表类型(tableType):1主表,2从表 ,从表展现方式(editType)：1(所有字段都展现出来),2(列表只展现部分字段)-->
+	<table width="100%" border="1" tableType="2" editType="1" id="001">
+		<tr>
+			<th width="10%" class="label">任务名称</th>
+			<th width="10%" class="label">任务类型</th>
+			<th width="10%" class="label">执行状态</th>
+			<th width="10%" class="label">目标与要求</th>
+			<th width="10%" class="label">计划开始时间</th>
+			<th width="10%" class="label">计划完成时间</th>
+			<th width="10%" class="label">预估工作量</th>
+		</tr>
+	</table>
+	工作报告与评价:
+	<table width="100%" border="1" tableType="2" editType="2" id="002">
+		<tr>
+			<th width="20%" class="label">任务名称</th>
+			<th width="20%" class="label">执行状态</th>
+			<th width="20%" class="label">执行情况描述</th>
+			<th width="20%" class="label">自评</th>
+			<th width="20%" class="label">主管评价</th>
+			<th width="20%" class="label">主管评语</th>
+		</tr>
+	</table>
+
+</body>
+</html>

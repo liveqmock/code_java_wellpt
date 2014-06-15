@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<units>
+	<unit type="1" isLeaf="0" id="D0000000001" name="威尔软件" path="威尔软件">
+		<unit type="2" isLeaf="1" id="U6280b748-065b-4820-bf57-a1760d9fbfcd" name="oa_demo11" path="威尔软件/oa_demo11" sex="1"
+			job="oa_demo11" />
+		<unit type="1" isLeaf="1" id="D0000000002" name="客服中心" path="威尔软件/客服中心">
+			<unit type="2" isLeaf="1" id="U0000000002" name="test5" path="威尔软件/客服中心/test5" sex="1" job="test5" />
+			<unit type="2" isLeaf="1" id="U0000000006" name="test1" path="威尔软件/客服中心/test1" sex="0" job="test1" />
+		</unit>
+		<unit type="1" isLeaf="0" id="D0000000003" name="研发中心" path="威尔软件/研发中心">
+			<unit type="2" isLeaf="1" id="U0000000001" name="oa_dev" path="威尔软件/研发中心/oa_dev" sex="1" job="oa_dev" />
+		</unit>
+		<unit type="1" isLeaf="1" id="D0000000004" name="运营中心" path="威尔软件/运营中心">
+			<unit type="2" isLeaf="1" id="U0000000004" name="test2" path="威尔软件/运营中心/test2" sex="0" job="test2" />
+		</unit>
+		<unit type="1" isLeaf="1" id="D0000000005" name="营销中心" path="威尔软件/营销中心">
+			<unit type="2" isLeaf="1" id="U0000000009" name="oa_demo3" path="威尔软件/营销中心/oa_demo3" sex="1" job="oa_demo3" />
+			<unit type="2" isLeaf="1" id="U0000000010" name="oa_demo4" path="威尔软件/营销中心/oa_demo4" sex="1" job="oa_demo4" />
+			<unit type="2" isLeaf="1" id="U0000000011" name="oa_demo5" path="威尔软件/营销中心/oa_demo5" sex="1" job="oa_demo5" />
+		</unit>
+	</unit>
+</units>

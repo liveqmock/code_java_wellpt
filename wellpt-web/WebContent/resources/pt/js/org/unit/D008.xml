@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<units>
+	<unit type="1" isLeaf="0" id="D008" name="营销中心" path="威尔软件/营销中心">
+		<unit type="1" isLeaf="0" id="D009" name="直销部" path="威尔软件/营销中心/直销部"/>
+		<unit type="1" isLeaf="0" id="D010" name="渠道部" path="威尔软件/营销中心/渠道部"/>
+	</unit>
+</units>

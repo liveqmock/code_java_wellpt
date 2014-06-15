@@ -1,0 +1,955 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20130114" releaseVersion="7.0.3">
+<TableDataMap>
+<TableData name="ds1" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT * FROM [sai-guiliao]A where action in ('待审核','部门通过')]]></Query>
+</TableData>
+<TableData name="ds2" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT * FROM [sai-guiliao]A where action2 in ('待审核','部门通过')]]></Query>
+</TableData>
+</TableDataMap>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[2743200,4381500,2743200,2743200,2743200,3429000,3695700,2743200,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0">
+<O>
+<![CDATA[]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="1" cs="3" rs="2" s="0">
+<O>
+<![CDATA[ 201205全集团硅料清库存销售计划执行进度表]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="4" r="2">
+<Expand/>
+</C>
+<C c="5" r="2" s="1">
+<O>
+<![CDATA[可销售量状态]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="6" r="2" s="1">
+<O>
+<![CDATA[销售状态]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() != "sliaoluru"]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() != "sliaobuzhang"]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ColWidthHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="1" r="3" s="2">
+<O>
+<![CDATA[]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="3" s="1">
+<O>
+<![CDATA[汇总]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="3" s="1">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=["2012-05-01","2012-05-02","2012-05-03","2012-05-04"]A]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand dir="1"/>
+</C>
+<C c="4" r="3">
+<Expand/>
+</C>
+<C c="5" r="3" s="3">
+<O t="DSColumn">
+<Attributes dsName="ds2" columnName="action2"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[len($$$) = 0]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ValueHighlightAction">
+<O>
+<![CDATA[未运行]]></O>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="0"/>
+</C>
+<C c="6" r="3" s="3">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="action"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[len($$$) = 0]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ValueHighlightAction">
+<O>
+<![CDATA[未开始]]></O>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="0"/>
+</C>
+<C c="1" r="4" s="3">
+<O>
+<![CDATA[可销售量（T）]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="4" s="4">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=sum(D5)]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="4" s="3">
+<O t="DSColumn">
+<Attributes dsName="ds2" columnName="ensale"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[1]]></CNUMBER>
+<CNAME>
+<![CDATA[datet]]></CNAME>
+<Compare op="0">
+<ColumnRow column="3" row="3"/>
+</Compare>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() != "zonghe"]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[F4 != "部门通过"]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.NumberEditor">
+<WidgetAttr/>
+<NumberAttr>
+<widgetValue/>
+</NumberAttr>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="1"/>
+</C>
+<C c="4" r="4">
+<Expand/>
+</C>
+<C c="0" r="5">
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() = "liaobuzhang"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="1" r="5" s="5">
+<O>
+<![CDATA[可销售明细]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="5" s="4">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="5" s="2">
+<Expand/>
+</C>
+<C c="4" r="5">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="0" r="6">
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() = "liaobuzhang"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="1" r="6" s="3">
+<O>
+<![CDATA[销售计划量（T）]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="6" s="4">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=sum(D7)]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="6" s="3">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="plsale"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[1]]></CNUMBER>
+<CNAME>
+<![CDATA[datet]]></CNAME>
+<Compare op="0">
+<SimpleDSColumn dsName="ds2" columnName="datet"/>
+</Compare>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() = "sliaobuzhang"]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[G4 != "部门通过"]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.NumberEditor">
+<WidgetAttr/>
+<NumberAttr>
+<widgetValue/>
+</NumberAttr>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="1"/>
+</C>
+<C c="4" r="6">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="0" r="7">
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() = "liaobuzhang"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="1" r="7" s="3">
+<O>
+<![CDATA[实际销售量（T）]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="7" s="4">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=sum(D8)]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="7" s="3">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="trsale"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() = "sliaobuzhang"]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[G4 != "部门通过"]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.NumberEditor">
+<WidgetAttr/>
+<NumberAttr>
+<widgetValue/>
+</NumberAttr>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="1"/>
+</C>
+<C c="4" r="7">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="0" r="8">
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() = "liaobuzhang"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="1" r="8" s="3">
+<O>
+<![CDATA[销售合同额（￥）]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="8" s="4">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=sum(D9)]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="8" s="3">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="samoney"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() = "sliaobuzhang"]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[G4 != "部门通过"]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.NumberEditor">
+<WidgetAttr/>
+<NumberAttr>
+<widgetValue/>
+</NumberAttr>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="1"/>
+</C>
+<C c="4" r="8">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="0" r="9">
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() = "liaobuzhang"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="1" r="9" s="3">
+<O>
+<![CDATA[实际回款额（￥）]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="9" s="4">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=sum(D10)]]></Attributes>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="9" s="3">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="bamoney"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() = "sliaobuzhang"]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[G4 != "部门通过"]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.NumberEditor">
+<WidgetAttr/>
+<NumberAttr>
+<widgetValue/>
+</NumberAttr>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="1"/>
+</C>
+<C c="4" r="9">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="0" r="10">
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() = "liaobuzhang"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="1" r="10" s="4">
+<O>
+<![CDATA[备注]]></O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="10" s="3">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="3" r="10" s="3">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="notes"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() = "schibuzhang"]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[G4 != "部门通过"]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr/>
+<TextAttr/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="1"/>
+</C>
+<C c="4" r="10">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="2" r="11">
+<Expand/>
+</C>
+<C c="4" r="11">
+<Expand/>
+</C>
+<C c="0" r="12">
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() != "liaobuzhang"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="2" r="12">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Widget class="com.fr.form.ui.FreeButton">
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="FRDemo"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="sai-guiliao"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="3" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="ensale" isKey="false" skipUnmodified="true">
+<ColumnRow column="3" row="4"/>
+</ColumnConfig>
+<ColumnConfig name="action2" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[部门通过]]></O>
+</ColumnConfig>
+</DMLConfig>
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[self.location.reload();]]></Content>
+</JavaScript>
+</JavaScript>
+</Listener>
+<WidgetAttr/>
+<Text>
+<![CDATA[通过]]></Text>
+</Widget>
+<Expand/>
+</C>
+<C c="3" r="12">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Widget class="com.fr.form.ui.FreeButton">
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="FRDemo"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="sai-guiliao"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="3" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="ensale" isKey="false" skipUnmodified="true">
+<ColumnRow column="3" row="4"/>
+</ColumnConfig>
+<ColumnConfig name="action2" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[退回]]></O>
+</ColumnConfig>
+</DMLConfig>
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[self.location.reload();]]></Content>
+</JavaScript>
+</JavaScript>
+</Listener>
+<WidgetAttr/>
+<Text>
+<![CDATA[退回]]></Text>
+</Widget>
+<Expand extendable="1" upParentDefault="false"/>
+</C>
+<C c="4" r="12">
+<Expand/>
+</C>
+<C c="0" r="13">
+<CellGUIAttr/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[条件属性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[gauthority() != "sliaobuzhang"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="2" r="13">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Widget class="com.fr.form.ui.FreeButton">
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="FRDemo"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="sai-guiliao"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="3" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="plsale" isKey="false" skipUnmodified="true">
+<ColumnRow column="3" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="trsale" isKey="false" skipUnmodified="true">
+<ColumnRow column="3" row="7"/>
+</ColumnConfig>
+<ColumnConfig name="samoney" isKey="false" skipUnmodified="true">
+<ColumnRow column="3" row="8"/>
+</ColumnConfig>
+<ColumnConfig name="bamoney" isKey="false" skipUnmodified="true">
+<ColumnRow column="3" row="9"/>
+</ColumnConfig>
+<ColumnConfig name="notes" isKey="false" skipUnmodified="true">
+<ColumnRow column="3" row="10"/>
+</ColumnConfig>
+<ColumnConfig name="action" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[部门通过]]></O>
+</ColumnConfig>
+</DMLConfig>
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[self.location.reload();]]></Content>
+</JavaScript>
+</JavaScript>
+</Listener>
+<WidgetAttr/>
+<Text>
+<![CDATA[通过]]></Text>
+</Widget>
+<Expand/>
+</C>
+<C c="3" r="13">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Widget class="com.fr.form.ui.FreeButton">
+<Listener event="click">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="FRDemo"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="sai-guiliao"/>
+<ColumnConfig name="datet" isKey="true" skipUnmodified="true">
+<ColumnRow column="3" row="3"/>
+</ColumnConfig>
+<ColumnConfig name="plsale" isKey="false" skipUnmodified="true">
+<ColumnRow column="3" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="trsale" isKey="false" skipUnmodified="true">
+<ColumnRow column="3" row="7"/>
+</ColumnConfig>
+<ColumnConfig name="samoney" isKey="false" skipUnmodified="true">
+<ColumnRow column="3" row="8"/>
+</ColumnConfig>
+<ColumnConfig name="bamoney" isKey="false" skipUnmodified="true">
+<ColumnRow column="3" row="9"/>
+</ColumnConfig>
+<ColumnConfig name="notes" isKey="false" skipUnmodified="true">
+<ColumnRow column="3" row="10"/>
+</ColumnConfig>
+<ColumnConfig name="action" isKey="false" skipUnmodified="true">
+<O>
+<![CDATA[退回]]></O>
+</ColumnConfig>
+</DMLConfig>
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[self.location.reload();]]></Content>
+</JavaScript>
+</JavaScript>
+</Listener>
+<WidgetAttr/>
+<Text>
+<![CDATA[退回]]></Text>
+</Widget>
+<Expand extendable="1" upParentDefault="false"/>
+</C>
+<C c="4" r="13">
+<CellGUIAttr/>
+<CellPageAttr/>
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting/>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+</ReportParameterAttr>
+<StyleList>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="80" foreground="-13408513"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-16724737"/>
+<Bottom style="1" color="-16724737"/>
+<Left style="1" color="-16724737"/>
+<Right style="1" color="-16724737"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="ColorBackground" color="-1577999"/>
+<Border>
+<Top style="1" color="-16724737"/>
+<Bottom style="1" color="-16724737"/>
+<Left style="1" color="-16724737"/>
+<Right style="1" color="-16724737"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-16724737"/>
+<Bottom style="1" color="-16724737"/>
+<Left style="1" color="-16724737"/>
+<Right style="1" color="-16724737"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-16724737"/>
+<Bottom style="1" color="-16724737"/>
+<Left style="1" color="-16724737"/>
+<Right style="1" color="-16724737"/>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-16724737"/>
+<Bottom style="1" color="-16724737"/>
+<Left style="1" color="-16724737"/>
+<Right style="1" color="-16724737"/>
+</Border>
+</Style>
+<Style horizontal_alignment="4" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-16724737"/>
+<Bottom style="1" color="-16724737"/>
+<Left style="1" color="-16724737"/>
+<Right style="1" color="-16724737"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAD"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

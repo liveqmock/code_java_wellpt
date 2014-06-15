@@ -1,0 +1,167 @@
+ 
+<div id="fileupload4iconAttrCfgDiv" title='属性设置'>
+	<div> 
+		<div class="dyform">
+			<div class="post-sign">
+				<div class="post-detail">
+		<table>
+			<tr class="odd">
+				<td class="Label">字段编码</td>
+				<td class="value"><input type="text"
+					name="name" id="name" value="" class="w100"/>  
+			</tr>
+			<!--3 -->
+			<tr class="odd">
+				<td class="Label">显示名称</td>
+				<td class="value"><input type="text" class="w100" name="displayName"
+					id="displayName" value="" /></td>
+			</tr>
+		
+			<!--1 -->
+			<tr class="odd">
+				<td class="Label">应用于</td>
+				<td class="value"><input type="text" class="w100" name="applyTo"
+					id="applyTo" value="" /> </td>
+			</tr>
+			
+			<tr class="odd" >
+				<td class="Label">操作权限设置</td>
+				<td class="value">
+					<input type="checkbox" name="oppower" id="oppower_1" value="1"  onclick='checkUpload(this)'/><label for="oppower_1">上传</label>  
+					<input type="checkbox" name="oppower" id="oppower_2" value="2"/><label for="oppower_2">下载</label>
+					<input type="checkbox" name="oppower" id="oppower_3" value="3" disabled="disabled"/><label for="oppower_3">删除</label>
+					</td>
+			</tr> 
+			
+		</table>
+			
+	</div>
+	</div>
+		</div>
+		</div>
+</div>
+<script type="text/javascript">
+function checkUpload(_this){
+	if(_this.checked){
+		  $("#oppower_3").each(function(){
+			  this.checked=true;
+		  });
+	}else{
+		  $("#oppower_3").each(function(){
+			  this.checked=false;
+		  });
+	}
+}
+
+var fileupload4iconctl = {};
+
+/**
+ * 初始化属性窗口
+ */
+ fileupload4iconctl.initPropertyDialog = function (editor){
+	 $(".cke_reset_all").removeClass("cke_reset_all");//删除ckeditor内部的局css
+	this.editor = editor;
+	loadCommonJsFile();//加载自定义的ckeditor公共js 
+	var focusedDom = editor.focusedDom;//当前editor被双击的对象(CKEDITOR.dom.node类) 
+	var field = null;
+	if(focusedDom != null && (typeof focusedDom) != "undefined"){
+		var fieldName = $(focusedDom).attr("name");
+		field = formDefinition.fields[fieldName];//表单中从表的信息 
+	}
+	this.initProperty(field);
+};
+
+fileupload4iconctl.initProperty = function(field){
+	if(field == null ||  (typeof field) == "undefined"){
+		field = new MainFormFieldClass();
+		field.valueCreateMethod = "1";
+		field.fileUploadConfig = '{allowUpload:true,allowDownload:true,allowDelete:true,mutiselect:true}';
+	}else{
+	}
+	//公共属性
+	$.ControlConfigUtil.ctlPropertyComInitSet(field);
+	//私有属性设置
+	var fileUploadConfig={};
+	if(field.fileUploadConfig!=''&&field.fileUploadConfig!=undefined){
+		 fileUploadConfig=eval('('+field.fileUploadConfig+')');
+		
+		 var allowUpload=fileUploadConfig.allowUpload;
+		 var allowDownload=fileUploadConfig.allowDownload;
+		 var allowDelete=fileUploadConfig.allowDelete;
+		 if(allowUpload){
+			 $("input[name='oppower'][value='1']").attr("checked",true);
+		 };
+		 if(allowDownload){
+			 $("input[name='oppower'][value='2']").attr("checked",true);
+		 };
+		 if(allowDelete){
+			 $("input[name='oppower'][value='3']").attr("checked",true);
+		 };
+	};
+}
+
+
+fileupload4iconctl.exitDialog = function(){
+	this.editor.focusedDom = null;
+}
+
+fileupload4iconctl.collectFormAndFillCkeditor = function(){ 
+	var field = new MainFormFieldClass();
+
+	//控件公共属性收集
+	var checkpass=$.ControlConfigUtil.collectFormCtlComProperty(field);
+	if(!checkpass){
+		return false;
+	}
+	//特殊属性收集
+	field.inputMode =  dyFormInputMode.accessory1;
+	field.fieldCheckRules.push({value:field.contentFormat, label:$("#contentFormat").find("option:selected").text()});
+	 var fileUploadConfig={
+			  allowUpload:true,
+		      allowDownload:true,
+		      allowDelete:true,
+		      mutiselect:true
+	 };
+		$("input[name='oppower']:checked").each(function(){
+			if(this.checked){
+				if($(this).val()=='1'){
+					fileUploadConfig.allowUpload=true;
+				}else if($(this).val()=='2'){
+					fileUploadConfig.allowDownload=true;
+				}else if($(this).val()=='3'){
+					fileUploadConfig.allowDelete=true;
+				}
+			}
+		});
+		
+		$("input[name='oppower']:not(:checked)").each(function(){
+				if($(this).val()=='1'){
+					fileUploadConfig.allowUpload=false;
+				}else if($(this).val()=='2'){
+					fileUploadConfig.allowDownload=false;
+				}else if($(this).val()=='3'){
+					fileUploadConfig.allowDelete=false;
+				}
+		});
+		
+		
+		field.fileUploadConfig=JSON.stringify(fileUploadConfig);
+	
+	var ctlHtml = "<img  class='value' name='" + field.name + "' title='" + field.displayName +"' src='" + this.editor.imageOfFileUpload4Iconctl + "'/>";
+	$(this.editor.fieldClazzElement).attr("class", "field");
+	var element = CKEDITOR.dom.element.createFromHtml( ctlHtml );
+	if(this.editor.focusedDom != null){
+		element.insertBefore(this.editor.focusedDom);
+		this.editor.focusedDom.remove(); 
+	}else{
+		this.editor.insertElement( element );
+	}
+	formDefinition.fields[field.name] = field; 
+	
+	return true;
+}
+
+
+
+
+</script>

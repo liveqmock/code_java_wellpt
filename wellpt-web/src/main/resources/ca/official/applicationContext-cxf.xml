@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:cxf="http://cxf.apache.org/core" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd"
+	default-lazy-init="true">
+
+	<!-- Load CXF modules from cxf.jar -->
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+
+	<bean id="serverPasswordCallback" class="com.wellsoft.pt.integration.security.ServerPasswordCallback" />
+
+	<!-- 商事管理服务端 -->
+	<jaxws:endpoint id="dataExchangebService" implementor="com.wellsoft.pt.integration.facade.impl.DataExchangeWebServiceImpl"
+		address="/data/exchange">
+		<jaxws:inInterceptors>
+			<bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+				<constructor-arg>
+					<map>
+						<entry key="action" value="Signature Encrypt" />
+						<entry key="signaturePropFile" value="ca/serverStore-SSGL.properties" />
+						<entry key="decryptionPropFile" value="ca/serverStore-SSGL.properties" />
+						<entry key="passwordCallbackRef">
+							<ref bean="serverPasswordCallback" />
+						</entry>
+					</map>
+				</constructor-arg>
+			</bean>
+<!-- 			<bean class="com.wellsoft.pt.integration.interceptor.X509AuthenticatingInInterceptor"></bean> -->
+<!-- 			<bean class="org.apache.cxf.interceptor.LoggingInInterceptor"></bean> -->
+		</jaxws:inInterceptors>
+		<jaxws:outInterceptors>
+			<bean class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+				<constructor-arg>
+					<map>
+						<entry key="action" value="Signature Encrypt" />
+						<entry key="user" value="c60252744a363043639081d54f91b046_1742c750-2961-42d4-867b-03f35301fa8a" />
+						<entry key="signatureUser" value="c60252744a363043639081d54f91b046_1742c750-2961-42d4-867b-03f35301fa8a" />
+						<entry key="signaturePropFile" value="ca/serverStore-SSGL.properties" />
+						<entry key="encryptionUser" value="useReqSigCert"></entry>
+						<entry key="encryptionPropFile" value="ca/serverStore-SSGL.properties" />
+						<entry key="passwordCallbackRef">
+							<ref bean="serverPasswordCallback" />
+						</entry>
+					</map>
+				</constructor-arg>
+				<property name="allowMTOM" value="true"></property>
+			</bean>
+<!-- 			<bean class="org.apache.cxf.interceptor.LoggingOutInterceptor"></bean> -->
+		</jaxws:outInterceptors>
+		<jaxws:properties>
+			<entry key="mtom-enabled" value="true" />
+			<entry key="attachment-memory-threshold" value="4048000" />
+			<entry key="attachment-directory" value="~temp" />
+			<entry key="org.apache.cxf.io.CachedOutputStream.Threshold" value="4048000" />
+			<entry key="org.apache.cxf.io.CachedOutputStream.OutputDirectory" value="~cached_temp" />
+		</jaxws:properties>
+	</jaxws:endpoint>
+
+	<bean id="clientPasswordCallback" class="com.wellsoft.pt.integration.security.ClientPasswordCallback" />
+
+	<!-- 企业登记客户端 -->
+	<jaxws:endpoint id="qydjClientWebService" implementor="com.wellsoft.pt.integration.facade.impl.DataExchangeClientWebServiceImpl"
+		address="/data/exchange/client/qydj">
+		<jaxws:inInterceptors>
+			<bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+				<constructor-arg>
+					<map>
+						<entry key="action" value="Signature Encrypt" />
+						<entry key="signaturePropFile" value="ca/clientStore-QYDJ.properties" />
+						<entry key="decryptionPropFile" value="ca/clientStore-QYDJ.properties" />
+						<entry key="passwordCallbackRef">
+							<ref bean="clientPasswordCallback" />
+						</entry>
+					</map>
+				</constructor-arg>
+			</bean>
+		</jaxws:inInterceptors>
+		<jaxws:outInterceptors>
+			<bean class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+				<constructor-arg>
+					<map>
+						<entry key="action" value="Signature Encrypt" />
+						<entry key="user" value="63039bbc6650f9dcee84e5e5e281e35e_4b3040ee-d911-4941-865d-9e84083c565f" />
+						<entry key="signatureUser" value="63039bbc6650f9dcee84e5e5e281e35e_4b3040ee-d911-4941-865d-9e84083c565f" />
+						<entry key="signaturePropFile" value="ca/clientStore-QYDJ.properties" />
+						<entry key="encryptionUser" value="useReqSigCert"></entry>
+						<entry key="encryptionPropFile" value="ca/clientStore-QYDJ.properties" />
+						<entry key="passwordCallbackRef">
+							<ref bean="clientPasswordCallback" />
+						</entry>
+					</map>
+				</constructor-arg>
+				<property name="allowMTOM" value="true"></property>
+			</bean>
+		</jaxws:outInterceptors>
+		<jaxws:properties>
+			<entry key="mtom-enabled" value="true" />
+			<entry key="attachment-memory-threshold" value="4048000" />
+			<entry key="attachment-directory" value="~temp" />
+			<entry key="org.apache.cxf.io.CachedOutputStream.Threshold" value="4048000" />
+			<entry key="org.apache.cxf.io.CachedOutputStream.OutputDirectory" value="~cached_temp" />
+		</jaxws:properties>
+	</jaxws:endpoint>
+
+	<!-- 网上审批客户端 -->
+	<jaxws:endpoint id="wsspClientWebService" implementor="com.wellsoft.pt.integration.facade.impl.DataExchangeClientWebServiceImpl"
+		address="/data/exchange/client/wssp">
+		<jaxws:inInterceptors>
+			<bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+				<constructor-arg>
+					<map>
+						<entry key="action" value="Signature Encrypt" />
+						<entry key="signaturePropFile" value="ca/clientStore-WSSP.properties" />
+						<entry key="decryptionPropFile" value="ca/clientStore-WSSP.properties" />
+						<entry key="passwordCallbackRef">
+							<ref bean="clientPasswordCallback" />
+						</entry>
+					</map>
+				</constructor-arg>
+			</bean>
+		</jaxws:inInterceptors>
+		<jaxws:outInterceptors>
+			<bean class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+				<constructor-arg>
+					<map>
+						<entry key="action" value="Signature Encrypt" />
+						<entry key="user" value="02682a3cfcf30c65f4e8c3d569befeeb_1742c750-2961-42d4-867b-03f35301fa8a" />
+						<entry key="signatureUser" value="02682a3cfcf30c65f4e8c3d569befeeb_1742c750-2961-42d4-867b-03f35301fa8a" />
+						<entry key="signaturePropFile" value="ca/clientStore-WSSP.properties" />
+						<entry key="encryptionUser" value="useReqSigCert"></entry>
+						<entry key="encryptionPropFile" value="ca/clientStore-WSSP.properties" />
+						<entry key="passwordCallbackRef">
+							<ref bean="clientPasswordCallback" />
+						</entry>
+					</map>
+				</constructor-arg>
+				<property name="allowMTOM" value="true"></property>
+			</bean>
+		</jaxws:outInterceptors>
+		<jaxws:properties>
+			<entry key="mtom-enabled" value="true" />
+			<entry key="attachment-memory-threshold" value="4048000" />
+			<entry key="attachment-directory" value="~temp" />
+			<entry key="org.apache.cxf.io.CachedOutputStream.Threshold" value="4048000" />
+			<entry key="org.apache.cxf.io.CachedOutputStream.OutputDirectory" value="~cached_temp" />
+		</jaxws:properties>
+	</jaxws:endpoint>
+
+	<!-- 商事主体附件同步 -->
+	<!-- <bean id="selfPublicityAsyncService" class="com.wellsoft.pt.bm.service.impl.SelfPublicityAsyncServiceImpl"></bean> -->
+
+	<!-- <jaxws:endpoint id="selfPublicityAsyncWebService" address="/self/publicity/async"> -->
+	<!-- <jaxws:implementor> -->
+	<!-- <bean class="com.wellsoft.pt.bm.facade.impl.SelfPublicityAsyncWebServiceImpl"> -->
+	<!-- <property name="selfPublicityAsyncService" ref="selfPublicityAsyncService"></property> -->
+	<!-- </bean> -->
+	<!-- </jaxws:implementor> -->
+	<!-- <jaxws:inInterceptors> -->
+	<!-- <bean class="com.wellsoft.pt.integration.interceptor.AuthenticatingInInterceptor"></bean> -->
+	<!-- <bean class="org.apache.cxf.interceptor.LoggingInInterceptor"></bean> -->
+	<!-- </jaxws:inInterceptors> -->
+	<!-- <jaxws:outInterceptors> -->
+	<!-- <bean class="org.apache.cxf.interceptor.LoggingOutInterceptor"></bean> -->
+	<!-- </jaxws:outInterceptors> -->
+	<!-- </jaxws:endpoint> -->
+
+</beans>

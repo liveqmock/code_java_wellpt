@@ -1,0 +1,106 @@
+.upload_div {
+	background: none repeat scroll 0 0 transparent;
+    height: 25px;
+    padding-top: 5px;
+}
+
+
+#upload_div .fileupload_css {
+    cursor: pointer;
+    height: 20px;
+    left: 9px;
+    margin-left: -19px;
+    opacity: 0;
+    position: absolute;
+    width: 60px;
+    filter:alpha(opacity=0);
+}
+
+.upload_div span {
+	color:black;
+	color:#4B9AD2;
+}
+
+.files_div {
+	clear: both;
+	width: 100%;
+	background: none repeat scroll 0 0 #DDDDDD;
+	text-indent: 10px;
+	text-decoration: none;
+}
+
+.progress-div {
+	 float: left;
+    height: 10px;
+    margin: 10px 0 0 10px;
+    width: 10%;
+}
+.files_div p {
+	float: left;
+	font-size: 12px;
+	margin: 4px 0 0 -8px;
+	cursor: pointer;
+	text-decoration: none;
+	color: #4B9AD2;
+}
+
+#files .delete_input, .files .delete_input {
+	cursor: pointer;
+	border: 1px none;
+	width: 42px;
+	font-size: 12px;
+	margin-left: 0px;
+	background: none repeat scroll 0 0 transparent;
+	color: #4B9AD2;
+	margin-top: 6px;
+}
+
+#progress .bar-div {
+	background: none repeat scroll 0 0 #87B5E7;
+	height: 11px;
+}
+
+
+.btn.btn-success{
+	background: none;
+    border: medium none;
+    box-shadow: none;
+    padding: 0px 5px;
+	font-size: 12px;
+	border-radius: 0 0 0 0;
+	color: #4B9AD2;
+    text-shadow: 0 0 0;
+    position: relative;
+}
+.btn.btn-success.fileinput-button2:hover{
+ 	color: #ff7200;
+    text-decoration: none;
+}
+
+
+
+#files .delete_input:hover{
+	color:#FF7200;	
+}
+
+#upload_div .file_icon {
+	background:url("../theme/images/v1_icon4.png") no-repeat scroll -63px 4px transparent;
+	width:10px;
+	height:20px;
+	display: block;
+    float: left;
+}
+
+#files .file_icon {
+	background:url("../theme/images/v1_icon4.png") no-repeat scroll -63px 4px transparent;
+	width:10px;
+	height:20px;
+	display: block;
+    float: left;
+    margin-top: 5px;
+}
+
+#upload_div .add_icon {
+	margin-left: -7px;
+	cursor: pointer;
+}

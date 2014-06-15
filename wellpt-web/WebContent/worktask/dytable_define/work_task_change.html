@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>任务转办</title>
+
+<!-- <script type="text/javascript" src="../../resources/easyui/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="../../resources/easyui/jquery.easyui.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../resources/easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="../../resources/easyui/themes/icon.css"> -->
+</head>
+
+<body>
+	<!-- 表类型(tableType):1主表,2从表 -->
+	<table width="100%" border="1" tableType="1" tableEnName="main_table"
+		tableCnName="主表" editType="1">
+		 
+		<tr>
+			<td width="20%" class="label">起草人</td>
+			<td width="30%">{当前登录人}</td>
+			<td width="20%" class="label">起草时间</td>
+			<td width="30%">{当前时间}</td>
+		</tr>
+		<tr>
+			<td class="label">岗位</td>
+			<td colspan="3"><input name="post" id="post" type="text"
+				value=""></td>
+			 
+		</tr>
+	</table>
+	<br>
+	<!-- 从表单设计放置位置,th标签中的width属性根据实际进行修改,表类型(tableType):1主表,2从表 ,从表展现方式(editType)：1(所有字段都展现出来),2(列表只展现部分字段)-->
+	<table width="100%" border="1" tableType="2" editType="1" id="001">
+		<tr>
+			<th width="10%" class="label">任务名称</th>
+			<th width="10%" class="label">任务类型</th> 
+			<th width="10%" class="label">目标与要求</th>
+			<th width="10%" class="label">计划开始时间</th>
+			<th width="10%" class="label">计划完成时间</th>
+			<th width="10%" class="label">预估工作量（天）</th>
+			<th width="10%" class="label">转办说明</th>
+			<th width="10%" class="label">督办人</th>
+			<th width="10%" class="label">共享者</th>
+			<th width="10%" class="label">责任人</th>
+		</tr>
+	</table>
+</body>
+</html>

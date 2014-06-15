@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20131111" releaseVersion="7.0.5">
+<TableDataMap>
+<TableData name="GSSCZT" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 工商上传商事主体数量
+  from XZSP_TEST9.IS_EXCHANGE_DATA d,XZSP_TEST9.IS_EXCHANGE_DATA_BATCH b
+ where d.batch_id = b.uuid
+   and b.from_id = '004140203'
+   and b.type_id = '004140203SZ'
+   and d.reserved_number2 is not null
+    ${if(len(日期) == 0,"and d.create_time <to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd')","and d.create_time <to_date( '" + 日期 + "', 'yyyyMMdd')")}
+ order by b.create_time desc]]></Query>
+</TableData>
+<TableData name="HZXKSX" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[  select count(*) as 后置许可事项数量
+  from(select count(*) 
+  from XZSP_TEST9.USERFORM_SSXX_XGXK x
+  where dwmc is not null
+  ${if(len(日期) == 0,"and x.create_time <to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd')","and x.create_time <to_date( '" + 日期 + "', 'yyyyMMdd')")}
+  group by x.XKJYXMMC)]]></Query>
+</TableData>
+<TableData name="HZXKSXQY" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 后置许可事项企业数量
+  from XZSP_TEST9.IS_EXCHANGE_DATA d, XZSP_TEST9.IS_EXCHANGE_DATA_BATCH b
+ where d.batch_id = b.uuid
+   and b.type_id = '004140203SZ'
+   and b.from_id = '004140203'
+   and d.newest_data = 'yes'
+   ${if(len(日期) == 0,"and d.create_time <to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd')","and d.create_time <to_date( '" + 日期 + "', 'yyyyMMdd')")}
+ order by b.create_time desc]]></Query>
+</TableData>
+</TableDataMap>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[5715000,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[24688800,0,0,0,2743200,2743200,2743200,2743200,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" s="0">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=CONCATENATE("截至", format($日期, "yyyy年MM月dd号"), "市工商局上传商事主体信息数据", "<font color=red>", B1, "</font>", "笔，涉及后置许可事项", "<font color=red>", C1, "</font>", "项，", "<font color=red>", D1, "</font>", "家企业")]]></Attributes>
+</O>
+<CellGUIAttr showAsHTML="true"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="1" r="0">
+<O t="DSColumn">
+<Attributes dsName="GSSCZT" columnName="工商上传商事主体数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="2" r="0">
+<O t="DSColumn">
+<Attributes dsName="HZXKSX" columnName="后置许可事项数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="0">
+<O t="DSColumn">
+<Attributes dsName="HZXKSXQY" columnName="后置许可事项企业数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting/>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="false" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+<ParameterUI class="com.fr.form.main.parameter.FormParameterUI">
+<Layout class="com.fr.form.ui.container.WAbsoluteLayout">
+<WidgetName name="para"/>
+<WidgetAttr/>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.parameter.FormSubmitButton">
+<WidgetName name="Search"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[查询]]></Text>
+<Hotkeys>
+<![CDATA[enter]]></Hotkeys>
+</InnerWidget>
+<BoundsAttr x="294" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="50" y="25" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="日期"/>
+<WidgetAttr/>
+<DateAttr format="yyyyMMdd"/>
+<widgetValue>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=TODAY()]]></Attributes>
+</O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="130" y="25" width="149" height="21"/>
+</Widget>
+<LCAttr vgap="0" hgap="0"/>
+</Layout>
+<DesignAttr width="1000" height="61"/>
+</ParameterUI>
+<Parameter>
+<Attributes name="日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</ReportParameterAttr>
+<StyleList>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAF"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- 同一级子节点要保证按对应数据的编号排序 -->
+<units>
+	<unit type="2" isLeaf="1" id="U001" name="用户A" path="威尔软件/研发中心/开发部/用户A" sex="1" job="开发经理(主岗)" title="威尔软件/研发中心/开发部/用户A(开发经理);威尔软件/技术中心/实施部/用户A(经理)"/>
+	<unit type="2" isLeaf="1" id="U002" name="用户B" path="威尔软件/研发中心/开发部/用户B" sex="2" job="开发工程师"/>
+	<unit type="2" isLeaf="1" id="U003" name="用户C" path="威尔软件/研发中心/开发部/用户C" sex="3" job="开发工程师"/>
+	<unit type="2" isLeaf="1" id="U004" name="用户D" path="威尔软件/研发中心/开发部/用户D" sex="0" job="开发工程师"/>
+	<unit type="2" isLeaf="1" id="U005" name="用户E" path="威尔软件/研发中心/开发部/用户E" sex="1" job="开发工程师"/>
+	<unit type="2" isLeaf="1" id="U105" name="陈户E" path="威尔软件/研发中心/开发部/陈户E" sex="1" job="开发工程师"/>
+	<unit type="2" isLeaf="1" id="U205" name="李户E" path="威尔软件/研发中心/开发部/李户E" sex="1" job="开发工程师"/>
+	<unit type="2" isLeaf="1" id="U305" name="测户E" path="威尔软件/研发中心/开发部/测户E" sex="1" job="开发工程师"/>
+	<unit type="2" isLeaf="1" id="U405" name="物户E" path="威尔软件/研发中心/开发部/物户E" sex="1" job="开发工程师"/>
+	<unit type="2" isLeaf="1" id="U505" name="王户E" path="威尔软件/研发中心/开发部/王户E" sex="1" job="开发工程师"/>
+	<unit type="2" isLeaf="1" id="U605" name="赵户E" path="威尔软件/研发中心/开发部/赵户E" sex="1" job="开发工程师"/>
+	<unit type="2" isLeaf="1" id="U705" name="沈户E" path="威尔软件/研发中心/开发部/沈户E" sex="1" job="开发工程师"/>
+	<unit type="2" isLeaf="1" id="U805" name="刘户E" path="威尔软件/研发中心/开发部/刘户E" sex="1" job="开发工程师"/>
+</units>

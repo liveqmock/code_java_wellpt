@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20130114" releaseVersion="7.0.3">
+<TableDataMap>
+<TableData name="ds1" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT * FROM [订单]A]]></Query>
+</TableData>
+<TableData name="ds2" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT * FROM [客户]A]]></Query>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<WebPageContent>
+<ToolBars>
+<ToolBarManager>
+<Location>
+<Embed position="1"/>
+</Location>
+<ToolBar>
+<Widget class="com.fr.report.web.ui.impl.page.First">
+<WidgetName name="3b7022c0-d60b-4472-a3a9-86497b0dec8a"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-First')}]]></Text>
+<IconName>
+<![CDATA[first]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.page.Previous">
+<WidgetName name="1eb614f0-8a88-4d6e-ab75-c5e9ea1be292"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Previous')}]]></Text>
+<IconName>
+<![CDATA[previous]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.page.PageNavi">
+<WidgetName name="b4e66678-0f2a-4d65-885f-a312104a0cfb"/>
+<WidgetAttr/>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.page.Next">
+<WidgetName name="4cd8258f-ef20-428e-99f9-f49f001ec70a"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Next')}]]></Text>
+<IconName>
+<![CDATA[next]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.page.Last">
+<WidgetName name="8ce3c794-3f1f-4a4c-b54b-cf69c266a01c"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Last')}]]></Text>
+<IconName>
+<![CDATA[last]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.FlashPrint">
+<WidgetName name="4f7669e5-ad15-418e-8d80-f39393e41cf7"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Utils-Print[Client]A')}]]></Text>
+<IconName>
+<![CDATA[flashprint]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.Print">
+<WidgetName name="95691b11-d05f-4905-9cb4-2bd2e9b4b8aa"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Print')}]]></Text>
+<IconName>
+<![CDATA[print]]></IconName>
+<PrintButtons/>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.Export">
+<WidgetName name="a3a8264e-9511-48c3-a93d-e675fd6bfc2a"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Export')}]]></Text>
+<IconName>
+<![CDATA[export]]></IconName>
+<Buttons pdf="true" excelP="true" excelO="true" excelS="true" word="true" image="true" html="true"/>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.Email">
+<WidgetName name="3f7381b0-ebb0-41a1-9aeb-cdd4e14520ae"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Email')}]]></Text>
+<IconName>
+<![CDATA[email]]></IconName>
+</Widget>
+</ToolBar>
+</ToolBarManager>
+</ToolBars>
+<WebPage isPage="false" isShowAsImage="false" isAutoScale="false" isTDHeavy="false"/>
+</WebPageContent>
+<WebWriteContent>
+<ToolBars>
+<ToolBarManager>
+<Location>
+<Embed position="1"/>
+</Location>
+<ToolBar>
+<Widget class="com.fr.report.web.ui.impl.write.Submit">
+<WidgetName name="b8487a92-765e-4540-bfd4-1f9bfb4a5829"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Utils-Submit')}]]></Text>
+<IconName>
+<![CDATA[submit]]></IconName>
+<Verify failVerifySubmit="false"/>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.write.Verify">
+<WidgetName name="4f8f8da0-b163-48a8-850f-697dffa79758"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Verify-Data_Verify')}]]></Text>
+<IconName>
+<![CDATA[verify]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.FlashPrint">
+<WidgetName name="5669280f-2ef0-48f2-83f2-09ec75946b1c"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Utils-Print[Client]A')}]]></Text>
+<IconName>
+<![CDATA[flashprint]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.Print">
+<WidgetName name="4b5d1a7b-d1b3-47e2-ba84-849bcdfe62f6"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Print')}]]></Text>
+<IconName>
+<![CDATA[print]]></IconName>
+<PrintButtons/>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.Export">
+<WidgetName name="3834c684-c369-4475-982f-44df162811a3"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Export')}]]></Text>
+<IconName>
+<![CDATA[export]]></IconName>
+<Buttons pdf="true" excelP="true" excelO="true" excelS="true" word="true" image="true" html="true"/>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.Email">
+<WidgetName name="b2000a4a-5cab-407c-b73e-05cf484fc044"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Email')}]]></Text>
+<IconName>
+<![CDATA[email]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.write.AppendColumnRow">
+<WidgetName name="f0853fd5-c89a-45a4-8431-28fc0318429d"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Add')}${i18n('Record')}]]></Text>
+<IconName>
+<![CDATA[appendcolumn]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.write.ShowCellValue">
+<WidgetName name="215a603f-450f-43b2-a951-32caaf08092d"/>
+<WidgetAttr/>
+<LabelAttr textalign="0" autoline="false"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue/>
+</Widget>
+</ToolBar>
+</ToolBarManager>
+</ToolBars>
+<SelectedColor color="-10033153"/>
+</WebWriteContent>
+</ReportWebAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[1371600,1028700,914400,723900,723900,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[4533900,2781300,3314700,3924300,3581400,3352800,3505200,3390900,3048000,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" cs="9" s="0">
+<O>
+<![CDATA[客户订单信息]]></O>
+<Expand/>
+</C>
+<C c="0" r="1" s="1">
+<O>
+<![CDATA[客户名称]]></O>
+<Expand/>
+</C>
+<C c="1" r="1" s="1">
+<O>
+<![CDATA[订单ID]]></O>
+<Expand/>
+</C>
+<C c="2" r="1" s="1">
+<O>
+<![CDATA[雇员]]></O>
+<Expand/>
+</C>
+<C c="3" r="1" s="1">
+<O>
+<![CDATA[订购日期]]></O>
+<Expand/>
+</C>
+<C c="4" r="1" s="1">
+<O>
+<![CDATA[到货日期]]></O>
+<Expand/>
+</C>
+<C c="5" r="1" s="1">
+<O>
+<![CDATA[发货日期]]></O>
+<Expand/>
+</C>
+<C c="6" r="1" s="1">
+<O>
+<![CDATA[运货商]]></O>
+<Expand/>
+</C>
+<C c="7" r="1" s="1">
+<O>
+<![CDATA[运货费]]></O>
+<Expand/>
+</C>
+<C c="8" r="1" s="1">
+<O>
+<![CDATA[是否已付]]></O>
+<Expand/>
+</C>
+<C c="0" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds2" columnName="客户ID"/>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[1]]></CNUMBER>
+<CNAME>
+<![CDATA[客户ID]]></CNAME>
+<Compare op="12">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=$p1]]></Attributes>
+</O>
+</Compare>
+</Condition>
+</JoinCondition>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<CellGUIAttr adjustmode="2" showAsDefault="true"/>
+<CellPageAttr/>
+<Present class="com.fr.base.present.DictPresent">
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr ki="0" vi="1"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[ds2]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+</Present>
+<CellInsertPolicy/>
+<Expand dir="0"/>
+</C>
+<C c="1" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="订单ID"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[2]]></CNUMBER>
+<CNAME>
+<![CDATA[客户ID]]></CNAME>
+<Compare op="0">
+<ColumnRow column="0" row="2"/>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<Present class="com.fr.base.present.DictPresent">
+<Dictionary class="com.fr.data.impl.DatabaseDictionary">
+<FormulaDictAttr ki="1" vi="2"/>
+<DBDictAttr tableName="" schemaName="" ki="1" vi="2"/>
+<Connection class="com.fr.data.impl.JDBCDatabaseConnection">
+<DatabaseAttr/>
+<JDBCDatabaseAttr url="" driver="" user="" password="___" encryptPassword="true">
+<DBCPAttr/>
+</JDBCDatabaseAttr>
+</Connection>
+</Dictionary>
+</Present>
+<Expand dir="0"/>
+</C>
+<C c="2" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="雇员ID"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Present class="com.fr.base.present.DictPresent">
+<Dictionary class="com.fr.data.impl.DatabaseDictionary">
+<FormulaDictAttr ki="0" vi="1"/>
+<DBDictAttr tableName="雇员" schemaName="" ki="0" vi="1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+</Dictionary>
+</Present>
+<Expand dir="0"/>
+</C>
+<C c="3" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="订购日期"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="4" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="到货日期"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="5" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="发货日期"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="6" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="运货商"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Present class="com.fr.base.present.DictPresent">
+<Dictionary class="com.fr.data.impl.DatabaseDictionary">
+<FormulaDictAttr ki="0" vi="1"/>
+<DBDictAttr tableName="运货商" schemaName="" ki="0" vi="1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+</Dictionary>
+</Present>
+<Expand dir="0"/>
+</C>
+<C c="7" r="2" s="3">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="运货费"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="8" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="ds1" columnName="是否已付"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="37440000" height="42768000"/>
+<Margin top="986400" left="2743200" bottom="986400" right="2743200"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="false" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+<ParameterUI class="com.fr.main.parameter.UI.FormParameterUI">
+<Layout class="com.fr.form.ui.container.WAbsoluteLayout">
+<WidgetName name="para"/>
+<WidgetAttr/>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.TextEditor">
+<WidgetName name="p1"/>
+<WidgetAttr/>
+<TextAttr/>
+<widgetValue>
+<O>
+<![CDATA[ALFKI]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="40" y="25" width="183" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.FreeButton">
+<Listener event="click">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[window.form = this.options.form;
+
+var $iframe = $("<iframe id='inp' name='inp' width='100%' height='100%' scrolling='no' frameborder='0'>");
+
+$iframe.attr("src", "${servletURL}?reportlet=demo/parameter/son.cpt&op=write&__showtoolbar__=false");
+
+var o = {
+
+title : "客户信息选择",
+
+width : 800,
+
+height: 300
+
+};
+
+FR.showDialog(o.title, o.width, o.height, $iframe,o);]]></Content>
+</JavaScript>
+</Listener>
+<Listener event="afterinit">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[window.form = this.options.form;]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="button0"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[...]]></Text>
+</InnerWidget>
+<BoundsAttr x="223" y="25" width="24" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.report.web.ui.impl.form.FormSubmitButton">
+<WidgetName name="formSubmit0"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[查询]]></Text>
+<Hotkeys>
+<![CDATA[enter]]></Hotkeys>
+</InnerWidget>
+<BoundsAttr x="283" y="25" width="80" height="21"/>
+</Widget>
+<LCAttr vgap="0" hgap="0"/>
+</Layout>
+<DesignAttr width="800" height="65"/>
+</ParameterUI>
+</ReportParameterAttr>
+<StyleList>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="新宋体" style="1" size="128" foreground="-6697729"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="宋体" style="1" size="80"/>
+<Background name="ImageBackground" specifiedImageWidth="-1.0" specifiedImageHeight="-1.0" layout="2">
+<IM>
+<![CDATA[lO<9(kN.ld@UNU%p%320@UNU)#I6cXfRW$ncQ/@&<0O5<@n=S@[oX!K%L!+t*8LGkV28*<fV
+1DR2+&2#M*'iG9!?fn`jEHhj.>Qf/%>^"4u8^;2W-f-"/[-Ps"#=CT4LGm?)6rkX]Ap9;)cg,
+:Xp=M>^R`IX>57);OBFYLBS"_e1Gss7S9)tL+\09b!LY7c2&TIA?%9m4n<NhHK^]A5-XNuS&?
+,PUblK>Iu.A7%J~
+]]></IM>
+</Background>
+<Border>
+<Top style="1" color="-6697729"/>
+<Bottom style="1" color="-6697729"/>
+<Left style="1" color="-6697729"/>
+<Right style="1" color="-6697729"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-6697729"/>
+<Bottom style="1" color="-6697729"/>
+<Left style="1" color="-6697729"/>
+<Right style="1" color="-6697729"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<Format class="com.fr.base.CoreDecimalFormat">
+<![CDATA[#0.00]]></Format>
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-6697729"/>
+<Bottom style="1" color="-6697729"/>
+<Left style="1" color="-6697729"/>
+<Right style="1" color="-6697729"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAD"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

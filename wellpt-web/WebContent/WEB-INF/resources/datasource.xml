@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DatasourceManager xmlVersion="20131111" releaseVersion="7.0.5">
+<ConnectionMap>
+<Connection name="well_pt_oracle" class="com.fr.data.impl.JDBCDatabaseConnection">
+<DatabaseAttr/>
+<JDBCDatabaseAttr url="jdbc:oracle:thin:@10.24.36.249:1521:ORCL" driver="oracle.jdbc.driver.OracleDriver" user="XZSP_TEST21" password="___004b00140059005f003b0081006e00440047007c003b" encryptPassword="true">
+<DBCPAttr/>
+</JDBCDatabaseAttr>
+</Connection>
+<Connection name="common_lib" class="com.fr.data.impl.JDBCDatabaseConnection">
+<DatabaseAttr/>
+<JDBCDatabaseAttr url="jdbc:oracle:thin:@10.24.36.249:1521:ORCL" driver="oracle.jdbc.driver.OracleDriver" user="WELL_PT_TEST21" password="___0044000b00460043003b0085007f00480047000b0059005b005600e4" encryptPassword="true">
+<DBCPAttr/>
+</JDBCDatabaseAttr>
+</Connection>
+</ConnectionMap>
+<TableDataMap>
+<TableData name="ExchangeData" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="事项名称"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from XZSP_12.IS_EXCHANGE_DATA where 1=1 ${if(len(事项名称) == 0,"","and RESERVED_TEXT2 = '" + 事项名称 + "'")}]]></Query>
+</TableData>
+<TableData name="ExchangeDataBatch" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from XZSP_12.IS_EXCHANGE_DATA_BATCH]]></Query>
+</TableData>
+<TableData name="公共库单位" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="单位名称"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[common_lib]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT * FROM WELL_PT_12.UNIT_COMMON_UNIT where 1=1 ${if(len(单位名称) == 0,"","and NAME = '" + 单位名称 + "'")}]]></Query>
+</TableData>
+<TableData name="ExchangeDataType" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="数据类型"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from XZSP_12.IS_EXCHANGE_DATA_TYPE where 1=1 ${if(len(数据类型) == 0,"","and ID = '" + 数据类型 + "'")}]]></Query>
+</TableData>
+<TableData name="ExchangeDataMonitor" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT * FROM XZSP_12.IS_EXCHANGE_DATA_MONITOR]]></Query>
+</TableData>
+<TableData name="公共库单位_dict" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT * FROM WELL_PT_12.UNIT_COMMON_UNIT U where U.ID NOT IN('XM')]]></Query>
+</TableData>
+</TableDataMap>
+<ADHOCMap>
+<TableData name="员工信息表" class="com.fr.data.impl.ADHOCNamedTableData">
+<DBTableDataName>
+<![CDATA[员工信息表]]></DBTableDataName>
+</TableData>
+<TableData name="员工信息表_SQL视图" class="com.fr.data.impl.ADHOCSQLTableData">
+<DBConnectionName>
+<![CDATA[FRDemo]]></DBConnectionName>
+<Query>
+<![CDATA[select * from 员工信息表]]></Query>
+</TableData>
+</ADHOCMap>
+</DatasourceManager>

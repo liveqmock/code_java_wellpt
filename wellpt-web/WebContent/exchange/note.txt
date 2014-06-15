@@ -1,0 +1,61 @@
+三列
+http://localhost:8080/wellpt-web/pt/cms/index.jsp?uuid=666d0f04-7200-47f7-82d3-f85c495d8ce1&treeName=EXCHANGE&mid=20136315910846&moduleid=fc379458-24ba-4872-ad3b-853ba2e03d7a
+两列
+http://localhost:8080/wellpt-web/pt/cms/index.jsp?uuid=c645ba94-a0d0-48f3-9ef4-a04624b548e8&treeName=EXCHANGE&mid=20136199117335&moduleid=fc379458-24ba-4872-ad3b-853ba2e03d7a
+
+http://oa.well-soft.com:3000/wellpt-web/oa_dev
+
+2013-03-22
+1,动态表单配置
+显示名称:公文交换
+数据库表名:exchange_dytable
+所属模块:exchange
+
+以下未特殊说明的,全为字符串
+字段			映射名					类型
+文件字号: 	-> 公文交换/文号
+成文日期: 							(日期格式)
+题名: 	-> 公文交换/标题
+关键字	
+缓急:	 	-> 公文交换/缓急 			(常量)
+密级: 	-> 公文交换/密级				(常量)
+签收时限: 	-> 公文交换/签收时限
+反馈时限: 	-> 公文交换/反馈时限
+发送方: 	-> 公文交换/发送方			(常量)
+接收人: 	-> 公文交换/接收人			(组织选择框)
+接收单位: 	-> 公文交换/接收单位			(组织选择框)
+接收单位(外部) -> 公文交换/接收单位(外部) 	(常量)
+督办人		-> 公文交换/督办人			(组织选择框)
+
+2,消息格式配置
+模板ID: exchange_message
+名称:	催办提醒
+在线消息
+即时发送
+
+标题: 公文交换催办${title}
+内容: 内容${message}
+
+3,模块配置
+动态表单名称: 跟步骤1中的动态表单对应
+消息格式模板: 跟步骤2中的模板ID对应
+
+备注
+public Page<T> findPage(Page<T> page, Criterion[] criterions) 这个接口没有排序 
+orgApiFacade.getUserById 非用户ID直接抛异常了,能不能返回null,我们好判断 
+
+X JPA注解没有说明标在属性上还是get方法上
+
+X 动态表单新建后,数据表没有自动建,语法有生成,要手动复制语法建表
+界面的checkbox选中看不见
+X 动态表单在后台怎么取单个字段的值
+X 动态表单填充数据失败
+X 更新动态表单数据?
+
+补充发送  sendadd
+撤销 cancel
+撤回 withdraw
+办结 finish
+催办 remind
+反馈意见 feedback
+转办 feedback

@@ -1,0 +1,1199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20131111" releaseVersion="7.0.5">
+<TableDataMap>
+<TableData name="FWL_DAY" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 今日访问数量 from (select userloginl0_.uuid as uuid1_119_, userloginl0_.create_time as create_time2_119_, 
+userloginl0_.creator as creator3_119_, userloginl0_.modifier as modifier4_119_, userloginl0_.modify_time 
+as modify_time5_119_, userloginl0_.rec_ver as rec_ver6_119_, userloginl0_.login_ip as login_ip7_119_, 
+userloginl0_.login_time as login_time8_119_, userloginl0_.logout_time as logout_time9_119_, 
+userloginl0_.user_uuid as user_uuid10_119_ from org_user_login_log userloginl0_, org_user user1_ 
+where 1=1 and userloginl0_.user_uuid=user1_.uuid 
+and to_char(userloginl0_.login_time,'yyyyMMdd')=to_char(sysdate,'yyyyMMdd') 
+order by userloginl0_.login_time desc)]]></Query>
+</TableData>
+<TableData name="FWL_MONTH" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 本月访问数量 from (select userloginl0_.uuid as uuid1_119_, userloginl0_.create_time as create_time2_119_, 
+userloginl0_.creator as creator3_119_, userloginl0_.modifier as modifier4_119_, userloginl0_.modify_time 
+as modify_time5_119_, userloginl0_.rec_ver as rec_ver6_119_, userloginl0_.login_ip as login_ip7_119_, 
+userloginl0_.login_time as login_time8_119_, userloginl0_.logout_time as logout_time9_119_, 
+userloginl0_.user_uuid as user_uuid10_119_ from org_user_login_log userloginl0_, org_user user1_ 
+where 1=1 and userloginl0_.user_uuid=user1_.uuid 
+and to_char(userloginl0_.login_time,'yyyyMM')=to_char(sysdate,'yyyyMM') 
+order by userloginl0_.login_time desc)]]></Query>
+</TableData>
+<TableData name="FWL_YEAR" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 本年访问数量 from (select userloginl0_.uuid as uuid1_119_, userloginl0_.create_time as create_time2_119_, 
+userloginl0_.creator as creator3_119_, userloginl0_.modifier as modifier4_119_, userloginl0_.modify_time 
+as modify_time5_119_, userloginl0_.rec_ver as rec_ver6_119_, userloginl0_.login_ip as login_ip7_119_, 
+userloginl0_.login_time as login_time8_119_, userloginl0_.logout_time as logout_time9_119_, 
+userloginl0_.user_uuid as user_uuid10_119_ from org_user_login_log userloginl0_, org_user user1_ 
+where 1=1 and userloginl0_.user_uuid=user1_.uuid 
+and to_char(userloginl0_.login_time,'yyyy')=to_char(sysdate,'yyyy') 
+order by userloginl0_.login_time desc)]]></Query>
+</TableData>
+<TableData name="FWL_HISTORY" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 历史访问数量 from (select userloginl0_.uuid as uuid1_119_, userloginl0_.create_time as create_time2_119_, 
+userloginl0_.creator as creator3_119_, userloginl0_.modifier as modifier4_119_, userloginl0_.modify_time 
+as modify_time5_119_, userloginl0_.rec_ver as rec_ver6_119_, userloginl0_.login_ip as login_ip7_119_, 
+userloginl0_.login_time as login_time8_119_, userloginl0_.logout_time as logout_time9_119_, 
+userloginl0_.user_uuid as user_uuid10_119_ from org_user_login_log userloginl0_, org_user user1_ 
+where 1=1 and userloginl0_.user_uuid=user1_.uuid 
+order by userloginl0_.login_time desc)]]></Query>
+</TableData>
+<TableData name="SSDJB_DAY" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 今日商事登记簿数量 from (select exchangeda0_.reserved_text1 as col_0_0_, exchangeda0_.reserved_number1 
+as col_1_0_, exchangeda0_.uuid as col_2_0_, exchangeda0_.reserved_number2 as col_3_0_, exchangeda0_.release_time 
+as col_4_0_ from is_exchange_data exchangeda0_, is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid 
+and exchangeda0_.valid_data='yes' and exchangeda0_.newest_data='yes' and exchangeda1_.type_id='004140203SZ' 
+and to_char(exchangeda0_.create_time,'yyyyMMdd')=to_char(sysdate,'yyyyMMdd')
+order by col_1_0_ desc, col_4_0_ asc)
+]]></Query>
+</TableData>
+<TableData name="SSDJB_MONTH" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 本月商事登记簿数量 from (select exchangeda0_.reserved_text1 as col_0_0_, exchangeda0_.reserved_number1 
+as col_1_0_, exchangeda0_.uuid as col_2_0_, exchangeda0_.reserved_number2 as col_3_0_, exchangeda0_.release_time 
+as col_4_0_ from is_exchange_data exchangeda0_, is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid 
+and exchangeda0_.valid_data='yes' and exchangeda0_.newest_data='yes' and exchangeda1_.type_id='004140203SZ' 
+and to_char(exchangeda0_.create_time,'yyyyMM')=to_char(sysdate,'yyyyMM')
+order by col_1_0_ desc, col_4_0_ asc)
+]]></Query>
+</TableData>
+<TableData name="SSDJB_YEAR" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 本年商事登记簿数量 from (select exchangeda0_.reserved_text1 as col_0_0_, exchangeda0_.reserved_number1 
+as col_1_0_, exchangeda0_.uuid as col_2_0_, exchangeda0_.reserved_number2 as col_3_0_, exchangeda0_.release_time 
+as col_4_0_ from is_exchange_data exchangeda0_, is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid 
+and exchangeda0_.valid_data='yes' and exchangeda0_.newest_data='yes' and exchangeda1_.type_id='004140203SZ' 
+and to_char(exchangeda0_.create_time,'yyyy')=to_char(sysdate,'yyyy')
+order by col_1_0_ desc, col_4_0_ asc)
+]]></Query>
+</TableData>
+<TableData name="SSDJB_HISTORY" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 历史商事登记簿数量 from (select exchangeda0_.reserved_text1 as col_0_0_, exchangeda0_.reserved_number1 
+as col_1_0_, exchangeda0_.uuid as col_2_0_, exchangeda0_.reserved_number2 as col_3_0_, exchangeda0_.release_time 
+as col_4_0_ from is_exchange_data exchangeda0_, is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid 
+and exchangeda0_.valid_data='yes' and exchangeda0_.newest_data='yes' and exchangeda1_.type_id='004140203SZ' 
+order by col_1_0_ desc, col_4_0_ asc)
+]]></Query>
+</TableData>
+<TableData name="SSZTDJXX_DAY" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 今日商事主体数量 from (select exchangeda0_.reserved_text1 as col_0_0_, exchangeda0_.reserved_number1 
+as col_1_0_, exchangeda0_.reserved_text3 as col_2_0_, exchangeda0_.release_time as col_3_0_, 
+exchangeda0_.content_status as col_4_0_, exchangeda0_.upload_limit_num as col_5_0_, exchangeda0_.uuid 
+as col_6_0_ from is_exchange_data exchangeda0_, is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid 
+and exchangeda0_.valid_data='yes' and exchangeda0_.newest_data='yes' and exchangeda1_.type_id='004140203SZ' 
+and to_char(exchangeda0_.create_time,'yyyyMMdd')=to_char(sysdate,'yyyyMMdd')
+order by col_3_0_ desc)]]></Query>
+</TableData>
+<TableData name="SSZTDJXX_MONTH" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 本月商事主体数量 from (select exchangeda0_.reserved_text1 as col_0_0_, exchangeda0_.reserved_number1 
+as col_1_0_, exchangeda0_.reserved_text3 as col_2_0_, exchangeda0_.release_time as col_3_0_, 
+exchangeda0_.content_status as col_4_0_, exchangeda0_.upload_limit_num as col_5_0_, exchangeda0_.uuid 
+as col_6_0_ from is_exchange_data exchangeda0_, is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid 
+and exchangeda0_.valid_data='yes' and exchangeda0_.newest_data='yes' and exchangeda1_.type_id='004140203SZ' 
+and to_char(exchangeda0_.create_time,'yyyyMM')=to_char(sysdate,'yyyyMM')
+order by col_3_0_ desc)]]></Query>
+</TableData>
+<TableData name="SSZTDJXX_YEAR" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 本年商事主体数量 from (select exchangeda0_.reserved_text1 as col_0_0_, exchangeda0_.reserved_number1 
+as col_1_0_, exchangeda0_.reserved_text3 as col_2_0_, exchangeda0_.release_time as col_3_0_, 
+exchangeda0_.content_status as col_4_0_, exchangeda0_.upload_limit_num as col_5_0_, exchangeda0_.uuid 
+as col_6_0_ from is_exchange_data exchangeda0_, is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid 
+and exchangeda0_.valid_data='yes' and exchangeda0_.newest_data='yes' and exchangeda1_.type_id='004140203SZ' 
+and to_char(exchangeda0_.create_time,'yyyy')=to_char(sysdate,'yyyy')
+order by col_3_0_ desc)]]></Query>
+</TableData>
+<TableData name="XZXKXX_DAY" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 今日行政许可数量 from (select exchangeda0_.reserved_text1 as col_0_0_, exchangeda0_.reserved_text2 
+as col_1_0_, exchangeda0_.release_time as col_2_0_, exchangeda0_.uuid as col_3_0_, exchangeda0_.content_status 
+as col_4_0_, exchangeda0_.upload_limit_num as col_5_0_ from is_exchange_data exchangeda0_, 
+is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid and exchangeda0_.valid_data='yes' 
+and exchangeda1_.type_id='000000000XK' 
+and to_char(exchangeda0_.create_time,'yyyyMMdd')=to_char(sysdate,'yyyyMMdd')
+order by col_2_0_ desc)]]></Query>
+</TableData>
+<TableData name="XZXKXX_MONTH" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 本月行政许可数量 from (select exchangeda0_.reserved_text1 as col_0_0_, exchangeda0_.reserved_text2 
+as col_1_0_, exchangeda0_.release_time as col_2_0_, exchangeda0_.uuid as col_3_0_, exchangeda0_.content_status 
+as col_4_0_, exchangeda0_.upload_limit_num as col_5_0_ from is_exchange_data exchangeda0_, 
+is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid and exchangeda0_.valid_data='yes' 
+and exchangeda1_.type_id='000000000XK' 
+and to_char(exchangeda0_.create_time,'yyyyMM')=to_char(sysdate,'yyyyMM')
+order by col_2_0_ desc)]]></Query>
+</TableData>
+<TableData name="XZXKXX_YEAR" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 本年行政许可数量 from (select exchangeda0_.reserved_text1 as col_0_0_, exchangeda0_.reserved_text2 
+as col_1_0_, exchangeda0_.release_time as col_2_0_, exchangeda0_.uuid as col_3_0_, exchangeda0_.content_status 
+as col_4_0_, exchangeda0_.upload_limit_num as col_5_0_ from is_exchange_data exchangeda0_, 
+is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid and exchangeda0_.valid_data='yes' 
+and exchangeda1_.type_id='000000000XK' 
+and to_char(exchangeda0_.create_time,'yyyy')=to_char(sysdate,'yyyy')
+order by col_2_0_ desc)]]></Query>
+</TableData>
+<TableData name="XZXKXX_HISTORY" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 历史行政许可数量 from (select exchangeda0_.reserved_text1 as col_0_0_, exchangeda0_.reserved_text2 
+as col_1_0_, exchangeda0_.release_time as col_2_0_, exchangeda0_.uuid as col_3_0_, exchangeda0_.content_status 
+as col_4_0_, exchangeda0_.upload_limit_num as col_5_0_ from is_exchange_data exchangeda0_, 
+is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid and exchangeda0_.valid_data='yes' 
+and exchangeda1_.type_id='000000000XK' 
+order by col_2_0_ desc)]]></Query>
+</TableData>
+<TableData name="SCYQ_DAY" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 今日上传逾期数量 from (select exchangeda1_.from_id as col_0_0_, exchangeda0_.reserved_text1 as col_1_0_, 
+exchangeda0_.reserved_text3 as col_2_0_, exchangeda0_.release_time as col_3_0_, exchangeda0_.upload_limit_num 
+as col_4_0_, exchangeda0_.uuid as col_5_0_, exchangeda0_.reserved_text2 as col_6_0_ from is_exchange_data 
+exchangeda0_, is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid 
+and exchangeda0_.valid_data='yes' and (exchangeda0_.upload_limit_num is not null) 
+and to_char(exchangeda0_.create_time,'yyyyMMdd')=to_char(sysdate,'yyyyMMdd')
+order by col_2_0_ desc, col_3_0_ desc)]]></Query>
+</TableData>
+<TableData name="SCYQ_MONTH" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 本月上传逾期数量 from (select exchangeda1_.from_id as col_0_0_, exchangeda0_.reserved_text1 as col_1_0_, 
+exchangeda0_.reserved_text3 as col_2_0_, exchangeda0_.release_time as col_3_0_, exchangeda0_.upload_limit_num 
+as col_4_0_, exchangeda0_.uuid as col_5_0_, exchangeda0_.reserved_text2 as col_6_0_ from is_exchange_data 
+exchangeda0_, is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid 
+and exchangeda0_.valid_data='yes' and (exchangeda0_.upload_limit_num is not null) 
+and to_char(exchangeda0_.create_time,'yyyyMM')=to_char(sysdate,'yyyyMM')
+order by col_2_0_ desc, col_3_0_ desc)]]></Query>
+</TableData>
+<TableData name="SCYQ_YEAR" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 本年上传逾期数量 from (select exchangeda1_.from_id as col_0_0_, exchangeda0_.reserved_text1 as col_1_0_, 
+exchangeda0_.reserved_text3 as col_2_0_, exchangeda0_.release_time as col_3_0_, exchangeda0_.upload_limit_num 
+as col_4_0_, exchangeda0_.uuid as col_5_0_, exchangeda0_.reserved_text2 as col_6_0_ from is_exchange_data 
+exchangeda0_, is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid 
+and exchangeda0_.valid_data='yes' and (exchangeda0_.upload_limit_num is not null) 
+and to_char(exchangeda0_.create_time,'yyyy')=to_char(sysdate,'yyyy')
+order by col_2_0_ desc, col_3_0_ desc)]]></Query>
+</TableData>
+<TableData name="SCYQ_HISTORY" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 历史上传逾期数量 from (select exchangeda1_.from_id as col_0_0_, exchangeda0_.reserved_text1 as col_1_0_, 
+exchangeda0_.reserved_text3 as col_2_0_, exchangeda0_.release_time as col_3_0_, exchangeda0_.upload_limit_num 
+as col_4_0_, exchangeda0_.uuid as col_5_0_, exchangeda0_.reserved_text2 as col_6_0_ from is_exchange_data 
+exchangeda0_, is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid 
+and exchangeda0_.valid_data='yes' and (exchangeda0_.upload_limit_num is not null) 
+order by col_2_0_ desc, col_3_0_ desc)]]></Query>
+</TableData>
+<TableData name="JSYQ_DAY" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 今日接收逾期数量 from (select exchangeda0_.unit_id as col_0_0_, exchangeda2_.reserved_text1 as col_1_0_, 
+exchangeda0_.receive_time as col_2_0_, exchangeda0_.reply_time as col_3_0_, exchangeda0_.reply_limit_num 
+as col_4_0_, exchangeda0_.uuid as col_5_0_, exchangeda2_.reserved_text2 as col_6_0_, exchangeda0_.reply_status 
+as col_7_0_, exchangeda1_.limit_time as col_8_0_ from is_exchange_data_monitor exchangeda0_ 
+left outer join is_exchange_send_monitor exchangeda1_ on exchangeda0_.send_id=exchangeda1_.uuid 
+left outer join is_exchange_data exchangeda2_ on exchangeda1_.data_uuid=exchangeda2_.uuid where 
+1=1 and exchangeda0_.reply_limit_num>0 
+and to_char(exchangeda0_.create_time,'yyyyMMdd')=to_char(sysdate,'yyyyMMdd') 
+order by col_2_0_ desc)]]></Query>
+</TableData>
+<TableData name="JSYQ_MONTH" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 本月接收逾期数量 from (select exchangeda0_.unit_id as col_0_0_, exchangeda2_.reserved_text1 as col_1_0_, 
+exchangeda0_.receive_time as col_2_0_, exchangeda0_.reply_time as col_3_0_, exchangeda0_.reply_limit_num 
+as col_4_0_, exchangeda0_.uuid as col_5_0_, exchangeda2_.reserved_text2 as col_6_0_, exchangeda0_.reply_status 
+as col_7_0_, exchangeda1_.limit_time as col_8_0_ from is_exchange_data_monitor exchangeda0_ 
+left outer join is_exchange_send_monitor exchangeda1_ on exchangeda0_.send_id=exchangeda1_.uuid 
+left outer join is_exchange_data exchangeda2_ on exchangeda1_.data_uuid=exchangeda2_.uuid where 
+1=1 and exchangeda0_.reply_limit_num>0 
+and to_char(exchangeda0_.create_time,'yyyyMM')=to_char(sysdate,'yyyyMM') 
+order by col_2_0_ desc)]]></Query>
+</TableData>
+<TableData name="JSYQ_YEAR" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 本年接收逾期数量 from (select exchangeda0_.unit_id as col_0_0_, exchangeda2_.reserved_text1 as col_1_0_, 
+exchangeda0_.receive_time as col_2_0_, exchangeda0_.reply_time as col_3_0_, exchangeda0_.reply_limit_num 
+as col_4_0_, exchangeda0_.uuid as col_5_0_, exchangeda2_.reserved_text2 as col_6_0_, exchangeda0_.reply_status 
+as col_7_0_, exchangeda1_.limit_time as col_8_0_ from is_exchange_data_monitor exchangeda0_ 
+left outer join is_exchange_send_monitor exchangeda1_ on exchangeda0_.send_id=exchangeda1_.uuid 
+left outer join is_exchange_data exchangeda2_ on exchangeda1_.data_uuid=exchangeda2_.uuid where 
+1=1 and exchangeda0_.reply_limit_num>0 
+and to_char(exchangeda0_.create_time,'yyyy')=to_char(sysdate,'yyyy') 
+order by col_2_0_ desc)]]></Query>
+</TableData>
+<TableData name="JSYQ_HISTORY" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 历史接收逾期数量 from (select exchangeda0_.unit_id as col_0_0_, exchangeda2_.reserved_text1 as col_1_0_, 
+exchangeda0_.receive_time as col_2_0_, exchangeda0_.reply_time as col_3_0_, exchangeda0_.reply_limit_num 
+as col_4_0_, exchangeda0_.uuid as col_5_0_, exchangeda2_.reserved_text2 as col_6_0_, exchangeda0_.reply_status 
+as col_7_0_, exchangeda1_.limit_time as col_8_0_ from is_exchange_data_monitor exchangeda0_ 
+left outer join is_exchange_send_monitor exchangeda1_ on exchangeda0_.send_id=exchangeda1_.uuid 
+left outer join is_exchange_data exchangeda2_ on exchangeda1_.data_uuid=exchangeda2_.uuid where 
+1=1 and exchangeda0_.reply_limit_num>0 
+order by col_2_0_ desc)]]></Query>
+</TableData>
+<TableData name="SSZTDJXX_HISTORY" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select count(*) as 历史商事主体数量 from (select exchangeda0_.reserved_text1 as col_0_0_, exchangeda0_.reserved_number1 
+as col_1_0_, exchangeda0_.reserved_text3 as col_2_0_, exchangeda0_.release_time as col_3_0_, 
+exchangeda0_.content_status as col_4_0_, exchangeda0_.upload_limit_num as col_5_0_, exchangeda0_.uuid 
+as col_6_0_ from is_exchange_data exchangeda0_, is_exchange_data_batch exchangeda1_ where exchangeda0_.batch_id=exchangeda1_.uuid 
+and exchangeda0_.valid_data='yes' and exchangeda0_.newest_data='yes' and exchangeda1_.type_id='004140203SZ' 
+order by col_3_0_ desc)]]></Query>
+</TableData>
+</TableDataMap>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[762000,1371600,1371600,723900,762000,1371600,1371600,723900,762000,1371600,1371600,723900,762000,1371600,1371600,723900,762000,1371600,1371600,723900,762000,1371600,1371600,723900,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[304800,4191000,4191000,4191000,4191000,2743200,2743200,2743200,2743200,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="1" r="0" s="0">
+<O>
+<![CDATA[访问量]]></O>
+<Expand/>
+</C>
+<C c="2" r="0" s="0">
+<Expand/>
+</C>
+<C c="3" r="0" s="0">
+<Expand/>
+</C>
+<C c="4" r="0" s="0">
+<Expand/>
+</C>
+<C c="1" r="1" s="1">
+<O>
+<![CDATA[今日数量]]></O>
+<Expand/>
+</C>
+<C c="2" r="1" s="1">
+<O>
+<![CDATA[本月数量]]></O>
+<Expand/>
+</C>
+<C c="3" r="1" s="1">
+<O>
+<![CDATA[本年数量]]></O>
+<Expand/>
+</C>
+<C c="4" r="1" s="1">
+<O>
+<![CDATA[历史累计]]></O>
+<Expand/>
+</C>
+<C c="1" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="FWL_DAY" columnName="今日访问数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="2" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="FWL_MONTH" columnName="本月访问数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="FWL_YEAR" columnName="本年访问数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="4" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="FWL_HISTORY" columnName="历史访问数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="1" r="3" s="0">
+<Expand/>
+</C>
+<C c="2" r="3" s="0">
+<Expand/>
+</C>
+<C c="3" r="3" s="0">
+<Expand/>
+</C>
+<C c="4" r="3" s="0">
+<Expand/>
+</C>
+<C c="1" r="4" s="0">
+<O>
+<![CDATA[商事登记簿]]></O>
+<Expand/>
+</C>
+<C c="2" r="4" s="0">
+<Expand/>
+</C>
+<C c="3" r="4" s="0">
+<Expand/>
+</C>
+<C c="4" r="4" s="0">
+<Expand/>
+</C>
+<C c="1" r="5" s="1">
+<O>
+<![CDATA[今日数量]]></O>
+<Expand/>
+</C>
+<C c="2" r="5" s="1">
+<O>
+<![CDATA[本月数量]]></O>
+<Expand/>
+</C>
+<C c="3" r="5" s="1">
+<O>
+<![CDATA[本年数量]]></O>
+<Expand/>
+</C>
+<C c="4" r="5" s="1">
+<O>
+<![CDATA[历史累计]]></O>
+<Expand/>
+</C>
+<C c="1" r="6" s="2">
+<O t="DSColumn">
+<Attributes dsName="SSDJB_DAY" columnName="今日商事登记簿数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="2" r="6" s="2">
+<O t="DSColumn">
+<Attributes dsName="SSDJB_MONTH" columnName="本月商事登记簿数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="6" s="2">
+<O t="DSColumn">
+<Attributes dsName="SSDJB_YEAR" columnName="本年商事登记簿数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="4" r="6" s="2">
+<O t="DSColumn">
+<Attributes dsName="SSDJB_HISTORY" columnName="历史商事登记簿数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="1" r="7" s="0">
+<Expand/>
+</C>
+<C c="2" r="7" s="0">
+<Expand/>
+</C>
+<C c="3" r="7" s="0">
+<Expand/>
+</C>
+<C c="4" r="7" s="0">
+<Expand/>
+</C>
+<C c="1" r="8" s="0">
+<O>
+<![CDATA[商事主体登记信息 ]]></O>
+<Expand/>
+</C>
+<C c="2" r="8" s="0">
+<Expand/>
+</C>
+<C c="3" r="8" s="0">
+<Expand/>
+</C>
+<C c="4" r="8" s="0">
+<Expand/>
+</C>
+<C c="1" r="9" s="1">
+<O>
+<![CDATA[今日数量]]></O>
+<Expand/>
+</C>
+<C c="2" r="9" s="1">
+<O>
+<![CDATA[本月数量]]></O>
+<Expand/>
+</C>
+<C c="3" r="9" s="1">
+<O>
+<![CDATA[本年数量]]></O>
+<Expand/>
+</C>
+<C c="4" r="9" s="1">
+<O>
+<![CDATA[历史累计]]></O>
+<Expand/>
+</C>
+<C c="1" r="10" s="2">
+<O t="DSColumn">
+<Attributes dsName="SSZTDJXX_DAY" columnName="今日商事主体数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="2" r="10" s="2">
+<O t="DSColumn">
+<Attributes dsName="SSZTDJXX_MONTH" columnName="本月商事主体数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="10" s="2">
+<O t="DSColumn">
+<Attributes dsName="SSZTDJXX_YEAR" columnName="本年商事主体数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="4" r="10" s="2">
+<O t="DSColumn">
+<Attributes dsName="SSZTDJXX_HISTORY" columnName="历史商事主体数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="1" r="11" s="0">
+<Expand/>
+</C>
+<C c="2" r="11" s="0">
+<Expand/>
+</C>
+<C c="3" r="11" s="0">
+<Expand/>
+</C>
+<C c="4" r="11" s="0">
+<Expand/>
+</C>
+<C c="1" r="12" s="0">
+<O>
+<![CDATA[行政许可信息 ]]></O>
+<Expand/>
+</C>
+<C c="2" r="12" s="0">
+<Expand/>
+</C>
+<C c="3" r="12" s="0">
+<Expand/>
+</C>
+<C c="4" r="12" s="0">
+<Expand/>
+</C>
+<C c="1" r="13" s="1">
+<O>
+<![CDATA[今日数量]]></O>
+<Expand/>
+</C>
+<C c="2" r="13" s="1">
+<O>
+<![CDATA[本月数量]]></O>
+<Expand/>
+</C>
+<C c="3" r="13" s="1">
+<O>
+<![CDATA[本年数量]]></O>
+<Expand/>
+</C>
+<C c="4" r="13" s="1">
+<O>
+<![CDATA[历史累计]]></O>
+<Expand/>
+</C>
+<C c="1" r="14" s="2">
+<O t="DSColumn">
+<Attributes dsName="XZXKXX_DAY" columnName="今日行政许可数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="2" r="14" s="2">
+<O t="DSColumn">
+<Attributes dsName="XZXKXX_MONTH" columnName="本月行政许可数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="14" s="2">
+<O t="DSColumn">
+<Attributes dsName="XZXKXX_YEAR" columnName="本年行政许可数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="4" r="14" s="2">
+<O t="DSColumn">
+<Attributes dsName="XZXKXX_HISTORY" columnName="历史行政许可数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="1" r="15" s="0">
+<Expand/>
+</C>
+<C c="2" r="15" s="0">
+<Expand/>
+</C>
+<C c="3" r="15" s="0">
+<Expand/>
+</C>
+<C c="4" r="15" s="0">
+<Expand/>
+</C>
+<C c="1" r="16" s="0">
+<O>
+<![CDATA[上传逾期]]></O>
+<Expand/>
+</C>
+<C c="2" r="16" s="0">
+<Expand/>
+</C>
+<C c="3" r="16" s="0">
+<Expand/>
+</C>
+<C c="4" r="16" s="0">
+<Expand/>
+</C>
+<C c="1" r="17" s="1">
+<O>
+<![CDATA[今日数量]]></O>
+<Expand/>
+</C>
+<C c="2" r="17" s="1">
+<O>
+<![CDATA[本月数量]]></O>
+<Expand/>
+</C>
+<C c="3" r="17" s="1">
+<O>
+<![CDATA[本年数量]]></O>
+<Expand/>
+</C>
+<C c="4" r="17" s="1">
+<O>
+<![CDATA[历史累计]]></O>
+<Expand/>
+</C>
+<C c="1" r="18" s="2">
+<O t="DSColumn">
+<Attributes dsName="SCYQ_DAY" columnName="今日上传逾期数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="2" r="18" s="2">
+<O t="DSColumn">
+<Attributes dsName="SCYQ_MONTH" columnName="本月上传逾期数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="18" s="2">
+<O t="DSColumn">
+<Attributes dsName="SCYQ_YEAR" columnName="本年上传逾期数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="4" r="18" s="2">
+<O t="DSColumn">
+<Attributes dsName="SCYQ_HISTORY" columnName="历史上传逾期数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="1" r="19" s="0">
+<Expand/>
+</C>
+<C c="2" r="19" s="0">
+<Expand/>
+</C>
+<C c="3" r="19" s="0">
+<Expand/>
+</C>
+<C c="4" r="19" s="0">
+<Expand/>
+</C>
+<C c="1" r="20" s="0">
+<O>
+<![CDATA[接收逾期]]></O>
+<Expand/>
+</C>
+<C c="2" r="20" s="0">
+<Expand/>
+</C>
+<C c="3" r="20" s="0">
+<Expand/>
+</C>
+<C c="4" r="20" s="0">
+<Expand/>
+</C>
+<C c="1" r="21" s="1">
+<O>
+<![CDATA[今日数量]]></O>
+<Expand/>
+</C>
+<C c="2" r="21" s="1">
+<O>
+<![CDATA[本月数量]]></O>
+<Expand/>
+</C>
+<C c="3" r="21" s="1">
+<O>
+<![CDATA[本年数量]]></O>
+<Expand/>
+</C>
+<C c="4" r="21" s="1">
+<O>
+<![CDATA[历史累计]]></O>
+<Expand/>
+</C>
+<C c="1" r="22" s="2">
+<O t="DSColumn">
+<Attributes dsName="JSYQ_DAY" columnName="今日接收逾期数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="2" r="22" s="2">
+<O t="DSColumn">
+<Attributes dsName="JSYQ_MONTH" columnName="本月接收逾期数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="22" s="2">
+<O t="DSColumn">
+<Attributes dsName="JSYQ_YEAR" columnName="本年接收逾期数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="4" r="22" s="2">
+<O t="DSColumn">
+<Attributes dsName="JSYQ_HISTORY" columnName="历史接收逾期数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="1" r="23" s="0">
+<Expand/>
+</C>
+<C c="2" r="23" s="0">
+<Expand/>
+</C>
+<C c="3" r="23" s="0">
+<Expand/>
+</C>
+<C c="4" r="23" s="0">
+<Expand/>
+</C>
+<C c="1" r="24" s="0">
+<O>
+<![CDATA[上传逾期已处理]]></O>
+<Expand/>
+</C>
+<C c="2" r="24" s="0">
+<Expand/>
+</C>
+<C c="3" r="24" s="0">
+<Expand/>
+</C>
+<C c="4" r="24" s="0">
+<Expand/>
+</C>
+<C c="1" r="25" s="1">
+<O>
+<![CDATA[今日数量]]></O>
+<Expand/>
+</C>
+<C c="2" r="25" s="1">
+<O>
+<![CDATA[本月数量]]></O>
+<Expand/>
+</C>
+<C c="3" r="25" s="1">
+<O>
+<![CDATA[本年数量]]></O>
+<Expand/>
+</C>
+<C c="4" r="25" s="1">
+<O>
+<![CDATA[历史累计]]></O>
+<Expand/>
+</C>
+<C c="1" r="26" s="2">
+<O t="DSColumn">
+<Attributes dsName="SCYQ_DAY" columnName="今日上传逾期数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="2" r="26" s="2">
+<O t="DSColumn">
+<Attributes dsName="SCYQ_MONTH" columnName="本月上传逾期数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="3" r="26" s="2">
+<O t="DSColumn">
+<Attributes dsName="SCYQ_YEAR" columnName="本年上传逾期数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="4" r="26" s="2">
+<O t="DSColumn">
+<Attributes dsName="SCYQ_HISTORY" columnName="历史上传逾期数量"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<Expand dir="0"/>
+</C>
+<C c="1" r="27" s="0">
+<Expand/>
+</C>
+<C c="2" r="27" s="0">
+<Expand/>
+</C>
+<C c="3" r="27" s="0">
+<Expand/>
+</C>
+<C c="4" r="27" s="0">
+<Expand/>
+</C>
+<C c="1" r="28" s="0">
+<O>
+<![CDATA[接收逾期未处理]]></O>
+<Expand/>
+</C>
+<C c="2" r="28" s="0">
+<Expand/>
+</C>
+<C c="3" r="28" s="0">
+<Expand/>
+</C>
+<C c="4" r="28" s="0">
+<Expand/>
+</C>
+<C c="1" r="29" s="1">
+<O>
+<![CDATA[今日数量]]></O>
+<Expand/>
+</C>
+<C c="2" r="29" s="1">
+<O>
+<![CDATA[本月数量]]></O>
+<Expand/>
+</C>
+<C c="3" r="29" s="1">
+<O>
+<![CDATA[本年数量]]></O>
+<Expand/>
+</C>
+<C c="4" r="29" s="1">
+<O>
+<![CDATA[历史累计]]></O>
+<Expand/>
+</C>
+<C c="1" r="30" s="2">
+<Expand/>
+</C>
+<C c="2" r="30" s="2">
+<Expand/>
+</C>
+<C c="3" r="30" s="2">
+<Expand/>
+</C>
+<C c="4" r="30" s="2">
+<Expand/>
+</C>
+<C c="1" r="31" s="0">
+<Expand/>
+</C>
+<C c="2" r="31" s="0">
+<Expand/>
+</C>
+<C c="3" r="31" s="0">
+<Expand/>
+</C>
+<C c="4" r="31" s="0">
+<Expand/>
+</C>
+<C c="1" r="32" s="0">
+<O>
+<![CDATA[上传逾期未处理]]></O>
+<Expand/>
+</C>
+<C c="2" r="32" s="0">
+<Expand/>
+</C>
+<C c="3" r="32" s="0">
+<Expand/>
+</C>
+<C c="4" r="32" s="0">
+<Expand/>
+</C>
+<C c="1" r="33" s="1">
+<O>
+<![CDATA[今日数量]]></O>
+<Expand/>
+</C>
+<C c="2" r="33" s="1">
+<O>
+<![CDATA[本月数量]]></O>
+<Expand/>
+</C>
+<C c="3" r="33" s="1">
+<O>
+<![CDATA[本年数量]]></O>
+<Expand/>
+</C>
+<C c="4" r="33" s="1">
+<O>
+<![CDATA[历史累计]]></O>
+<Expand/>
+</C>
+<C c="1" r="34" s="2">
+<Expand/>
+</C>
+<C c="2" r="34" s="2">
+<Expand/>
+</C>
+<C c="3" r="34" s="2">
+<Expand/>
+</C>
+<C c="4" r="34" s="2">
+<Expand/>
+</C>
+<C c="1" r="35" s="0">
+<Expand/>
+</C>
+<C c="2" r="35" s="0">
+<Expand/>
+</C>
+<C c="3" r="35" s="0">
+<Expand/>
+</C>
+<C c="4" r="35" s="0">
+<Expand/>
+</C>
+<C c="1" r="36" s="0">
+<O>
+<![CDATA[接收逾期未处理]]></O>
+<Expand/>
+</C>
+<C c="2" r="36" s="0">
+<Expand/>
+</C>
+<C c="3" r="36" s="0">
+<Expand/>
+</C>
+<C c="4" r="36" s="0">
+<Expand/>
+</C>
+<C c="1" r="37" s="1">
+<O>
+<![CDATA[今日数量]]></O>
+<Expand/>
+</C>
+<C c="2" r="37" s="1">
+<O>
+<![CDATA[本月数量]]></O>
+<Expand/>
+</C>
+<C c="3" r="37" s="1">
+<O>
+<![CDATA[本年数量]]></O>
+<Expand/>
+</C>
+<C c="4" r="37" s="1">
+<O>
+<![CDATA[历史累计]]></O>
+<Expand/>
+</C>
+<C c="1" r="38" s="2">
+<Expand/>
+</C>
+<C c="2" r="38" s="2">
+<Expand/>
+</C>
+<C c="3" r="38" s="2">
+<Expand/>
+</C>
+<C c="4" r="38" s="2">
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="30240000" height="48960000"/>
+<Margin top="0" left="1440000" bottom="986400" right="2743200"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+</ReportParameterAttr>
+<StyleList>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="ColorBackground" color="-1577999"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="5">
+<FRFont name="微软雅黑" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-2500135"/>
+<Bottom style="1" color="-2500135"/>
+<Left style="1" color="-2500135"/>
+<Right style="1" color="-2500135"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAF"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

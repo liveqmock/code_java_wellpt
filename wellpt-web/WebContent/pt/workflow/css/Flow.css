@@ -1,0 +1,198 @@
+﻿BODY
+{
+    PADDING-RIGHT: 0px;
+    PADDING-LEFT: 0px;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    PADDING-TOP: 0px;
+    BACKGROUND-COLOR: #DADADA;
+    OVERFLOW-x:hidden;
+    OVERFLOW-y:hidden;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial
+}
+
+.WORKBODYBACKIMAGE
+{
+    PADDING-RIGHT: 0px;
+    PADDING-LEFT: 0px;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    PADDING-TOP: 0px;
+    BACKGROUND-COLOR: #FFFFFF;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial;
+    OVERFLOW-x:auto;
+    OVERFLOW-y:auto;
+
+    scrollbar-face-color:#DADADA;
+    scrollbar-highlight-color:#FFFFFF;
+    scrollbar-3dlight-color:#DADADA;
+    scrollbar-darkshadow-color:#DADADA;
+    scrollbar-shadow-color:#808080;
+    scrollbar-arrow-color:#999999;
+    scrollbar-track-color:#DADADA;
+}
+
+.WORKBODY
+{
+    PADDING-RIGHT: 0px;
+    PADDING-LEFT: 0px;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    PADDING-TOP: 0px;
+    BACKGROUND-COLOR: #FFFFFF;
+    background-image: url("../images/bg.gif"); 
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial;
+    OVERFLOW-x:auto;
+    OVERFLOW-y:auto;
+
+    scrollbar-face-color:#DADADA;
+    scrollbar-highlight-color:#FFFFFF;
+    scrollbar-3dlight-color:#DADADA;
+    scrollbar-darkshadow-color:#DADADA;
+    scrollbar-shadow-color:#808080;
+    scrollbar-arrow-color:#999999;
+    scrollbar-track-color:#DADADA;
+}
+
+IMG {BORDER:0pt;}
+
+TABLE.StatusBar
+{
+    BORDER-RIGHT: #808080 1px solid;
+    BORDER-BOTTOM: #808080 1px solid;
+}
+
+TD.StatusBar
+{
+    BORDER-RIGHT: 1px inset;
+    PADDING-RIGHT: 5px;
+    BORDER-TOP: 1px inset;
+    PADDING-LEFT: 5px;
+    PADDING-BOTTOM: 1px;
+    BORDER-LEFT: 1px inset;
+    PADDING-TOP: 1px;
+    BORDER-BOTTOM: 1px inset;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial
+}
+
+TABLE.MenuBar
+{
+    border-width:1px;
+    border-style:outset;
+}
+.TBHandle
+{
+    BORDER-RIGHT: #808080 1px solid;
+    BORDER-TOP: #f8fcf8 1px solid;
+    BORDER-LEFT: #f8fcf8 1px solid;
+    WIDTH: 3px;
+    TOP: 1px;
+    HEIGHT: 21px;
+}
+.TBSep
+{
+    BORDER-RIGHT: #f8fcf8 1px solid;
+    BORDER-LEFT: #808080 1px solid;
+    WIDTH: 1px;
+    POSITION: absolute;
+    TOP: 1px;
+    HEIGHT: 21px
+}
+TD.Menu
+{
+    cursor:hand;
+    WIDTH: 60px;
+    Text-align:center;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial;
+}
+TD.MenuOutset
+{
+    cursor:hand;
+    WIDTH: 58px;
+    Text-align:center;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial;
+    border-width:1px;
+    border-style:outset;
+}
+TD.MenuInset
+{
+    cursor:hand;
+    WIDTH: 58px;
+    Text-align:center;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial;
+    border-width:1px;
+    border-style:inset;
+}
+
+TD.Menu_Big
+{
+    cursor:hand;
+    WIDTH: 100px;
+    Text-align:center;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial;
+}
+TD.MenuOutset_Big
+{
+    cursor:hand;
+    WIDTH: 98px;
+    Text-align:center;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial;
+    border-width:1px;
+    border-style:outset;
+}
+TD.MenuInset_Big
+{
+    cursor:hand;
+    WIDTH: 98px;
+    Text-align:center;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial;
+    border-width:1px;
+    border-style:inset;
+}
+
+TABLE.ToolBar
+{
+    border-width:1px;
+    border-style:outset;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial;
+}
+
+TD.ToolBar
+{
+    cursor:default;
+    height:25px;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial;
+}
+
+TD.ToolOutset
+{
+    border-width:1px;
+    border-style:outset;
+    height:25px;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial;
+}
+
+TD.ToolInset
+{
+    border-width:1px;
+    border-style:inset;
+    height:25px;
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: 宋体,Verdana,Arial;
+}
+
+
+

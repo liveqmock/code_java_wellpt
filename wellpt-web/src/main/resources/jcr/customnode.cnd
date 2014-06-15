@@ -1,0 +1,70 @@
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<well = 'http://www.welloa.org/1.0'>
+
+[mix:accessControlled] mixin
+- well:authUsersRead (string) multiple mandatory
+- well:authUsersWrite (string) multiple mandatory
+- well:authUsersDelete (string) multiple mandatory
+- well:authUsersSecurity (string) multiple mandatory
+- well:authRolesRead (string) multiple mandatory
+- well:authRolesWrite (string) multiple mandatory
+- well:authRolesDelete (string) multiple mandatory
+- well:authRolesSecurity (string) multiple mandatory
+
+[mix:notification] mixin
+- well:subscriptors (string) = '' multiple autocreated
+
+[mix:scripting] mixin
+- well:scriptCode (string) mandatory
+
+[well:resource] > nt:resource, mix:versionable
+- well:size (long) mandatory
+- well:author (string) mandatory
+- well:text (string)
+- well:versionComment (string) copy
+
+[well:note]
+- well:user (string) mandatory
+- well:date (date) mandatory
+- well:text (string) mandatory
+
+[well:notes] > nt:hierarchyNode
++ * (well:note)
+
+[mix:notes] mixin
++ well:notes (well:notes) = well:notes autocreated mandatory
+
+[well:document] > nt:hierarchyNode
+- well:author (string) 
+- well:name (string) 
+- well:language (string)
+// - well:title (String) mandatory # Activate in OpenKM 6
+// - well:description (String) mandatory # Activate in OpenKM 6
+- well:keywords (string) 
+- well:categories (reference) 
++ well:content (well:resource) primary mandatory
+
+[well:folder] > nt:folder
+- well:author (string) 
+- well:name (string) 
+- well:submit (string) 
+
+[well:mail] > nt:folder, mix:referenceable, mix:accessControlled
+- well:size (long) mandatory
+- well:from (string) mandatory
+- well:reply (string) multiple mandatory
+- well:to (string) multiple mandatory
+- well:cc (string) multiple mandatory
+- well:bcc (string) multiple mandatory
+- well:sentDate (date) mandatory
+- well:receivedDate (date) mandatory
+- well:subject (string) mandatory
+- well:content (string) mandatory
+- well:mimeType (string) mandatory
++ * (well:document)
+
+[well:sysConfig]
+- well:uuid (string)
+- well:version (string)

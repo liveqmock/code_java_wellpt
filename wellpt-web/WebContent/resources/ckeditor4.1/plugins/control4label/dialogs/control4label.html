@@ -1,0 +1,54 @@
+<div>
+	请输入标题:<input id="labelInput" value="">
+</div>
+<script type="text/javascript">
+var label = {};
+
+/**
+ * 初始化属性窗口
+ */
+ label.initPropertyDialog = function (editor){
+	 $(".cke_reset_all"  ).removeClass("cke_reset_all");
+	this.editor = editor;  
+	
+	var focusedDom = editor.focusedDom;//当前editor被双击的对象(CKEDITOR.dom.node类) 
+	
+	var labelText = "";
+	if(focusedDom != null && (typeof focusedDom) != "undefined"){ 
+		labelText =  focusedDom.getText() 
+	}
+	 
+	$("#labelInput").val(labelText);
+
+};
+
+
+label.exitDialog = function(){
+	this.editor.focusedDom = null;
+	$("#labelInput").val("");
+}
+
+label.fillCkeditor = function(){
+	
+	var html = "<label class='label' >" + $("#labelInput").val() + "</label>";
+	 
+	var element = CKEDITOR.dom.element.createFromHtml( html );
+	if(this.editor.focusedDom != null){ 
+		element.insertBefore(this.editor.focusedDom);
+		this.editor.focusedDom.remove(); 
+	}else{
+		 
+		this.editor.insertElement( element );
+	}
+	
+	
+	
+	//this.editor.insertHtml(html);
+	
+	
+}
+
+
+
+
+</script>

@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>表单设计</title>
+
+<!-- <script type="text/javascript" src="../../resources/easyui/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="../../resources/easyui/jquery.easyui.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../resources/easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="../../resources/easyui/themes/icon.css"> -->
+
+</head>
+
+<body>
+	<!-- 表类型(tableType):1主表,2从表 -->
+	<table width="100%" border="1" tableType="1" id="001" editType="1">
+	  <tr>
+	    <td width="20%" class="label">起草人</td>
+	    <td width="30%">{当前登录人}</td>
+	    <td width="20%" class="label">起草时间</td>
+	    <td width="30%">{当前时间}</td>
+	  </tr>
+	  <tr>
+	    <td class="label">text</td>
+	    <td>
+	    	<input name="text_col" id="text_col" type="text" value="">
+	    </td>
+	    <td class="label">date</td>
+	    <td>
+	    	<input name="date_col" id="date_col" type="text" value=""/>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td class="label">datetime-mi</td>
+	    <td>
+	    	<input type="text" name="datetime_mi_col" id="datetime_mi_col">
+	    </td>
+	    <td class="label">datetime-sec</td>
+	    <td>
+			<input type="text" name="datetime_sec_col" id="datetime_sec_col">
+	    </td>
+	  </tr>
+	  <tr>
+	    <td class="label">time-mi</td>
+	    <td>
+	    	<input type="text" name="time_mi_col" id="time_mi_col">
+	    </td>
+	    <td class="label">time-sec</td>
+	    <td>
+			<input type="text" name="time_sec_col" id="time_sec_col">
+	    </td>
+	  </tr>
+	  <tr>
+	    <td class="label">select</td>
+	    <td>
+	    	<select name="select_col" id="select_col" style="width:133px;">
+				<option value="1">福州</option>
+				<option value="2">厦门</option>
+			</select>
+	    </td>
+	    <td class="label">radio</td>
+	    <td>
+			<input type="radio" name="radio_col" id="radio_col_1" value="1"><label for="radio_col_1">男</label>
+			<input type="radio" name="radio_col" id="radio_col_2" value="2"><label for="radio_col_2">女</label>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td class="label">checkbox</td>
+	    <td>
+	    	<input type="checkbox" name="checkbox_col" id="checkbox_col_1" value="1"><label for="checkbox_col_1">篮球</label>
+			<input type="checkbox" name="checkbox_col" id="checkbox_col_2" value="2" ><label for="checkbox_col_2">游泳</label>
+			<input type="checkbox" name="checkbox_col" id="checkbox_col_3" value="3"><label for="checkbox_col_3">乒乓球</label>
+	    </td>
+	    <td class="label">textarea</td>
+	    <td>
+			<textarea name="textarea_col" id="textarea_col" rows="2" cols="20"/>
+	    </td>
+	  </tr>
+	</table>
+</body>
+</html>

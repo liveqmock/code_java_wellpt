@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20130114" releaseVersion="7.0.3">
+<TableDataMap>
+<TableData name="ds1" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[FRDemo]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT * FROM [map_全国地区名]A
+]]></Query>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<ServerPrinter/>
+<WebPageContent>
+<ToolBars>
+<ToolBarManager>
+<Location>
+<Embed position="1"/>
+</Location>
+<ToolBar>
+<Widget class="com.fr.report.web.ui.impl.page.First">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-First')}]]></Text>
+<IconName>
+<![CDATA[first]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.page.Previous">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Previous')}]]></Text>
+<IconName>
+<![CDATA[previous]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.page.PageNavi">
+<WidgetAttr/>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.page.Next">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Next')}]]></Text>
+<IconName>
+<![CDATA[next]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.page.Last">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Last')}]]></Text>
+<IconName>
+<![CDATA[last]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.FlashPrint">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Utils-Print[Client]A')}]]></Text>
+<IconName>
+<![CDATA[flashprint]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.Print">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Print')}]]></Text>
+<IconName>
+<![CDATA[print]]></IconName>
+<PrintButtons/>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.Export">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Export')}]]></Text>
+<IconName>
+<![CDATA[export]]></IconName>
+<Buttons pdf="true" excelP="true" excelO="true" excelS="true" word="true" image="true" html="true"/>
+</Widget>
+<Widget class="com.fr.report.web.ui.impl.Email">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Email')}]]></Text>
+<IconName>
+<![CDATA[email]]></IconName>
+</Widget>
+</ToolBar>
+</ToolBarManager>
+</ToolBars>
+<WebPage isPage="true" isShowAsImage="false" isAutoScale="false" isTDHeavy="false"/>
+</WebPageContent>
+</ReportWebAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[1257300,723900,800100,762000,723900,723900,1333500,1143000,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,723900,381000,0,381000,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[2133600,2743200,2743200,2590800,2476500,2743200,2743200,3086100,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" cs="10" s="0">
+<O>
+<![CDATA[中国地图钻取]]></O>
+<Expand/>
+</C>
+<C c="0" r="1" cs="10" rs="26" s="1">
+<O t="CC">
+<LayoutAttr selectedIndex="0"/>
+<Chart name="Default">
+<Chart class="com.fr.chart.chartattr.Chart">
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-6908266"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<ChartAttr isJSDraw="true"/>
+<Title>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-6908266"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<O>
+<![CDATA[]]></O>
+<TextAttr>
+<Attr alignText="0">
+<FRFont name="微软雅黑" style="0" size="88"/>
+</Attr>
+</TextAttr>
+<TitleVisible value="false" position="2"/>
+</Title>
+<Plot class="com.fr.chart.chartattr.MapPlot">
+<MapPlot>
+<GI>
+<AttrBackground>
+<Background name="ColorBackground" color="-2496786"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr isNullValueBreak="true" autoRefreshPerSecond="0" plotStyle="0"/>
+<newHotTooltipStyle>
+<AttrContents>
+<Attr showLine="false" position="1" seriesLabel="${VALUE}"/>
+<Format class="java.text.DecimalFormat">
+<![CDATA[#0.00]]></Format>
+<PercentFormat>
+<Format class="java.text.DecimalFormat">
+<![CDATA[#0.00%]]></Format>
+</PercentFormat>
+</AttrContents>
+</newHotTooltipStyle>
+<ConditionCollection>
+<DefaultAttr class="com.fr.chart.chartglyph.ConditionAttr">
+<ConditionAttr name=""/>
+</DefaultAttr>
+</ConditionCollection>
+<Legend>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="0" isRoundBorder="false"/>
+<newColor borderColor="-6908266"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr position="4" visible="true"/>
+<FRFont name="宋体" style="0" size="72"/>
+</Legend>
+<DataSheet>
+<GI>
+<AttrBackground>
+<Background name="NullBackground"/>
+</AttrBackground>
+<AttrBorder>
+<Attr lineStyle="1" isRoundBorder="false"/>
+<newColor borderColor="-16777216"/>
+</AttrBorder>
+<AttrAlpha>
+<Attr alpha="1.0"/>
+</AttrAlpha>
+</GI>
+<Attr isVisible="false"/>
+</DataSheet>
+<newPlotFillStyle>
+<AttrFillStyle>
+<Attr/>
+</AttrFillStyle>
+</newPlotFillStyle>
+<newattr201212 mapName="中国"/>
+<MapHotAreaColor>
+<MC_Attr minValue="0.0" maxValue="4500.0" useType="1" areaNumber="5" mainColor="-13395610"/>
+<ColorList>
+<AreaColor>
+<AC_Attr minValue="6000.0" maxValue="4500.0" color="-13395610"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="4500.0" maxValue="3000.0" color="-869033626"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="3000.0" maxValue="1500.0" color="-1724671642"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="1500.0" maxValue="90.0" color="1697880422"/>
+</AreaColor>
+<AreaColor>
+<AC_Attr minValue="90.0" maxValue="0.0" color="842242406"/>
+</AreaColor>
+</ColorList>
+</MapHotAreaColor>
+</MapPlot>
+</Plot>
+</Chart>
+</Chart>
+<MapMoreLayerTableDefinition>
+<Top topCate="-1" topValue="-1" isDiscardOtherCate="false" isDiscardOtherSeries="false" isDiscardNullCate="false" isDiscardNullSeries="false"/>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[ds1]]></Name>
+</TableData>
+<MoreTableNameValue>
+<SeriesDefinition>
+<SeriesName>
+<O>
+<![CDATA[SSX_NAME]]></O>
+</SeriesName>
+<SeriesValue>
+<O>
+<![CDATA[ID]]></O>
+</SeriesValue>
+</SeriesDefinition>
+<SeriesDefinition>
+<SeriesName>
+<O>
+<![CDATA[SSX_NAME]]></O>
+</SeriesName>
+<SeriesValue>
+<O>
+<![CDATA[ID]]></O>
+</SeriesValue>
+</SeriesDefinition>
+<SeriesDefinition>
+<SeriesName>
+<O>
+<![CDATA[SSX_NAME]]></O>
+</SeriesName>
+<SeriesValue>
+<O>
+<![CDATA[ID]]></O>
+</SeriesValue>
+</SeriesDefinition>
+</MoreTableNameValue>
+</MapMoreLayerTableDefinition>
+</O>
+<Expand/>
+</C>
+<C c="10" r="5" cs="4" s="2">
+<O>
+<![CDATA[该地图有2层钻取：]]></O>
+<Expand/>
+</C>
+<C c="10" r="6" cs="4" s="2">
+<O>
+<![CDATA[1、点击中国地图上的省份，可以钻取到相应的省份地图。]]></O>
+<Expand/>
+</C>
+<C c="10" r="7" cs="4" s="2">
+<O>
+<![CDATA[2、点击福建省地图上的泉州地图，可以钻取到泉州市地图。]]></O>
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="40032000" height="20160000"/>
+<Margin top="410400" left="295200" bottom="410400" right="295200"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+</ReportParameterAttr>
+<StyleList>
+<Style imageLayout="1">
+<FRFont name="微软雅黑" style="1" size="96" foreground="-1"/>
+<Background name="ColorBackground" color="-16744448"/>
+<Border>
+<Top style="2" color="-16744448"/>
+<Bottom style="2" color="-16744448"/>
+<Left style="2" color="-16744448"/>
+<Right style="2" color="-16744448"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="2" color="-16744448"/>
+<Bottom style="2" color="-16744448"/>
+<Left style="2" color="-16744448"/>
+<Right style="2" color="-16744448"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72" foreground="-16776961"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="3" color="-6697729"/>
+<Bottom style="3" color="-6697729"/>
+<Left style="3" color="-6697729"/>
+<Right style="3" color="-6697729"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="HAD"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

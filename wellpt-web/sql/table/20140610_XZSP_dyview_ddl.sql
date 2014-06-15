@@ -1,0 +1,1 @@
+alter table dyview_column_definition add FIELD_PERMISSION NUMBER(1);
