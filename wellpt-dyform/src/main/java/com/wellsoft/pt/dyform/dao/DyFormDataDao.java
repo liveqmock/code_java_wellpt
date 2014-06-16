@@ -96,7 +96,7 @@ public class DyFormDataDao extends HibernateDao {
 		DyFormDefinitionUtils dUtils = new DyFormDefinitionUtils(definition);
 		StringBuffer columns = new StringBuffer("");
 		StringBuffer values = new StringBuffer("");
-		columns.append("creator,create_time,modifier,modify_time");
+		columns.append("creator,create_time,modifier,modify_time, parent_id");
 		values.append("?").append(",").append("?").append(",").append("?").append(",").append("?");
 		List<String> fieldNames = new ArrayList<String>();
 		for (String fieldName : formData.keySet()) {

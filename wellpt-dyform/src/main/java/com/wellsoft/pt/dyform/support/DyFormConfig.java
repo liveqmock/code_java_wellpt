@@ -65,6 +65,8 @@ public class DyFormConfig {
 
 	public static final String BODY_FILEID_PREFIX = "BODY_FILEID_";
 
+	public static final String ORDER_SUBFORM_FIELDNAME_PREFIX = "_ORDER";
+
 	/**
 	 * Description =  字段值的产生方式 
 	 *  
@@ -120,7 +122,7 @@ public class DyFormConfig {
 		int system = 0;//系统字段
 		int custom = 2;//用户自定义字段
 		int admin = 1;//管理员定义字段
-		int parentForm = 3;//该字段用于保存对应的记录的主表的数据uuid
+		int parentForm = 3;//该字段用于保存对应的记录的主表的数据uuid,及排序
 	}
 
 	public interface DyDateFomat {

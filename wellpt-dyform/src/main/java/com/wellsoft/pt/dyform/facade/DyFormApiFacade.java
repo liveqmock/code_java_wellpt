@@ -141,7 +141,7 @@ public class DyFormApiFacade extends AbstractApiFacade {
 
 	/**
 	 * 获取表单定义
-	 * @param formUuid
+	 * @param formUuid 表单定义uuid
 	 * @return
 	 */
 	public DyFormDefinition getFormDefinitionByFormUuid(String formUuid) {
@@ -196,4 +196,12 @@ public class DyFormApiFacade extends AbstractApiFacade {
 
 		return dyFormDataService.getDefaultFormData(formUuid);
 	}
+	/*
+		public List<Map<String, Object>> getFormDataOfParentNode(String formUuid, String dataUuidOfMainform, int pageNO,
+				int pageSize) {
+			select * from userform_ssxx_xgxk where rowid in(select rid from (select rownum rn,rid from(select rowid rid,uuid from
+
+					userform_ssxx_xgxk  order by uuid desc) where rownum<100) where rn>1) order by uuid desc;
+		}*/
+
 }

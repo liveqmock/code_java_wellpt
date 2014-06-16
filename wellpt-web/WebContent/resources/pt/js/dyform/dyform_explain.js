@@ -537,12 +537,12 @@ $(function(){
 				
 				//序号
 				jqGridColNames.push("序号");
-				if(subform.hideSeqNO){//将序号隐藏
+				/*if(subform.hideSeqNO){//将序号隐藏
 					jqGridColModels.push({name:'seqNO',index:'seqNO',width:'25px', align:"center", sortable:false, hidden:true});
-				}else{//展示序号
+				}else{//展示序号,默认为不
 					jqGridColModels.push({name:'seqNO',index:'seqNO',width:'25px', align:"center", sortable:false});
-				}
-				
+				}*/
+				jqGridColModels.push({name:'seqNO',index:'seqNO',width:'25px', align:"center", sortable:false});
 				 
 				
 				var fields = subform.fields;
@@ -555,7 +555,7 @@ $(function(){
 					model.hidden = field.hidden;//是否隐藏 
 					jqGridColModels.push(model); 
 				}
-			 
+				
 				 
 				 
 				 var options =  _this.cache.get.call(_this,cacheType.options);
@@ -680,7 +680,7 @@ $(function(){
 							$.dyform.setValue(control, cellValue);
 							
 							
-							 
+							
 							control.setDisplayAsLabel();
 							/*if(subform.editMode == dySubFormEdittype.newWin){//在新窗口编辑，所以在jqgrid里面直接展示文本即可
 								control.setDisplayAsLabel();
@@ -699,12 +699,14 @@ $(function(){
 				   		if(!$.dyform.isControlFieldInSubform(fieldName) ){
 							return;
 						}
-				   		var id = $.dyform.getCellId(rowId, fieldName); 
-				   		var control = $.ControlManager.getControl(id); 
-				   		 
+				   		
+				   		var id = $.dyform.getCellId(rowId, fieldName);
+				   		var control = $.ControlManager.getControl(id);
+				   		
 				   		if(control == undefined){
 				   			return;
 				   		}
+				   		
 				   		control.setEditable(true);
 				   	}
 				 
@@ -1123,7 +1125,7 @@ $(function(){
 			var _this = this;
 			var $dg = this.$('#' + formUuid);
 			var ids = $dg.jqGrid('getGridParam','selarrrow');
-			if(ids.length > 0){ 
+			if(ids.length > 0){
 				$.jBox.confirm(dymsg.delConfirm,dymsg.tipTitle,function (v,h,f){
 					if(v){
 						for(var i=(ids.length-1);i>=0;i--){ 
@@ -1149,7 +1151,6 @@ $(function(){
 				}*/
 				this.$("#" + formUuid).jqGrid("setCell", id, "seqNO", count );
 			}
-			
 		},
 		createUuid:function(){
 			return  new UUID().id.toLowerCase(); 

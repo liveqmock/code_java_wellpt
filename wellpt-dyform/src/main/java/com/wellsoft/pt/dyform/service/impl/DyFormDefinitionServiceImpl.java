@@ -177,6 +177,17 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 				mainFormFieldInSubform.put("inputMode", DyFormConfig.INPUTMODE_Text);
 				subformFieldJsonDefinitons.put(mainformName, mainFormFieldInSubform);
 				subformJsonDefinition.put("fields", subformFieldJsonDefinitons);
+
+				//保存排序
+				JSONObject mainFormFieldOrderInSubform = new JSONObject();
+				mainFormFieldOrderInSubform.put("name", mainformName + DyFormConfig.ORDER_SUBFORM_FIELDNAME_PREFIX);
+				mainFormFieldOrderInSubform.put("sysType", DyFieldSysType.parentForm);
+				mainFormFieldOrderInSubform.put("length", 50);
+				mainFormFieldOrderInSubform.put("dbDataType", DbDataType._string);
+				mainFormFieldOrderInSubform.put("valueCreateMethod", ValueCreateMethod.userImport);
+				mainFormFieldOrderInSubform.put("inputMode", DyFormConfig.INPUTMODE_Text);
+				subformFieldJsonDefinitons.put(mainformName, mainFormFieldInSubform);
+				subformJsonDefinition.put("fields", subformFieldJsonDefinitons);
 				subformDefinition.setDefinitionJson(subformJsonDefinition.toString());
 				this.createFormDefinitionAndFormTable(subformDefinition);
 			}
@@ -244,7 +255,6 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 		} else {
 			return true;
 		}
-
 	}
 
 	private String convertDefinitionJson2HbmCfg(String defintionJson) {

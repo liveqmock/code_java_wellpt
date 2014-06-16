@@ -41,8 +41,10 @@
 		<label>动态表单示例</label> <input type="text" id="creator" name="creator" />
 	</form>
 	<!-- 动态表单 -->
+	
 		<input id="addSubform" type="button" value="添加子节点"></input>
 		<input id="querySubform" type="button" value="查询子节点"></input>
+		<input id="addSubformOfsub" type="button" value="添加子节点的子节点"></input>
 	<table id="cde">
 		 
 	</table>

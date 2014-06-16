@@ -120,7 +120,7 @@ $(function() {
 	});
 	
 	
-/*	var topicjson={
+ 	var topicjson={
 			   "response": [
 			          {
 			              "id": "1",
@@ -177,7 +177,7 @@ $(function() {
 			   ],
 			   treeGrid: true,
 			   treeGridModel: "adjacency",
-			   ExpandColumn: "elementName",
+			   ExpandColumn: "id",
 			   treeIcons: {leaf:'ui-icon-document-b'},
 			   caption: "jqGrid Demos",
 			   //autowidth: true,
@@ -197,8 +197,7 @@ $(function() {
 			});
 			
 			
-			$("#addSubform").click(function(){
-		 
+			$("#addSubform").click(function(){ 
 				  var ret = {"error":"","total":1,"page":1,"records":1,"rows":[ {
 		              "id": "1_3",
 		              "elementName": "test Formatter",
@@ -210,6 +209,18 @@ $(function() {
 			$("#querySubform").click(function(){
 				var datas  = $("#cde").jqGrid("getRowData");
 				console.log(JSON.stringify(datas));
-			});*/
+			}); 
+			
+			
+			
+			$("#addSubformOfsub").click(function(){
+				  var ret = {"error":"","total":1,"page":1,"records":1,"rows":[ {
+		              "id": "1_3_1",
+		              "elementName": "test Formatter",
+		              "url":"http://www.voa.com",
+		              level:"2", parent:"1_3", isLeaf:true, expanded:false, loaded:true
+		          }]};
+                $("#cde" ).jqGrid ('addChildNode', ret.rows[0].id, ret.rows[0].parent, ret.rows[0]);
+			});
 });
 
