@@ -159,8 +159,7 @@
 	     
 		//设值
 		 setValue:function(value){
-	    	  this.$element.val(value);
-	    	  this.$element.attr("value",value);
+			 $.ControlUtil.setValue(this.$element,this.options,value);
 		 } ,
 		 
 		 //设置必输
@@ -169,9 +168,10 @@
 		 } ,
 		 
 		 //设置可编辑
-		 setEditable:function(iseditable){
-			 this.setReadOnly(!iseditable);
-			 this.setEnable(iseditable);
+		 setEditable:function(){
+			 this.setReadOnly(false);
+			 this.setEnable(true);
+			 this.setDisplayAsCtl();
 		 } ,
 		 
 		 //只读，文本框不置灰，不可编辑
@@ -188,7 +188,7 @@
 		 
 		 //设置hide属性
 		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(isvisible);
+			 $.ControlUtil.setVisible(this.$element,isvisible);
 			 this.options.isHide=!isvisible;
 		 } ,
 		 
@@ -196,6 +196,11 @@
 		 setDisplayAsLabel:function(){
 			 $.ControlUtil.setIsDisplayAsLabel(this.$element,this.options,true);
 		 } ,
+		 
+		 //显示为控件
+		 setDisplayAsCtl:function(){
+			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
+		 },
 		 
 	       
 	    //get..........................................................//
@@ -341,6 +346,7 @@
 		negative:true,
 		disabled:false,
         readOnly:false,
+        isShowAsLabel:false,
         isHide:false,//是否隐藏
 	};
 })(jQuery);

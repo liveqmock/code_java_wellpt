@@ -104,8 +104,7 @@
 	     
 		//设值
 		 setValue:function(value){
-	    	  this.$element.val(value);
-	    	  this.$element.attr("value",value);
+			 $.ControlUtil.setValue(this.$element,this.options,value);
 		 } ,
 		 
 		 //设置必输
@@ -114,9 +113,10 @@
 		 } ,
 		 
 		 //设置可编辑
-		 setEditable:function(iseditable){
-			 this.setReadOnly(!iseditable);
-			 this.setEnable(iseditable);
+		 setEditable:function(){
+			 this.setReadOnly(false);
+			 this.setEnable(true);
+			 this.setDisplayAsCtl();
 		 } ,
 		 
 		 //只读，文本框不置灰，不可编辑
@@ -142,6 +142,10 @@
 			 $.ControlUtil.setIsDisplayAsLabel(this.$element,this.options,true);
 		 } ,
 		 
+		 //显示为控件
+		 setDisplayAsCtl:function(){
+			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
+		 },
 	       
 	    //get..........................................................//
 		
@@ -274,6 +278,7 @@
 			//控件私有属性
 			disabled:false,
 	        readOnly:false,
+	        isShowAsLabel:false,
 	        isHide:false,//是否隐藏
 			alwaysUseStartDate:false,
 			startDate:'%y-%M-%d %H:%m:%s',

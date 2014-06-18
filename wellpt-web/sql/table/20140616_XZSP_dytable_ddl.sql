@@ -1,0 +1,1 @@
+alter table userform_matters_definition modify approval_condition VARCHAR2(2000 CHAR);

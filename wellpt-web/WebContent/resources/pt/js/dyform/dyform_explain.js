@@ -678,10 +678,16 @@ $(function(){
 							var control = $.ControlManager.getControl(id);
 							
 							$.dyform.setValue(control, cellValue);
-							
-							
-							
+							 
 							control.setDisplayAsLabel();
+							control.bind("blur", function(){
+								
+								//control.setDisplayAsLabel();
+								var name = control.getCtlName();
+								$("input[name='" + name + "']").blur(function(){
+									control.setDisplayAsLabel();
+								});
+							});
 							/*if(subform.editMode == dySubFormEdittype.newWin){//在新窗口编辑，所以在jqgrid里面直接展示文本即可
 								control.setDisplayAsLabel();
 							} */
@@ -706,8 +712,14 @@ $(function(){
 				   		if(control == undefined){
 				   			return;
 				   		}
+				   		var name = control.getCtlName();
 				   		
-				   		control.setEditable(true);
+				   		control.setEditable();
+				   		
+				   		document.getElementsByName(name).item(0).select();
+				   		//document.getElementsByName(name).item(0).focus();
+						//$("input[name='" + name + "']")[0].select();
+						//$("input[name='" + name + "']")[0].focus();
 				   	}
 				 
 				});
@@ -1227,7 +1239,7 @@ $(function(){
 	});
 	
 	
-
+	
 	
 });
  

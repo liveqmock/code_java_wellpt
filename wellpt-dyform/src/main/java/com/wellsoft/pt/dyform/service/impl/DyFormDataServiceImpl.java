@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import com.wellsoft.pt.core.support.PagingInfo;
+import com.wellsoft.pt.core.support.QueryData;
 import com.wellsoft.pt.dyform.dao.DyFormDataDao;
 import com.wellsoft.pt.dyform.entity.DyFormDefinition;
 import com.wellsoft.pt.dyform.facade.DyFormApiFacade;
@@ -380,5 +382,120 @@ public class DyFormDataServiceImpl implements DyFormDataService {
 		formatValueOfFormData(formData, dUtils);
 
 		return formData;
+	}
+
+	@Override
+	public QueryData getFormDataOfParentNodeByPage(String formUuidOfSubform, String formUuidOfMainform,
+			String dataUuidOfMainform, PagingInfo pagingInfo) {
+
+		DyFormDefinition formDefinitionOfMainform = this.dyFormApiFacade
+				.getFormDefinitionByFormUuid(formUuidOfMainform);
+
+		if (formDefinitionOfMainform == null) {
+			logger.warn("cannot find form definition  of formUuid[" + formUuidOfMainform + "]");
+			return null;
+		}
+
+		DyFormDefinitionUtils dUtils = null;
+		List<String> fieldNames = null;
+		String tblNameOfSubform = null;
+		String tblNameOfMainform = null;
+		String fieldNameOfMainformOrder = null;
+
+		try {
+			dUtils = new DyFormDefinitionUtils(formDefinitionOfMainform);
+			fieldNames = dUtils.getFieldNamesOfSubform(formUuidOfSubform);
+			tblNameOfSubform = dUtils.getTblNameOfSubform(formUuidOfSubform);
+			tblNameOfMainform = dUtils.getTblNameOfMainform();
+			fieldNameOfMainformOrder = DyFormDefinitionUtils.getFieldNameOfOrder(tblNameOfMainform);
+		} catch (JSONException e) {
+			logger.error(e.getMessage(), e);
+			return null;
+		}
+
+		StringBuffer totalSqlBuffer = new StringBuffer();
+		totalSqlBuffer.append("select count(uuid) c from ");
+		totalSqlBuffer.append(tblNameOfSubform);
+		totalSqlBuffer.append(" where parent_id is null and ");
+
+		totalSqlBuffer.append(tblNameOfMainform);
+		totalSqlBuffer.append(" = '");
+		totalSqlBuffer.append(dataUuidOfMainform);
+		totalSqlBuffer.append("'");
+		long totalCount = 0;
+		try {
+			String totalCountstr = (String) dbTableDao.query(totalSqlBuffer.toString()).get(0).get("c");
+			totalCount = Long.parseLong(totalCountstr);
+		} catch (Exception e1) {
+			logger.error(e1.getMessage(), e1);
+		}
+
+		/*	select * from userform_ssxx_xgxk where rowid in(select rid from (select rownum rn,rid from(select rowid rid,uuid from 
+					userform_ssxx_xgxk  order by uuid desc) where rownum<100) where rn>1) order by uuid desc;*/
+		pagingInfo.setTotalCount(totalCount);
+		pagingInfo.setAutoCount(true);
+		StringBuffer sqlBuffer = new StringBuffer();
+		sqlBuffer.append("select uuid,creator,create_time,modify_time,sort_order, form_uuid, parent_id ");
+
+		for (Object fieldNameObj : fieldNames) {
+			String fieldName = (String) fieldNameObj;
+			sqlBuffer.append(", ").append(fieldName);
+		}
+		sqlBuffer.append(" from ");
+		sqlBuffer.append(tblNameOfSubform);
+		sqlBuffer.append(" where rowid in(select rid from (select rownum rn,rid from ");
+		sqlBuffer.append(" (select rowid rid,    ");
+		sqlBuffer.append(fieldNameOfMainformOrder);
+		sqlBuffer.append("  from    ");
+
+		sqlBuffer.append(tblNameOfSubform);
+
+		sqlBuffer.append(" where parent_id is null and ");
+
+		sqlBuffer.append(tblNameOfMainform);
+		sqlBuffer.append(" = '");
+		sqlBuffer.append(dataUuidOfMainform);
+		sqlBuffer.append("'");
+
+		sqlBuffer.append(" order by   ");
+		sqlBuffer.append(fieldNameOfMainformOrder);
+		sqlBuffer.append(" asc ");
+		sqlBuffer.append(") where rownum<  ");
+		sqlBuffer.append(pagingInfo.getFirst() + pagingInfo.getPageSize());
+		sqlBuffer.append(") where rn >  ");
+
+		sqlBuffer.append(pagingInfo.getFirst());
+		sqlBuffer.append(") order by  ");
+		sqlBuffer.append(fieldNameOfMainformOrder);
+		sqlBuffer.append(" asc ");
+
+		try {
+			List<Map<String, Object>> list = dbTableDao.query(sqlBuffer.toString());
+			for (Map<String, Object> record : list) {
+				for (String fieldName : fieldNames) {
+					Object value = record.get(fieldName.toLowerCase());
+					record.remove(fieldName.toLowerCase());
+					record.put(fieldName, value);
+				}
+			}
+
+			//格式化
+			if (list == null || list.size() == 0) {
+				return null;
+			}
+			DyFormDefinitionUtils dUtils2 = new DyFormDefinitionUtils(
+					this.dyFormApiFacade.getFormDefinitionByFormUuid(formUuidOfSubform));
+			for (Map<String, Object> record : list) {
+				formatValueOfFormData(record, dUtils2);
+			}
+			QueryData queryData = new QueryData();
+			queryData.setDataList(list);
+			queryData.setPagingInfo(pagingInfo);
+			return queryData;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return null;
+		}
+
 	}
 }

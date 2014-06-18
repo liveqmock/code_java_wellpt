@@ -120,7 +120,7 @@ $(function() {
 	});
 	
 	
- 	var topicjson={
+ 	/*var topicjson={
 			   "response": [
 			          {
 			              "id": "1",
@@ -221,6 +221,6 @@ $(function() {
 		              level:"2", parent:"1_3", isLeaf:true, expanded:false, loaded:true
 		          }]};
                 $("#cde" ).jqGrid ('addChildNode', ret.rows[0].id, ret.rows[0].parent, ret.rows[0]);
-			});
+			});*/
 });
 

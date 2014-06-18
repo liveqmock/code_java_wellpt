@@ -73,6 +73,7 @@ import com.wellsoft.pt.dyform.support.DyFormConfig;
 import com.wellsoft.pt.dyform.support.DyFormConfig.DbDataType;
 import com.wellsoft.pt.dyform.support.DyFormConfig.DyFieldSysType;
 import com.wellsoft.pt.dyform.support.DyFormConfig.ValueCreateMethod;
+import com.wellsoft.pt.dyform.support.DyFormDefinitionUtils;
 import com.wellsoft.pt.dytable.bean.TreeNodeBean;
 import com.wellsoft.pt.dytable.support.TableConfig;
 
@@ -180,7 +181,7 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 
 				//保存排序
 				JSONObject mainFormFieldOrderInSubform = new JSONObject();
-				mainFormFieldOrderInSubform.put("name", mainformName + DyFormConfig.ORDER_SUBFORM_FIELDNAME_PREFIX);
+				mainFormFieldOrderInSubform.put("name", DyFormDefinitionUtils.getFieldNameOfOrder(mainformName));
 				mainFormFieldOrderInSubform.put("sysType", DyFieldSysType.parentForm);
 				mainFormFieldOrderInSubform.put("length", 50);
 				mainFormFieldOrderInSubform.put("dbDataType", DbDataType._string);

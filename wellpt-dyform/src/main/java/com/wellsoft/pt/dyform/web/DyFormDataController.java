@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.wellsoft.pt.common.enums.JsonDataErrorCode;
+import com.wellsoft.pt.core.support.PagingInfo;
 import com.wellsoft.pt.core.web.ResultMessage;
 import com.wellsoft.pt.dyform.facade.DyFormApiFacade;
 
@@ -132,7 +133,7 @@ public class DyFormDataController extends BaseFormDataController {
 
 	@RequestMapping(value = "/getFormData", method = RequestMethod.POST)
 	public ResponseEntity<ResultMessage> getFormData(String formUuid, String dataUuid) {
-		Map<String/*表单定义uuid*/, List<Map<String /*表单字段值*/, Object/*表单字段值*/>>> formDatas = new HashMap<String, List<Map<String, Object>>>();
+		Map<String/*表单定义uuid*/, List<Map<String /*表单字段名*/, Object/*表单字段值*/>>> formDatas = new HashMap<String, List<Map<String, Object>>>();
 		try {
 			formDatas = dyFormApiFacade.getFormData(formUuid, dataUuid);
 		} catch (JSONException e) {
@@ -141,6 +142,13 @@ public class DyFormDataController extends BaseFormDataController {
 		}
 		return getSucessfulResultMsg(formDatas);
 	}
+
+	/*@RequestMapping(value = "/getMainFormData", method = RequestMethod.POST)
+	public ResponseEntity<ResultMessage> getMainFormData(String formUuid, String dataUuid) {
+		Map<String 表单字段名, Object表单字段值> formDatas = new HashMap<String, Object>();
+		formDatas = dyFormApiFacade.getFormDataOfMainform(formUuid, dataUuid);
+		return getSucessfulResultMsg(formDatas);
+	}*/
 
 	@RequestMapping(value = "/getDefaultFormData", method = RequestMethod.POST)
 	public ResponseEntity<ResultMessage> getDefaultFormData(String formUuid) {
@@ -154,4 +162,16 @@ public class DyFormDataController extends BaseFormDataController {
 		return getSucessfulResultMsg(formData);
 	}
 
+	@RequestMapping(value = "/getParentNodesOfSubform", method = RequestMethod.POST)
+	public ResponseEntity<ResultMessage> getParentNodesOfSubformByPage(String formUuidOfSubform,
+			String formUuidOfMainform, String dataUuidOfMainform, int pageSize, int currentPageNo) {
+		PagingInfo pagingInfo = new PagingInfo();
+		pagingInfo.setAutoCount(true);
+		pagingInfo.setCurrentPage(currentPageNo);
+		pagingInfo.setPageSize(pageSize);
+
+		return getSucessfulResultMsg(this.dyFormApiFacade.getFormDataOfParentNodeByPage(formUuidOfSubform,
+				formUuidOfMainform, dataUuidOfMainform, pagingInfo));
+
+	}
 }

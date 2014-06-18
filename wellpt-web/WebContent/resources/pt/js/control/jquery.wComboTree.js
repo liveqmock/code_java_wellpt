@@ -80,7 +80,7 @@
 				}else {
 					data3 = false;
 				}*/
-				var data3 = options.mutiselect;
+				var data3 = options.mutiSelect;
 				$(this.$element).after("<input type='hidden' id='_"+colEnName+"' name='_"+colEnName+"' value=''>");
 				var data1 = data.replace("|","");
 				if($('#data').val() == undefined) {
@@ -105,51 +105,7 @@
 				}else {
 					dataArrays.push($("#"+data1).val());
 				}
-				
-				if(isMod){
-					if(val != undefined && methodName != "" && methodName != null) {
-						var method = methodName.split(".");
-						var servicename = method[0];
-						var Method = method[1].split("(")[0]; //方法名
-						var datas = method[1].split("(")[1].replace(")",""); //数据
-						var data = datas.split(",")[0];
-						data = data.replace("\'","").replace("\'","");
-						var initService = servicename+ "."+Method;
-						var VAL = val;
-						JDS.call({
-							async:false,
-							service : initService,
-							data : [data,val],
-							success : function(result) {
-								var data = result.data;
-								$("#"+showId).attr('value',data.label);
-							}
-						});
-					}else {
-						if(val != undefined && val.indexOf(";")>0) {
-							var _val = val.split(";");
-							$(this.$element).attr('value',_val[1]);
-						}else {
-							$(this.$element).val(val);
-							if(methodName == "" || methodName == null) {
-								JDS.call({
-									async:false,
-									service : servicename+"."+method,
-									data : ["-1",$("#"+data1).val()],
-									success : function(result) {
-										var data = result.data;
-										for(var l=0;l<data.length;l++) {
-											if(val == data[l].data) {
-												$(this.$element).val(data[l].name);
-											}
-										}
-									}
-								});
-							}
-						}
-						
-					}
-				}
+
 				if(options.columnProperty.showType==dyshowType.showAsLabel){
 					 $.ControlUtil.setIsDisplayAsLabel(this.$element,options,true);
 				}else if(options.columnProperty.showType==dyshowType.disabled){
@@ -189,7 +145,7 @@
 						labelField : colEnName,
 						valueField : "_"+colEnName,
 						width: options.treeWidth,
-						height: options.height,
+						height: options.treeHeight,
 						treeSetting : setting,
 						initService :options.initService,
 						initServiceParam : options.initServiceParam
@@ -221,11 +177,11 @@
 	     
 		//设值
 		 setValue:function(value){
-			 var valuename=this.$element.attr("name");
+			 var valuename=this.getCtlName();
 			 if(this.options.isinitTreeById){
 				 valuename=this.$element.attr("id");
 			 }
-			 return $("#_"+valuename).val();
+			 return $("#_"+valuename).val(value);
 		 } ,
 		 
 		 //设置必输
@@ -234,9 +190,10 @@
 		 } ,
 		 
 		 //设置可编辑
-		 setEditable:function(iseditable){
-			 this.setReadOnly(!iseditable);
-			 this.setEnable(iseditable);
+		 setEditable:function(){
+			 this.setReadOnly(false);
+			 this.setEnable(true);
+			 this.setDisplayAsCtl();
 		 } ,
 		 
 		 //只读，文本框不置灰，不可编辑
@@ -253,7 +210,7 @@
 		 
 		 //设置hide属性
 		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(isvisible);
+			 $.ControlUtil.setVisible(this.$element,isvisible);
 			 this.options.isHide=!isvisible;
 		 } ,
 		 
@@ -262,6 +219,10 @@
 			 $.ControlUtil.setIsDisplayAsLabel(this.$element,this.options,true);
 		 } ,
 		 
+		 //显示为控件
+		 setDisplayAsCtl:function(){
+			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
+		 },
 		 
 		 setValueByMap:function(valuemap){
 			 var valueobj=eval("("+valuemap+")");
@@ -273,6 +234,10 @@
 				}
 			 this.setValue((valuearray.toString()).replace(/\,/g, ";"));
 			 this.setDisplayValue((displayvaluearray.toString()).replace(/\,/g, ";"));
+			
+			 if(this.options.isShowAsLabel==true){
+				 this.$element.next().html(this.getDisplayValue());
+	    	  }
 		 },
 	       
 	    //get..........................................................//
@@ -425,17 +390,18 @@
 			//控件私有属性
 			disabled:false,
 	        readOnly:false,
+	        isShowAsLabel:false,
 	        isHide:false,//是否隐藏
 			serviceName:null,
 			treeWidth: 220,
 			treeHeight: 220,
-			
+			mutiSelect:true,
 			
 			//获得根据真实值获得初始值。新版需要解析value，将真实值解析为真实值和显示值，分别填充到对应元素上.
 			initService : "dataDictionaryService.getKeyValuePair",
 			initServiceParam : [ "DY_FORM_FIELD_MAPPING" ],
 			//是否允许多选
-			mutiselect:true,
+			
 			isinitTreeById:false
 	};
 	

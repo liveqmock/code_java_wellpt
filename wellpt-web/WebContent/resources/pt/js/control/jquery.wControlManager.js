@@ -199,7 +199,10 @@
 		    $("input[name='"+name+"']").wcomboTree({
 		    	columnProperty:columnProperty,
 		    	commonProperty:commonProperty,
-		    	serviceName:column.serviceName
+		    	serviceName:column.serviceName,
+		    	treeWidth: column.treeWidth,
+				treeHeight: column.treeHeight,
+				mutiSelect:column.mutiSelect
 				});
 		//视图展示    
 		}else if(inputMode==dyFormInputMode.viewdisplay){
@@ -211,24 +214,28 @@
 				relationDataSql : column.relationDataSql		
 				});
 		}else if(inputMode==dyFormInputMode.accessory3){
-			var fileUploadConfig={};
 			if(column.fileUploadConfig!=''||column.fileUploadConfig!=undefined){
 				  fileUploadConfig=eval('('+column.fileUploadConfig+')');
 			}
 		    $("input[name='"+name+"']").wfileUpload({
 		    	columnProperty:columnProperty,
 		    	commonProperty:commonProperty,	
-		    	fileUploadConfig:fileUploadConfig
+		    	allowUpload:column.allowUpload,//允许上传
+	            allowDownload:column.allowDownload,//允许下载
+	            allowDelete:column.allowDelete,//允许删除
+	            mutiselect:column.mutiselect//是否多选
 				});
 		}else if(inputMode==dyFormInputMode.accessory1){
-			var fileUploadConfig={};
 			if(column.fileUploadConfig!=''||column.fileUploadConfig!=undefined){
 				  fileUploadConfig=eval('('+column.fileUploadConfig+')');
 			}
 		    $("input[name='"+name+"']").wfileUpload4Icon({
 		    	columnProperty:columnProperty,
 		    	commonProperty:commonProperty,	
-		    	fileUploadConfig:fileUploadConfig
+		    	allowUpload:column.allowUpload,//允许上传
+	            allowDownload:column.allowDownload,//允许下载
+	            allowDelete:column.allowDelete,//允许删除
+	            mutiselect:column.mutiselect//是否多选
 				});
 		//弹出对话框    
 		}else if(inputMode==dyFormInputMode.dialog){

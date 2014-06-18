@@ -30,12 +30,6 @@
 			
 	};	
 	
-	var fileUploadConfig={
-		      allowUpload:true,
-		      allowDownload:true,
-		      allowDelete:true,
-		      mutiselect:true
-	};
 	
 	/*
 	 * FILEUPLOAD4ICON CLASS DEFINITION ======================
@@ -63,9 +57,9 @@
 				 setReadOnly=true;
 			 }
 			 
-			 var allowUpload=this.options.fileUploadConfig.allowUpload;
-			 var allowDownload=this.options.fileUploadConfig.allowDownload;
-			 var allowDelete=this.options.fileUploadConfig.allowDelete;
+			 var allowUpload=this.options.allowUpload;
+			 var allowDownload=this.options.allowDownload;
+			 var allowDelete=this.options.allowDelete;
 
 			 
 			this.$element.hide();
@@ -209,8 +203,11 @@
 	        mainTableName:'',
 	        formSign:'',
 	        dataUuid:'222',
-	        fileUploadConfig:fileUploadConfig,
-	        enableSignature:""
+	        enableSignature:"",
+         	allowUpload:true,//允许上传
+            allowDownload:true,//允许下载
+            allowDelete:true,//允许删除
+            mutiselect:true//是否多选
 	};
 	
 })(jQuery);

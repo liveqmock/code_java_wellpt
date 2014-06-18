@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.wellsoft.pt.core.service.AbstractApiFacade;
+import com.wellsoft.pt.core.support.PagingInfo;
+import com.wellsoft.pt.core.support.QueryData;
 import com.wellsoft.pt.dyform.entity.DyFormDefinition;
 import com.wellsoft.pt.dyform.service.DyFormDataService;
 import com.wellsoft.pt.dyform.service.DyFormDefinitionService;
@@ -92,7 +94,7 @@ public class DyFormApiFacade extends AbstractApiFacade {
 	 * @throws ParseException 
 	 */
 	public String saveFormData(String mainformUuid/*主表表单定义uuid*/,
-			Map<String/*表单定义uuid*/, List<Map<String /*表单字段值*/, Object/*表单字段值*/>>> formDatas)
+			Map<String/*表单定义uuid*/, List<Map<String /*表单字段名*/, Object/*表单字段值*/>>> formDatas)
 			throws JsonParseException, JsonMappingException, JSONException, IOException, ParseException {
 		return dyFormDataService.saveFormData(mainformUuid, formDatas);
 	}
@@ -103,7 +105,7 @@ public class DyFormApiFacade extends AbstractApiFacade {
 	 * @param dataUuid
 	 * @return
 	 */
-	public Map<String /*表单字段值*/, Object/*表单字段值*/> getMainData(String formUuid, String dataUuid) {
+	public Map<String /*表单字段名*/, Object/*表单字段值*/> getFormDataOfMainform(String formUuid, String dataUuid) {
 		return dyFormDataService.getFormDataOfMainform(formUuid, dataUuid);
 	}
 
@@ -126,7 +128,7 @@ public class DyFormApiFacade extends AbstractApiFacade {
 	 * @param dataUuidOfMainform
 	 * @return
 	 */
-	public List<Map<String /*表单字段值*/, Object/*表单字段值*/>> getSubformData(String formUuidOfMainform,
+	public List<Map<String /*表单字段值*/, Object/*表单字段值*/>> getFormDataOfSubform(String formUuidOfMainform,
 			String formUuidOfSubform, String dataUuidOfMainform) {
 		return dyFormDataService.getFormDataOfSubform(formUuidOfMainform, formUuidOfSubform, dataUuidOfMainform);
 	}
@@ -193,15 +195,21 @@ public class DyFormApiFacade extends AbstractApiFacade {
 	}
 
 	public Map<String, Object> getDefaultFormData(String formUuid) throws JSONException {
-
 		return dyFormDataService.getDefaultFormData(formUuid);
 	}
-	/*
-		public List<Map<String, Object>> getFormDataOfParentNode(String formUuid, String dataUuidOfMainform, int pageNO,
-				int pageSize) {
-			select * from userform_ssxx_xgxk where rowid in(select rid from (select rownum rn,rid from(select rowid rid,uuid from
 
-					userform_ssxx_xgxk  order by uuid desc) where rownum<100) where rn>1) order by uuid desc;
-		}*/
+	/**
+	 * 分页查询从表父节点记录
+	 * @param formUuid 从表的表单uuid
+	 * @param dataUuidOfMainform
+	 * @param pagingInfo
+	 * @return
+	 */
+	public QueryData getFormDataOfParentNodeByPage(String formUuidOfSubform, String formUuidOfMainform,
+			String dataUuidOfMainform, PagingInfo pagingInfo) {
 
+		return this.dyFormDataService.getFormDataOfParentNodeByPage(formUuidOfSubform, formUuidOfMainform,
+				dataUuidOfMainform, pagingInfo);
+
+	}
 }

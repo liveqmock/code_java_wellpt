@@ -280,4 +280,13 @@ public class DyFormDefinitionUtils {
 		return false;
 	}
 
+	/**
+	 *从表中的以主表名命名的字段对应的排序字段的字段名 
+	 * @param tblNameOfMainform
+	 * @return
+	 */
+	public static String getFieldNameOfOrder(String tblNameOfMainform) {
+		return tblNameOfMainform + DyFormConfig.ORDER_SUBFORM_FIELDNAME_PREFIX;
+	}
+
 }

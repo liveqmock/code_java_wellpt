@@ -1,0 +1,1 @@
+alter table userform_matters_definition modify banli_basis VARCHAR2(2000 CHAR);

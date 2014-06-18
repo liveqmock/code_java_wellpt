@@ -30,13 +30,6 @@
 			
 	};	
 	
-	var fileUploadConfig={
-		      allowUpload:true,
-		      allowDownload:true,
-		      allowDelete:true,
-		      mutiselect:true
-	};
-	
 	/*
 	 * FILEUPLOAD CLASS DEFINITION ======================
 	 */
@@ -58,12 +51,12 @@
 			 //设置字段属性.根据不同的控件类型区分。
 			 $.ControlUtil.setCtrAttr(this.$element,this.options);
 			 
-			 var allowDownload=this.options.fileUploadConfig.allowDownload;
-			 var allowDelete=this.options.fileUploadConfig.allowDelete;
-			 var mutiselect=this.options.fileUploadConfig.mutiselect;
+			 var allowDownload=this.options.allowDownload;
+			 var allowDelete=this.options.allowDelete;
+			 var mutiselect=this.options.mutiselect;
 			 
 			 var setReadOnly=false;
-			 setReadOnly=!this.options.fileUploadConfig.allowUpload;;
+			 setReadOnly=!this.options.allowUpload;;
 			this.$element.hide();
 			var id = this.$element.attr('id');//字段名称
 			 
@@ -195,12 +188,15 @@
 	$.fn.wfileUpload.defaults = {
 			columnProperty:columnProperty,//字段属性
 			commonProperty:commonProperty,//公共属性
-			fileUploadConfig:fileUploadConfig,
 	        isHide:false,//是否隐藏
 	        mainTableName:'',
 	        formSign:'',
 	        dataUuid:'222',
-	        enableSignature:""
+	        enableSignature:"",
+        	allowUpload:true,//允许上传
+            allowDownload:true,//允许下载
+            allowDelete:true,//允许删除
+            mutiselect:true//是否多选
 	};
 	
 })(jQuery);

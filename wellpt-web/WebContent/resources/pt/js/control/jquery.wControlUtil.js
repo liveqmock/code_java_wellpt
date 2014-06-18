@@ -60,7 +60,11 @@
 				 }else if(inputMode==dyFormOrgSelectType.orgSelectAddress ||inputMode==dyFormOrgSelectType.orgSelectStaDep
 							||inputMode==dyFormOrgSelectType.orgSelectDepartment||inputMode==dyFormOrgSelectType.orgSelectStaff){
 					 elment.attr("id",elment.attr("name"));
-					 elment.addClass("input-search");//css in wellnewoa.css
+					 if(inputMode==dyFormOrgSelectType.orgSelectStaff){
+						 elment.addClass("input-people");//css in wellnewoa.css
+					 }else{
+						 elment.addClass("input-search");//css in wellnewoa.css
+					 }
 				 }else if(inputMode==dyFormInputMode.dialog){
 					 elment.attr("id",elment.attr("name"));
 					 elment.attr("relationdatatwosql",options.relationdatatwosql);	//关联数据类型
@@ -164,7 +168,6 @@
 					 }else if(elment.parent().parent().parent().is("tr[class='field']")){
 						 elment.parent().parent().parent().show();
 					 }
-					elment.attr("isHide",!isvisible);
 				 }else{
 					 elment.hide(); 
 					//label也需要隐藏
@@ -175,9 +178,23 @@
 					 }else if(elment.parent().parent().parent().is("tr[class='field']")){
 						 elment.parent().parent().parent().hide();
 					 }
-					 elment.attr("isHide",!isvisible);
 				 }
 			},
+			
+			
+			 /**
+			  * setIsDisplayAsLabel的逆向操作
+			  * @param elment
+			  * @param options
+			  * @param islabelshow
+			  */
+			 setDisplayAsCtl:function(elment,options){
+				 elment.show();
+				 if( elment.next().is('span')){
+					 elment.next().remove();
+				 }
+				 options.isShowAsLabel=true;
+			 },
 			
 			
 			/**
@@ -197,6 +214,9 @@
 							this.setSpanStyle(elment,options.commonProperty.textAlign,options.commonProperty.fontSize,options.commonProperty.fontColor,options.commonProperty.ctlWidth,options.commonProperty.ctlHight,val);
 						}
 					}
+					options.isShowAsLabel=true;
+				 }else{
+					 options.isShowAsLabel=false;
 				 }
 				
 				
@@ -369,6 +389,18 @@
 			 elment.after("<span "+spanstyle+">"+val+"</span>");
 			},
 			
+		
+		/**
+		 * 控件设值(如果是显示为lable，则label也得更新)
+		 * @param elment
+		 * @param options
+		 */
+		 setValue:function(elment,options,value){
+			  elment.val(value);
+	    	  if(options.isShowAsLabel==true){
+	    		  elment.next().html(value);
+	    	  }
+		 },
 			
 			/**
 			 * 通过参数获得初始化的样式。

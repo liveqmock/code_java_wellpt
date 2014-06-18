@@ -115,6 +115,8 @@ public class DyFormDataDao extends HibernateDao {
 		sqlquery.setTimestamp(1, Calendar.getInstance().getTime());
 		sqlquery.setString(2, SpringSecurityUtils.getCurrentUserId());
 		sqlquery.setTimestamp(3, Calendar.getInstance().getTime());
+		String parent_id = (String) formData.get("parent_id");
+		sqlquery.setString(3, parent_id);
 		for (int i = 0; i < fieldNames.size(); i++) {
 			String fieldName = fieldNames.get(i);
 			Object valueObj = formData.get(fieldName);

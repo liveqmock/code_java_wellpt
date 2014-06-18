@@ -136,7 +136,10 @@
 			 for(var i=0;i<value1.length;i++){
 				 $("input[name='"+this.getCtlName()+"'][value='"+value1[i]+"']").prop("checked",true);
 			 }
-			
+			 if(this.options.isShowAsLabel==true){
+				 this.setDisplayAsCtl();
+				 this.setDisplayAsLabel();
+			 }
 		 } ,
 		 
 		 setValueByMap:function(valuemap){
@@ -145,6 +148,10 @@
 			 for(attribute in valueobj){  
 				 $("input[name='"+this.getCtlName()+"'][value='"+attribute+"']").prop("checked",true);
 				}
+			 if(this.options.isShowAsLabel==true){
+				 this.setDisplayAsCtl();
+				 this.setDisplayAsLabel();
+			 }
 		 },
 		 
 		 //设置必输
@@ -153,8 +160,9 @@
 		 } ,
 		 
 		 //设置可编辑
-		 setEditable:function(iseditable){
-			 this.setEnable(iseditable);
+		 setEditable:function(){
+			 this.setEnable(true);
+			 this.setDisplayAsCtl();
 		 } ,
 		 
 		 
@@ -183,12 +191,24 @@
 		 setDisplayAsLabel:function(){
 			 $("input[name='"+this.getCtlName()+"']").hide();
 			   $("input[name='"+this.getCtlName()+"']:not(:checked)").each(function(){
-	           $(this).next().hide();
+				   $(this).next().hide();
 	           });
 			   $("input[name='"+this.getCtlName()+"']:checked").each(function(){
 		           $(this).next().next().show();
 		       });
+			   this.options.isShowAsLabel=true;
 		 } ,
+		 
+		 //显示为控件
+		 setDisplayAsCtl:function(){
+				$("input[name='"+this.getCtlName()+"']").show();
+				$("input[name='"+this.getCtlName()+"']").each(function(){
+			           $(this).next().show();
+			           $(this).next().next().hide();
+			       });
+			this.options.isShowAsLabel=false;
+		 } ,
+		 
 		 
 		 
 		 //设置显示值。
@@ -344,7 +364,7 @@
 			columnProperty:columnProperty,//字段属性
 			commonProperty:commonProperty,//公共属性
 			
-			
+			isShowAsLabel:false,
 			//私有属性
 			isHide:false,//是否隐藏
 			checked:false,

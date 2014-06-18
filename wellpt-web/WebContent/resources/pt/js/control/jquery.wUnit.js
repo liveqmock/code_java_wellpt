@@ -140,9 +140,10 @@
 		 } ,
 		 
 		 //设置可编辑
-		 setEditable:function(iseditable){
-			 this.setReadOnly(!iseditable);
-			 this.setEnable(iseditable);
+		 setEditable:function(){
+			 this.setReadOnly(false);
+			 this.setEnable(true);
+			 this.setDisplayAsCtl();
 		 } ,
 		 
 		 //只读，文本框不置灰，不可编辑
@@ -159,7 +160,7 @@
 		 
 		 //设置hide属性
 		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(isvisible);
+			 $.ControlUtil.setVisible(this.$element,isvisible);
 			 this.options.isHide=!isvisible;
 		 } ,
 		 
@@ -178,6 +179,10 @@
 				}
 			 this.setValue((valuearray.toString()).replace(/\,/g, ";"));
 			 this.setDisplayValue((displayvaluearray.toString()).replace(/\,/g, ";"));
+		     
+			 if(this.options.isShowAsLabel==true){
+				 this.$element.next().html(this.getDisplayValue());
+	    	  }
 		 }, 
 		 
 	    //get..........................................................//

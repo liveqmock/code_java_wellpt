@@ -100,7 +100,9 @@ var MainFormFieldClass = function(){
 	this.fontColor = "black"; 		 	
 	this.fieldCheckRules = []; 		 	//检验规则,该字段的值为JSON如[{"value":"2","label":"必须是URL","rule":""},{"value":"3","label":"必须是邮箱地址","rule":""}]
 
-	this.relationDataText = ""; 		 	
+	/*
+	 * 私有属性挪到控件各自对应的class类中.
+	 * this.relationDataText = ""; 		 	
 	this.relationDataValue = ""; 		 	
 	this.relationDataSql = ""; 		 	
 	this.relationDataTextTwo = ""; 		 	
@@ -123,15 +125,15 @@ var MainFormFieldClass = function(){
 	this.dictCode = ""; 
 	//Select,radio, checkbox选项
 	//以map的形式保存key为值，value为备注 
-	/*Checkbox/radio/select都有option,在optionDataSource属性为1的情况下,option的值则来源于该字段.
-	该字段的值以map的形式保存key为值，value为备注*/ 
+	Checkbox/radio/select都有option,在optionDataSource属性为1的情况下,option的值则来源于该字段.
+	该字段的值以map的形式保存key为值，value为备注 
 	this.optionSet=[];
 	
 	
 	
 	this.serviceName = ""; 		 	
 	this.methodName = ""; 		 	
-	
+	*/
 	//对于文本框来说
 	//内容格式
 	//0:普通文本//默认值 
@@ -155,10 +157,7 @@ var MainFormFieldClass = function(){
 	//dateTimeHour:'11',//日期到时 当前日期时间(2000-01-01 12)
 	//dateTimeMin:'12',//日期到分 当前日期时间(2000-01-01 12:00)
 	//dateTimeSec:'13',//日期到秒 当前日期时间(2000-01-01 12:00:00)
-	this.contentFormat = "0"; 	 
-	
-	//附件控件配置参数	
-	this.fileUploadConfig = "";  
+	//this.contentFormat = "0"; 	 
 };
 
 

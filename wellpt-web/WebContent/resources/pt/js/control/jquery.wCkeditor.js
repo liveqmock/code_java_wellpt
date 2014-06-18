@@ -111,7 +111,10 @@
 		 setValue:function(value){
 	    		var name=this.$element.attr("id");
 				var oEditor=CKEDITOR.instances[name];
-				return oEditor.setData(value);
+				oEditor.setData(value);
+				  if(this.options.isShowAsLabel==true){
+					  this.$element.next().html(value);
+		    	  }
 		 } ,
 		 
 		 //设置必输
@@ -120,9 +123,10 @@
 		 } ,
 		 
 		 //设置可编辑
-		 setEditable:function(iseditable){
-			 this.setReadOnly(!iseditable);
-			 this.setEnable(iseditable);
+		 setEditable:function(){
+			 this.setReadOnly(false);
+			 this.setEnable(true);
+			 this.setDisplayAsCtl();
 		 } ,
 		 
 		 //只读，文本框不置灰，不可编辑
@@ -139,15 +143,21 @@
 		 
 		 //设置hide属性
 		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(isvisible);
+			 $.ControlUtil.setVisible(this.$element,isvisible);
 			 this.options.isHide=!isvisible;
 		 } ,
 		 
 		 //显示为lablel
 		 setDisplayAsLabel:function(){
 			 $.ControlUtil.setIsDisplayAsLabel(this.$element,this.options,true);
+			 this.$element.next().next().hide();
 		 } ,
 		 
+		 //显示为控件
+		 setDisplayAsCtl:function(){
+			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
+			 this.$element.next().show();
+		 },
 	       
 	    //get..........................................................//
 		
@@ -280,7 +290,7 @@
 			
 			columnProperty:columnProperty,//字段属性
 			commonProperty:commonProperty,//公共属性
-			
+			isShowAsLabel:false,
 			//控件私有属性
 			disabled:false,
 	        readOnly:false,

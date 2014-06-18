@@ -106,6 +106,10 @@
 		//设值
 		 setValue:function(value){
 			 $("input[name='"+this.getCtlName()+"'][value='"+value+"']").attr("checked",true);
+			 if(this.options.isShowAsLabel==true){
+				 this.setDisplayAsCtl();
+				 this.setDisplayAsLabel();
+			 }
 		 } ,
 		 
 		 setValueByMap:function(valuemap){
@@ -114,6 +118,10 @@
 			 for(attribute in valueobj){  
 				 $("input[name='"+this.getCtlName()+"'][value='"+attribute+"']").prop("checked",true);
 				}
+			 if(this.options.isShowAsLabel==true){
+				 this.setDisplayAsCtl();
+				 this.setDisplayAsLabel();
+			 }
 		 },
 		 
 		 //设置必输
@@ -122,8 +130,9 @@
 		 } ,
 		 
 		 //设置可编辑
-		 setEditable:function(iseditable){
-			 this.setEnable(iseditable);
+		 setEditable:function(){
+			 this.setEnable(true);
+			 this.setDisplayAsCtl();
 		 } ,
 		 
 		 
@@ -152,13 +161,27 @@
 		 setDisplayAsLabel:function(){
 				$("input[name='"+this.getCtlName()+"']").hide();
 				$("input[name='"+this.getCtlName()+"']:not(:checked)").next().hide();
+			this.options.isShowAsLabel=true;
+		 } ,
+		 
+		 //显示为控件
+		 setDisplayAsCtl:function(){
+				$("input[name='"+this.getCtlName()+"']").show();
+				$("input[name='"+this.getCtlName()+"']").each(function(){
+			           $(this).next().show();
+			       });
+			this.options.isShowAsLabel=false;
 		 } ,
 		 
 		 
-		 //设置显示值。
+		 /*//设置显示值。
 		 setDisplayValue:function(value){
-			 $("input[name='"+this.getCtlName()+"'][value='"+value+"']").attr("checked",true);
-		 } ,
+				$("input[name='"+this.getCtlName()+"']").each(function(){
+			       if($(this).next().text()==value){
+					$(this).attr("checked",true);
+				}
+			   });
+		 } ,*/
 	       
 	    //get..........................................................//
 		
@@ -299,6 +322,7 @@
 			isHide:false,//是否隐藏
 			checked:false,
 			disabled:false,
+			isShowAsLabel:false,
 			optionDataSource:"1", //备选项来源1:常量,2:字段
 			optionSet:[],
 			dictCode:null

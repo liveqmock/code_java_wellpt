@@ -14,6 +14,9 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.json.JSONException;
 
+import com.wellsoft.pt.core.support.PagingInfo;
+import com.wellsoft.pt.core.support.QueryData;
+
 /**
  * Description: 动态表单定义service类
  *  
@@ -72,5 +75,17 @@ public interface DyFormDataService {
 			String dataUuidOfMainform);
 
 	Map<String, Object> getDefaultFormData(String formUuid) throws JSONException;
+
+	/**
+	 * 分页查询从表的父节点记录
+	 * 
+	 * @param formUuidOfSubform
+	 * @param formUuidOfMainform
+	 * @param dataUuidOfMainform
+	 * @param pagingInfo 
+	 * @return
+	 */
+	QueryData getFormDataOfParentNodeByPage(String formUuidOfSubform, String formUuidOfMainform,
+			String dataUuidOfMainform, PagingInfo pagingInfo);
 
 }

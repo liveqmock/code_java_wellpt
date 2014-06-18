@@ -111,6 +111,9 @@
 		//设值
 		 setValue:function(value){
 			 this.$element.attr('value',value);
+			 if(this.options.isShowAsLabel==true){
+				 this.$element.next().html(this.getDisplayValue());
+			 }
 		 } ,
 		 
 		 //设置必输
@@ -119,9 +122,10 @@
 		 } ,
 		 
 		 //设置可编辑
-		 setEditable:function(iseditable){
-			 this.setReadOnly(!iseditable);
-			 this.setEnable(iseditable);
+		 setEditable:function(){
+			 this.setReadOnly(false);
+			 this.setEnable(true);
+			 this.setDisplayAsCtl();
 		 } ,
 		 
 		 //只读，文本框不置灰，不可编辑
@@ -156,7 +160,13 @@
 					$.ControlUtil.setSpanStyle(this.$element,this.options.textAlign,this.options.fontSize,this.options.fontColor,this.options.fontWidth,this.options.fontHight,val);
 				}
 			}
+			this.options.isShowAsLabel=true;
 		 } ,
+		 
+		 //显示为控件
+		 setDisplayAsCtl:function(){
+			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
+		 },
 		 
 		 setValueByMap:function(valuemap){
 			 var valueobj=eval("("+valuemap+")");
@@ -164,6 +174,9 @@
 					this.setValue(attribute);
 					this.setDisplayValue(valueobj[attribute]);
 				}
+			 if(this.options.isShowAsLabel==true){
+				 this.$element.next().html(this.getDisplayValue());
+			 }
 		 },
 		 
 		 //设置显示值。
@@ -303,7 +316,7 @@
 	$.fn.wcomboBox.defaults = {
 			columnProperty:columnProperty,//字段属性
 			commonProperty:commonProperty,//公共属性
-			
+			isShowAsLabel:false,
 			isHide:false,//是否隐藏
 			disabled:false,
 			optionDataSource:"1", //备选项来源1:常量,2:字段

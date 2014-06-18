@@ -94,7 +94,7 @@
 		
 		 //设置hide属性
 		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(isvisible);
+			 $.ControlUtil.setVisible(this.$element,isvisible);
 			 this.options.isHide=!isvisible;
 		 } ,
 		 

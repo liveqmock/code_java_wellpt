@@ -56,3 +56,28 @@ var loadFormData = function(formUuid, dataUuid){
 	});
 	return formDatas;
 };
+
+
+/**
+ * 控件参数继承时需要将父类属性显示.
+ * eg. this.toJSON = toJSON;
+ */
+var toJSON = function()
+{
+	/*
+	var tmp = {};
+
+	for(var key in this)
+	{
+		if(typeof this[key] !== 'function')
+			tmp[key] = this[key];
+	}
+	return tmp;
+	*/
+	  var result = Object.create(this);
+		for(var key in result) {
+			result[key] = result[key];
+		}
+		return result;
+	 
+};
