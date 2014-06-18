@@ -135,9 +135,6 @@
 												}
 												
 											}
-											if(valStr[ai1].split("=")[0].toUpperCase().replace(" ","")=="MATTERID"){
-												$("#matterId").val(valStr[ai1].split("=")[1]);
-											}
 										}
 						        	}
 						        	$("#dialogModule").dialog( "close" );
@@ -149,9 +146,6 @@
 						});
 					}
 				});
-			    
-			   $("#fieldName9").val("11111111111");
-				
 				
 		},
 		getOptions : function(options) {
@@ -244,6 +238,10 @@
 		 
 		 isRequired:function(){
 			 return $.ControlUtil.isRequired(this.options);
+		 },
+		 
+		 isShowAsLabel:function(){
+			 return this.options.isShowAsLabel;
 		 },
 		 
 		 getAllOptions:function(){

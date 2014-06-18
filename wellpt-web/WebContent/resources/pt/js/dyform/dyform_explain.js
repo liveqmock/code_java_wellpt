@@ -363,7 +363,7 @@ $(function(){
 			$.extend(ruleObj.rules, subformRuleObj.rules);
 			$.extend(ruleObj.messages, subformRuleObj.messages); 
 			
-			 
+			
 			
 			//设置自定义样式
 			//validate初始化方式一
@@ -466,6 +466,7 @@ $(function(){
 			this.$(".value[name]").each(function(){
 				var name = $(this).attr("name");
 				var fieldDefinition = formDefinition.fields[name];
+				fieldDefinition.formUuid = formDefinition.uuid;
 				if(typeof fieldDefinition == "undefined"){
 					return true;//continue;
 				}
@@ -657,7 +658,8 @@ $(function(){
 				   	gridComplete:function(){
 				   		console.log("subform load gridComplete  ");
 				   	},
-				   	afterInsertRow:function( rowId, rowdata, rowelem){  
+				   	afterInsertRow:function( rowId, rowdata, rowelem){
+				   		 
 					   	var colModels = $(this).jqGrid('getGridParam','colModel'); 
 					   	for(var j = 0 ; j < colModels.length; j ++){
 							var model = colModels[j];
@@ -674,20 +676,22 @@ $(function(){
 							fieldDefinitionCopy.name = id;
 							
 							var cellValue = rowdata[fieldName];
+							fieldDefinitionCopy.formUuid = subFormDefinition.uuid;
 							$.ControlManager.createControl(fieldDefinitionCopy); 
+						 
 							var control = $.ControlManager.getControl(id);
 							
 							$.dyform.setValue(control, cellValue);
-							 
+							
 							control.setDisplayAsLabel();
-							control.bind("blur", function(){
-								
-								//control.setDisplayAsLabel();
-								var name = control.getCtlName();
-								$("input[name='" + name + "']").blur(function(){
-									control.setDisplayAsLabel();
+							(function(control){
+								control.bind("blur", function(){  
+									//control.setDisplayAsCtl();
+									
+									control.setDisplayAsLabel(); 
 								});
-							});
+							})(control);
+							
 							/*if(subform.editMode == dySubFormEdittype.newWin){//在新窗口编辑，所以在jqgrid里面直接展示文本即可
 								control.setDisplayAsLabel();
 							} */
@@ -696,7 +700,10 @@ $(function(){
 					  	//alert (	_this.$("#" + rowId ).css("background", null));
 				   	},
 				   	onCellSelect:function(rowId, iCol,  cellcontent, e){ 
-				   		if((options.readOnly )){//调用者要求只读
+				   		if((options.readOnly ) //调用者要求只读
+				   				|| subform.editMode == dySubFormEdittype.newWin//编辑直接在窗口中
+				   				|| subform.hideButtons != dySubFormHideButtons.show//在定义中配置了不让编辑
+				   		){
 				   			return;
 				   		}
 				   		var colModels = $(this).jqGrid('getGridParam','colModel'); 
@@ -716,10 +723,21 @@ $(function(){
 				   		
 				   		control.setEditable();
 				   		
-				   		document.getElementsByName(name).item(0).select();
-				   		//document.getElementsByName(name).item(0).focus();
-						//$("input[name='" + name + "']")[0].select();
-						//$("input[name='" + name + "']")[0].focus();
+				   		
+				   		//如果去掉下面的代码，第一次点击后，在光标移开之后没办法再还原为label状态
+				   		var dom = _this.$("input[name='" + name + "']")[0];
+				  /* 	 _this.$("input[name='" + name + "']").blur(function(){
+				   		 alert("blur");
+				   	 });*/
+				   		dom.focus();
+				   		var hadBeenFocused = dom.getAttribute("focus"); 
+				   		if(typeof hadBeenFocused == "undefined" || hadBeenFocused == null){
+				   			dom.setAttribute("focus", true); 
+				   			dom.blur();
+				   			dom.focus();
+				   		}
+				   		
+				   		 
 				   	}
 				 
 				});
@@ -867,6 +885,7 @@ $(function(){
 						  
 						 
 						var control = $.ControlManager.getControl(cellId);
+						//control.setEditable();
 						var rule = control.getRule();
 						var message =  control.getMessage();
 						if(rule == null || message == null){
@@ -881,6 +900,9 @@ $(function(){
 						var ctlName = control.getCtlName();
 						rulesObj.rules[ctlName] =  ruleObj;
 						rulesObj.messages[ctlName] = messageObj;
+						
+						
+						
 					} 
 				}  
 			}

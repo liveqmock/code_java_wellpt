@@ -309,7 +309,8 @@ public class DyFormDataServiceImpl implements DyFormDataService {
 	private List<Map<String, Object>> getFormDataOfSubform(String tblNameOfSubform, List<String> fieldNamesOfSubform,
 			String tblNameOfMainform, String dataUuidOfMainform) {
 		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append("select uuid,creator,create_time,modify_time,sort_order, form_uuid, parent_id");
+		//sqlBuffer.append("select uuid,creator,create_time,modify_time,sort_order, form_uuid, parent_id");
+		sqlBuffer.append("select uuid,creator,create_time,modify_time,sort_order, form_uuid");
 		for (Object fieldNameObj : fieldNamesOfSubform) {
 			String fieldName = (String) fieldNameObj;
 			sqlBuffer.append(", ").append(fieldName);

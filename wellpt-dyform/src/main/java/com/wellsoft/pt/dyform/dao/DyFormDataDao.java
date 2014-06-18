@@ -96,7 +96,8 @@ public class DyFormDataDao extends HibernateDao {
 		DyFormDefinitionUtils dUtils = new DyFormDefinitionUtils(definition);
 		StringBuffer columns = new StringBuffer("");
 		StringBuffer values = new StringBuffer("");
-		columns.append("creator,create_time,modifier,modify_time, parent_id");
+		//columns.append("creator,create_time,modifier,modify_time, parent_id");
+		columns.append("creator,create_time,modifier,modify_time");
 		values.append("?").append(",").append("?").append(",").append("?").append(",").append("?");
 		List<String> fieldNames = new ArrayList<String>();
 		for (String fieldName : formData.keySet()) {
@@ -115,8 +116,8 @@ public class DyFormDataDao extends HibernateDao {
 		sqlquery.setTimestamp(1, Calendar.getInstance().getTime());
 		sqlquery.setString(2, SpringSecurityUtils.getCurrentUserId());
 		sqlquery.setTimestamp(3, Calendar.getInstance().getTime());
-		String parent_id = (String) formData.get("parent_id");
-		sqlquery.setString(3, parent_id);
+		//String parent_id = (String) formData.get("parent_id");
+		//sqlquery.setString(4, parent_id);
 		for (int i = 0; i < fieldNames.size(); i++) {
 			String fieldName = fieldNames.get(i);
 			Object valueObj = formData.get(fieldName);

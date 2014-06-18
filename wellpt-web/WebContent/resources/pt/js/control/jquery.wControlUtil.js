@@ -82,6 +82,8 @@
 					 elment.attr("relationdatasql",options.relationdatasql);	//关联数据约束条件
 				 }else if(inputMode==dyFormInputMode.accessory3||inputMode==dyFormInputMode.accessory1){
 					 elment.attr("id",elment.attr("name"));
+				 }else if(inputMode==dyFormInputMode.accessoryImg){
+					 elment.attr("id",elment.attr("name"));
 				 }
 				 
 				 //公共属性设置
@@ -189,11 +191,16 @@
 			  * @param islabelshow
 			  */
 			 setDisplayAsCtl:function(elment,options){
+				 if(options.isShowAsLabel==true){
+					 return;
+				 }
 				 elment.show();
 				 if( elment.next().is('span')){
 					 elment.next().remove();
 				 }
 				 options.isShowAsLabel=true;
+				 //聚焦
+				 elment.focus();
 			 },
 			
 			
@@ -465,6 +472,37 @@
                 {
                 	elment.removeAttr("readonly");
                 }
+    	}, 
+    	 
+    	
+    	/**
+    	 * 验证控件的值
+    	 */
+    	validate:function(){
+    		var element = this.$element;
+    		var $form = element.parent("form");
+    		var validator = $form.validate(Theme.validationRules ); 
+    		var rule = this.getRule();
+			var message =  this.getMessage();
+			
+			var ruleObj =  eval("(" + rule +")");
+			var messageObj = eval("(" + message +")");
+			
+			validator.settings.rules = ruleObj;
+			validator.settings.messages = messageObj;
+			var isLabel = this.isShowAsLabel();
+			
+			if(isLabel){
+				this.setEnable();
+			}
+			
+			var valid = validator.element(element) ;
+			
+			if(valid && isLabel){//验证完成之后,如果没有问题，还原为标签
+				this.setDisplayAsLabel();
+			}
+			
+			return valid;
     	}
      	
 		 

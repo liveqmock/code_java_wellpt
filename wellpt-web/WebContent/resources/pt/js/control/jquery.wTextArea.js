@@ -146,6 +146,10 @@
 			 return $.ControlUtil.isRequired(this.options);
 		 },
 		 
+		 isShowAsLabel:function(){
+			 return this.options.isShowAsLabel;
+		 },
+		 
 		 getAllOptions:function(){
 		    	 return this.options;
 		     } ,  

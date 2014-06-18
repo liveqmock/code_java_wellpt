@@ -170,6 +170,10 @@
 			 return $.ControlUtil.isRequired(this.options);
 		 },
 		 
+		 isShowAsLabel:function(){
+			 return this.options.isShowAsLabel;
+		 },
+		 
 		 getAllOptions:function(){
 		    	 return this.options;
 		     } ,  
@@ -267,7 +271,7 @@
 			designatedType:"",
 			isOverride:"",
 			isSaveDb:"",
-			formUuid:"969695ea-56bd-47bf-af77-251af33a25c1"
+			formUuid:""
 			
 	};
 	

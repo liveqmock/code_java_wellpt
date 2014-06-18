@@ -82,13 +82,18 @@
 			if(this.options.showIcon){
 				this.$element.attr("class","Wdate");
 			}
-			 
+			 var _this=this.$element;
+			 var _option=this.options;
 			$("input[name='"+this.$element.attr("name")+"']").bind('click', function() {
 				WdatePicker({
 					dateFmt:format,
 					alwaysUseStartDate:options.alwaysUseStartDate,
-					startDate:options.startDate});
+					onpicked:function(){ $.ControlUtil.setDisplayAsCtl(_this,_option);},
+					startDate:options.startDate,
+					
+				});
 			});
+
 		
 			//设置默认值
 			this.setValue(options.columnProperty.defaultValue);
@@ -184,6 +189,10 @@
 		 
 		 isRequired:function(){
 			 return $.ControlUtil.isRequired(this.options);
+		 },
+		 
+		 isShowAsLabel:function(){
+			 return this.options.isShowAsLabel;
 		 },
 		 
 		 getAllOptions:function(){

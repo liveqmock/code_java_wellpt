@@ -169,6 +169,11 @@
 			 $.ControlUtil.setIsDisplayAsLabel(this.$element,this.options,true);
 		 } ,
 		 
+		 //显示为控件
+		 setDisplayAsCtl:function(){
+			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
+		 },
+		 
 		 setValueByMap:function(valuemap){
 			 var valueobj=eval("("+valuemap+")");
 			 var valuearray=[];
@@ -239,6 +244,10 @@
 		 isVisible:function(){
 			 return  this.options.isHide;
 		 }, 
+		 
+		 isShowAsLabel:function(){
+			 return this.options.isShowAsLabel;
+		 },
 		 
 		 isRequired:function(){
 			 return $.ControlUtil.isRequired(this.options);

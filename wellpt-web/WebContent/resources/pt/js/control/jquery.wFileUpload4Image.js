@@ -31,14 +31,14 @@
 	};	
 	
 	/*
-	 * TEXTINPUT CLASS DEFINITION ======================
+	 * FILEUPLOAD4IMAGE CLASS DEFINITION ======================
 	 */
-	var TextInput = function(element, options) {
-		this.init("wtextInput", element, options);
+	var FileUpload4Image = function(element, options) {
+		this.init("wfileUpload", element, options);
 	};
 
-	TextInput.prototype = {
-		constructor : TextInput,
+	FileUpload4Image.prototype = {
+		constructor : FileUpload4Image,
 		init : function(type, element, options) {
 			this.type = type;
 			this.$element = $(element);
@@ -50,10 +50,27 @@
 		initparams:function(options){
 			 //设置字段属性.根据不同的控件类型区分。
 			 $.ControlUtil.setCtrAttr(this.$element,this.options);
-			//根据show类型展示
-			 $.ControlUtil.dispalyByShowType(this.$element,this.options);
-            //设置默认值
-			 this.setValue(options.columnProperty.defaultValue);
+			 
+			 var allowDownload=this.options.allowDownload;
+			 var allowDelete=this.options.allowDelete;
+			 var mutiselect=false;
+			 
+			 var setReadOnly=false;
+			 setReadOnly=!this.options.allowUpload;;
+			this.$element.hide();
+			var id = this.$element.attr('id');//字段名称
+			 
+			var uploaddivhtml="<div id='_fileupload"+id+"'></div>";
+			 
+			this.$element.after(uploaddivhtml);
+			var $attachContainer = $("#_fileupload"+id);
+			 //创建上传控件
+			var elementID = WellFileUpload.getCtlID4Dytable(this.options.mainTableName, id, 0);
+			var fileupload = new WellFileUpload4Image(elementID);
+			//初始化上传控件
+			fileupload.initWithLoadFilesFromFileSystem(setReadOnly,  $attachContainer,  this.options.enableSignature, mutiselect, this.options.dataUuid , id,
+					this.options.commonProperty.ctlWidth,this.options.commonProperty.ctlHight);
+			
 		},
 		getOptions : function(options) {
 			options = $.extend({}, $.fn[this.type].defaults, options,
@@ -63,93 +80,19 @@
 				
 		//set............................................................//
 	     
-		//设值
-		 setValue:function(value){
-	    	  $.ControlUtil.setValue(this.$element,this.options,value);
-		 } ,
-		 
-		 //设置必输
-		 setRequired:function(isrequire){
-			 $.ControlUtil.setRequired(isrequire,this.options);
-		 } ,
-		 
-		 //设置可编辑
-		 setEditable:function(){
-			 this.setReadOnly(false);
-			 this.setEnable(true);
-			 this.setDisplayAsCtl();
-		 } ,
-		 
-		 //只读，文本框不置灰，不可编辑
-		 setReadOnly:function(isreadonly){
-			 $.ControlUtil.setReadOnly(this.$element,isreadonly);
-			 this.options.readOnly=isreadonly;
-		 } ,
-		 
-		 //设置disabled属性
-		 setEnable:function(isenable){
-			 $.ControlUtil.setEnable(this.$element,isenable);
-			 this.options.disabled=!isenable;
-		 } ,
-		 
-		 //设置hide属性
-		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(this.$element,isvisible);
-			 this.options.isHide=!isvisible;
-		 } ,
-		 
-		 //显示为lablel
-		 setDisplayAsLabel:function(){
-			 $.ControlUtil.setIsDisplayAsLabel(this.$element,this.options,true);
-		 } ,
-		 
-		 //显示为控件
-		 setDisplayAsCtl:function(){
-			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
-		 },
-		 
-	       
-	    //get..........................................................//
-		
-		 //返回控件值
-		 getValue:function(){
-			 return this.$element.val();
-		 },
-
-		 isValueMap:function(){
-			 return false;
-		 },
-		 /**
-		  * 返回是否可编辑(由readOnly和disabled判断)
-		  * @returns {Boolean}
-		  */
-		 isEditable:function(){
-			 if(this.options.readOnly&&this.options.disabled){
-				 return false;
+		getValue:function(){
+			var files = WellFileUpload.files[this.getFielctlID()];
+			 if(files){
+				return files;
 			 }else{
-				 return true;
+				return  [];
 			 }
-		 },
-		 
-		 isReadOnly:function(){
-			 return this.options.readOnly;
-		 },
-		 
-		 isEnable:function(){
-			 return !this.options.disabled;
-		 },
-		 
-		 isVisible:function(){
-			 return  this.options.isHide;
-		 }, 
-		 
-		 isRequired:function(){
-			 return $.ControlUtil.isRequired(this.options);
-		 },
-		 
-		 isShowAsLabel:function(){
-			 return this.options.isShowAsLabel;
-		 },
+		},
+		
+		getFielctlID:function(){
+			var id = this.$element.attr('id');//字段名称
+			return  WellFileUpload.getCtlID4Dytable(this.options.mainTableName, id, 0);
+		},
 		 
 		 getAllOptions:function(){
 		    	 return this.options;
@@ -163,12 +106,21 @@
 			 return $.ControlUtil.getCheckMsg(this.options);
 		 } ,
 		 
+		 isValueMap:function(){
+			 return false;
+		 },
+		 
+		 setValue:function(value){
+	    	
+		 } ,
+		 
 	     /**
 	      * 获得控件名
 	      * @returns
 	      */
 	     getCtlName:function(){
-	    	 return this.$element.attr("name");
+	    	 var id = this.$element.attr('id');//字段名称
+			 return  WellFileUpload.getCtlID4Dytable(this.options.mainTableName, id, 0);
 	     },
 		 
 	     //bind函数，桥接
@@ -187,9 +139,9 @@
 	};
 	
 	/*
-	 * TEXTINPUT PLUGIN DEFINITION =========================
+	 * FILEUPLOAD PLUGIN DEFINITION =========================
 	 */
-	$.fn.wtextInput = function(option) {
+	$.fn.wfileUpload4Image = function(option) {
 		var method = false;
 		var args = null;
 		if (arguments.length == 2) {
@@ -200,7 +152,7 @@
 		if (typeof option == 'string') {
 			if(option === 'getObject'){ //通过getObject来获取实例
 				var $this = $(this);
-				data = $this.data('wtextInput');
+				data = $this.data('wfileUpload');
                 if(data){
                     return data; //返回实例对象
                 }else{
@@ -212,11 +164,11 @@
 		return this
 				.each(function() {
 					var $this = $(this),
-					data = $this.data('wtextInput'), 
+					data = $this.data('wfileUpload'), 
 					options = typeof option == 'object'
 							&& option;
 					if (!data) {
-						$this.data('wtextInput', (data = new TextInput(this,
+						$this.data('wfileUpload', (data = new FileUpload4Image(this,
 								options)));
 					}
 					if (typeof option == 'string') {
@@ -232,15 +184,20 @@
 				});
 	};
 
-	$.fn.wtextInput.Constructor = TextInput;
-
-	$.fn.wtextInput.defaults = {
+	$.fn.wfileUpload4Image.Constructor = FileUpload4Image;
+	
+	$.fn.wfileUpload4Image.defaults = {
 			columnProperty:columnProperty,//字段属性
 			commonProperty:commonProperty,//公共属性
-	        readOnly:false,
-	        disabled:false,
 	        isHide:false,//是否隐藏
-	        isShowAsLabel:false
+	        mainTableName:'',
+	        formSign:'',
+	        dataUuid:'222',
+	        enableSignature:"",
+        	allowUpload:true,//允许上传
+            allowDownload:true,//允许下载
+            allowDelete:true,//允许删除
+            mutiselect:true//是否多选
 	};
 	
 })(jQuery);

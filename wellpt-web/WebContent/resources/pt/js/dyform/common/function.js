@@ -14,7 +14,7 @@ var loadFormDefinition = function(uuid){
 		data : {formUuid: uuid} ,
 		dataType : "json",
 		success : function(data) { 
-			definitionObj = data;
+			definitionObj = data; 
 		}, 
 		error: function(){//加载定义失败
 			oAlert("表单定义加载失败,请重试"); 

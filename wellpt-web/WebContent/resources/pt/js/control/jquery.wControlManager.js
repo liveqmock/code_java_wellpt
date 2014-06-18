@@ -12,12 +12,11 @@
 			createControl:function(column){
 				var fieldcode=column.name;
 				var inputMode=column.inputMode;
-				var type=column.type;
 		        if($("input[name='"+fieldcode+"']").length>0){
 					$("input[name='"+fieldcode+"']").hide();
 					var  appendhtml=getHtmlStrByInputDataType(inputMode,fieldcode,'_');
 					 $("input[name='"+fieldcode+"']").after(appendhtml.html);
-					 initDyControl(type,appendhtml.formfieldcode,column);
+					 initDyControl(appendhtml.formfieldcode,column);
 				}
 			},
 				
@@ -73,19 +72,23 @@
 						return obj.wdialog(getmethod);
 					}else if(inputMode==dyFormInputMode.accessory3){
 						return obj.wfileUpload(getmethod);
+					}else if(inputMode==dyFormInputMode.accessoryImg){
+						return obj.wfileUpload4Image(getmethod);
 					}else if(inputMode==dyFormInputMode.accessory1){
 						return obj.wfileUpload4Icon(getmethod);
 					}else if(inputMode==dyFormOrgSelectType.orgSelectAddress ||inputMode==dyFormOrgSelectType.orgSelectStaDep
 							||inputMode==dyFormOrgSelectType.orgSelectDepartment||inputMode==dyFormOrgSelectType.orgSelectStaff){
 						return obj.wunit(getmethod);
 					}
+					
 			}
 	};
 	
 	/**
 	控件初始化
 	*/
-	function initDyControl(type,name,column){
+	function initDyControl(name,column){
+		var formUuid=column.formUuid;
 		var columnProperty={
 				//控件字段属性
 				applyTo:column.applyTo,//应用于
@@ -163,6 +166,7 @@
 				designatedType:column.designatedType,
 				isOverride:column.isOverride,
 				isSaveDb:column.isSaveDb,
+				formUuid:formUuid
 				});
 		}else if(inputMode==dyFormInputMode.date){
 			$("input[name='"+name+"']").wdatePicker({
@@ -214,9 +218,6 @@
 				relationDataSql : column.relationDataSql		
 				});
 		}else if(inputMode==dyFormInputMode.accessory3){
-			if(column.fileUploadConfig!=''||column.fileUploadConfig!=undefined){
-				  fileUploadConfig=eval('('+column.fileUploadConfig+')');
-			}
 		    $("input[name='"+name+"']").wfileUpload({
 		    	columnProperty:columnProperty,
 		    	commonProperty:commonProperty,	
@@ -225,10 +226,16 @@
 	            allowDelete:column.allowDelete,//允许删除
 	            mutiselect:column.mutiselect//是否多选
 				});
+		}else if(inputMode==dyFormInputMode.accessoryImg){
+		    $("input[name='"+name+"']").wfileUpload4Image({
+		    	columnProperty:columnProperty,
+		    	commonProperty:commonProperty,	
+		    	allowUpload:column.allowUpload,//允许上传
+	            allowDownload:column.allowDownload,//允许下载
+	            allowDelete:column.allowDelete,//允许删除
+	            mutiselect:column.mutiselect//是否多选
+				});
 		}else if(inputMode==dyFormInputMode.accessory1){
-			if(column.fileUploadConfig!=''||column.fileUploadConfig!=undefined){
-				  fileUploadConfig=eval('('+column.fileUploadConfig+')');
-			}
 		    $("input[name='"+name+"']").wfileUpload4Icon({
 		    	columnProperty:columnProperty,
 		    	commonProperty:commonProperty,	
