@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<types>
+	<type id="LED">LED</type>
+	<type id="CFL">CFL</type>
+	<type id="MyUnit">我的单位</type>
+	<type id="MyDept">我的部门</type>
+	<type id="MyLeader">我的领导</type>
+	<type id="MyUnderling">我的下属</type>
+	<type id="PublicGroup">公共群组</type>
+	<type id="PrivateGroup">个人群组</type>
+	<type id="MyParentDept">上级部门</type>
+	<type id="LoginUser">在线人员</type>
+	<type id="Dept">部门</type>
+</types>

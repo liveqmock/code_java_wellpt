@@ -1,0 +1,833 @@
+<div id="dialogAttrCfgDiv" title='属性设置'  style="width: auto; height:480px;overflow: scroll";>
+	<div> 
+		<div class="dyform">
+			<div class="post-sign">
+				<div class="post-detail">
+		<table>
+			<tr class="odd">
+				<td class="Label">字段编码</td>
+				<td class="value"><input type="text"
+					name="name" id="name" value="" class="w100"/>  
+			</tr>
+			<!--3 -->
+			<tr class="odd">
+				<td class="Label">显示名称</td>
+				<td class="value"><input type="text" class="w100" name="displayName"
+					id="displayName" value="" /></td>
+			</tr>
+			
+			 
+			<tr class="odd">
+				<td class="Label">应用于</td>
+				<td class="value"><input type="text" class="w100" name="applyTo"
+					id="applyTo" value="" /> </td>
+			</tr>
+			
+			
+			<tr class="odd">
+				<td class="Label">字段长度</td>
+				<td class="value">
+					 <input type="text" value="" name="length"  id="length"  /> 
+				</td>
+			</tr>
+			
+			<tr class="odd">
+				<td class="Label">关联方式</td>
+				<td class="value">
+					 <select name="relativeMethod" id="relativeMethod" style="float: left;">
+					 	<option value="1">弹出框</option>
+					 	<option value="2">搜索框</option>
+					 </select> 
+				</td>
+			</tr>
+			 
+			<tr class="viewSetting">
+				<td class="Label">视图设置</td>
+				<td class="value"><input type="text" id="relationDataTextTwo" name="relationDataTextTwo" /></td>
+				<input id="relationDataValueTwo" type="hidden" name="relationDataValueTwo" >
+			</tr>
+			 
+		 	<tr class="dataSourceSetting" style="display: none;">
+				<td class="Label">数据源</td>
+				<td class="value">
+					<select name="relationDataTextTwo4Ds" id="relationDataTextTwo4Ds"> </select>
+				</td> 
+			</tr>
+			
+			<tr class="viewSetting">
+				<td class="Label"></td>
+				<td class="value">
+					
+					<input type="checkbox" name="destType" id="destType" value="1" ><label for="destType">插入到从表中</label>(将对话框中的行插入到从表中)
+					<span class="selectType" style="display: none;"><input type="checkbox" name="selectType" id="selectType" value="1" ><label for="selectType">多选</label>(对话框中的行可以多选)</span><br/>
+					
+				 </td> 
+			</tr>
+			
+			<tr class="destSubform" style="display: none;">
+				<td class="Label">选择从表</td>
+				<td class="value">
+					<select id="destSubform" name="destSubform">
+						<option value="">--请选择--</option>
+					</select>
+				</td>
+			</tr>
+			
+			
+			<tr>
+				<td  >约束条件</td>
+				<td class="value"><input type="text" id="relationDataTwoSql" name="relationDataTwoSql" /></td>
+				<!-- 
+					对于数据源的配置方式:
+					格式为fieldName1=controlName1;fieldName2=controlName2
+					每个搜索条件以分号隔开,等号之前的为字段名，等号之后为控件对应的字段名
+				
+				 -->
+			</tr> 
+			
+			<tr class="dataSourceSetting" style="display: none;">
+				<td class="Label">显示条数/页</td>
+				<td class="value">
+					<input type="text" id="pageSize" name="pageSize" />(不填默认为300)
+				</td> 
+			</tr>
+			
+			<tr>
+				<td class="Label">关联数据选择</td>
+				<td class="value"><input id="relationDataDefiantion" type="text" style="display: none;" name="relationDataDefiantion">
+					<table  >
+					   <tr>
+					     <td rowspan=2 style="width: 35%;text-align:left">添加映射关系：<select id="sqlField" name="sqlField" style="width: 90%;"></select></td>
+					     <td>(数据库字段)-- <select id="formField" name="formField" style="width: 35%;"></select>(字段名称) <input id="searchCheck" type="checkbox" value="yes">查 
+				<button class="addRelationField">添加</td>
+					   </tr>
+					   <tr><td>(用户自定义)--<input type="text" id="userDefinedField" name="userDefinedField" style="width: 35%;">(字段名称)&nbsp;&nbsp;&nbsp;<button class="addRelationUserField">添加</td>
+							</select>		</td></tr>
+					 </table>
+				</td>
+			</tr> 
+			
+			<tr>
+				<td class="Label">映射关系</td>
+				<td class="value">
+				<div class="definitionDiv" style="margin-bottom: 5px;"  >
+						<table class="definitiontrtable">
+						<tbody>
+						<tr class="definitiontitle" style="background-color:#DBDBDB;">
+						<td>字段标题</td>
+						<td>字段名</td>
+						<td>表单字段</td>
+						<td style="display: none;">字段名</td>
+					<!-- 	<td>查询字段</td> -->
+						<td>隐藏</td>
+						<td>宽度</td>
+						<td>操作</td>
+						</tr>
+						<tr class="definitioncontentiteam" style="background-color:#ffffff;">
+						</tr>
+						</tbody>
+						</table>
+				</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="Label">字体样式</td>
+				<td class="value">
+				
+				<div class="tr_td_div_left">
+					<span id="fontcolorElement" class="fontColorCss" ></span>
+					<input type="hidden" value="" id="fontColor">
+					<div class="subcolorCss" id="subcolor" >
+					<div style="display: none;" class="colors">
+						<span onclick="selColor('black');" style="background-color:black;" class="selectcolor"></span>
+						<span onclick="selColor('red');" style="background-color:red " class="selectcolor"></span>
+						<span onclick="selColor('blue');" style="background-color:blue " class="selectcolor"></span>
+						<span onclick="selColor('orange');" style="background-color:orange " class="selectcolor"></span>
+						<span onclick="selColor('green');" style="background-color:green " class="selectcolor"></span>
+						<span onclick="selColor('yellow');" style="background-color:yellow " class="selectcolor"></span>
+						<span onclick="selColor('purple');" style="background-color:purple " class="selectcolor"></span>
+						<span onclick="selColor('silver');" style="background-color:silver " class="selectcolor"></span>
+						<span onclick="selColor('tan');" style="background-color:tan " class="selectcolor"></span>
+						<span onclick="selColor('maroon');" style="background-color:maroon;" class="selectcolor"></span>
+						<span onclick="selColor('olive');" style="background-color:olive;" class="selectcolor"></span>
+						<span onclick="selColor('gray');" style="background-color:gray;" class="selectcolor"></span>
+						<span onclick="selColor('lime');" style="background-color:lime;" class="selectcolor"></span>
+					</div>
+					</div>
+				</div>
+			 <div class="tr_td_div_left">
+					<select name="fontSize" id="fontSize" style="display: block;float: left;width: 112px;">
+						
+						<option value="8" style="font-size:8px;">8</option>
+						<option value="9" style="font-size:9px;">9</option>
+						<option value="10" style="font-size:10px;">10</option>
+						<option value="11" style="font-size:11px;">11</option>
+						<option value="12" style="font-size:12px;" selected="selected">12</option>
+						<option value="14" style="font-size:14px;">14</option>
+						<option value="16" style="font-size:16px;">16</option>
+						<option value="18" style="font-size:18px;">18</option>
+						<option value="20" style="font-size:20px;">20</option>
+						<option value="22" style="font-size:22px;">22</option>
+						<option value="24" style="font-size:24px;">24</option>
+						<option value="26" style="font-size:26px;">26</option>
+						<option value="28" style="font-size:28px;">28</option>
+						<option value="36" style="font-size:36px;">36</option>
+						<option value="48" style="font-size:48px;">48</option>
+						<option value="72" style="font-size:72px;">72</option>
+					</select>
+				</div>
+				</td>
+			</tr>
+			
+			
+			<tr  class="odd">
+				<td class="Label">控件样式</td>
+				<td class="value">
+				 
+				<div class="tr_td_div_left">
+					<span style="float: left;padding-top: 9px;margin-right: 3px;">宽度:</span><input type="text" name="ctlWidth" id="ctlWidth" style="width: 25px;float: left;"/>
+				</div>
+				<div class="tr_td_div_left">
+					<span style="float: left;padding-top: 9px;margin-right: 3px;">高度:</span><input type="text" name="ctlHight" id="ctlHight" style="width: 25px;float: left;"/>
+				</div>
+				<div class="tr_td_div_left">
+					<select name="textAlign" id="textAlign"  style="width: 100px;">
+						<option value="">--对齐方式--</option>
+						<option value="center">居中</option>
+						<option value="left">靠左</option>
+						<option value="right">靠右</option>
+					</select>
+				</div>
+				</td>
+			</tr>
+ 			<tr>
+				<td class="Label">编辑模式</td>
+				<td class="value"> 
+					<div class="tr_td_div_left" style="padding-top: 9px;"> 
+				<input type="radio" name="showType" value="1" checked="checked">可编辑
+						<input type="radio" name="showType" value="3"> 只读
+						<input type="radio" name="showType" value="2">显示文本
+						<input type="radio" name="showType" value="4"> 禁用
+						<input type="radio" name="showType" value="5"> 隐藏
+					</div>
+				</td>
+			</tr>
+			 
+			 
+			<tr class="odd" >
+				<td class="Label">校验规则</td>
+				<td class="value">
+					<input type="checkbox" name="fieldCheckRules" id="checkRule_1" value="1"  onclick="checkMust(this)"/><label for="checkRule_1">非空</label>  
+					<input type="checkbox" name="fieldCheckRules" id="checkRule_5" value="5" onclick="checkUnique(this)"/><label for="checkRule_5">唯一</label></td>
+			</tr> 
+			
+				 
+			<tr id="tr_onlyreadUrl" >
+				<td class="Label">标识地址</td>
+				<td class="value"><input type="text" id="onlyreadUrl" name="onlyreadUrl" /></td>
+			</tr> 
+			
+		
+			
+		</table>
+		
+	</div>
+	</div>
+		</div>
+		</div>
+</div>
+<script type="text/javascript">
+
+
+var dialogctl = {}; 
+$.extend(dialogctl, $.ControlConfigUtil);
+
+$.extend(dialogctl,{
+
+	$: function(selector){ 
+		return $(selector, $("#dialogAttrCfgDiv"));
+	} ,
+	/**
+	 * 初始化属性窗口
+	 */
+	 initPropertyDialog:  function (editor){
+		 $(".cke_reset_all").removeClass("cke_reset_all");//删除ckeditor内部的局css
+		this.editor = editor;
+		//loadCommonJsFile();//加载自定义的ckeditor公共js 
+		var focusedDom = editor.focusedDom;//当前editor被双击的对象(CKEDITOR.dom.node类) 
+		var field = null;
+		if(focusedDom != null && (typeof focusedDom) != "undefined"){
+			var fieldName = $(focusedDom).attr("name");
+			field = formDefinition.fields[fieldName];//表单中从表的信息 
+		}
+		this.initProperty(field);
+	},
+
+	initProperty:  function(field){
+		var _this = this;
+		if(field == null ||  (typeof field) == "undefined"){
+			field = new WDialogClass();
+			field.dbDataType = dyFormInputType._dialog;
+			field.valueCreateMethod = "1";
+		}else{
+		}
+		//公共属性
+		this.ctlPropertyComInitSet(field);
+		
+		//定义关联方式发生改变的事件
+		this.definiteRelativeMehtodChangeEvt();
+		
+		//定义数据源发生改变的事件
+		this.definiteRelationDataTextTwo4DsChangeEvt();
+		
+		//定义目标类型的事件
+		this.definiteDestTypeClickEvent();
+		
+		this.initSubformList();
+		 
+		this.definiteDestSubformChangeEvt();
+		
+		this.setPageSize(field.pageSize);
+		
+		$("#relationDataTextTwo").addClass("input-tier");
+		
+		 
+		this.setRelationDataTextTwo4Ds(field.relationDataValueTwo);
+		 
+		//设置关联方式
+		this.setRelativeMethod(field.relativeMethod);
+		 
+		
+		 
+		var relationSettingTwo = {
+				async : {
+					otherParam : {
+						"serviceName" : "viewDefinitionService",
+						"methodName" : "getViewNewAsTreeAsync",
+					}
+				},
+				check : {
+					enable : false,
+				},
+				callback : {
+					onClick: treeNodeOnClick2,
+				}
+		};
+		
+		$("#relationDataTextTwo").comboTree({
+			labelField: "relationDataTextTwo",
+			valueField: "relationDataValueTwo",
+			treeSetting : relationSettingTwo,
+			width: 220,
+			height: 220
+		});
+		
+		$("#relationDataTwoSql").val(field.relationDataTwoSql); 
+		
+		if(typeof field.relativeMethod == "undefined" || field.relativeMethod ==  dyRelativeMethod.DIALOG){//弹出框
+			$("#relationDataTextTwo").val(field.relationDataTextTwo);
+			$("#relationDataValueTwo").val(field.relationDataValueTwo);
+			
+			//绑定初始的数据列
+			if(field.relationDataTextTwo!="" && field.relationDataTextTwo!=undefined){
+				sqlOption2(field.relationDataValueTwo);
+			}
+			
+			this.setDestType(field.destType);
+			this.setDestSubform(field.destSubform);
+			
+			this.setSelectType(field.selectType);
+		}
+		
+		
+		$(".definitioncontentiteam").remove();
+		$("#relationDataDefiantion").val(field.relationDataDefiantion);
+		if(field.relationDataDefiantion!=""){
+			var str = field.relationDataDefiantion;
+			var tempArray = str.split("|");
+			for(var j=0;j<tempArray.length;j++){
+				var tempObj = JSON.parse(tempArray[j]);
+				_this.addRelationDefinition(tempObj);
+			}
+		}
+		
+		 
+		$(".addRelationField").click(function(){
+			var sqlFieldText = $("#sqlField option:selected").text();
+			var sqlFieldValue = $("#sqlField option:selected").val();
+			var formFieldText = $("#formField option:selected").text();
+			var formFieldValue = $("#formField option:selected").val();
+			var searchCheck = $("#searchCheck ").val();
+			if($("#searchCheck:checked").val()=='yes'){
+				searchCheck = true;
+			}else{
+				searchCheck = false;
+			}
+			
+			
+			_this.addRelationDefinition({
+				sqlTitle: sqlFieldText, 
+				sqlField:sqlFieldValue,
+				formTitle:formFieldText,
+				formField:formFieldValue,
+				isSearch:searchCheck,
+				isHide:false,
+				width:""
+			});
+			
+			/* var relationDataDefiantion = '<tr class="definitioncontentiteam" name="' + formFieldValue + '">';
+			relationDataDefiantion += '<td>'+sqlFieldText+'</td>';
+			relationDataDefiantion += '<td>'+sqlFieldValue+'</td>';
+			relationDataDefiantion += '<td>'+formFieldText+'</td>';
+			relationDataDefiantion += '<td  style="display: none;">'+formFieldValue+'</td>';
+			relationDataDefiantion += '<td><input type="checkbox" class="isSearch" /></td>';
+			relationDataDefiantion += '<td><input type="checkbox" class="isHide"/></td>';
+			relationDataDefiantion += '<td><input type="text" class="width"/></td>';
+			relationDataDefiantion += '<td><button class="delField">删除</button></td>';
+			relationDataDefiantion += '</tr>';
+			$(".definitiontrtable").append(relationDataDefiantion); */
+		});
+		 
+		$(".addRelationUserField").click(function(){
+			var sqlFieldText = $("#sqlField option:selected").text();
+			var sqlFieldValue = $("#sqlField option:selected").val();
+			var formFieldText = $("#userDefinedField").val();
+			var formFieldValue = $("#userDefinedField").val();
+			_this.addRelationDefinition({
+				sqlTitle: sqlFieldText, 
+				sqlField:sqlFieldValue,
+				formTitle:formFieldText,
+				formField:formFieldValue,
+				isSearch:false,
+				isHide:false,
+				width:""
+			});
+		});
+		 
+		
+		$(".subDelField").live("click",function(){
+			$(this).parent().parent().remove();
+		});
+		
+		$(".delField").live("click",function(){
+			$(this).parent().parent().remove();
+		});
+
+		//if(  field.relativeMethod ==  dyRelativeMethod.SEARCH){//搜索框时设置映射列
+			this.setFormFieldOptionSet(formDefinition.fields);
+		//}
+		
+		//初始化字段下拉
+		/* var optionStr="";
+		var data=formDefinition.fields;
+	  	for(var key in data){
+		    optionStr += "<option value="+data[key].name+" title=" + data[key].displayName + ">"+data[key].displayName+"</option>";
+		} 
+		$("#formField").html(optionStr); */
+	 
+	},
+	
+	addRelationDefinition:function(def){
+		var relationDataDefiantion = '<tr class="definitioncontentiteam">';
+		relationDataDefiantion += '<td>'+def.sqlTitle+'</td>';
+		relationDataDefiantion += '<td>'+def.sqlField+'</td>';
+		relationDataDefiantion += '<td>'+def.formTitle+'</td>';
+		relationDataDefiantion += '<td  style="display: none;">'+def.formField+'</td>'; 
+		//relationDataDefiantion += '<td><input type="checkbox" class="isSearch" ' + (def.isSearch ? "checked":"")  + '/></td>';
+		relationDataDefiantion += '<td><input type="checkbox" class="isHide" ' + (def.isHide ? "checked":"")  + '/></td>';
+		var width = def.width;
+		width = typeof width == "undefined" ? "" : width;
+		relationDataDefiantion += '<td><input type="text" class="width" style="width:50px;" value="' + width + '"/></td>';
+		relationDataDefiantion += '<td><button class="delField">删除</button></td>';
+		relationDataDefiantion += '</tr>';
+		$(".definitiontrtable").append(relationDataDefiantion);
+	},
+	
+
+	exitDialog:  function(){
+		this.editor.focusedDom = null;
+	},
+
+	collectFormAndFillCkeditor:  function(){ 
+		var field = new WDialogClass();
+
+		//控件公共属性收集
+		var checkpass=this.collectFormCtlComProperty(field);
+		if(!checkpass){
+			return false;
+		}
+		field.inputMode =  dyFormInputMode.dialog;
+		field.relativeMethod = this.getRelativeMethod();
+		if(field.relativeMethod ==  dyRelativeMethod.DIALOG){
+			field.relationDataTextTwo =$("#relationDataTextTwo").val();
+			field.relationDataValueTwo =$("#relationDataValueTwo").val();
+		}else{
+			field.relationDataTextTwo = this.getRelationDataTextTwo4Ds();
+			field.relationDataValueTwo = this.getRelationDataTextTwo4Ds();
+		}
+		field.pageSize = this.getPageSize();
+		field.selectType = this.getSelectType();
+		field.destType = this.getDestType();
+		field.destSubform = this.getDestSubform();
+		
+		
+		
+		
+		field.relationDataTwoSql =$("#relationDataTwoSql").val();
+		
+		var definitioncontentContent = new Array();
+		$(".definitioncontentiteam").each(function(){
+			var objTemp = new Object();
+			objTemp.sqlTitle = $(this).find("td").eq(0).html();
+			objTemp.sqlField = $(this).find("td").eq(1).html();
+			objTemp.formTitle = $(this).find("td").eq(2).html();
+			objTemp.formField = $(this).find("td").eq(3).html();
+			//objTemp.isSearch = $(this).find("td").eq(4).find("input").attr("checked") == "checked";
+			objTemp.isSearch = true;
+			objTemp.search = "no";
+			objTemp.isHide = $(this).find("td").eq(4).find("input").attr("checked") == "checked";
+			objTemp.width = $(this).find("td").eq(5).find("input").val()  ;
+			definitioncontentContent.push(JSON.cStringify(objTemp));
+		});
+		field.relationDataDefiantion = definitioncontentContent.join("|");
+		
+		//创建控件占位符
+		this.createControlPlaceHolder(this,this.editor.imageOfDialogctl,field);
+		
+		 
+			formDefinition.addField(field.name, field);
+		return true;
+	},
+	
+	/*
+	设置关联方式
+	**/
+	setRelativeMethod:function(method){
+		if(typeof method == "undefined"){
+			//console.error("method is undefined");
+			return;
+		}
+		this.$("#relativeMethod").val(method);
+		this.$("#relativeMethod").trigger("change");
+	},
+	/*
+	获取关联方式
+	**/
+	getRelativeMethod:function(){
+		return	this.$("#relativeMethod").val();
+	},
+	/*定义关联方式更新事件**/
+	definiteRelativeMehtodChangeEvt:function(){
+		var _this = this;
+		this.$("#relativeMethod").die().live("change",function(){
+			if($(this).val() ==  dyRelativeMethod.DIALOG){//弹出框
+				_this.$(".dataSourceSetting").hide();
+				_this.$(".viewSetting").show();
+			}else{
+				_this.$(".dataSourceSetting").show();
+				_this.$(".viewSetting").hide();
+				var $relationDataTextTwo4Ds =  _this.$("#relationDataTextTwo4Ds");
+				$relationDataTextTwo4Ds.trigger("change");
+			}
+		});
+	},
+	/*设置数据源id**/
+	setRelationDataTextTwo4Ds:function(dsId){
+		var $relationDataTextTwo4Ds =  this.$("#relationDataTextTwo4Ds");
+		var $options = $relationDataTextTwo4Ds.find("option");
+		
+	 	 
+		if($options.size() == 0){//初始化数据源列表
+		 
+			$.ajax({
+				'url':contextPath + '/dyform/getDataSources', //服务器的地址   
+				'dataType':'json', //返回数据类型 
+				'type':'POST', //请求类型 
+				'async':false,
+				'success':function(data){
+					 
+					 for(var i = 0; i < data[0].length; i++){
+						 
+						$("<option value='" + data[0][i].dataSourceId + "'>" + data[0][i].dataSourceName  + "</option>").appendTo($relationDataTextTwo4Ds);
+					 }
+				},
+				error:function(res){
+					console.log(JSON.cStringify(res));
+					alert("数据源获取失败");
+				}
+			});
+		
+		} 
+		 
+		if(typeof dsId == "undefined"){
+			return;
+		}
+		$relationDataTextTwo4Ds.val(dsId);
+		//alert($relationDataTextTwo4Ds.val() + "xxxxxxxxxx" + dsId);
+		
+	},
+	getRelationDataTextTwo4Ds:function(){
+		var $relationDataTextTwo4Ds =  this.$("#relationDataTextTwo4Ds");
+		return $relationDataTextTwo4Ds.val();
+	},
+	
+	definiteRelationDataTextTwo4DsChangeEvt:function(){
+		var _this = this;
+		var $relationDataTextTwo4Ds =  this.$("#relationDataTextTwo4Ds");
+		$relationDataTextTwo4Ds.die().live("change", function(){
+			_this.loadDataSouceColumnDefinition();
+		});
+	},
+	loadDataSouceColumnDefinition:function(){
+		var dataSourceId = this.getRelationDataTextTwo4Ds();  
+		var _this = this;
+		var url = contextPath + '/dyform/getDataSourceColumns';
+		 
+		$.ajax({
+			'url': url, //服务器的地址   
+			'dataType':'json', //返回数据类型 
+			'type':'POST', //请求类型 
+			'data':{dsId: dataSourceId},
+			'async':false,
+			'success':function(data){ 
+				  data = data[0];
+				  var optionStr = "";
+				 for(var i = 0; i < data.length; i++){
+					 var titleName = data[i].titleName;
+						if(titleName==""){
+							titleName = data[i].columnName;
+						}
+						var fieldName =  data[i].fieldName;
+						if(typeof fieldName == "undefined" || fieldName.length == 0){
+							fieldName = data[i].columnName;
+						}
+						optionStr += "<option value='"+fieldName+"'>"+titleName+"</option>";
+				}
+				 _this.$("#sqlField").html(optionStr);
+				 
+			},
+			error:function(res){
+				console.log(JSON.cStringify(res));
+				alert("数据源列定义列表获取失败");
+			}
+		});
+	},
+	
+	definiteDestTypeClickEvent:function(){ 
+		//alert(3);
+		var _this = this;
+		this.$("#destType").click(function(){
+			
+			//alert($(this).attr("checked") == "checked");
+			
+			if($(this).attr("checked") == "checked"){
+				_this.showDestSubform();
+				_this.$(".selectType").show();
+			}else{
+				_this.$(".destSubform").hide();
+				_this.$(".selectType").hide();
+				_this.setFormFieldOptionSet(formDefinition.fields);
+			}
+		});
+	},
+	showDestSubform:function(){
+		this.$(".destSubform").show();
+		this.$("#destSubform").trigger("change");
+	},
+	
+	initSubformList:function(){
+		var data = formDefinition.subforms;
+		var optionStr = "";
+		 optionStr += "<option value='' >--请选择--</option>";
+	  	for(var key in data){
+		    optionStr += "<option value="+data[key].outerId+" title=" + data[key].displayName + ">"+data[key].displayName+"</option>";
+		}
+		$("#destSubform").html(optionStr);
+	},
+	
+	/**
+	* 从表选项发生变化时的事件
+	*/
+	definiteDestSubformChangeEvt:function(){
+		var _this = this;
+		this.$("#destSubform").change(function(){
+			var formId = $(this).val(); 
+			//alert(formId);
+			if(formId.length == 0){
+				 _this.$("#formField").html("");
+			}else{
+				//alert(_this.getDestType() ==   dyControlPos.subForm);
+				if(_this.getDestType() ==   dyControlPos.subForm){//从表
+					var data = _this.getSubFormFields(formId);
+					_this.setFormFieldOptionSet(data);
+				}else{//主表
+					// _this.$("#formField").html("");
+				}
+			}
+		});
+	},
+	
+	/**
+	* 设置目标从表
+	*/
+	setDestSubform:function(val){
+		if(typeof val == "undefined"){
+			val = "";
+		}
+		this.$("#destSubform").val(val);
+		this.$("#destSubform").trigger("change");
+	},
+	
+	/**
+	* 获取目标从表
+	*/
+	getDestSubform:function(val){
+		return this.$("#destSubform").val( );
+	},
+	
+	
+	setFormFieldOptionSet:function(optionSet){
+		var optionStr = "";
+		 optionStr += "<option value='' >--请选择--</option>";
+	  	for(var key in optionSet){
+		    optionStr += "<option value="+optionSet[key].name+" title=" + optionSet[key].displayName + ">"+optionSet[key].displayName+"</option>";
+		}
+	  	
+	  this.$("#formField").html(optionStr);
+	},
+	setPageSize:function(pageSize){
+		if(typeof pageSize == "undefined" || pageSize == null ){
+			pageSize = "";
+		}
+		 this.$("#pageSize").val($.trim(pageSize));
+	},
+	getPageSize:function(){
+		return this.$("#pageSize").val();
+	},
+	
+	/*
+	*获取从表的字段
+	*/
+	getSubFormFields:function(formId){
+		var subforms = formDefinition.subforms;
+		for(var i in subforms){
+			var subform = subforms[i];
+			if(subform.outerId == formId){
+				return subform.fields;
+			}
+		}
+		return [];
+	},
+	
+	/**
+	* 设置多选还是单选
+	*/
+	setSelectType:function(selectType){
+		if(selectType == dySelectType.multiple){
+			this.$("#selectType").attr("checked", false);
+			this.$("#selectType").trigger("click");
+		}else{
+			this.$("#selectType").attr("checked", false);
+		}
+	},
+	
+	/*
+	* 设置目标类型
+	*/
+	setDestType:function(destType){
+		if(destType == dyControlPos.subForm){
+			this.$("#destType").attr("checked", true);
+			 this.showDestSubform();
+			 this.$(".selectType").show();
+		}else{
+			this.$("#destType").attr("checked", false); 
+			this.setFormFieldOptionSet(formDefinition.fields);
+			 this.$(".selectType").hide();
+		}
+	},
+	
+	/**
+	* 获取多选还是单选
+	*/
+	getSelectType:function( ){
+		if(this.$("#selectType").attr("checked") == "checked"){
+			return  dySelectType.multiple;
+		}else{
+			 dySelectType.single;
+		}
+	},
+	/*
+	* 获取目标类型
+	*/
+	getDestType:function( ){
+		if(this.$("#destType").attr("checked") == "checked"){
+			return   dyControlPos.subForm;
+		}else{
+			return   dyControlPos.mainForm;
+		}
+	}
+	
+	
+});
+
+
+function treeNodeOnClick2(event, treeId, treeNode) {
+	if(!treeNode.isParent){
+		if(treeNode.name!=$("#relationDataTextTwo").val()){
+			$(".definitioncontentiteam").remove();
+		}
+		$("#relationDataTextTwo").val(treeNode.name);
+		$("#relationDataValueTwo").val(treeNode.id);
+		JDS.call({
+			service:"viewDefinitionNewService.getColumnDefinitions",
+			data:[treeNode.id],
+			async : false,
+			success:function(result) { 
+				data = result.data;
+				var optionStr = "";
+				for(var i=0;i<data.length;i++) {
+					var titleName = data[i].otherName;
+					if(titleName==""){
+						titleName = data[i].titleName;
+					}
+					if(data[i].columnAliase == "" || data[i].columnAliase == null || data[i].columnAliase == undefined) {
+						optionStr += "<option value='"+data[i].fieldName+"'>"+titleName+"</option>";
+					}else {
+						optionStr += "<option value='"+data[i].columnAliase+"'>"+titleName+"</option>";
+					}
+				}
+				$("#sqlField").html(optionStr);
+			}
+		});
+	}
+	
+}
+
+function sqlOption2(relationDataValueTwo){
+	if(relationDataValueTwo!="" && relationDataValueTwo!= undefined){
+		JDS.call({
+			service:"viewDefinitionNewService.getColumnDefinitions",
+			data:[relationDataValueTwo],
+			success:function(result) {
+				data = result.data;
+				var optionStr = "";
+				for(var i=0;i<data.length;i++) {
+					var titleName = data[i].otherName;
+					if(titleName==""){
+						titleName = data[i].titleName;
+					}
+					if(data[i].columnAliase == "" && data[i].columnAliase == null|| data[i].columnAliase == undefined) {
+						optionStr += "<option value='"+data[i].fieldName+"'>"+titleName+"</option>";
+					}else {
+						optionStr += "<option value='"+data[i].columnAliase+"'>"+titleName+"</option>";
+					}
+				}
+				$("#sqlField").html(optionStr);
+			}
+		});
+	}
+}
+
+
+</script>

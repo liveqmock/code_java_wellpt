@@ -1,0 +1,599 @@
+  
+<style>
+<!--
+/*
+ * Default Layout Theme
+ *
+ * Created for jquery.layout 
+ *
+ * Copyright (c) 2010 
+ *   Fabrizio Balliano (http://www.fabrizioballiano.net)
+ *   Kevin Dalman (http://allpro.net)
+ *
+ * Dual licensed under the GPL (http://www.gnu.org/licenses/gpl.html)
+ * and MIT (http://www.opensource.org/licenses/mit-license.php) licenses.
+ *
+ * Last Updated: 2010-02-10
+ * NOTE: For best code readability, view this with a fixed-space font and tabs equal to 4-chars
+ */
+
+/*
+ *	DEFAULT FONT
+ *	Just to make demo-pages look better - not actually relevant to Layout!
+ */
+body {
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size:   100%;
+	*font-size:  80%;
+}
+
+/*
+ *	PANES & CONTENT-DIVs
+ */
+.ui-layout-pane { /* all 'panes' */
+	background:	#FFF; 
+	border:		1px solid #BBB;
+	padding:	10px; 
+	overflow:	auto;
+	/* DO NOT add scrolling (or padding) to 'panes' that have a content-div,
+	   otherwise you may get double-scrollbars - on the pane AND on the content-div
+	   - use ui-layout-wrapper class if pane has a content-div
+	   - use ui-layout-container if pane has an inner-layout
+	*/
+	}
+	/* (scrolling) content-div inside pane allows for fixed header(s) and/or footer(s) */
+	.ui-layout-content {
+		padding:	10px;
+		position:	relative; /* contain floated or positioned elements */
+		overflow:	auto; /* add scrolling to content-div */
+	}
+
+/*
+ *	UTILITY CLASSES
+ *	Must come AFTER pane-class above so will override
+ *	These classes are NOT auto-generated and are NOT used by Layout
+ */
+.layout-child-container,
+.layout-content-container {
+	padding:	0;
+	overflow:	hidden;
+}
+.layout-child-container {
+	border:		0; /* remove border because inner-layout-panes probably have borders */
+}
+.layout-scroll {
+	overflow:	auto;
+}
+.layout-hide {
+	display:	none;
+}
+
+/*
+ *	RESIZER-BARS
+ */
+.ui-layout-resizer	{ /* all 'resizer-bars' */
+	background:		#DDD;
+	border:			1px solid #BBB;
+	border-width:	0;
+	}
+	.ui-layout-resizer-drag {		/* REAL resizer while resize in progress */
+	}
+	.ui-layout-resizer-hover	{	/* affects both open and closed states */
+	}
+	/* NOTE: It looks best when 'hover' and 'dragging' are set to the same color,
+		otherwise color shifts while dragging when bar can't keep up with mouse */
+	.ui-layout-resizer-open-hover ,	/* hover-color to 'resize' */
+	.ui-layout-resizer-dragging {	/* resizer beging 'dragging' */
+		background: #C4E1A4;
+	}
+	.ui-layout-resizer-dragging {	/* CLONED resizer being dragged */
+		border: 	 1px solid #BBB;
+	}
+	.ui-layout-resizer-north-dragging,
+	.ui-layout-resizer-south-dragging {
+		border-width:	1px 0;
+	}
+	.ui-layout-resizer-west-dragging,
+	.ui-layout-resizer-east-dragging {
+		border-width:	0 1px;
+	}
+	/* NOTE: Add a 'dragging-limit' color to provide visual feedback when resizer hits min/max size limits */
+	.ui-layout-resizer-dragging-limit {	/* CLONED resizer at min or max size-limit */
+		background: #E1A4A4; /* red */
+	}
+
+	.ui-layout-resizer-closed-hover	{ /* hover-color to 'slide open' */
+		background: #EBD5AA;
+	}
+	.ui-layout-resizer-sliding {	/* resizer when pane is 'slid open' */
+		opacity: .10; /* show only a slight shadow */
+		filter:  alpha(opacity=10);
+		}
+		.ui-layout-resizer-sliding-hover {	/* sliding resizer - hover */
+			opacity: 1.00; /* on-hover, show the resizer-bar normally */
+			filter:  alpha(opacity=100);
+		}
+		/* sliding resizer - add 'outside-border' to resizer on-hover 
+		 * this sample illustrates how to target specific panes and states */
+		.ui-layout-resizer-north-sliding-hover	{ border-bottom-width:	1px; }
+		.ui-layout-resizer-south-sliding-hover	{ border-top-width:		1px; }
+		.ui-layout-resizer-west-sliding-hover	{ border-right-width:	1px; }
+		.ui-layout-resizer-east-sliding-hover	{ border-left-width:	1px; }
+
+/*
+ *	TOGGLER-BUTTONS
+ */
+.ui-layout-toggler {
+	border: 1px solid #BBB; /* match pane-border */
+	background-color: #BBB;
+	}
+	.ui-layout-resizer-hover .ui-layout-toggler {
+		opacity: .60;
+		filter:  alpha(opacity=60);
+	}
+	.ui-layout-toggler-hover , /* need when NOT resizable */
+	.ui-layout-resizer-hover .ui-layout-toggler-hover { /* need specificity when IS resizable */
+		background-color: #FC6;
+		opacity: 1.00;
+		filter:  alpha(opacity=100);
+	}
+	.ui-layout-toggler-north ,
+	.ui-layout-toggler-south {
+		border-width: 0 1px; /* left/right borders */
+	}
+	.ui-layout-toggler-west ,
+	.ui-layout-toggler-east {
+		border-width: 1px 0; /* top/bottom borders */
+	}
+	/* hide the toggler-button when the pane is 'slid open' */
+	.ui-layout-resizer-sliding  .ui-layout-toggler {
+		display: none;
+	}
+	/*
+	 *	style the text we put INSIDE the togglers
+	 */
+	.ui-layout-toggler .content {
+		color:			#666;
+		font-size:		12px;
+		font-weight:	bold;
+		width:			100%;
+		padding-bottom:	0.35ex; /* to 'vertically center' text inside text-span */
+	}
+
+/*
+ *	PANE-MASKS
+ *	these styles are hard-coded on mask elems, but are also 
+ *	included here as !important to ensure will overrides any generic styles
+ */
+.ui-layout-mask {
+	border:		none !important;
+	padding:	0 !important;
+	margin:		0 !important;
+	overflow:	hidden !important;
+	position:	absolute !important;
+	opacity:	0 !important;
+	filter:		Alpha(Opacity="0") !important;
+}
+.ui-layout-mask-inside-pane { /* masks always inside pane EXCEPT when pane is an iframe */
+	top:		0 !important;
+	left:		0 !important;
+	width:		100% !important;
+	height:		100% !important;
+}
+div.ui-layout-mask {}		/* standard mask for iframes */
+iframe.ui-layout-mask {}	/* extra mask for objects/applets */
+
+/*
+ *	Default printing styles
+ */
+@media print {
+	/*
+	 *	Unless you want to print the layout as it appears onscreen,
+	 *	these html/body styles are needed to allow the content to 'flow'
+	 */
+	html {
+		height:		auto !important;
+		overflow:	visible !important;
+	}
+	body.ui-layout-container {
+		position:	static !important;
+		top:		auto !important;
+		bottom:		auto !important;
+		left:		auto !important;
+		right:		auto !important;
+		/* only IE6 has container width & height set by Layout */
+		_width:		auto !important;
+		_height:	auto !important;
+	}
+	.ui-layout-resizer, .ui-layout-toggler {
+		display:	none !important;
+	}
+	/*
+	 *	Default pane print styles disables positioning, borders and backgrounds.
+	 *	You can modify these styles however it suit your needs.
+	 */
+	.ui-layout-pane {
+		border:		none !important;
+		background:	 transparent !important;
+		position:	relative !important;
+		top:		auto !important;
+		bottom:		auto !important;
+		left:		auto !important;
+		right:		auto !important;
+		width:		auto !important;
+		height:		auto !important;
+		overflow:	visible !important;
+	}
+}
+
+
+ 
+
+
+  #cpropertiesDialog {
+		 
+		 
+		margin:		0 auto; 
+		/* max-width:	700px;
+		min-width:	600px; */
+		_width:		700px;  
+	}  
+	.pane {
+		display:	none; /* will appear when layout inits */
+	}
+	
+	.ui-layout-north{
+		heigt:300px;
+	}
+	
+-->
+</style>
+<div id="propertiesDialog4model" title='字段属性列表窗口'  >
+	<div> 
+		<div class="dyform">
+			<div class="post-sign">
+				<div class="post-detail" id="cpropertiesDialog">
+					<div class="pane ui-layout-north">
+					<!-- >>>从表信息 -->
+						<table id="subformtbl">
+							 
+						</table>
+					</div>   
+		 			<div class="pane ui-layout-center">
+		 			>>>双击选择字段
+						<table id="columnstbl">
+							 
+						</table>
+					</div>
+					  <div class="pane ui-layout-south"></div>   
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+
+
+var propertiesDialog4model = {}; 
+ 
+propertiesDialog4model.$ =  function(selector){ 
+	return $(selector, $("#propertiesDialog4model"));
+} 
+
+$.extend(propertiesDialog4model, $.ControlConfigUtil);
+
+
+propertiesDialog4model.deletedField=[];
+propertiesDialog4model.deletedSubform=[];
+
+$.extend(true, propertiesDialog4model, {
+
+	init : function(editor){
+		this.editor = editor; 
+		 $(".cke_reset_all").removeClass("cke_reset_all");//删除ckeditor内部的局css
+		 
+		//初始化窗口布局
+		this.layout();
+		
+		var _this = this;
+		
+		if(formDefinition == null){
+			return;
+		}
+		
+		window.setTimeout(function(){
+			var fields = formDefinition.fields;
+			_this.fillFieldDefinition(fields);
+			//var subforms = formDefinition.subforms; 
+			//_this.fillSubformDefinition(subforms);
+		}, 100); 
+	},
+
+	layout : function(){
+		var widthHeight = getWidthAndHeight();
+		$("#cpropertiesDialog").css("width", widthHeight.width - 160);
+		$("#cpropertiesDialog").css("height", widthHeight.height -160);
+		//$("#cpropertiesDialog").css("padding", 80);
+		$('#cpropertiesDialog').layout({
+			 
+	         north: {
+	             size:                    300
+	          ,    spacing_open:            15
+	          //,    closable:                false
+	         // ,    resizable:                false 
+	       }
+		}); 
+	 
+		$(".pane ui-layout-center").css("width", "")
+		window.setTimeout(function(){  
+			 $(".ui-layout-toggler-south-open").trigger("click");
+			 $(".ui-layout-toggler-north-open").trigger("click");
+		}, 100); 
+	},
+
+	fillSubformDefinition  : function(subforms){
+		if(typeof subforms == "undefined" ){
+			return;
+		}
+		var index = 0;
+		for(var i in subforms){
+			index ++;
+		}
+		if(index == 0){
+			 $(".ui-layout-toggler-north-open").trigger("click");
+			return;
+		}
+		
+		
+		
+		var tr ="<tbody><tr class='title' >";
+		var th = "";
+		var colName = [ "表名", "显示名称","展示/折叠", "编辑模式", "展示操作按钮", "分组字段", "字段信息","操作"];
+		for(var i = 0 ; i < colName.length; i++){  
+			th += "<th>"
+			th += colName[i];
+			th += "</th>"; 
+		}
+		tr += th;
+		tr += "</tr></tbody>";
+		$("#subformtbl").append(tr);
+		
+		for(var i in subforms){ 
+			var subform = subforms[i]; 
+			
+			var isExistPlaceHolder = isPlaceholder(subform.formUuid, "subform");
+			
+			var ptr = "<tr"; 
+		 
+			
+			ptr += ">";
+			var ptd = "<td>"
+			ptd += subform.name;
+			ptd += "</td>"; 
+			
+
+			ptd += "<td>"
+			ptd += subform.displayName;
+			ptd += "</td>"; 
+			
+			
+			ptd += "<td>"
+			ptd +=  subform.tableOpen == dySubFormTableOpen.open ?"展开":"折叠"
+			ptd += "</td>"; 
+			
+			ptd += "<td>"
+			ptd += dySubFormEdittype.rowEdit == subform.editMode ? "行内编辑":"新窗口"
+			ptd += "</td>"; 
+			
+			ptd += "<td>"
+			ptd += dySubFormHideButtons.show == subform.hideButtons ? "展示":"隐藏"
+			ptd += "</td>"; 
+			
+			ptd += "<td>"
+			ptd +=  subform.groupShowTitle;
+			ptd += "</td>"; 
+			
+			ptd += "<td>"
+			for(var j in  subform.fields){
+				ptd += j + ";";
+			}
+			 
+			ptd += "</td>";  
+			
+			 
+			
+			ptd += "<td>"
+			ptd += "<a href='javascript:void(0)' onclick = \"deleteSubform('" +subform.formUuid  + "', this, " + isExistPlaceHolder + ")\">删除</a>"
+			ptd += "</td>";  
+			
+			ptr += ptd + "</tr>";
+			
+			$("#subformtbl").append(ptr);
+		}
+		
+
+		$('#subformtbl tr').hover(function(){
+			$(".odd").removeClass("odd");
+			 $(this).addClass("odd");
+		});
+		
+	},
+	fillFieldDefinition  : function(fields){ 
+		var tr ="<tbody><tr class='title' >";
+		var th = "";
+		var colName = [ "字段名", "显示名称","应用于", "数据库类型", "长度", "默认值", "控件类型", "值计算方式","编辑模式"];
+		for(var i = 0 ; i < colName.length; i++){  
+			th += "<th>"
+			th += colName[i];
+			th += "</th>"; 
+		}
+		tr += th;
+		tr += "</tr></tbody>";
+		this.$("#columnstbl").append(tr);
+		
+		
+		var index = 0;
+		for(var i in fields){ 
+			 
+			var field = fields[i]; 
+			/* if(dyFieldSysType.custom != field.sysType){
+				continue;
+			} */
+			var isExistPlaceHolder = isPlaceholder(i);
+			
+			var ptr = "<tr"; 
+			 
+			if(index % 2 != 0){
+				//ptr += " class='odd' ";
+			}
+			
+			ptr += ">";
+			var ptd = "<td>"
+			ptd += field.name;
+			ptd += "</td>"; 
+			
+
+			ptd += "<td>"
+			ptd += field.displayName;
+			ptd += "</td>"; 
+			
+			
+			ptd += "<td>"
+			ptd += getApplyToName(field.applyTo);
+			ptd += "</td>"; 
+			
+			ptd += "<td>"
+			ptd += getDbDataTypeName(field.dbDataType);
+			ptd += "</td>"; 
+			
+			ptd += "<td>"
+			ptd += field.length;
+			ptd += "</td>"; 
+			
+			ptd += "<td>"
+			ptd += field.defaultValue;
+			ptd += "</td>"; 
+			
+			ptd += "<td>"
+			ptd += getControlName(field.inputMode);
+			ptd += "</td>";  
+			
+			ptd += "<td>"
+			ptd += getValueCreateMethod(field.valueCreateMethod);
+			ptd += "</td>";  
+
+			ptd += "<td>"
+			ptd += getShowType(field.showType)
+			ptd += "</td>";
+			 
+			
+			ptr += ptd + "</tr>";
+			
+			this.$("#columnstbl").append(ptr);
+			index ++ ;
+		}
+		
+		var _this = this;
+		//alert(this.$('#columnstbl tr').size());
+		this.$('#columnstbl tr').hover(function(){ 
+			_this.$(".odd").removeClass("odd");
+			 $(this).addClass("odd");
+		});
+		
+		 
+		_this.$('#columnstbl tr:gt(0)').dblclick(function(){
+			//为表格行添加选择事件处理 
+			var fieldName = $(this).find("td:first").html(); 
+			var displayName =  $(this).find("td:eq(1)").html();
+			//var ctlHtml = "<input  name='" + fieldName + "' title='" + displayName +"' />";
+			var ctlHtml = "<img class=\"value\" name=\"" + fieldName  +"\" src=\"resources/ckeditor4.4.2/plugins/control4text/images/textctl.jpg\" title=\"" + displayName + "\" />";
+			var element = CKEDITOR.dom.element.createFromHtml( ctlHtml );
+			_this.editor.insertElement( element ); 
+			$(".cke_dialog_ui_button").trigger("click");
+		});  
+	 
+		
+		
+		
+	},
+
+	
+
+	/**
+	 * 收集数据
+	 */
+	collectData  : function(){ 
+		//删除字段
+		/*
+		//console.log(propertiesDialog.deletedField.length + " columns is deleted"); 
+		for(var i = 0; i < this.deletedField.length ; i ++){
+			var fieldName = this.deletedField[i];
+			
+			var isExistPlaceHolder = isPlaceholder(fieldName);//是否有占位符
+			
+			var fields = formDefinition.fields;
+			 var field = fields[fieldName];
+			 
+			if(isExistPlaceHolder){//删除占位符
+				var elems = getPlaceHolder(fieldName);
+				var elem = elems.getItem(0);  
+				elem.remove();
+			}
+			formDefinition.deleteField(fieldName);
+		}
+		
+		
+		//删除从表
+		for(var i = 0; i < this.deletedSubform.length; i++){
+			var formUuid = this.deletedSubform[i];
+			var isExistPlaceHolder = isPlaceholder(formUuid, "subform");//是否有占位符
+			if(isExistPlaceHolder){
+				//删除占位符
+				var subforms = getPlaceHolder(formUuid, "subform");
+				var subform = subforms.getItem(0); 
+				subform.remove();
+			}
+			
+			formDefinition.deleteSubform(formUuid);
+		}*/
+	}
+	
+	
+});
+
+function deleteField(fieldName, tag, isPlaceHolder){ 
+	 
+	$(tag).parent().parent().remove();//删除字段属性行
+	 propertiesDialog4model.deletedField.push(fieldName); 
+	 
+}
+
+function deleteSubform(formUuid, tag){
+	$(tag).parent().parent().remove();//删除从表属性行
+	propertiesDialog4model.deletedSubform.push(formUuid);
+}
+
+
+
+function getPlaceHolder(fieldName, type){
+	if(type == "subform"){
+		return propertiesDialog4model.editor.document.find("table[formUuid='" + fieldName + "']");
+	}else {
+		return propertiesDialog4model.editor.document.find("img[name='" + fieldName + "'][class='value']");
+	}
+	
+}
+
+function isPlaceholder(fieldName, type){
+	// alert(propertiesDialog.editor.document.find);
+	var elems = getPlaceHolder(fieldName, type);
+	if(elems.count() > 0){
+		return true;
+	}
+	return false;
+}
+
+
+
+</script>

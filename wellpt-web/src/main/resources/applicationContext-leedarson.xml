@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd 
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd 
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd"
+	default-lazy-init="true">
+	
+	<description>立达信公共配置 </description>
+	
+	
+	<!-- Hibernate SAP SessionFactory配置 -->
+	<bean id="sapSessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="sap_common"></property>
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</property>
+		<property name="annotatedClasses">
+			<bean
+				class="com.wellsoft.pt.core.support.TenantEntityAnnotatedClassesFactoryBean">
+				<property name="packagesToScan" value="com.wellsoft.***.**" />
+			</bean>
+		</property>
+		<property name="mappingLocations">
+			<bean
+				class="com.wellsoft.pt.core.support.HibernateMappingLocationsFactoryBean">
+				<property name="ignoreUrlResource" value="true"></property>
+			</bean>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
+				<prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+
+				<prop key="hibernate.connection.datasource">jdbc/${multi.tenancy.sap.datasource}</prop>
+				<prop key="hibernate.connection.release_mode">after_statement</prop>
+				<prop key="hibernate.jndi.class">bitronix.tm.jndi.BitronixInitialContextFactory</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringJtaSessionContext
+				</prop>
+				<prop key="hibernate.transaction.factory_class">org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory
+				</prop>
+				<prop key="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.BitronixJtaPlatform
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="dms_common"
+		class="com.wellsoft.pt.core.dao.hibernate.BitronixDataSourceFactoryBean"
+		lazy-init="false">
+		<property name="uniqueName" value="jdbc/${multi.tenancy.dms.datasource}"></property>
+		<property name="maxPoolSize" value="30"></property>
+		<property name="databaseType" value="${database.type}"></property>
+		<property name="driverProperties">
+			<props>
+				<prop key="ServerName">${multi.tenancy.dms.server_name}</prop>
+				<prop key="DatabaseName">${multi.tenancy.dms.database_name}</prop>
+				<prop key="SelectMethod">cursor</prop>
+				<prop key="URL">${multi.tenancy.dms.url}</prop>
+				<prop key="User">${multi.tenancy.dms.username}</prop>
+				<prop key="Password">${multi.tenancy.dms.password}</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Hibernate DMS SessionFactory配置 -->
+	<bean id="dmsSessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dms_common"></property>
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</property>
+		<property name="annotatedClasses">
+			<bean
+				class="com.wellsoft.pt.core.support.TenantEntityAnnotatedClassesFactoryBean">
+				<property name="packagesToScan" value="com.wellsoft.***.**" />
+			</bean>
+		</property>
+		<property name="mappingLocations">
+			<bean
+				class="com.wellsoft.pt.core.support.HibernateMappingLocationsFactoryBean">
+				<property name="ignoreUrlResource" value="true"></property>
+			</bean>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
+				<prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+
+				<prop key="hibernate.connection.datasource">jdbc/${multi.tenancy.dms.datasource}</prop>
+				<prop key="hibernate.connection.release_mode">after_statement</prop>
+				<prop key="hibernate.jndi.class">bitronix.tm.jndi.BitronixInitialContextFactory</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringJtaSessionContext
+				</prop>
+				<prop key="hibernate.transaction.factory_class">org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory
+				</prop>
+				<prop key="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.BitronixJtaPlatform
+				</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="srm_common"
+		class="com.wellsoft.pt.core.dao.hibernate.BitronixDataSourceFactoryBean"
+		lazy-init="false">
+		<property name="uniqueName" value="jdbc/${multi.tenancy.srm.datasource}"></property>
+		<property name="maxPoolSize" value="30"></property>
+		<property name="databaseType" value="${database.type}"></property>
+		<property name="driverProperties">
+			<props>
+				<prop key="ServerName">${multi.tenancy.srm.server_name}</prop>
+				<prop key="DatabaseName">${multi.tenancy.srm.database_name}</prop>
+				<prop key="SelectMethod">cursor</prop>
+				<prop key="URL">${multi.tenancy.srm.url}</prop>
+				<prop key="User">${multi.tenancy.srm.username}</prop>
+				<prop key="Password">${multi.tenancy.srm.password}</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Hibernate SRM SessionFactory配置 -->
+	<bean id="srmSessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="srm_common"></property>
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</property>
+		<property name="annotatedClasses">
+			<bean
+				class="com.wellsoft.pt.core.support.TenantEntityAnnotatedClassesFactoryBean">
+				<property name="packagesToScan" value="com.wellsoft.***.**" />
+			</bean>
+		</property>
+		<property name="mappingLocations">
+			<bean
+				class="com.wellsoft.pt.core.support.HibernateMappingLocationsFactoryBean">
+				<property name="ignoreUrlResource" value="true"></property>
+			</bean>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
+				<prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+
+				<prop key="hibernate.connection.datasource">jdbc/${multi.tenancy.srm.datasource}</prop>
+				<prop key="hibernate.connection.release_mode">after_statement</prop>
+				<prop key="hibernate.jndi.class">bitronix.tm.jndi.BitronixInitialContextFactory</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringJtaSessionContext
+				</prop>
+				<prop key="hibernate.transaction.factory_class">org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory
+				</prop>
+				<prop key="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.BitronixJtaPlatform
+				</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="lms_common"
+		class="com.wellsoft.pt.core.dao.hibernate.BitronixDataSourceFactoryBean"
+		lazy-init="false">
+		<property name="uniqueName" value="jdbc/${multi.tenancy.lms.datasource}"></property>
+		<property name="maxPoolSize" value="30"></property>
+		<property name="databaseType" value="${database.type}"></property>
+		<property name="driverProperties">
+			<props>
+				<prop key="ServerName">${multi.tenancy.lms.server_name}</prop>
+				<prop key="DatabaseName">${multi.tenancy.lms.database_name}</prop>
+				<prop key="SelectMethod">cursor</prop>
+				<prop key="URL">${multi.tenancy.lms.url}</prop>
+				<prop key="User">${multi.tenancy.lms.username}</prop>
+				<prop key="Password">${multi.tenancy.lms.password}</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- Hibernate LMS SessionFactory配置 -->
+	<bean id="lmsSessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="lms_common"></property>
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</property>
+		<property name="annotatedClasses">
+			<bean
+				class="com.wellsoft.pt.core.support.TenantEntityAnnotatedClassesFactoryBean">
+				<property name="packagesToScan" value="com.wellsoft.***.**" />
+			</bean>
+		</property>
+		<property name="mappingLocations">
+			<bean
+				class="com.wellsoft.pt.core.support.HibernateMappingLocationsFactoryBean">
+				<property name="ignoreUrlResource" value="true"></property>
+			</bean>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
+				<prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+
+				<prop key="hibernate.connection.datasource">jdbc/${multi.tenancy.lms.datasource}</prop>
+				<prop key="hibernate.connection.release_mode">after_statement</prop>
+				<prop key="hibernate.jndi.class">bitronix.tm.jndi.BitronixInitialContextFactory</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringJtaSessionContext
+				</prop>
+				<prop key="hibernate.transaction.factory_class">org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory
+				</prop>
+				<prop key="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.BitronixJtaPlatform
+				</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="mps_common"
+		class="com.wellsoft.pt.core.dao.hibernate.BitronixDataSourceFactoryBean"
+		lazy-init="false">
+		<property name="uniqueName" value="jdbc/${multi.tenancy.mps.datasource}"></property>
+		<property name="maxPoolSize" value="30"></property>
+		<property name="databaseType" value="${database.type}"></property>
+		<property name="driverProperties">
+			<props>
+				<prop key="ServerName">${multi.tenancy.mps.server_name}</prop>
+				<prop key="DatabaseName">${multi.tenancy.mps.database_name}</prop>
+				<prop key="SelectMethod">cursor</prop>
+				<prop key="URL">${multi.tenancy.mps.url}</prop>
+				<prop key="User">${multi.tenancy.mps.username}</prop>
+				<prop key="Password">${multi.tenancy.mps.password}</prop>
+			</props>
+		</property>
+	</bean>
+	
+	
+	
+	
+	<!-- Hibernate LMS SessionFactory配置 -->
+	<bean id="mpsSessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="mps_common"></property>
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</property>
+		<property name="annotatedClasses">
+			<bean
+				class="com.wellsoft.pt.core.support.TenantEntityAnnotatedClassesFactoryBean">
+				<property name="packagesToScan" value="com.wellsoft.***.**" />
+			</bean>
+		</property>
+		
+		<property name="mappingLocations">
+			<bean
+				class="com.wellsoft.pt.core.support.HibernateMappingLocationsFactoryBean">
+				<property name="ignoreUrlResource" value="true"></property>
+			</bean>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
+				<prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+				<prop key="hibernate.connection.datasource">jdbc/${multi.tenancy.mps.datasource}</prop>
+				<prop key="hibernate.connection.release_mode">after_statement</prop>
+				<prop key="hibernate.jndi.class">bitronix.tm.jndi.BitronixInitialContextFactory</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringJtaSessionContext
+				</prop>
+				<prop key="hibernate.transaction.factory_class">org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory
+				</prop>
+				<prop key="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.BitronixJtaPlatform
+				</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- SAP接口信息配置 -->
+	<!-- 数据源 -->
+	<bean id="sapConnectConfig" class="com.wellsoft.pt.basicdata.sap.config.SAPDbConfig">
+		<property name="client">
+			<value>${sap.rfc.client}</value>
+		</property>
+		<property name="userid">
+			<value>${sap.rfc.userid}</value>
+		</property>
+		<property name="password">
+			<value>${sap.rfc.password}</value>
+		</property>
+		<property name="language">
+			<value>${sap.rfc.language}</value>
+		</property>
+		<property name="hostname">
+			<value>${sap.rfc.hostname}</value>
+		</property>
+		<property name="sysnumber">
+			<value>${sap.rfc.systemNunber}</value>
+		</property>
+	</bean>
+	
+	<!-- SAP接口信息配置 -->
+	<!-- 数据源 -->
+	<bean id="boConnectConfig" class="com.wellsoft.pt.basicdata.sap.config.SAPDbConfig">
+		<property name="client">
+			<value>${bo.rfc.client}</value>
+		</property>
+		<property name="userid">
+			<value>${bo.rfc.userid}</value>
+		</property>
+		<property name="password">
+			<value>${bo.rfc.password}</value>
+		</property>
+		<property name="language">
+			<value>${bo.rfc.language}</value>
+		</property>
+		<property name="hostname">
+			<value>${bo.rfc.hostname}</value>
+		</property>
+		<property name="sysnumber">
+			<value>${bo.rfc.systemNunber}</value>
+		</property>
+	</bean>
+	
+	<!-- 
+	<bean id="sapConnectConfig" class="com.wellsoft.pt.basicdata.sap.config.SAPDbConfig">
+		<property name="client">
+			<value>500</value>
+		</property>
+		<property name="userid">
+			<value>SYS_RFC</value>
+		</property>
+		<property name="password">
+			<value>localpsd</value>
+		</property>
+		<property name="language">
+			<value>zh</value>
+		</property>
+		<property name="hostname">
+			<value>SRVSAPDEV</value>
+		</property>
+		<property name="sysnumber">
+			<value>00</value>
+		</property>
+	</bean>
+	 -->
+	 
+	 <bean id="copyDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+		<property name="url" value="jdbc:sqlserver://192.168.0.134:1433;databasename=dataportal_prod" />
+		<property name="username" value="sa" />
+		<property name="password" value="123456" />
+	</bean>
+	
+	<bean id="copyTemplete" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource">
+			<ref bean="copyDataSource" />
+		</property>
+	</bean>
+	
+	
+</beans>

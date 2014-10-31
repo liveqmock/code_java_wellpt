@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE Repository PUBLIC "-//The Apache Software Foundation//DTD Jackrabbit 2.0//EN"
+                            "http://jackrabbit.apache.org/dtd/repository-2.4.dtd">
+
+<Repository>
+
+    <DataSources>
+        <DataSource name="oa_test_1120">
+            <param name="driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+            <param name="url" value="jdbc:sqlserver://192.168.0.250:1433;databaseName=mt_tenant0138"/>
+            <param name="user" value="mt_tenant0138"/>
+            <param name="password" value="oa_test_1120"/> 
+            <param name="databaseType" value="mssql"/>
+            <param name="maxPoolSize" value="10"/>
+        </DataSource>
+    </DataSources>
+
+ 
+      <FileSystem class="org.apache.jackrabbit.core.fs.db.MSSqlFileSystem">
+        <param name="dataSourceName" value="oa_test_1120"/>      
+         <param name="schemaObjectPrefix" value="JCR_REP_" />
+    </FileSystem>
+ 
+   
+    <DataStore class="org.apache.jackrabbit.core.data.db.DbDataStore">
+        <param name="dataSourceName" value="oa_test_1120"/>
+        <param name="minRecordLength" value="1024" />
+        <param name="copyWhenReading" value="true" />
+        <param name="tablePrefix" value="JCR_" />
+        <param name="schemaObjectPrefix" value="DS_" />
+    </DataStore>
+
+  
+
+     <Security appName="Jackrabbit">
+       
+        <SecurityManager class="org.apache.jackrabbit.core.security.simple.SimpleSecurityManager" workspaceName="security">
+          
+            <!-- <WorkspaceAccessManager class="..."/> -->
+            <!-- <param name="config" value="${rep.home}/oa_test_1120/security.xml"/> -->
+        </SecurityManager>
+
+       
+        <AccessManager class="org.apache.jackrabbit.core.security.simple.SimpleAccessManager">
+            <!-- <param name="config" value=${rep.home}/oa_test_1120/access.xml"/> -->
+        </AccessManager>
+
+        <LoginModule class="org.apache.jackrabbit.core.security.simple.SimpleLoginModule">
+          
+           <param name="anonymousId" value="anonymous"/>
+          
+           <param name="adminId" value="admin"/>
+        </LoginModule>
+    </Security>
+
+   
+    <Workspaces rootPath="${rep.home}/oa_test_1120/workspaces" defaultWorkspace="default" maxIdleTime="2"/>
+    
+    <Workspace name="${wsp.name}">
+       
+      
+          <FileSystem class="org.apache.jackrabbit.core.fs.db.MSSqlFileSystem">
+            <param name="dataSourceName" value="oa_test_1120"/>
+            <param name="schemaObjectPrefix" value="${wsp.name}_" />
+        </FileSystem>
+
+       
+        <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.MSSqlPersistenceManager">
+            <param name="dataSourceName" value="oa_test_1120"/>
+            <param name="schemaObjectPrefix" value="JCR_WSP_Per" />
+        </PersistenceManager>
+      
+        <SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">
+            <param name="path" value="${wsp.home}/index"/>
+        </SearchIndex>
+    </Workspace>
+
+   
+    <Versioning rootPath="${rep.home}/oa_test_1120/version">
+       
+        <FileSystem class="org.apache.jackrabbit.core.fs.db.MSSqlFileSystem">
+            <param name="dataSourceName" value="oa_test_1120"/>
+             <param name="schemaObjectPrefix" value="JCR_version_File" />
+        </FileSystem>
+
+       
+        <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.MSSqlPersistenceManager">
+            <param name="dataSourceName" value="oa_test_1120"/>
+            <param name="schemaObjectPrefix" value="JCR_version_Per" />
+        </PersistenceManager>
+    </Versioning>
+
+   
+    <SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">
+        <param name="path" value="${rep.home}/oa_test_1120/repository/index"/>
+    </SearchIndex>
+    
+  
+
+</Repository>

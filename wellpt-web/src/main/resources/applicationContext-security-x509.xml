@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.2.xsd"
+	default-lazy-init="true">
+
+	<beans:description>SpringSecurity公共安全配置</beans:description>
+
+	<global-method-security jsr250-annotations="enabled" secured-annotations="enabled"
+		pre-post-annotations="enabled" />
+
+	<!-- http安全配置 -->
+	<http auto-config="false" use-expressions="true">
+		<intercept-url pattern="/resources/**" access="hasRole('ROLE_ANONYMOUS')" />
+		<intercept-url pattern="/wsfacade/**" access="hasRole('ROLE_ANONYMOUS')" />
+		<intercept-url pattern="/webservices/**" access="hasRole('ROLE_ANONYMOUS')" />
+		<intercept-url pattern="/favicon.ico" access="hasRole('ROLE_ANONYMOUS')" />
+		<intercept-url pattern="/pt/frame/login.jsp" access="hasRole('ROLE_ANONYMOUS')" />
+		<intercept-url pattern="/pt/user/login.jsp/*" access="hasRole('ROLE_ANONYMOUS')" />
+		<intercept-url pattern="/index.jsp" access="hasRole('ROLE_ANONYMOUS')" />
+		<!-- 超管理员登录URL -->
+		<intercept-url pattern="/superadmin/login" access="hasRole('ROLE_ANONYMOUS')" />
+		<!-- 租户用户(租户管理员)域名登录URL -->
+		<intercept-url pattern="/tenant/*" access="hasRole('ROLE_ANONYMOUS')" />
+		<!-- 登录验证 -->
+		<intercept-url pattern="/passport/user/login/security_check" access="hasRole('ROLE_ANONYMOUS')" />
+		<!-- 报表单点登录 -->
+		<intercept-url pattern="/ReportServer" access="hasRole('ROLE_ANONYMOUS')" />
+		<!-- DWR -->
+		<intercept-url pattern="/dwr/**" access="hasRole('ROLE_ANONYMOUS')" />
+		<!-- 工作流 -->
+		<intercept-url pattern="/pt/workflow/**" access="hasRole('ROLE_ANONYMOUS')" />
+
+		<!-- 登录页资源下载 -->
+		<intercept-url pattern="/resfacade/share/cadriver" access="hasRole('ROLE_ANONYMOUS')" />
+		<!-- JDS -->
+		<intercept-url pattern="/json/data/services" access="hasRole('ROLE_ANONYMOUS')" />
+		<!-- JqGrid公共列表查询 -->
+		<intercept-url pattern="/common/jqgrid/query" access="hasRole('ROLE_USER')" />
+		<!-- 集团通讯录 -->
+		<intercept-url pattern="/superadmin/unit/commonUnitTree/unit/tree" access="hasRole('ROLE_USER')" />
+		<!-- 登录成功 -->
+		<intercept-url pattern="/passport/user/login/success" access="hasRole('ROLE_USER')" />
+		<!-- 租户管理员登录成功 -->
+		<intercept-url pattern="/superadmin/login/success**/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/superadmin/tenant/review**/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/superadmin/tenant/active**/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/superadmin/tenant/deactive**/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/superadmin/tenant/reject**/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/superadmin/database/config**/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/superadmin/unit/commonUnitTree/config**/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/superadmin/unit/businessType/config**/**" access="hasRole('ROLE_ADMIN')" />
+		<!-- 租户用户(租户管理员)域名登录URL -->
+		<intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+
+		<form-login login-page="/tenant/xzsp" default-target-url="/passport/user/login/success"
+			authentication-failure-url="/tenant/xzsp?error=1" />
+		<logout logout-success-url="/index.jsp" />
+		<x509 subject-principal-regex="CN=(.*?)," user-service-ref="userDetailsService" />
+		<!-- 尝试访问没有权限的页面时跳转的页面 -->
+		<access-denied-handler error-page="/pt/common/403.jsp" />
+
+		<!-- Session并发管理 -->
+		<custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />
+
+		<!-- 租户用户、租户管理员和超级管理员注销过滤器 -->
+		<custom-filter before="LOGOUT_FILTER" ref="logoutFilter" />
+
+		<!-- 证书登录过滤器 -->
+		<custom-filter before="X509_FILTER" ref="x509Filter" />
+
+		<!-- (租户用户、租户管理员)和超级管理员登录过滤器 -->
+		<custom-filter before="FORM_LOGIN_FILTER" ref="loginFilter" />
+		<custom-filter after="FORM_LOGIN_FILTER" ref="superAdminLoginFilter" />
+
+		<!-- 增加一个filter，这点与Acegi是不一样的，不能修改默认的filter了， 这个filter位于FILTER_SECURITY_INTERCEPTOR之前 实现用户、角色、权限、资源的数据库管理 -->
+		<custom-filter before="FILTER_SECURITY_INTERCEPTOR" ref="securityFilter" />
+
+		<!-- Session并发管理 -->
+		<session-management session-authentication-strategy-ref="sas" />
+
+		<headers>
+			<hsts />
+			<xss-protection />
+		</headers>
+	</http>
+
+	<!-- JDS无登录服务 -->
+	<beans:bean id="jsonDataServicesConfig" class="com.wellsoft.pt.core.web.json.JsonDataServicesConfig">
+		<beans:property name="anonymousServices">
+			<beans:list>
+				<beans:value>certificateLoginService.getLoginName</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<!-- Session并发管理 -->
+	<beans:bean id="concurrencyFilter" class="org.springframework.security.web.session.ConcurrentSessionFilter">
+		<beans:property name="sessionRegistry" ref="sessionRegistry" />
+		<beans:property name="expiredUrl" value="/tenant/xzsp" />
+	</beans:bean>
+	<beans:bean id="sas"
+		class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
+		<beans:constructor-arg>
+			<beans:list>
+				<!-- <beans:bean class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy"> -->
+				<beans:bean class="com.wellsoft.pt.security.core.session.CustomConcurrentSessionControlAuthenticationStrategy">
+					<beans:constructor-arg ref="sessionRegistry" />
+					<beans:property name="maximumSessions" value="1" />
+					<beans:property name="exceptionIfMaximumExceeded" value="false" />
+				</beans:bean>
+				<beans:bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy" />
+				<beans:bean class="org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy">
+					<beans:constructor-arg ref="sessionRegistry" />
+				</beans:bean>
+			</beans:list>
+		</beans:constructor-arg>
+	</beans:bean>
+	<beans:bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+	<!-- 超管理员登录验证器 -->
+	<beans:bean id="superAdminLoginFilter" class="com.wellsoft.pt.security.access.SuperAdminAuthenticationProcessingFilter">
+		<beans:property name="authenticationSuccessHandler" ref="superAdminLoginSuccessHandler" />
+		<beans:property name="authenticationFailureHandler" ref="superAdminLoginFailureHandler" />
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="filterProcessesUrl" value="/superadmin/login/security_check" />
+	</beans:bean>
+	<!-- 验证成功后的处理 -->
+	<beans:bean id="superAdminLoginSuccessHandler"
+		class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+		<beans:property name="defaultTargetUrl" value="/superadmin/login/success" />
+	</beans:bean>
+	<!-- 验证失败后的处理 -->
+	<beans:bean id="superAdminLoginFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<!-- 可以配置相应的跳转方式。属性forwardToDestination为true采用forward false为sendRedirect -->
+		<beans:property name="defaultFailureUrl" value="/superadmin/login?error=1" />
+	</beans:bean>
+
+	<!-- 租户用户、租户(管理员)(域名)登录验证器 -->
+	<beans:bean id="loginFilter" class="com.wellsoft.pt.security.access.LoginAuthenticationProcessingFilter">
+		<beans:property name="authenticationSuccessHandler" ref="loginSuccessHandler" />
+		<beans:property name="authenticationFailureHandler" ref="domainLoginFailureHandler" />
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="filterProcessesUrl" value="/passport/user/login/security_check" />
+		<beans:property name="sessionAuthenticationStrategy" ref="sas" />
+	</beans:bean>
+	<!-- 验证成功后的处理 -->
+	<beans:bean id="loginSuccessHandler"
+		class="com.wellsoft.pt.security.core.authentication.CustomSaveRequestAwareAuthenticationSuccessHandler">
+		<beans:property name="authenticationSuccessHandler">
+			<beans:bean class="com.wellsoft.pt.org.support.LoginAuthenticationSuccessHandler"></beans:bean>
+		</beans:property>
+		<beans:property name="defaultTargetUrl" value="/passport/user/login/success" />
+	</beans:bean>
+	<!-- 验证失败后的处理 -->
+	<beans:bean id="loginFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<!-- 可以配置相应的跳转方式。属性forwardToDestination为true采用forward false为sendRedirect -->
+		<beans:property name="defaultFailureUrl" value="/tenant/xzsp?error=1" />
+	</beans:bean>
+	<!-- 域名登录验证失败后的处理 -->
+	<beans:bean id="domainLoginFailureHandler" class="com.wellsoft.pt.security.access.DomainSimpleUrlAuthenticationFailureHandler">
+		<!-- 可以配置相应的跳转方式。属性forwardToDestination为true采用forward false为sendRedirect -->
+		<beans:property name="defaultFailureUrl" value="/tenant/xzsp?error=1" />
+	</beans:bean>
+
+	<!-- 注销过滤器，完成前台用户注销时的定向功能 -->
+	<beans:bean id="logoutFilter" class="com.wellsoft.pt.security.access.CustomLogoutFilter">
+		<beans:constructor-arg value="/" />
+		<beans:constructor-arg>
+			<beans:list>
+				<beans:bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
+			</beans:list>
+		</beans:constructor-arg>
+		<beans:property name="superAdminLogoutSuccessUrl" value="/superadmin/login" />
+		<beans:property name="logoutRequestMatcher">
+			<beans:bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+				<beans:constructor-arg value="/security_logout" />
+			</beans:bean>
+		</beans:property>
+	</beans:bean>
+
+	<!-- 一个自定义的filter，必须包含authenticationManager,accessDecisionManager,securityMetadataSource三个属性， 我们的所有控制将在这三个类中实现，解释详见具体配置 -->
+	<beans:bean id="securityFilter" class="com.wellsoft.pt.security.access.intercept.FilterSecurityInterceptorImpl">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="accessDecisionManager" ref="accessDecisionManager" />
+		<beans:property name="securityMetadataSource" ref="securityMetadataSource" />
+	</beans:bean>
+
+	<beans:bean id="x509Filter" class="org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="principalExtractor">
+			<beans:bean class="com.wellsoft.pt.security.access.x509.CustomSubjectDnX509PrincipalExtractor"></beans:bean>
+		</beans:property>
+	</beans:bean>
+
+	<!-- 验证配置 ， 认证管理器，实现用户认证的入口，主要实现UserDetailsService接口即可 -->
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="userDetailsService">
+			<!-- <s:password-encoder hash="sha" /> 用户登录后保存明文密码 -->
+			<password-encoder ref="passwordEncoder">
+				<salt-source ref="saltSource" />
+			</password-encoder>
+		</authentication-provider>
+	</authentication-manager>
+	<!-- 项目实现的用户查询服务,将用户信息查询出来 -->
+	<beans:bean id="userDetailsService" class="com.wellsoft.pt.security.core.userdetails.impl.UserDetailServiceImpl" />
+
+	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"></beans:bean>
+	<beans:bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+		<beans:property name="userPropertyToUse" value="loginName"></beans:property>
+	</beans:bean>
+
+	<!-- 访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源 -->
+	<beans:bean id="accessDecisionManager" class="com.wellsoft.pt.security.access.AccessDecisionManagerImpl">
+	</beans:bean>
+
+	<!-- 资源数据定义，将所有的资源和权限对应关系建立起来，即定义某一资源可以被哪些角色访问 -->
+	<beans:bean id="securityMetadataSource" class="com.wellsoft.pt.security.access.intercept.MultiTenantFilterInvocationSecurityMetadataSource">
+	</beans:bean>
+</beans:beans>

@@ -1,0 +1,725 @@
+<div class="dyform" id="dysubformconfigcontainer">
+<div class="post-sign">
+<div class="post-detail">
+<table style="width: 100%; height: 100%;">
+  <tr>
+    <td>
+    	请选择从表：<input type="text" id="formTree"  formUuid="" formName="" formId=""  readonly="readonly" style="width:300px;"><!-- 用于选择从表，及保存选择的从表的Id --> 
+    </td>
+     <td  >
+    	<label>显示名称：</label><input type="text" id="displayName"  style="width:300px;" > 
+    </td>
+  </tr>
+   
+
+  <tr>
+    <td  >
+    	从表默认显示:<input type="radio" id="tableOpen"   name="tableOpen" value="1" >展开<input type="radio" id="tableOpen"   name="tableOpen" value="2" checked="checked">折叠
+    </td>
+     <td>
+    	单行显示编辑模式:<input type="radio" id="editMode"   name="editMode" value="1" checked="checked">当前单元格<input type="radio" id="editMode"  name="editMode" value="2" >新窗口
+    </td>
+  </tr>
+  
+  
+   <tr>
+    <td  >
+    	显示操作按钮:<input type="radio" id="hideButtons" name="hideButtons" value="1" checked="checked">显示<input type="radio" id="hideButtons"  name="hideButtons" value="2" >隐藏
+    </td>
+     <td  >
+    	从表数据分组展示:<input type="radio" id="isGroupShowTitle" name="isGroupShowTitle" value="1" >是<input type="radio" id="isGroupShowTitle"  name="isGroupShowTitle" value="2" checked="checked">否
+    </td>
+  </tr>
+  
+    
+  <tr id='tr_groupShowTitle' style="display: none;">
+    <td  >
+    	分组字段:<select id='groupShowTitle' name='groupShowTitle' class='groupShowTitle'   style="width:100px;"></select>
+    </td>
+     <td  >
+    	分组字段是否显示:<input type="radio" id="isGroupColumnShow" name="isGroupColumnShow" value="1" >是<input type="radio" id="isGroupColumnShow"  name="isGroupColumnShow" value="2" >否
+    </td>
+  </tr>
+  
+     
+  <tr id='tr_supportSubRow'  >
+    <td >
+    	支持子行:<input type="checkbox" id="supportSubRow" name="supportSubRow" value="1"/>
+    </td>
+    <td id = "excelOperator">
+    	导出按钮&nbsp;:&nbsp;<input type="checkbox" id="showExpButton" name="showExpButton" value="1">&nbsp;&nbsp;显示
+    	&nbsp;&nbsp;&nbsp;&nbsp;    &nbsp;&nbsp;&nbsp;&nbsp;导入按钮&nbsp;:&nbsp;<input type="checkbox" id="showImpButton" name="showImpButton" value="1">&nbsp;&nbsp;显示
+    </td>     
+  </tr>
+  
+      
+  <tr  >
+    <td  colspan="2" >
+    	<label>默认行数：</label><input type="text" id="defaultRowCount"  style="width:300px;" value="0"> 
+    </td>
+       
+     
+  </tr>
+  
+  
+   <tr>
+    <td colspan="2">
+    	 <br>
+    	 <div class="form_operate">
+    	 	
+    	 	<button onclick="upRow()">上移一行</button>
+    	 	<button onclick="downRow()">下移一行</button> 
+    	 	
+    	 	
+    	 	<button onclick="addRow()">添加行</button>
+    	 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    	 	<button onclick="deleteRow()">删除行</button>
+    	 	
+    	 </div> 
+    	 <br>
+    </td> 
+  </tr>
+  <tr> 
+    <td colspan="2">
+	    <div class="tableDiv">
+	    	<table style="width:98%;" id="formFieldsTbl">
+	    		<tr class="th">
+	    		<td style="text-align:center;background-color: #0F599C;border: 1px solid #0F599C;border-radius: 0 0 0 0;color: #FFFFFF;padding: 7px 0 7px 20px;display: table-cell;" class="label">列名</td>
+	    			<td style="text-align:center;background-color: #0F599C;border: 1px solid #0F599C;border-radius: 0 0 0 0;color: #FFFFFF;padding: 7px 0 7px 20px;display: table-cell;" class="label">列标题</td>
+	    			<td style="text-align:center;background-color: #0F599C;border: 1px solid #0F599C;border-radius: 0 0 0 0;color: #FFFFFF;padding: 7px 0 7px 20px;display: table-cell;">对应字段</td>
+	    			<td style="text-align:center;background-color: #0F599C;border: 1px solid #0F599C;border-radius: 0 0 0 0;color: #FFFFFF;padding: 7px 0 7px 20px;display: table-cell;">
+	    					列宽度<br/>
+	    					<input type="checkbox" id="autoWidth" name="autoWidth" value="1"/>按比例
+	    					</td>
+	    			<td style="text-align:center;background-color: #0F599C;border: 1px solid #0F599C;border-radius: 0 0 0 0;color: #FFFFFF;padding: 7px 0 7px 20px;display: table-cell;">隐藏</td>
+	    			 <td style="text-align:center;background-color: #0F599C;border: 1px solid #0F599C;border-radius: 0 0 0 0;color: #FFFFFF;padding: 7px 0 7px 20px;display: table-cell;">不可编辑</td>
+	    			  <td style="text-align:center;background-color: #0F599C;border: 1px solid #0F599C;border-radius: 0 0 0 0;color: #FFFFFF;padding: 7px 0 7px 20px;display: table-cell;">展示为控件</td>
+	    			<td style="text-align:center;background-color: #0F599C;border: 1px solid #0F599C;border-radius: 0 0 0 0;color: #FFFFFF;padding: 7px 0 7px 20px;display: table-cell;">指定列值公式</td>
+	    		
+	    		
+	    		</tr> 
+	    	</table>
+	    <div>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+
+/**
+ * 初始化属性窗口
+ */
+function initPropertyDialog(editor){
+	 
+	var focusedDom = editor.focusedDom;//当前editor被双击的对象(CKEDITOR.dom.node类)
+	 
+	var focusedFormUuid = "";
+	 
+	 
+	 $("input[name='isGroupShowTitle']").change(
+			 function(){
+				 var checkvalue=$("input[name='isGroupShowTitle']:checked").val();
+				 if(checkvalue=='1'){
+					 $('#tr_groupShowTitle').show();
+					 $('#tr_isGroupColumnShow').show();
+					 $('#tr_supportSubRow').hide(); 
+				 }else{
+					 $('#tr_supportSubRow').show();
+					 $('#tr_groupShowTitle').hide();
+					 $('#tr_isGroupColumnShow').hide();
+				 }
+			 }
+		 );
+ 
+ 
+	if(focusedDom != null && (typeof focusedDom) != "undefined"){//初始化在editor设计器中被双击的对象的属性 
+		focusedFormUuid = $(focusedDom).attr("formUuid");
+		 
+		var formDefinitionDetail = loadFormDefinitionAndInitProperty(focusedFormUuid);//取得表单的各字段
+		
+		
+		//初始化设置对话框中的各域
+		window.setTimeout(function(){
+			
+		 	 var subformDefinition = formDefinition.subforms[focusedFormUuid];//表单中从表的信息
+		 	 if(!subformDefinition ){
+		 		 alert("找不到对应的配置[" + focusedFormUuid + "]");
+		 		 return;
+		 	 }
+		 	  
+		 	 
+		 	$("input[name='tableOpen']").each(function(){
+		 		if($(this).val() == subformDefinition.tableOpen){ 
+		 			this.checked = true;
+		 		}
+		 	}) ;
+		 	 
+		 	$("input[name='editMode']").each(function(){ 
+		 		if($(this).val() == subformDefinition.editMode){
+		 			this.checked = true;
+		 		}
+		 	}) ;
+		 	
+		 	$("input[name='hideButtons']").each(function(){
+		 		if($(this).val() == subformDefinition.hideButtons){
+		 			this.checked = true;
+		 		}
+		 		
+		 	});
+		 	
+		 	$("input[name='hideButtons']").each(function(){
+		 		if($(this).val() == subformDefinition.hideButtons){
+		 			this.checked = true;
+		 		}
+		 		
+		 	});
+		 	
+		 	$("input[name='hideButtons']").each(function(){
+		 		if($(this).val() == subformDefinition.hideButtons){
+		 			this.checked = true;
+		 		}
+		 		
+		 	});
+		 	
+		 	$("input[name='isGroupShowTitle']").each(function(){
+		 		if($(this).val() == subformDefinition.isGroupShowTitle){
+		 			this.checked = true;
+		 		}
+		 	});
+		 	
+		 	
+			$("input[name='isGroupColumnShow']").each(function(){
+		 		if($(this).val() == subformDefinition.isGroupColumnShow){
+		 			this.checked = true;
+		 		}
+		 	});
+		 	
+		 	$("#groupShowTitle").attr('value',subformDefinition.groupShowTitle);
+		 	 
+		 	$("#displayName").val(subformDefinition.displayName);
+		 	 
+		 	
+		 	//删除非从表字段
+		  	 /* $("#formFieldsTbl").find("input[name='inputField']").each(function(){
+				  var fieldName = $(this).attr("fieldName");
+				  
+				  var existInDesigner = false;
+				  
+				  var fieldDefinition = subformDefinition.fields[fieldName];
+				  
+				  if((typeof fieldDefinition) != "undefined"){
+					  existInDesigner = true;
+					  $(this).val(fieldDefinition.displayName);
+				  }
+			 	if(!existInDesigner){
+			 		$(this).parent().parent().remove();
+			 	}
+		  	}); */
+		  	
+		  	$("#formFieldsTbl").find("input[name='inputField']").each(function(){
+		  		$(this).parent().parent().remove();
+		  	});
+		  	//console.log(JSON.cStringify(subformDefinition.fields));
+		  	var fieldsOfSubform = subformDefinition.fields
+		  
+		  	var fieldsOfSubformBesored = formDefinition.sortFieldsOfSubform(focusedFormUuid, false);
+		  	
+		  	showFieldsOfForm(fieldsOfSubformBesored); 
+		  	
+		  	 
+		  	 
+		 	//私有属性
+		 	if(subformDefinition.isGroupShowTitle=='1'){
+		 		 $('#tr_groupShowTitle').show();
+		 		 $('#tr_isGroupColumnShow').show();
+		 		 $('#tr_supportSubRow').hide(); 
+		 	}else if(subformDefinition.isGroupShowTitle=='2'){
+		 		 $('#tr_groupShowTitle').hide();
+		 		 $('#tr_isGroupColumnShow').hide();
+		 		 $('#tr_supportSubRow').show(); 
+		 	}
+		 	
+		 	setAutoWidth(subformDefinition.autoWidth);
+		 	setSupportSubRow(subformDefinition.supportSubRow);
+		 	setShowImpButton(subformDefinition.showImpButton);
+		 	setShowExpButton(subformDefinition.showExpButton);
+		 	
+		 	setDefaultRowCount(subformDefinition.defaultRowCount);
+		}, 100);
+		 
+	}else{
+		$("#formTree").val("点击这里选择从表");
+		setAutoWidth(true);//默认宽度自适应 
+		setSupportSubRow(false);//默认不支持子行
+		setShowImpButton(false);//
+		setShowExpButton(false);//
+	}
+	
+
+	 
+	loadFormTree(focusedFormUuid);//加载所有的表单，并形成表单树  
+	 
+};
+
+/**
+ * 加载表单定义及将各字段显示出来
+ */
+function loadFormDefinitionAndInitProperty(formUuid){ 
+	
+	var formDefinition = null;//被选中的从表
+	//加载表单定义
+	formDefinition = loadFormDefinition(formUuid );
+	
+	//设置被选中的表单
+	 
+	$("#formTree").val(formDefinition.name + "(" + formDefinition.version + ")");
+	$("#formTree").attr("formUuid",formUuid);
+	$("#formTree").attr("formName",formDefinition.name);
+	$("#formTree").attr("formOuterId",formDefinition.outerId);
+	 
+	$("#displayName").val(formDefinition.displayName);
+	var fields = {};
+	$(formDefinition.html).find(".value[name]").each(function(){
+		var name = $(this).attr("name");
+		if(formDefinition.fields[name]){
+			fields[name] = formDefinition.fields[name];
+		}
+	});
+	
+	//显示该表单的所有域 
+	showFieldsOfForm(fields); 
+	//初始化分组字段
+	initGroupShowTitle(formDefinition);
+	return formDefinition;
+}
+
+
+/**
+ * 加载所有的表单
+ */
+function loadFormTree(focusedFormUuid){
+	 
+	//封装配置参数
+	var setting = {
+			async : {
+				otherParam : {
+					"serviceName" : "dyFormDefinitionService",
+					"methodName" : "getFormOutlineOfAllVersionTree",
+					"data":[focusedFormUuid]//设置该参数指定的表单ID,在树显示时为选中状态
+				}
+			},
+			check : {
+				enable : false
+			},
+			callback : {
+				onClick: function(event, treeId, treeNode) {
+					
+					 
+					loadFormDefinitionAndInitProperty(treeNode.id);
+					
+				},
+				onAsyncSuccess:function(event, treeId, treeNode, msg) {
+					 
+				}
+			}
+		};
+	 
+	 
+	//加载表单树 
+	$("#formTree").comboTree({
+		treeSetting : setting
+	}); 
+	  
+	
+
+}
+
+function fieldChange(select){
+	var selectedOption = $(select).find("option:selected");
+	var input =  $(select).parent().parent().find("input[name='inputField']");
+	input.attr("fieldName", $(selectedOption).val());
+	input.attr("fieldTitle", $(selectedOption).attr("name"));
+	input.val( $(selectedOption).attr("name"));
+	$($(select).parents("td")[0]).siblings("td").first().html($(selectedOption).val()); 
+}
+
+
+/**
+ * 初始化分组字段
+ */
+function initGroupShowTitle(data){
+		//显示被选中表单的各字段
+		var fields = data.fields;
+		
+		var selectHTML="";
+		for(var i in fields){ 
+			var field = fields[i]; 
+			if(field.sysType !=  dyFieldSysType.custom){//系统性字段不提供给外部使用
+				continue;
+			}
+			 selectHTML += "<option value='"+field.name+"' name='"+field.displayName+"' >" + field.displayName + "</option>";
+		}
+		$("#groupShowTitle").html('<option value="" >--请选择--</option>'+selectHTML);
+}
+
+/**
+ * 显示被选中的表单的字段
+ */
+function showFieldsOfForm(fields){
+		var selectHTML = "<select name='fieldSelect' class='formfileSelect' onchange='fieldChange(this)'>";
+		var $table= $("#formFieldsTbl tbody");
+		$("#formFieldsTbl .tr-td").remove();
+		 
+		//显示被选中表单的各字段
+		
+	 	//console.log(JSON.cStringify(fields));
+		for(var i in fields){ 
+			var field = fields[i]; 
+			if(field.sysType && field.sysType !=  dyFieldSysType.custom){//只显示用户自定义字段
+				continue;
+			}
+			 
+			//console.log(field.editable  + ":" + dySubFormFieldEdit.notEdit +( field.editable ==  dySubFormFieldEdit.notEdit));
+			 selectHTML += "<option value='"+field.name+"' name='"+field.displayName+"' >" + field.displayName + "</option>";
+        	 var vTr= '<tr name="tr-td" class="tr-td" >'
+        		 vTr +='<td>' + field.name +'</td><td style="height:30px;border: 1px solid #000000;"><input   type="text" name="inputField" value="'+field.displayName+'" fieldName= "' + field.name +'" fieldTitle="' + field.displayName + '"/></td>'
+        		 vTr += '<td style="border: 1px solid #000000;" class=fieldMapping name=fieldMapping   ></td>'
+        		 vTr +='<td style="border: 1px solid #000000;width:30px;"><input   type="text" name="widthField" value="'+((typeof field.width) == "undefined" ? "": field.width)+'" fieldName= "' + field.name +'"/></td>'
+        		 vTr +='<td style="border: 1px solid #000000;"><input   type="checkbox" name="hideField" value="' + dySubFormFieldShow.notShow + '" fieldName= "' + field.name +'"' 
+        		 + ((typeof field.hidden == "undefined")? "":( field.hidden ==  dySubFormFieldShow.notShow ? "checked":"")) + '/></td>'
+        		 vTr +='<td style="border: 1px solid #000000;"><input   type="checkbox" name="editField" value="' + dySubFormFieldEdit.notEdit + '" fieldName= "' + field.name +'"' 
+        		 + ((typeof field.editable == "undefined")? "":( field.editable ==  dySubFormFieldEdit.notEdit ? "checked":"")) + '/></td>'
+        		 vTr +='<td style="border: 1px solid #000000;"><input   type="checkbox" name="ctlField" value="' + dySubFormFieldCtl.control + '" fieldName= "' + field.name +'"' 
+        		 + ((typeof field.controlable == "undefined")? "":( field.controlable ==  dySubFormFieldCtl.control ? "checked":"")) + '/></td>'
+        		 vTr +='<td style="border: 1px solid #000000;"><input   type="text" name="formula" fieldName= "' + field.name +'" value="' 
+        		 + ((typeof field.formula == "undefined")? "": field.formula) + '"/></td>'
+        	 	 
+        		 vTr += '</tr>';
+         
+        	 $table.append(vTr);
+		}
+		
+		selectHTML += "</select>";
+		$(".fieldMapping").each(function() { 
+			$(this).html(selectHTML); 
+			$(this).find("select").val(	$(this).parent().find("input").attr("fieldname"));//设置被选中项
+		});
+		
+		//$("#formTree").comboTree("hide");
+	 
+	
+	//设置各字段行被选中时的颜色
+	$("#formFieldsTbl .tr-td").unbind("click");
+	$("#formFieldsTbl .tr-td").die().live("click",function() {
+		$("#formFieldsTbl .tr-td").css("background-color",""); 
+		$(this).css("background-color","rgb(75, 154, 210)"); 
+	});
+	 
+}
+
+function upRow(){
+	$("#formFieldsTbl .tr-td").each(function() {
+		if($(this).css("background-color") == "rgb(75, 154, 210)") {
+			var prevStr = $(this).prev().html();
+			if($(this).prev().attr("class") != "tr-td") {
+				//alert("已经是第一行！");
+				return;
+			}else {
+				var prevInputValue = getInputValue($(this).prev());
+				$(this).prev().remove();
+				prevStr = "<tr class='tr-td' name='tr-td'>"+prevStr+"</tr>"; 
+				$(this).after(prevStr);
+				 setInputValue($(this).next(), prevInputValue);
+			}
+		}
+	});
+}
+
+function getInputValue($elem){
+	var valObj = {};
+	valObj["inputField"] = $("input[name='inputField']", $elem).val();
+	valObj["fieldSelect"] = $("select[name='fieldSelect']", $elem).val();
+	valObj["widthField"] = $("input[name='widthField']", $elem).val();
+	valObj["formula"] = $("input[name='formula']", $elem).val();
+	valObj["hideField"] = $("input[name='hideField']:checked", $elem).size() == 1;
+	valObj["editField"] = $("input[name='editField']:checked", $elem).size() == 1;
+	valObj["ctlField"] = $("input[name='ctlField']:checked", $elem).size() == 1; 
+	return valObj;
+	
+}
+function setInputValue($elem, valObj){
+	 $("input[name='inputField']", $elem).val(valObj["inputField"]);
+	 $("input[name='widthField']", $elem).val(valObj["widthField"]);
+	 $("input[name='formula']", $elem).val(valObj["formula"]);
+	  $("select[name='fieldSelect']", $elem).val(valObj["fieldSelect"]); 
+	  $("input[name='hideField']", $elem).attr("checked", valObj["hideField"]);
+	  $("input[name='editField']", $elem).attr("checked", valObj["editField"]);
+	  $("input[name='ctlField']", $elem).attr("checked", valObj["ctlField"]);
+}
+
+function setAutoWidth(autoWidth){
+ 
+	if(typeof autoWidth == "undefined" || autoWidth == true || autoWidth == "true"){
+		$("#autoWidth").prop("checked", true);
+	}else{
+		$("#autoWidth").prop("checked", false);
+	}
+	
+}
+
+
+
+
+function getAutoWidth(){
+ 
+	if($("#autoWidth").prop("checked")  ){
+		return true;
+	}else{
+		return false;
+	}
+	
+}
+
+
+function setSupportSubRow(supportSubRow){
+	if( supportSubRow == true || supportSubRow == "true"){
+		$("#supportSubRow").prop("checked", true);
+	}else{
+		$("#supportSubRow").prop("checked", false);
+	}
+	
+}
+
+function setShowImpButton(showImpButton){
+	if( showImpButton == true || supportSubRow == "true"){
+		$("#showImpButton").prop("checked", true);
+	}else{
+		$("#showImpButton").prop("checked", false);
+	}
+	
+}
+
+function setShowExpButton(showExpButton){
+	if( showExpButton == true || supportSubRow == "true"){
+		$("#showExpButton").prop("checked", true);
+	}else{
+		$("#showExpButton").prop("checked", false);
+	}
+	
+}
+
+function getSupportSubRow(){ 
+	if($("#supportSubRow").prop("checked")  ){
+		return true;
+	}else{
+		return false;
+	}
+	
+}
+
+function getShowImpButton(){
+	if($("#showImpButton").prop("checked")  ){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function getShowExpButton(){ 
+	if($("#showExpButton").prop("checked")  ){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+
+function setDefaultRowCount(count){
+	 
+	if(typeof count == "undefined"  ){
+		$("#defaultRowCount").val("0");
+	}else{
+		$("#defaultRowCount").val(count);
+	}
+	
+}
+
+
+
+function getDefaultRowCount(){
+	 
+	var defaultRowCount = $("#defaultRowCount").val();
+	if(defaultRowCount == ""){
+		return "0";
+	}
+	return defaultRowCount;
+	
+}
+
+
+function downRow(){
+	$("#formFieldsTbl .tr-td").each(function() {
+		if($(this).css("background-color") == "rgb(75, 154, 210)") {
+			var prevStr = $(this).next().html();
+			if(prevStr == null) {
+				//alert("已经是最后一行！");
+				return;
+			}else {
+				var prevInputValue = getInputValue($(this).next());
+				$(this).next().remove();
+				prevStr = "<tr class='tr-td' name='tr-td'>"+prevStr+"</tr>";
+				$(this).before(prevStr);
+				 setInputValue($(this).prev(), prevInputValue);
+			}
+		}
+	});
+}
+
+function deleteRow(){ 
+	if($("#formFieldsTbl .tr-td").length == 1){
+		alert("最后一行不得删除");
+		return;
+	}
+	$("#formFieldsTbl .tr-td").each(function() {
+		var t = $(this);
+		if(t.css("background-color") == "rgb(75, 154, 210)") {
+			t.remove();
+		}
+	});
+}
+
+function addRow(){
+	$("#formFieldsTbl .tr-td").css("background-color",""); 
+	
+	var $table= $("#formFieldsTbl tbody");
+	var vTr2 = $("#formFieldsTbl .tr-td").eq(0).clone(true);
+	 
+	$table.append(vTr2);
+}
+
+function collectFormAndFillCkeditor(editor){
+	var subform =  new SubFormClass();
+	subform.formUuid =  $("#formTree").attr("formUuid");
+	subform.outerId = $("#formTree").attr("formOuterId");
+	subform.name = $("#formTree").attr("formName");
+	subform.displayName = $("#displayName").val();
+	
+	subform.tableOpen = $("input[name='tableOpen']:checked").val();
+ 
+	subform.editMode =$("input[name='editMode']:checked").val();//用户要对从表的某条记录进行编辑时，是在当前的单元格里直接编辑，或者弹出新窗口让用户在窗口中编辑
+	subform.hideButtons =$("input[name='hideButtons']:checked").val();//是否展示操作按钮
+	
+	subform.showImpButton =getShowImpButton();
+	subform.showExpButton =getShowExpButton();
+	
+	subform.isGroupShowTitle=$("input[name='isGroupShowTitle']:checked").val();//是否分组展示
+	subform.groupShowTitle=$("#groupShowTitle").find("option:selected").val();
+	
+	subform.isGroupColumnShow=$("input[name='isGroupColumnShow']:checked").val();//分组字段是否显示
+	subform.autoWidth = getAutoWidth();
+	subform.supportSubRow = getSupportSubRow();
+	subform.defaultRowCount = getDefaultRowCount();
+	var ckTable = '<table style="border-collapse:collapse;"   border="1"  formUuid="' + $("#formTree").attr("formUuid") + '" title="' + $("#displayName").val() +'"><tr>';
+	var $tab =  $("table[id='formFieldsTbl']");
+	var inputArr =$($tab.get($tab.length -1)).find("input[name='inputField']");
+	 
+	if(inputArr.length == 0){//用户没有选定任何字段
+		return;
+	}
+	var ckTr = "<tr>";
+	var appendHtml = "";
+	var fields = {};
+	for(var i=0;i<inputArr.length;i++){
+		var field = new SubFormFieldClass();
+		field.name =  $(inputArr[i]).attr("fieldName"); 
+		field.displayName =  $(inputArr[i]).val();
+		field.order = i;
+		var fieldWidth = $("input[name='widthField'][fieldName='" + field.name  + "']").val();
+		field.width = fieldWidth;
+		field.formula =  $("input[name='formula'][fieldName='" + field.name  + "']").val();
+		var $HideField = $("input[name='hideField'][fieldName='" + field.name  + "']:checked");
+		if($HideField.size() > 0){//列隐藏
+			field.hidden =  dySubFormFieldShow.notShow;
+		}else{//列展示
+			field.hidden =  dySubFormFieldShow.show;
+		}
+		console.log(field.displayName + ":"  + field.name + ":"+ field.hidden);
+		
+		
+		var $editField = $("input[name='editField'][fieldName='" + field.name  + "']:checked");
+		if($editField.size() > 0){//不可编辑
+			field.editable =  dySubFormFieldEdit.notEdit
+		}else{//可编辑
+			field.editable =  dySubFormFieldEdit.show;
+		}
+		
+		var $ctlField = $("input[name='ctlField'][fieldName='" + field.name  + "']:checked");
+		if($ctlField.size() > 0){// 
+			field.controlable =   dySubFormFieldCtl.control;
+		}else{// 
+			field.controlable =   dySubFormFieldCtl.label;
+		}
+		
+		
+		
+		subform.fields[field.name] = field;
+		appendHtml += "<th >"+$(inputArr[i]).val()+"</th>";
+	}
+	
+ 
+	ckTr += appendHtml + '</tr>';
+	
+	
+	ckTable += ckTr + '</table>';
+	
+	
+	var element = CKEDITOR.dom.element.createFromHtml( ckTable );
+	if(editor.focusedDom != null){    
+		//element.appendTo(editor.focusedDom.getParent() );
+		//editor.focusedDom.setHtml(ckTr); 
+		element.insertBefore(editor.focusedDom);
+		editor.focusedDom.remove();
+	}else{ 
+		editor.insertElement( element );
+	}
+	
+	//element.setState( CKEDITOR.TRISTATE_DISABLED);
+	 
+	element.unselectable();
+	
+	formDefinition.subforms[subform.formUuid] = subform;  
+ 
+};
+
+function exitDialog(editor){
+	
+	window.setTimeout(function(){
+		$("#formFieldsTbl").find("tr[name='tr-td']").remove();
+	}, 10);
+	
+	editor.focusedDom = null; 
+	
+	$("#formTree").val("点击这里选择从表");
+	$("#formTree").attr("formUuid", "");
+	$("#displayName").val("");
+	$("#formTree").attr("formName","");
+	$("#formTree").attr("formOuterId","");
+ 
+}
+
+$("input[name='hideButtons']").click(function(){
+	// alert($(this).val());
+	if($(this).val() == "1" || $(this).val() == 1){
+		$("#showExpButton").attr("disabled",false);
+		$("#showImpButton").attr("disabled",false);
+	}
+	if($(this).val() == "2" || $(this).val() == 2){
+		setShowImpButton(false);
+		setShowExpButton(false);
+		$("#showExpButton").attr("disabled",true);
+		$("#showImpButton").attr("disabled",true);
+	}
+});
+</script>

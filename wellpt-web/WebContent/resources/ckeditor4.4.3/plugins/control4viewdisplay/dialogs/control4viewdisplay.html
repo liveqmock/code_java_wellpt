@@ -1,0 +1,150 @@
+ 
+<div id="viewdisaplayAttrCfgDiv" title='属性设置'  style=" height: 400px; overflow: auto;">
+	<div> 
+		<div class="dyform">
+			<div class="post-sign">
+				<div class="post-detail">
+		<table>
+		
+			<tr class="odd">
+				<td class="Label">字段编码</td>
+				<td class="value"><input type="text"
+					name="name" id="name" value="" class="w100"/>  
+			</tr>
+			<!--3 -->
+			<tr class="odd">
+				<td class="Label">显示名称</td>
+				<td class="value"><input type="text" class="w100" name="displayName"
+					id="displayName" value="" /></td>
+			</tr>
+			<!--1 -->
+			<tr class="odd">
+				<td class="Label">应用于</td>
+				<td class="value"><input type="text" class="w100" name="applyTo"
+					id="applyTo" value="" /> </td>
+			</tr>
+		
+			
+			<tr>
+				<td class="Label">视图设置</td>
+				<td class="value"><input type="text" id="relationDataText" name="relationDataText" /></td>
+				<input id="relationDataValue" type="hidden" name="relationDataValue" >
+			</tr> 
+			
+			<tr>
+				<td class="Label">约束条件</td>
+				<td class="value"><input type="text" id="relationDataSql" name="relationDataSql" /></td>
+			</tr> 
+			
+ 			<tr>
+				<td class="Label">编辑模式</td>
+				<td class="value"> 
+					<div class="tr_td_div_left" style="padding-top: 9px;"> 
+						<input type="radio" name="showType" value="1" checked="checked">可编辑
+						<input type="radio" name="showType" value="5"> 隐藏
+					</div>
+				</td>
+			</tr>
+		</table>
+		
+	</div>
+	</div>
+		</div>
+		</div>
+</div>
+<script type="text/javascript">
+
+
+var viewdisplayctl = {};
+
+viewdisplayctl.$ =  function(selector){ 
+	return $(selector, $("#viewdisaplayAttrCfgDiv"));
+} 
+
+$.extend(viewdisplayctl, $.ControlConfigUtil);
+
+/**
+ * 初始化属性窗口
+ */
+ viewdisplayctl.initPropertyDialog = function (editor){
+	 $(".cke_reset_all").removeClass("cke_reset_all");//删除ckeditor内部的局css
+	this.editor = editor;
+	//loadCommonJsFile();//加载自定义的ckeditor公共js 
+	var focusedDom = editor.focusedDom;//当前editor被双击的对象(CKEDITOR.dom.node类) 
+	var field = null;
+	if(focusedDom != null && (typeof focusedDom) != "undefined"){
+		var fieldName = $(focusedDom).attr("name");
+		field = formDefinition.fields[fieldName];//表单中从表的信息 
+	}
+	this.initProperty(field);
+};
+
+viewdisplayctl.initProperty = function(field){
+	if(field == null ||  (typeof field) == "undefined"){
+		field = new WViewDisplayClass();
+		field.dbDataType = dyFormInputType._viewdisplay;
+		field.valueCreateMethod = "1";
+	}
+	//控件属性初始化公共设置.
+	this.ctlPropertyComInitSet(field);
+
+	var viewSetting = {
+			async : {
+				otherParam : {
+					"serviceName" : "viewDefinitionService",
+					"methodName" : "getViewAsTreeAsync",
+				}
+			},
+			check : {
+				enable : true,
+				chkStyle : "radio"
+			},
+	};
+	
+	$("#relationDataText").comboTree({
+		labelField: "relationDataText",
+		valueField: "relationDataValue",
+		treeSetting : viewSetting,
+		width: 220,
+		height: 220
+	});
+	
+	$("#relationDataText").addClass("input-tier");
+	$("#relationDataText").val(field.relationDataText);
+	$("#relationDataValue").val(field.relationDataValue);
+	$("#relationDataSql").val(field.relationDataSql);
+
+	
+}
+
+
+viewdisplayctl.exitDialog = function(){
+	this.editor.focusedDom = null;
+}
+
+viewdisplayctl.collectFormAndFillCkeditor = function(){ 
+	var field = new WViewDisplayClass();
+	//控件公共属性收集
+	var checkpass=this.collectFormCtlComProperty(field);
+	if(!checkpass){
+		return false;
+	}
+	
+	field.relationDataText =$("#relationDataText").val();
+	field.relationDataValue =$("#relationDataValue").val();
+	field.relationDataSql =$("#relationDataSql").val();
+	
+	field.inputMode =  dyFormInputMode.viewdisplay;
+	
+	//创建控件占位符
+	this.createControlPlaceHolder(this,this.editor.imageOfViewDisplayctl,field);
+	
+	formDefinition.addField(field.name, field);
+	
+	return true;
+}
+
+
+
+
+</script>

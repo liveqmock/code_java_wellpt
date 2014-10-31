@@ -1,0 +1,171 @@
+.customButton_top_my{
+    display: block;
+    height: 30px;
+    margin: 10px 0 0 20px;
+}
+.new_meeting {
+	background: url("images/v1_icon.png") no-repeat scroll 0 -165px transparent;
+	border: 1px solid #dee1e2;
+	color: #0f599c;
+	display: block;
+	float: left;
+	font-size: 12px;
+	height: 22px;
+	margin: 0 3px;
+	padding: 0 5px;
+}
+
+.schedule_group_list .tr_title{
+	background: url("images/v1_th.png") repeat-x scroll 0 0 transparent;
+    height: 34px;
+}
+
+.schedule_group_list .s_prev_day{
+	background: url("images/v1_icon.png") no-repeat scroll -62px 0 transparent;
+	display: block;
+	float: left;
+	height: 20px;
+	width: 20px;
+	text-indent: -9999px;
+	margin-top: 10px;
+	margin-left: 300px;
+}
+
+.schedule_group_list .s_today{
+   color: #FFFFFF;
+   font-size: 17px;
+   line-height: 35px;
+   cursor: context-menu;
+}
+
+.schedule_group_list #toolbar{
+	background: url("images/v1_icon.png") repeat-x scroll 0 -53px transparent;
+	height: 40px;
+    width: auto;
+    position:relative;
+}
+
+.schedule_group_list .s_next_day{
+	background: url("images/v1_icon.png") no-repeat scroll -86px 0 transparent;
+	display: block;
+	float: right;
+	height: 20px;
+	width: 20px;
+	text-indent: -9999px;
+	margin-top: 10px;
+	margin-right: 300px;
+}
+
+.schedule_css .view_foot {
+    background: url("../images/v1_panel.png") repeat-x scroll 0 -10px transparent;
+    height: 3px;
+    margin-top: -3px;
+    width: 100%;
+}
+
+/*********************Table内容CSS******************************************/
+.schedule_table {
+	background: none repeat scroll 0 0 #FFFFFF;
+	margin: 3px;
+	width: 99%;
+	border-right: 1px solid #C9C9C9;
+	border-bottom: 1px solid #C9C9C9;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	font-size: 100%;
+}
+
+.tr_title {
+	background: url("images/v1_th.png") repeat-x scroll 0 0 transparent;
+	border: 1px solid #C9C9C9;
+	height: 30px;
+}
+
+tbody {
+	display: table-row-group;
+	vertical-align: middle;
+	border-color: inherit;
+}
+
+table {
+	border-collapse: separate;
+}
+
+tr {
+	display: table-row;
+	vertical-align: inherit;
+	border-color: inherit;
+}
+
+.schedule_table .tr_title td {
+	padding-left: 10px;
+}
+
+.schedule_table td {
+	border-top: 1px solid #C9C9C9;
+	border-left: 1px solid #C9C9C9;
+	position: relative;
+}
+
+.schedule_table .tr_content {
+	height: 82px;
+}
+
+.schedule_table .scheduletd {
+	height: 82px;
+	color: #969696;
+}
+
+.schedule_table .scheduletd_div {
+	position: absolute;
+	padding: 1px;
+	outline: none;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	font-size: 12px;
+}
+
+ul{
+	display: block;
+	list-style-type: disc;
+	-webkit-margin-before: 0em;
+	-webkit-margin-after: 1em;
+	-webkit-margin-start: 0px;
+	-webkit-margin-end: 0px;
+	-webkit-padding-start: 4px;
+}
+
+li {
+	list-style: none;
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+	background: none repeat scroll 0 0 transparent;
+}
+
+.schedule_table .scheduletd_div p {
+	color: #494949;
+	white-space: nowrap;
+	cursor: pointer;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	word-break: break-all;
+}
+
+.schedule_table .scheduletd_div:hover{
+	padding: 0px;
+	background-color: #ffffff;
+	border: 1px solid #93D4FC;
+    border-collapse: separate;
+    box-shadow: 0 0 4px #60CAFF;
+    min-height:100%;
+    height:auto;
+    z-index:999;
+}
+
+
+

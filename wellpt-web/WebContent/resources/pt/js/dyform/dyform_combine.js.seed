@@ -1,0 +1,107 @@
+ 
+/* 第三方库 */
+
+// #require "../../../jqgrid/js/jquery.jqGrid.js"
+ 
+// #require "../../../timers/jquery.timers.min.js"
+ 
+// #require "../../../jqueryui/js/jquery-ui.js"
+// #require "../../../validate/js/jquery.validate.js"
+// #require "../../../validate/js/additional-methods.js"
+// #require "../../../fileupload/js/uuid.js"
+// #require "../../../fileupload/js/jquery.fileupload.js"
+// #require "../../../fileupload/js/jquery.iframe-transport.js"
+// #require "../../../fileupload/js/jquery.fileupload-process.js"
+// #require "../../../fileupload/js/jquery.fileupload-fp.js"
+// #require "../../../fileupload/js/jquery.fileupload-ui.js" 
+
+// #require "../../../ztree/js/jquery.ztree.js"
+// #require "../../../ztree/js/jquery.ztree.exhide-3.5.js"
+
+
+
+
+
+
+
+/* well公用库 */
+ 
+// #require "../basicdata/serialnumber/serialform.js"
+// #require "../common/jquery.numberInput.js"
+// #require "../fileupload/well.fileupload.constant.js"
+// #require "../fileupload/well.fileupload.js"
+// #require "../fileupload/well.fileupload4Icon.js"
+// #require "../fileupload/well.fileupload4Image.js"
+
+// #require "../common/jquery.comboTree.js"
+// #require "../common/jquery.timeEmploy.js"
+// #require "../org/unit/jquery.unit.js"
+// #require "../common/jquery.alerts.js" 
+// #require "../basicdata/dyview/dyview_explain.js" 
+
+/*表单 */ 
+// #require "../../../form/form_body.js"
+// #require "common/dyform_constant.js" 
+// #require "common/FormClass.js" 
+// #require "common/function.js"
+// #require "common/ckUtils.js"
+// #require "common/formDefinitionMethod.js"
+// #require "validate/additional-methods.js"
+// #require "validate/Theme.js"
+
+// #require "controlproperty/wFileUploadClass.js"
+// #require "controlproperty/wCheckBoxClass.js"
+// #require "controlproperty/wCkeditorClass.js"
+// #require "controlproperty/wComboBoxClass.js"
+// #require "controlproperty/wComboTreeClass.js"
+// #require "controlproperty/wDatePickerClass.js"
+// #require "controlproperty/wFileUpload4IconClass.js"
+// #require "controlproperty/wFileUploadClass.js"
+// #require "controlproperty/wNumberInputClass.js"
+// #require "controlproperty/wRadioClass.js"
+// #require "controlproperty/wSerialNumberClass.js"
+// #require "controlproperty/wTextAreaClass.js"
+// #require "controlproperty/wTextInputClass.js"
+// #require "controlproperty/wUnitClass.js"
+// #require "controlproperty/wViewDisplayClass.js"
+// #require "controlproperty/wDialogClass.js"
+// #require "controlproperty/wTimeEmployClass.js"
+
+// #require "../ldx/unit/jquery.product.js"
+// #require "../control2/common/jquery.wControlUtil.js"
+// #require "../control2/common/jquery.wControlConfigUtil.js"
+// #require "../control2/common/jquery.wControlManager.js"
+// #require "../control2/common/jquery.wControlInterface.js"
+// #require "../control2/common/jquery.wTextCommonMethod.js"
+ // #require "../control2/common/jquery.wRadioCheckBoxCommonMethod.js"
+
+// #require "../control2/fileupload/jquery.wFileUploadMethod.js" 
+// #require "../control2/jquery.wDatePicker.js"
+// #require "../control2/jquery.wNumberInput.js"
+// #require "../control2/jquery.wRadio.js"
+// #require "../control2/jquery.wTextInput.js"
+// #require "../control2/jquery.wTextArea.js"
+// #require "../control2/jquery.wCkeditor.js"
+// #require "../control2/jquery.wCheckBox.js"
+// #require "../control2/jquery.wComboBox.js"
+// #require "../control2/jquery.wSerialNumber.js"
+// #require "../control2/jquery.wUnit.js"
+// #require "../control2/jquery.wTimeEmploy.js"
+// #require "../control2/jquery.wViewDisplay.js"
+// #require "../control2/jquery.wDialog.js"
+// #require "../control2/subform/jquery.wSubFormMethod.js"
+// #require "../control2/subform/jquery.wSubForm.js"
+// #require "../control2/subform/jquery.wSubForm4Group.js"
+// #require "../control2/fileupload/jquery.wFileUpload.js"
+// #require "../control2/fileupload/jquery.wFileUpload4Image.js"
+// #require "../control2/fileupload/jquery.wFileUpload4Icon.js"
+// #require "../control2/jquery.wComboTree.js"
+  // #require "../control2/jquery.wEmbedded.js"
+
+  // #require "../control2/leedarson/jquery.wJobSelect.js"
+
+
+// #require "dyform_explain.js"
+ 
+
+ 

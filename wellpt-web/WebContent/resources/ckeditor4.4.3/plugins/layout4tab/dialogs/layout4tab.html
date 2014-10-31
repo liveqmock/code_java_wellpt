@@ -1,0 +1,290 @@
+<style>
+<!--
+fieldset {
+    border: 1px solid #e5e5e5;
+    margin: 0;
+    padding: 0;
+    padding-left: 10px;
+}
+legend {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: -moz-use-text-color -moz-use-text-color #e5e5e5;
+    border-image: none;
+    border-style: none none dashed;
+    border-width: 0;
+    color: #333333;
+    display: block; 
+    line-height: 40px;
+    margin-bottom: 5px;
+    padding: 0;
+    width: auto;
+    font-size: 13px;
+    font-weight: bold; 
+}
+.tabtable {
+	 border-collapse: collapse;
+    margin-top: 10px; 
+    font: 12px/1.5 Microsoft YaHei;
+    width: 100%;
+}
+.tabtable td {
+    border: 1px dotted #d3d3d3;
+    height: 29px;
+    padding: 0 15px;
+    word-break: break-all;
+    
+}
+-->
+</style>
+<div id="tabPropertyDiv" >
+	编码:<input type="text" id="name" value=""> 
+	标题:<input type="text"  id="displayName" value=""><br/>
+	高度:<input type="text"  id="height" value=""> 
+	宽度:<input type="text"  id="width" value=""><br/>
+	<fieldset>
+		<legend>子页签
+			<input type="button" value="新增" id="btnAdddSubtbl">
+		</legend>
+		<table class="tabtable">
+			<tr class="title">
+				<td>编码</td><td>标题</td><td>激活</td><td>操作</td>
+			</tr>
+			
+		</table>
+	</fieldset>
+</div>
+<script type="text/javascript">
+var tabP = {
+		$ :function(selector){
+			return $(selector, $("#tabPropertyDiv"));
+		} ,
+		layout:{},
+		/**
+		 * 初始化属性窗口
+		 */
+		 initPropertyDialog:function (editor){
+			 $(".cke_reset_all"  ).removeClass("cke_reset_all");
+			this.editor = editor;  
+			this.initBtnAdddSubtbl();
+			var focusedDom = editor.focusedDom;//当前editor被双击的对象(CKEDITOR.dom.node类) 
+			
+			var labelText = "";
+			var tabCode = "";
+			if(focusedDom != null && (typeof focusedDom) != "undefined"){
+				var name =  $(focusedDom).attr("name");
+				this.protoName = name;
+				this.setName(name);
+				this.layout = formDefinition.layouts[name];//表单中从表的信息  
+				this.setDisplayName(this.layout.displayName);
+				this.setWidth(this.layout.width);
+				this.setHeight(this.layout.height);
+			}else{
+				this.addNewSubTbl();
+			}
+			
+		},
+		
+		setHeight:function(height){
+			this.$("#height").val(height); 
+		},
+		
+		getHeight:function( ){ 
+			return this.$("#height").val( ); 
+		},
+		
+		setWidth:function(width){
+			this.$("#width").val(width); 
+		},
+		
+
+		getWidth:function( ){
+			return this.$("#width").val( ); 
+		},
+		
+		 setName:function(name){
+			this.$("#name").val(name); 
+		},
+		 getName:function(){
+			return this.$("#name").val();
+		},
+		
+		 setDisplayName:function(displayName){
+			this.$("#displayName").val(displayName);
+		},
+		getDisplayName:function(displayName){
+			return this.$("#displayName").val();
+		},
+		
+		
+		initBtnAdddSubtbl:function(){
+			var _this = this;
+			this.$("#btnAdddSubtbl").click(function(){
+				_this.addNewSubTbl();
+			});
+		},
+		addNewSubTbl:function(subtblDef){
+			var name =  "";
+			var displayName =  "";
+			var isActive = false;
+			if(typeof subtblDef == "undefined"){
+				
+			}else{
+				name = subtblDef.name;
+				displayName = subtblDef.displayName;
+				isActive = subtblDef.isActive;
+			}
+			var str1="Hello "
+				var str2="world!"
+					str1.concat(str2)
+				 
+
+			var html = "";
+			html = html.concat("<tr class='subtbl'>"); 
+			html = html.concat("<td>") 
+			html = html.concat("<input type='text' name='subtblName' value='" + name + "' oldname='" + name + "'/>") 
+			html = html.concat("</td>") 
+			html = html.concat("<td>") 
+			html = html.concat("<input type='text' name='subtblDisplayName' value='" + displayName + "' />") 
+			html = html.concat("</td>") 
+			html = html.concat("<td>") 
+			html = html.concat("<input type='radio' name='subtblActive'  " +  (isActive == true ?"checked" : "") + "/>") 
+			html = html.concat("</td>") 
+			html = html.concat("<td>") 
+			html = html.concat("<a href='javascript:void(0)'>删除</a>") 
+			html = html.concat("</td>") 
+			html = html.concat("</tr>"); 
+			this.$(".tabtable > tbody").append(html);
+		},
+
+		collectSubTabs:function(){
+			var _this = this;
+			var subtbls = {};
+			this.$(".subtbl").each(function(){
+				var subtblName = $(this).find("input[name='subtblName']").val();
+				var oldSubtblName = $(this).find("input[name='subtblName']").attr("oldname");
+				var subtblDisplayName = $(this).find("input[name='subtblDisplayName']").val();
+				var subtblActive = $(this).find("input[name='subtblActive']").attr("checked");
+				subtbls[subtblName] = {name:subtblName, displayName: subtblDisplayName, isActive:subtblActive, oldName: oldSubtblName};
+			});
+			return subtbls;
+		},
+		
+		updateSubTbls:function(subtbls){
+			for(var i in subtbls){
+				this.updateSubTbl(subtbls[i]);
+			}
+		},
+		updateSubTbl:function(subtbl){
+			if(subtbl.oldName != subtbl.name){
+				$(this.editor.document.find(".subtab[name='" + subtbl.oldName + "']")).attr("name", subtbl.name); 
+			}
+			var subtblnode = this.editor.document.find(".subtab[name='" + subtbl.name + "']")
+			if(subtblnode.count() > 0){
+				subtblnode = subtblnode.getItem(0);
+				var titlenode = subtblnode.find(".subtab-title");
+				if(titlenode.count() > 0){
+					titlenode = titlenode.getItem(0);
+					$(titlenode).html(subtbl.displayName);
+				}
+				
+			}else{
+				this.addSubTbl(subtbl);
+			}
+			
+		},
+		
+		addSubTbls:function(subtbls){
+			for(var i in subtbls){
+				this.addSubTbl(subtbls[i]);
+			}
+		},
+		addSubTbl:function(subtbl){
+			 var html = "";
+			 html += "<div name='" + subtbl.name + "' title='" + subtbl.displayName + "' class='subtab subtab-design'><p class='subtab-title'>" + subtbl.displayName + "</p><p>&nbsp;</p></div>";
+			 var groupName = this.getName();
+			 var tabGroup =  this.editor.document.find(".tabLayout[name='" + groupName + "']");
+			 if(tabGroup.count() == 0){
+				 return;
+			 }
+			 var element = CKEDITOR.dom.element.createFromHtml( html ); 
+			 tabGroup = tabGroup.getItem(0);
+			 element.appendTo(tabGroup);
+			 
+			 
+			// tabGroup.append(html); 
+			//console.log();
+		},
+		
+		exitDialog:function(){
+			this.editor.focusedDom = null;
+		},
+		
+		objectLength: function( obj ) {
+			var count = 0;
+			for ( var i in obj ) {
+				count++;
+			}
+			return count;
+		},
+
+		collectAndFill:function(){
+			var name = this.getName();
+			var displayName = this.getDisplayName();
+			if(typeof formDefinition.layouts == "undefined" ){
+				formDefinition.layouts = {};
+			}else{
+				for(var i in formDefinition.layouts){
+					 if(i ==  this.protoName){
+						 delete formDefinition.layouts[i];
+						 continue;
+					 }else{
+						if(i == name){
+							alert(dymsg.tabexist + ":" + name  );
+							return;
+						}
+					 }
+				}
+				
+			}
+			
+			
+			
+			
+			var subtbls = this.collectSubTabs();
+			if(this.objectLength(subtbls) == 0){
+				alert(dymsg.atLeastOnesubtbl);
+				return;
+			}
+			
+			
+			if(this.editor.focusedDom != null){
+				$(this.editor.focusedDom).attr("name",name); 
+				$(this.editor.focusedDom).attr("title",displayName);
+				this.updateSubTbls(subtbls);
+			}else{
+			  var html = "";
+			  html += "<div name='" + name + "' title='" + displayName + "' class='tabLayout tab-design'  ></div>"; 
+			  var element = CKEDITOR.dom.element.createFromHtml( html ); 
+			  this.editor.insertElement( element );
+			  this.addSubTbls(subtbls);
+			  this.layout.subtabs = subtbls;
+			}
+			this.layout.name=name;
+			this.layout.displayName = displayName;
+			this.layout.width= this.getWidth(); 
+			this.layout.height= this.getHeight();
+			this.layout.inputMode = layOutInput.tab;
+			formDefinition.layouts[name] = this.layout;
+			console.log(JSON.cStringify(formDefinition.layouts[name]));
+		}
+
+		
+};
+
+
+
+
+</script>

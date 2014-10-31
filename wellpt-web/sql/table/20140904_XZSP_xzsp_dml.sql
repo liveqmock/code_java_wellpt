@@ -1,0 +1,1 @@
+alter table xzsp_spgc_file add original_file_name varchar2(255 char);

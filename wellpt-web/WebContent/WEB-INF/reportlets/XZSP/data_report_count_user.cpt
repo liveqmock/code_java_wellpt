@@ -1,0 +1,841 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20131111" releaseVersion="7.0.5">
+<TableDataMap>
+<TableData name="项目卡操作情况统计表" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="currentUserId"/>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=CONCATENATE("'",CurrentUserId(),"'")]]></Attributes>
+</O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select t.xmmc        as 项目名称,
+       t.xmjsdwmc    as 单位名称,
+       t.xmjsdwdm    as 组织机构代码,
+       t.xmdbh       as 卡号,
+       t.create_time as 创建时间,
+       t.creator     as 创建人,
+       t.modify_time as 修改时间,
+       t.modifier    as 修改人
+from UF_XZSP_XMK_BLACK t where 1=1 
+and t.CREATOR = ${currentUserId}
+   ${if(len(开始日期) == 0,"","and trunc(t.create_time) >= trunc(to_date( '" + 开始日期 + "', 'yyyyMMdd'))")}
+   ${if(len(结束日期) == 0,"and trunc(t.create_time) <= trunc(to_date( '" +format(today(),"yyyyMMdd")+ "', 'yyyyMMdd'))","and trunc(t.create_time) <= trunc(to_date( '" + 结束日期 + "', 'yyyyMMdd'))")}
+   ${if(len(项目所属分类) == 4,"","and t.SSFL in "+项目所属分类+"")}
+ order by t.create_time desc
+]]></Query>
+</TableData>
+<TableData name="公共库单位（无厦门市）" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select u.id,u.name from WELL_PT.UNIT_COMMON_UNIT u where u.id !='XM']]></Query>
+</TableData>
+<TableData name="项目所属分类查询条件" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[well_pt_oracle]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select dict.name as 分类名称,('{"'||''||dict.code||'":"'||dict.name||'"}') as 分类编码JSON
+  from CD_DATA_DICT dict
+ where dict.parent_uuid =
+       (select t.uuid
+          from CD_DATA_DICT t
+         where t.type = 'XZSP_PROJECT_BELONGING_TYPE')
+ order by dict.code asc]]></Query>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<ServerPrinter/>
+<WebPageContent>
+<ToolBars>
+<ToolBarManager>
+<Location>
+<Embed position="1"/>
+</Location>
+<ToolBar>
+<Widget class="com.fr.report.web.button.page.First">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-First')}]]></Text>
+<IconName>
+<![CDATA[first]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Previous">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Previous')}]]></Text>
+<IconName>
+<![CDATA[previous]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.PageNavi">
+<WidgetAttr/>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Next">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Next')}]]></Text>
+<IconName>
+<![CDATA[next]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Last">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Last')}]]></Text>
+<IconName>
+<![CDATA[last]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.FlashPrint">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Utils-Print[Client]A')}]]></Text>
+<IconName>
+<![CDATA[flashprint]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.Export">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Export')}]]></Text>
+<IconName>
+<![CDATA[export]]></IconName>
+<Buttons pdf="true" excelP="true" excelO="true" excelS="true" word="true" image="true" html="true"/>
+</Widget>
+<Widget class="com.fr.report.web.button.Print">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Print')}]]></Text>
+<IconName>
+<![CDATA[print]]></IconName>
+<PrintButtons/>
+</Widget>
+<Widget class="com.fr.report.web.button.Email">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('Email')}]]></Text>
+<IconName>
+<![CDATA[email]]></IconName>
+</Widget>
+</ToolBar>
+</ToolBarManager>
+<ToolBarManager>
+<Location>
+<Embed position="3"/>
+</Location>
+<ToolBar>
+<Widget class="com.fr.report.web.button.page.First">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-First')}]]></Text>
+<IconName>
+<![CDATA[first]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Previous">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Previous')}]]></Text>
+<IconName>
+<![CDATA[previous]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.PageNavi">
+<WidgetAttr/>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Next">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Next')}]]></Text>
+<IconName>
+<![CDATA[next]]></IconName>
+</Widget>
+<Widget class="com.fr.report.web.button.page.Last">
+<WidgetAttr/>
+<Text>
+<![CDATA[${i18n('ReportServerP-Last')}]]></Text>
+<IconName>
+<![CDATA[last]]></IconName>
+</Widget>
+</ToolBar>
+</ToolBarManager>
+</ToolBars>
+<WebPage isPage="false" isShowAsImage="false" isAutoScale="false" isTDHeavy="false"/>
+</WebPageContent>
+</ReportWebAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<RowHeight defaultValue="723900">
+<![CDATA[1676400,723900,838200,38100,1600200,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[1257300,5410200,6477000,3276600,3810000,0,3695700,1333500,2743200,3162300,3200400,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0">
+<O>
+<![CDATA[厦门市建设管理服务中心各部门办件情况统计表]]></O>
+<Expand/>
+</C>
+<C c="0" r="1">
+<O>
+<![CDATA[开始时间：2014-09-15结束时间：2014-09-15]]></O>
+</C>
+<C c="1" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="2" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="3" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="4" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="5" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="6" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="7" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="8" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="9" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="10" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="11" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="12" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="13" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="14" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="15" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="16" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="17" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="18" r="1">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="19" r="1">
+<O>
+<![CDATA[单位：  件次]]></O>
+</C>
+<C c="0" r="2">
+<O>
+<![CDATA[序号]]></O>
+</C>
+<C c="1" r="2">
+<O>
+<![CDATA[受理单位]]></O>
+</C>
+<C c="2" r="2">
+<O>
+<![CDATA[受理事项]]></O>
+</C>
+<C c="3" r="2">
+<O>
+<![CDATA[待审批]]></O>
+</C>
+<C c="4" r="2">
+<O>
+<![CDATA[补件]]></O>
+</C>
+<C c="5" r="2">
+<O>
+<![CDATA[收件]]></O>
+</C>
+<C c="6" r="2">
+<O>
+<![CDATA[过程补件]]></O>
+</C>
+<C c="7" r="2">
+<O>
+<![CDATA[过程补件比率(%)]]></O>
+</C>
+<C c="8" r="2">
+<O>
+<![CDATA[转报]]></O>
+</C>
+<C c="9" r="2">
+<O>
+<![CDATA[过程收件]]></O>
+</C>
+<C c="10" r="2">
+<O>
+<![CDATA[退件]]></O>
+</C>
+<C c="11" r="2">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="12" r="2">
+<O>
+<![CDATA[暂缓办理过程退件]]></O>
+</C>
+<C c="13" r="2">
+<O>
+<![CDATA[暂缓办理过程退件比率(%)]]></O>
+</C>
+<C c="14" r="2">
+<O>
+<![CDATA[办结情况]]></O>
+</C>
+<C c="15" r="2">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="16" r="2">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="17" r="2">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="18" r="2">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="19" r="2">
+<O>
+<![CDATA[逾期未办结]]></O>
+</C>
+<C c="20" r="2">
+<O>
+<![CDATA[过补直接出文]]></O>
+</C>
+<C c="21" r="2">
+<O>
+<![CDATA[不合格出文]]></O>
+</C>
+<C c="0" r="3">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="1" r="3">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="2" r="3">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="3" r="3">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="4" r="3">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="5" r="3">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="6" r="3">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="7" r="3">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="8" r="3">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="9" r="3">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="10" r="3">
+<O>
+<![CDATA[暂缓办理]]></O>
+</C>
+<C c="11" r="3">
+<O>
+<![CDATA[无法办理]]></O>
+</C>
+<C c="12" r="3">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="13" r="3">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="14" r="3">
+<O>
+<![CDATA[总数]]></O>
+</C>
+<C c="15" r="3">
+<O>
+<![CDATA[提前]]></O>
+</C>
+<C c="16" r="3">
+<O>
+<![CDATA[按期]]></O>
+</C>
+<C c="17" r="3">
+<O>
+<![CDATA[逾期]]></O>
+</C>
+<C c="18" r="3">
+<O>
+<![CDATA[无法办理过程退件]]></O>
+</C>
+<C c="0" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="1" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="2" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="3" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="4" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="5" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="6" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="7" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="8" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="9" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="10" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="11" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="12" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="13" r="4">
+<O>
+<![CDATA[]]></O>
+</C>
+<C c="14" r="4">
+<O>
+<![CDATA[A+B+C+D]]></O>
+</C>
+<C c="15" r="4">
+<O>
+<![CDATA[A]]></O>
+</C>
+<C c="16" r="4">
+<O>
+<![CDATA[B]]></O>
+</C>
+<C c="17" r="4">
+<O>
+<![CDATA[C]]></O>
+</C>
+<C c="18" r="4">
+<O>
+<![CDATA[D]]></O>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings shrinkToFitMode="0" headerHeight="0" footerHeight="0">
+<PaperSetting>
+<PaperSize width="72000000" height="144000000"/>
+<Margin top="0" left="144000" bottom="986400" right="2743200"/>
+</PaperSetting>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+<ParameterUI class="com.fr.form.main.parameter.FormParameterUI">
+<Layout class="com.fr.form.ui.container.WAbsoluteLayout">
+<WidgetName name="para"/>
+<WidgetAttr/>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label开始日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[开始日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="424" y="19" width="83" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="开始日期"/>
+<WidgetAttr/>
+<DateAttr format="yyyyMMdd"/>
+<widgetValue>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=TODAY()]]></Attributes>
+</O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="507" y="19" width="250" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.parameter.FormSubmitButton">
+<Listener event="afterinit">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[window.form = this.options.form;]]></Content>
+</JavaScript>
+</Listener>
+<Listener event="click">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[_g().parameterCommit();  
+setTimeout(function() {    
+    contentPane.exportReportToExcel('simple');
+    }, 2000);  
+
+]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="Search"/>
+<WidgetAttr/>
+<Text>
+<![CDATA[统计]]></Text>
+<Hotkeys>
+<![CDATA[enter]]></Hotkeys>
+</InnerWidget>
+<BoundsAttr x="677" y="124" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label结束日期"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[结束日期:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="424" y="47" width="83" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="结束日期"/>
+<WidgetAttr/>
+<DateAttr format="yyyyMMdd"/>
+<widgetValue>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=TODAY()]]></Attributes>
+</O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="507" y="47" width="250" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label项目编号"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[项目编号:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="36" y="19" width="90" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.TextArea">
+<WidgetName name="项目编号"/>
+<WidgetAttr/>
+<TextAttr/>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="126" y="19" width="273" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label项目名称"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[项目名称:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="36" y="49" width="90" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.TextArea">
+<WidgetName name="项目名称"/>
+<WidgetAttr/>
+<TextAttr/>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="126" y="49" width="273" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="Label项目所属分类"/>
+<WidgetAttr/>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="SimSun" style="0" size="72"/>
+<widgetValue>
+<O>
+<![CDATA[项目所属分类:]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="36" y="92" width="90" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.CheckBoxGroup">
+<WidgetName name="项目所属分类"/>
+<WidgetAttr/>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="分类编码JSON" viName="分类名称"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[项目所属分类查询条件]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+<RAAttr isArray="false" delimiter="&apos;,&apos;" start="(&apos;" end="&apos;)"/>
+<ChooseAll/>
+</InnerWidget>
+<BoundsAttr x="126" y="92" width="687" height="21"/>
+</Widget>
+<LCAttr vgap="0" hgap="0"/>
+</Layout>
+<DesignAttr width="1000" height="155"/>
+</ParameterUI>
+<Parameter>
+<Attributes name="开始日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="结束日期"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="审批阶段"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="项目编号"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="项目名称"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="选择统计方式"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="审批单位"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="审批事项"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="项目所属分类"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="建设地点"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="建设单位"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="建筑性质"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="建筑等级"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="敏感性质"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="资金来源"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="协调项目"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="重点工程"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="重点跟踪"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="地区分类"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="行政分区"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="是否保密"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="项目性质"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</ReportParameterAttr>
+<StyleList/>
+<DesignerVersion DesignerVersion="HAF"/>
+<PreviewType PreviewType="0"/>
+</WorkBook>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<sql-query name="formDefinitionTreeQuery">
+	<![CDATA[
+		select form_def.uuid as uuid,
+			form_def.name as name, 
+			form_def.descname as descname, 
+			form_def.version as version, 
+			form_def.moduleName as moduleName,
+			form_def.moduleId as moduleId, 
+			form_def.id as id,
+			form_def.tableNum as tableNum
+		from FormDefinition form_def where form_def.uuid != :parentUuid and form_def.id = :id 
+		<if isNotBlank(name) || isNotBlank(descname) || isNotBlank(version) || isNotBlank(moduleName) || isNotBlank(moduleId) || isNotBlank(id) || isNotBlank(tableNum)>
+			and (1 = 2
+				<if isNotBlank(name)>
+					or form_def.name like '%' || :name || '%'
+				</if>
+				<if isNotBlank(descname)>
+					or form_def.descname like '%' || :descname || '%'
+				</if>
+				<if isNotBlank(version)>
+					or form_def.version = :version
+				</if>
+				<if isNotBlank(moduleName)>
+					or form_def.moduleName like '%' || :moduleName || '%'
+				</if>
+				<if isNotBlank(moduleId)>
+					or form_def.moduleId like '%' || :moduleId || '%'
+				</if>
+				<if isNotBlank(id)>
+					or form_def.id like '%' || :id || '%'
+				</if>
+				<if isNotBlank(tableNum)>
+					or form_def.tableNum like '%' || :tableNum || '%'
+				</if>
+			)
+		</if>
+		order by form_def.version desc, form_def.tableNum
+	]]>
+	</sql-query>
+</hibernate-mapping>

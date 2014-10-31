@@ -1,0 +1,466 @@
+<div class="dyform">
+<div class="post-sign">
+<div class="post-detail">
+<table style="width: 100%; height: 100%;">
+  <tr>
+    <td  >
+    	请选择从表：<input type="text" id="formTree"  formUuid="" formName="" formId=""  readonly="readonly" style="width:300px;"><!-- 用于选择从表，及保存选择的从表的Id --> 
+    </td>  
+  </tr>
+  
+   <tr>
+    <td  >
+    	<label>请输入从表单显示名称：</label><input type="text" id="displayName"  style="width:300px;" > 
+    </td>
+  </tr>
+  
+  <tr>
+    <td  >
+    	从表默认显示:<input type="radio" id="tableOpen"   name="tableOpen" value="1" >展开<input type="radio" id="tableOpen"   name="tableOpen" value="2" >折叠
+    </td>
+  </tr>
+  
+   <tr>
+    <td  >
+    	单行显示编辑模式:<input type="radio" id="editMode"   name="editMode" value="1" >当前单元格<input type="radio" id="editMode"  name="editMode" value="2" >新窗口
+    </td>
+  </tr>
+    <tr>
+    <td  >
+    	显示操作按钮:<input type="radio" id="hideButtons" name="hideButtons" value="1" >显示<input type="radio" id="hideButtons"  name="hideButtons" value="2" >隐藏
+    </td>
+  </tr>
+  
+      <tr>
+    <td  >
+    	从表数据分组展示:<input type="radio" id="isGroupShowTitle" name="isGroupShowTitle" value="1" >是<input type="radio" id="isGroupShowTitle"  name="isGroupShowTitle" value="2" >否
+    </td>
+  </tr>
+  
+  <tr id='tr_groupShowTitle'>
+    <td  >
+    	分组字段:<select id='groupShowTitle' name='groupShowTitle' class='groupShowTitle'   style="width:100px;"></select>
+    </td>
+  </tr>
+  
+    <tr id='tr_isGroupColumnShow'>
+    <td  >
+    	分组字段是否显示:<input type="radio" id="isGroupColumnShow" name="isGroupColumnShow" value="1" >是<input type="radio" id="isGroupColumnShow"  name="isGroupColumnShow" value="2" >否
+    </td>
+  </tr>
+  
+  
+   <tr>
+    <td >
+    	 <br>
+    	 <div class="form_operate">
+    	 	
+    	 	<button onclick="upRow()">上移一行</button>
+    	 	<button onclick="downRow()">下移一行</button> 
+    	 	
+    	 	
+    	 	<button onclick="addRow()">添加行</button>
+    	 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    	 	<button onclick="deleteRow()">删除行</button>
+    	 	
+    	 </div> 
+    	 <br>
+    </td> 
+  </tr>
+  <tr> 
+    <td>
+	    <div class="tableDiv">
+	    	<table style="width:98%;" id="formFieldsTbl">
+	    		<tr class="th">
+	    			<td style="background-color: #0F599C;border: 1px solid #0F599C;border-radius: 0 0 0 0;color: #FFFFFF;padding: 7px 0 7px 20px;display: table-cell;" class="label">标题</td>
+	    			<td style="background-color: #0F599C;border: 1px solid #0F599C;border-radius: 0 0 0 0;color: #FFFFFF;padding: 7px 0 7px 20px;display: table-cell;">对应字段</td>
+	    			 
+	    		</tr> 
+	    	</table>
+	    <div>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+
+
+/**
+ * 初始化属性窗口
+ */
+function initPropertyDialog(editor){
+	 
+	var focusedDom = editor.focusedDom;//当前editor被双击的对象(CKEDITOR.dom.node类)
+	 
+	var focusedFormUuid = "";
+	 
+	 
+	 $("input[name='isGroupShowTitle']").change(
+			 function(){
+				 var checkvalue=$("input[name='isGroupShowTitle']:checked").val();
+				 if(checkvalue=='1'){
+					 $('#tr_groupShowTitle').show();
+					 $('#tr_isGroupColumnShow').show();
+				 }else{
+					 $('#tr_groupShowTitle').hide();
+					 $('#tr_isGroupColumnShow').hide();
+				 }
+			 }
+		 );
+ 
+ 
+	if(focusedDom != null && (typeof focusedDom) != "undefined"){//初始化在editor设计器中被双击的对象的属性 
+		focusedFormUuid = $(focusedDom).attr("formUuid");
+		 
+		var formDefinitionDetail = loadFormDefinitionAndInitProperty(focusedFormUuid);//取得表单的各字段
+		
+		
+		//删除未被选中的域  
+		window.setTimeout(function(){
+			
+		 	 var subformDefinition = formDefinition.subforms[focusedFormUuid];//表单中从表的信息
+		 	  
+		 	 
+		 	$("input[name='tableOpen']").each(function(){
+		 		 
+		 		if($(this).val() == subformDefinition.tableOpen){ 
+		 			this.checked = true;
+		 		}
+		 	}) ;
+		 	 
+		 	$("input[name='editMode']").each(function(){ 
+		 		if($(this).val() == subformDefinition.editMode){
+		 			this.checked = true;
+		 		}
+		 	}) ;
+		 	
+		 	$("input[name='hideButtons']").each(function(){
+		 		if($(this).val() == subformDefinition.hideButtons){
+		 			this.checked = true;
+		 		}
+		 		
+		 	});
+		 	
+		 	$("input[name='isGroupShowTitle']").each(function(){
+		 		if($(this).val() == subformDefinition.isGroupShowTitle){
+		 			this.checked = true;
+		 		}
+		 	});
+		 	
+		 	
+			$("input[name='isGroupColumnShow']").each(function(){
+		 		if($(this).val() == subformDefinition.isGroupColumnShow){
+		 			this.checked = true;
+		 		}
+		 	});
+		 	
+		 	$("#groupShowTitle").attr('value',subformDefinition.groupShowTitle);
+		 	 
+		 	$("#displayName").val(subformDefinition.displayName);
+		 	 
+		  	 $("#formFieldsTbl").find("input[name='inputField']").each(function(){
+				  var fieldName = $(this).attr("fieldName");
+				  
+				  var existInDesigner = false;
+				  
+				  var fieldDefinition = subformDefinition.fields[fieldName];
+				  
+				  if((typeof fieldDefinition) != "undefined"){
+					  existInDesigner = true;
+					  $(this).val(fieldDefinition.displayName);
+				  }
+			 	if(!existInDesigner){
+			 		$(this).parent().parent().remove();
+			 	}
+		  	});
+		  	 
+		  	 
+		 	//私有属性
+		 	if(subformDefinition.isGroupShowTitle=='1'){
+		 		 $('#tr_groupShowTitle').show();
+		 		 $('#tr_isGroupColumnShow').show();
+		 	}else if(subformDefinition.isGroupShowTitle=='2'){
+		 		 $('#tr_groupShowTitle').hide();
+		 		 $('#tr_isGroupColumnShow').hide();
+		 	}
+		 	
+		 	
+		}, 100);
+		 
+	}else{
+		$("#formTree").val("点击这里选择从表");
+	}
+	
+
+	 
+	loadFormTree(focusedFormUuid);//加载所有的表单，并形成表单树  
+	 
+};
+
+/**
+ * 加载表单定义及将各字段显示出来
+ */
+function loadFormDefinitionAndInitProperty(formUuid){ 
+	
+	var formDefinition = null;//被选中的从表
+	//加载表单定义
+	formDefinition = loadFormDefinition(formUuid );
+	
+	//设置被选中的表单
+	 
+	$("#formTree").val(formDefinition.name + "(" + formDefinition.version + ")");
+	$("#formTree").attr("formUuid",formUuid);
+	$("#formTree").attr("formName",formDefinition.name);
+	$("#formTree").attr("formOuterId",formDefinition.outerId);
+	 
+	$("#displayName").val(formDefinition.displayName);
+	 
+	//显示该表单的所有域 
+	showFieldsOfForm(formDefinition); 
+	//初始化分组字段
+	initGroupShowTitle(formDefinition);
+	return formDefinition;
+}
+
+
+/**
+ * 加载所有的表单
+ */
+function loadFormTree(focusedFormUuid){
+	 
+	//封装配置参数
+	var setting = {
+			async : {
+				otherParam : {
+					"serviceName" : "dyFormDefinitionService",
+					"methodName" : "getFormOutlineOfAllVersionTree",
+					"data":[focusedFormUuid]//设置该参数指定的表单ID,在树显示时为选中状态
+				}
+			},
+			check : {
+				enable : false
+			},
+			callback : {
+				onClick: function(event, treeId, treeNode) {
+					
+					 
+					loadFormDefinitionAndInitProperty(treeNode.id);
+					
+				},
+				onAsyncSuccess:function(event, treeId, treeNode, msg) {
+					 
+				}
+			}
+		};
+	 
+	 
+	//加载表单树 
+	$("#formTree").comboTree({
+		treeSetting : setting
+	}); 
+	  
+	
+
+}
+
+function fieldChange(select){
+	var selectedOption = $(select).find("option:selected");
+	var input =  $(select).parent().parent().find("input[name='inputField']");
+	input.attr("fieldName", $(selectedOption).val());
+	input.attr("fieldTitle", $(selectedOption).attr("name"));
+	input.val( $(selectedOption).attr("name")); 
+	
+}
+
+
+/**
+ * 初始化分组字段
+ */
+function initGroupShowTitle(data){ 
+		//显示被选中表单的各字段
+		var fields = data.fields;
+		var selectHTML="";
+		for(var i in fields){ 
+			var field = fields[i]; 
+			if(field.sysType !=  dyFieldSysType.custom){//系统性字段不提供给外部使用
+				continue;
+			}
+			 selectHTML += "<option value='"+field.name+"' name='"+field.displayName+"' >" + field.displayName + "</option>";
+		}
+		$("#groupShowTitle").html('<option value="" >--请选择--</option>'+selectHTML);
+}
+
+/**
+ * 显示被选中的表单的字段
+ */
+function showFieldsOfForm(data){ 
+		var selectHTML = "<select name='fieldSelect' class='formfileSelect' onchange='fieldChange(this)'>";
+		var $table= $("#formFieldsTbl tbody");
+		$("#formFieldsTbl .tr-td").remove();
+		 
+		//显示被选中表单的各字段
+		var fields = data.fields;
+	 	
+		for(var i in fields){ 
+			var field = fields[i]; 
+			if(field.sysType !=  dyFieldSysType.custom){//系统性字段不提供给外部使用
+				continue;
+			}
+			 selectHTML += "<option value='"+field.name+"' name='"+field.displayName+"' >" + field.displayName + "</option>";
+        	 var vTr= '<tr name="tr-td" class="tr-td" >'
+        		 vTr +='<td style="border: 1px solid #000000;"><input   type="text" name="inputField" value="'+field.displayName+'" fieldName= "' + field.name +'" fieldTitle="' + field.displayName + '"/></td>'
+        		 vTr += '<td style="border: 1px solid #000000;" class=fieldMapping name=fieldMapping   ></td>'
+        	 
+        		 vTr += '</tr>';
+         
+        	 $table.append(vTr);
+		}
+		
+		selectHTML += "</select>";
+		$(".fieldMapping").each(function() { 
+			$(this).html(selectHTML); 
+			$(this).find("select").val(	$(this).parent().find("input").attr("fieldname"));//设置被选中项
+		});
+		
+		//$("#formTree").comboTree("hide");
+	 
+	
+	//设置各字段行被选中时的颜色
+	$("#formFieldsTbl .tr-td").unbind("click");
+	$("#formFieldsTbl .tr-td").die().live("click",function() {
+		$("#formFieldsTbl .tr-td").css("background-color",""); 
+		$(this).css("background-color","rgb(75, 154, 210)"); 
+	});
+	 
+}
+
+function upRow(){
+	$("#formFieldsTbl .tr-td").each(function() {
+		if($(this).css("background-color") == "rgb(75, 154, 210)") {
+			var prevStr = $(this).prev().html();
+			if($(this).prev().attr("class") != "tr-td") {
+				//alert("已经是第一行！");
+				return;
+			}else {
+				$(this).prev().remove();
+				prevStr = "<tr class='tr-td' name='tr-td'>"+prevStr+"</tr>";
+				$(this).after(prevStr);
+			}
+		}
+	});
+}
+
+function downRow(){
+	$("#formFieldsTbl .tr-td").each(function() {
+		if($(this).css("background-color") == "rgb(75, 154, 210)") {
+			var prevStr = $(this).next().html();
+			if(prevStr == null) {
+				//alert("已经是最后一行！");
+				return;
+			}else {
+				$(this).next().remove();
+				prevStr = "<tr class='tr-td' name='tr-td'>"+prevStr+"</tr>";
+				$(this).before(prevStr);
+			}
+		}
+	});
+}
+
+function deleteRow(){ 
+	if($("#formFieldsTbl .tr-td").length == 1){
+		alert("最后一行不得删除");
+		return;
+	}
+	$("#formFieldsTbl .tr-td").each(function() {
+		var t = $(this);
+		if(t.css("background-color") == "rgb(75, 154, 210)") {
+			t.remove();
+		}
+	});
+}
+
+function addRow(){
+	$("#formFieldsTbl .tr-td").css("background-color",""); 
+	
+	var $table= $("#formFieldsTbl tbody");
+	var vTr2 = $("#formFieldsTbl .tr-td").eq(0).clone(true);
+	 
+	$table.append(vTr2);
+}
+
+function collectFormAndFillCkeditor(editor){ 
+	var subform =  new SubFormClass();
+	
+	subform.formUuid =  $("#formTree").attr("formUuid");
+	subform.outerId = $("#formTree").attr("formOuterId");
+	subform.name = $("#formTree").attr("formName");
+	subform.displayName = $("#displayName").val();
+	subform.tableOpen = $("input[name='tableOpen']:checked").val();
+	subform.editMode =$("input[name='editMode']:checked").val();//用户要对从表的某条记录进行编辑时，是在当前的单元格里直接编辑，或者弹出新窗口让用户在窗口中编辑
+	subform.hideButtons =$("input[name='hideButtons']:checked").val();//是否展示操作按钮
+	
+	subform.isGroupShowTitle=$("input[name='isGroupShowTitle']:checked").val();//是否分组展示
+	subform.groupShowTitle=$("#groupShowTitle").find("option:selected").val();
+	
+	subform.isGroupColumnShow=$("input[name='isGroupColumnShow']:checked").val();//分组字段是否显示
+	
+	
+	var ckTable = '<table style="border-collapse:collapse;"   border="1"  formUuid="' + $("#formTree").attr("formUuid") + '" title="' + $("#displayName").val() +'"><tr>';
+	var $tab =  $("table[id='formFieldsTbl']");
+	var inputArr =$($tab.get($tab.length -1)).find("input[name='inputField']");
+	 
+	if(inputArr.length == 0){//用户没有选定任何字段
+		return;
+	}
+	var ckTr = "<tr>";
+	var appendHtml = "";
+	var fields = {};
+	for(var i=0;i<inputArr.length;i++){
+		var field = new SubFormFieldClass();
+		field.name =  $(inputArr[i]).attr("fieldName");
+		field.displayName =  $(inputArr[i]).val(); 
+		subform.fields[field.name] = field;
+		appendHtml += "<th >"+$(inputArr[i]).val()+"</th>";
+	}
+	ckTr += appendHtml + '</tr>';
+	
+	
+	ckTable += ckTr + '</table>';
+	
+	
+	var element = CKEDITOR.dom.element.createFromHtml( ckTable );
+	if(editor.focusedDom != null){    
+		//element.appendTo(editor.focusedDom.getParent() );
+		//editor.focusedDom.setHtml(ckTr); 
+		element.insertBefore(editor.focusedDom);
+		editor.focusedDom.remove();
+	}else{ 
+		editor.insertElement( element );
+	}
+	
+	//element.setState( CKEDITOR.TRISTATE_DISABLED);
+	 
+	element.unselectable();
+	
+	formDefinition.subforms[subform.formUuid] = subform; 
+ 
+};
+
+function exitDialog(editor){
+	
+	window.setTimeout(function(){
+		$("#formFieldsTbl").find("tr[name='tr-td']").remove();
+	}, 10);
+	
+	editor.focusedDom = null; 
+	
+	$("#formTree").val("点击这里选择从表");
+	$("#formTree").attr("formUuid", "");
+	$("#displayName").val("");
+	$("#formTree").attr("formName","");
+	$("#formTree").attr("formOuterId","");
+ 
+}
+</script>

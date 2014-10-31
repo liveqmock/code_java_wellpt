@@ -1,0 +1,3 @@
+-- Add/modify columns 
+alter table SYS_IP_CONFIG add DOMAIN_ADDRESS1 VARCHAR2(255 CHAR);
+alter table SYS_IP_CONFIG add DOMAIN_ADDRESS2 VARCHAR2(255 CHAR);

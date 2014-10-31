@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd 
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd 
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd"
+	default-lazy-init="true">
+
+	<description>BMT/JTA Spring公共配置 </description>
+
+	<!-- 定义受环境影响易变的变量 -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<!-- 标准配置 -->
+				<value>classpath*:/system.properties</value>
+				<!-- 集群中节点配置 -->
+				<value>classpath*:/system.cluster.properties</value>
+				<!-- 本地开发环境配置 -->
+				<value>classpath*:/system.local.properties</value>
+				<!--国际化资源配置 -->
+				<value>classpath*:/i18n/basenames.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="springApplicationContext" class="com.wellsoft.pt.core.context.ApplicationContextHolder" lazy-init="false"></bean>
+
+	<!-- 使用annotation 自动注册bean,并保证@Required,@Autowired的属性被注入 -->
+	<context:component-scan base-package="com.wellsoft.***.**"
+		name-generator="com.wellsoft.pt.core.annotation.CustomAnnotationBeanNameGenerator">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<!-- 公共库数据源配置,使用应用服务器的数据库连接池 -->
+	<bean id="oa_common" class="com.wellsoft.pt.core.dao.hibernate.BitronixDataSourceFactoryBean" lazy-init="false">
+		<property name="uniqueName" value="jdbc/oa_common"></property>
+		<property name="className" value="com.microsoft.sqlserver.jdbc.SQLServerXADataSource"></property>
+		<property name="maxPoolSize" value="30"></property>
+		<!-- 多租户环境要设置为false，不允许本地事务 -->
+		<property name="allowLocalTransactions" value="false"></property>
+		<property name="driverProperties">
+			<props>
+				<prop key="ServerName">192.168.0.250
+				</prop>
+				<prop key="DatabaseName">oa_common</prop>
+				<prop key="SelectMethod">cursor</prop>
+				<prop key="user">oa_dev</prop>
+				<prop key="password">oa_dev</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Hibernate Common SessionFactory配置 -->
+	<bean id="commonSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="oa_common"></property>
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</property>
+		<property name="annotatedClasses">
+			<bean class="com.wellsoft.pt.core.support.CommonEntityAnnotatedClassesFactoryBean">
+				<property name="packagesToScan" value="com.wellsoft.***.**" />
+			</bean>
+		</property>
+		<property name="mappingLocations">
+			<bean class="com.wellsoft.pt.core.support.HibernateMappingLocationsFactoryBean"></bean>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<!-- <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop> -->
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
+				<prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+
+				<prop key="hibernate.connection.datasource">jdbc/oa_common</prop>
+				<prop key="hibernate.connection.release_mode">after_statement</prop>
+				<prop key="hibernate.jndi.class">bitronix.tm.jndi.BitronixInitialContextFactory</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringJtaSessionContext</prop>
+				<prop key="hibernate.transaction.factory_class">org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory
+				</prop>
+				<prop key="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.BitronixJtaPlatform
+				</prop>
+				
+				<prop key="hibernate.multiTenancy">DATABASE</prop>
+				<prop key="hibernate.multi_tenant_connection_provider">com.wellsoft.pt.core.dao.hibernate.BitronixMultiTenantConnectionProviderImpl
+				</prop>
+				<prop key="hibernate.tenant_identifier_resolver">com.wellsoft.pt.core.dao.hibernate.DefaultCurrentTenantIdentifierResolver
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- 租户库数据源配置,使用应用服务器的数据库连接池 -->
+	<bean id="oa_dev" class="com.wellsoft.pt.core.dao.hibernate.BitronixDataSourceFactoryBean" lazy-init="false">
+		<property name="uniqueName" value="jdbc/oa_dev"></property>
+		<property name="className" value="com.microsoft.sqlserver.jdbc.SQLServerXADataSource"></property>
+		<property name="maxPoolSize" value="30"></property>
+		<!-- 多租户环境要设置为false，不允许本地事务 -->
+		<property name="allowLocalTransactions" value="false"></property>
+		<property name="driverProperties">
+			<props>
+				<prop key="ServerName">192.168.0.250
+				</prop>
+				<prop key="DatabaseName">oa_dev</prop>
+				<prop key="SelectMethod">cursor</prop>
+				<prop key="user">oa_dev</prop>
+				<prop key="password">oa_dev</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Hibernate Tenant SessionFactory配置 -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="oa_dev"></property>
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</property>
+		<property name="annotatedClasses">
+			<bean class="com.wellsoft.pt.core.support.TenantEntityAnnotatedClassesFactoryBean">
+				<property name="packagesToScan" value="com.wellsoft.***.**" />
+			</bean>
+		</property>
+		<property name="mappingLocations">
+			<bean class="com.wellsoft.pt.core.support.HibernateMappingLocationsFactoryBean"></bean>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<!-- <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop> -->
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
+				<prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+
+				<prop key="hibernate.connection.datasource">jdbc/oa_common</prop>
+				<prop key="hibernate.connection.release_mode">after_statement</prop>
+				<prop key="hibernate.jndi.class">bitronix.tm.jndi.BitronixInitialContextFactory</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringJtaSessionContext</prop>
+				<prop key="hibernate.transaction.factory_class">org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory
+				</prop>
+				<prop key="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.BitronixJtaPlatform
+				</prop>
+
+				<prop key="hibernate.multiTenancy">DATABASE</prop>
+				<prop key="hibernate.multi_tenant_connection_provider">com.wellsoft.pt.core.dao.hibernate.BitronixMultiTenantConnectionProviderImpl
+				</prop>
+				<prop key="hibernate.tenant_identifier_resolver">com.wellsoft.pt.core.dao.hibernate.DefaultCurrentTenantIdentifierResolver
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Bitronix Transaction Manager embedded configuration -->
+	<bean id="btmConfig" factory-method="getConfiguration" class="bitronix.tm.TransactionManagerServices">
+		<property name="serverId" value="spring-btm" />
+	</bean>
+	<!-- create BTM transaction manager -->
+	<bean id="bitronixTransactionManager" factory-method="getTransactionManager" class="bitronix.tm.TransactionManagerServices"
+		depends-on="btmConfig" destroy-method="shutdown" />
+
+	<!-- BTM/JTA事务管理器配置 -->
+	<bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+		<property name="transactionManager" ref="bitronixTransactionManager" />
+		<property name="userTransaction" ref="bitronixTransactionManager" />
+	</bean>
+
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+	<context:annotation-config />
+
+	<!-- 国际化配置 org.springframework.context.support.ReloadableResourceBundleMessageSource -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames" value="${basenames}"></property>
+		<property name="useCodeAsDefaultMessage" value="true"></property>
+	</bean>
+	<!-- 默认从请求头获取请求信息 -->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver"></bean>
+
+</beans>
