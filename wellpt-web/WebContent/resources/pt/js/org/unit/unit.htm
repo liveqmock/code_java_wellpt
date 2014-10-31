@@ -18,7 +18,7 @@
 	$(function(){
 		UnitOnloadEvent();
 		
-		$("#UnitType").chosen({disable_search_threshold: 10});
+		/* 加载样式移到tree里面 $("#UnitType").chosen({disable_search_threshold: 10}); */
 		
 		//确定事件
 		$("#ok").click(function(e){
@@ -80,7 +80,7 @@
 <input type=button id="ID_LUnSelectAll" value="不选" onclick="SelectAll(false,goUnitTree.LTree);">
 <input type=button id="ID_LExpandAll" value="展开" onclick="ExpandAll();">
 <input type=button id="ID_LCollapseAll" value="折叠" onclick="CollapseAll();">
-<input type=checkbox id="ID_ShowRole" onclick="ShowRole(this.checked);" style="vertical-align:middle;width:14px;height:14px;line-height:14px;padding: 0px; margin: 0px;"><label id="ID_LabShowRole" for="ID_ShowRole">&nbsp;显示岗位</label>
+<input type=checkbox id="ID_ShowRole" onclick="ShowRole(this.checked);" style="vertical-align:middle;width:14px;height:14px;line-height:14px;padding: 0px; margin: 0px;display:none;"><label id="ID_LabShowRole" for="ID_ShowRole" style="display:none;">&nbsp;显示岗位</label>
 					</div>
 	</div>
 	<div style="float: left; width: 200px;margin-left: 5px;background-color: #F6F6F6;">

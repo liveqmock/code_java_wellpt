@@ -8,7 +8,9 @@ $(function() {
 		"users" : null,
 		"cssContent" : null,
 		"pageType" : null,
-		"code" : null
+		"code" : null,
+		"sysName":null,
+		"sysCode":null
 	};
 	$("#userNames").focus(function() {
 		$.unit.open({
@@ -85,7 +87,52 @@ $(function() {
 				$("#list").setSelection($("#list").getDataIDs()[0]);
 			}
 		}));
-
+	
+	var setting = {
+			async : {
+				otherParam : {
+					"serviceName" : "dataDictionaryService",
+					"methodName" : "getFromTypeAsTreeAsync",
+					"data":"PAGE_TYPE"
+				}
+			},
+			check : {
+				enable : false
+			},
+			callback : {
+				onClick: treeNodeOnClick,
+			}
+			
+	};
+	
+	//表调用的回调函数
+	function treeNodeOnClick(event, treeId, treeNode) {
+		$("#sysCode").val(treeNode.id);
+		$("#sysName").val(treeNode.name);
+		$("#sysName").comboTree("hide");
+	}
+	
+	$("#sysName").comboTree({
+		labelField: "sysName",
+		valueField: "sysCode",
+		treeSetting : setting,
+		width: 220,
+		height: 220
+	});
+	JDS.call({
+		async:false,
+		service:"dataDictionaryService.getFromTypeAsTreeAsync",
+		data:['-1','PAGE_TYPE'],
+		success:function(result) {
+			var list = result.data;
+			var optionStr = "";
+			for(var i=0;i<list.length;i++){
+				var item = list[i];
+				optionStr += "<option value='"+item.id+"'>"+item.name+"</option>";
+			}
+			$("#select_query").html("<option value=''>-请选择-</option>"+optionStr);
+		}
+	});
 	// 根据模块ID获取模块信息
 	function getPgeById(uuid) {
 
@@ -187,7 +234,6 @@ $(function() {
 	$("#btn_del").click(function() {
 		if ($(this).attr("id") == "btn_del") {
 			var ids = $("#list").jqGrid('getGridParam', 'selrow');
-			alert(ids);
 			if (ids.length == 0) {
 				alert("请选择记录！");
 				return true;
@@ -250,18 +296,20 @@ $(function() {
 	
 	$("#btn_query").click(function() {
 		var queryValue = $("#query_keyWord").val();
-		var queryOther = "";
-		if(queryValue.indexOf("默")>-1||queryValue.indexOf("认")>-1){
-			queryOther = "default";
-		}else if(queryValue.indexOf("普")>-1||queryValue.indexOf("通")>-1){
-			queryOther = "common";
-		}
+		var text = $("#select_query").val();
+//		var queryOther = "";
+//		if(queryValue.indexOf("默")>-1||queryValue.indexOf("认")>-1){
+//			queryOther = "default";
+//		}else if(queryValue.indexOf("普")>-1||queryValue.indexOf("通")>-1){
+//			queryOther = "common";
+//		}
 		$("#list").jqGrid("setGridParam",{
 			postData : {
 				"queryPrefix" : "query",
-				"queryOr" : true,
+				"queryOr" : false,
 				"query_LIKES_name_OR_code_OR_userNames" : queryValue,
-				"query_EQS_type" : queryOther,
+//				"query_EQS_type" : queryOther,
+				"query_LIKES_sysCode" : text,
 			},
 			page : 1
 		}).trigger("reloadGrid");
@@ -270,7 +318,8 @@ $(function() {
 		var code = event.keyCode;
 	    if (code == 13) {
 	    	var queryValue = $("#query_keyWord").val();
-	    	var queryOther = "";
+	    	var text = $("#select_query").val();
+//	    	var queryOther = "";
 	    	if(queryValue.indexOf("默")>-1||queryValue.indexOf("认")>-1){
 	    		queryOther = "default";
 	    	}else if(queryValue.indexOf("普")>-1||queryValue.indexOf("通")>-1){
@@ -279,9 +328,10 @@ $(function() {
 	    	$("#list").jqGrid("setGridParam",{
 	    		postData : {
 	    			"queryPrefix" : "query",
-	    			"queryOr" : true,
+	    			"queryOr" : false,
 	    			"query_LIKES_name_OR_code_OR_userNames" : queryValue,
-	    			"query_EQS_type" : queryOther,
+//	    			"query_EQS_type" : queryOther,
+	    			"query_LIKES_sysCode" : text,
 	    		},			page : 1
 	    	}).trigger("reloadGrid");
 	    }
@@ -292,3 +342,17 @@ $(function() {
 	});
 
 });
+function selectQuery(element) {
+	var text = $("#" +element.id).val();
+	if(text=='-请选择-'){
+		text = '';
+	}
+	$("#list").jqGrid("setGridParam", {
+		postData : {
+			"queryPrefix" : "query",
+			"queryOr" : false,
+			"query_LIKES_sysCode" : text,
+		},
+		page : 1
+	}).trigger("reloadGrid");
+}

@@ -160,7 +160,7 @@ var ckeditorctl = {};
 
 ckeditorctl.initProperty = function(field){
 	if(field == null ||  (typeof field) == "undefined"){
-		field = new MainFormFieldClass();
+		field = new WCkeditorClass();
 		field.dbDataType = dyFormInputType.clob;
 		field.valueCreateMethod = "1";
 	}
@@ -174,7 +174,7 @@ ckeditorctl.exitDialog = function(){
 }
 
 ckeditorctl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WCkeditorClass();
 	
 	//控件公共属性收集
 	var checkpass=$.ControlConfigUtil.collectFormCtlComProperty(field);

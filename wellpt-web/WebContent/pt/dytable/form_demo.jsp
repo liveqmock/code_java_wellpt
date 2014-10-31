@@ -98,5 +98,7 @@
 	<%@ include file="/pt/dytable/form_js.jsp"%>
 	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/dytable/form_demo.js"></script>
+		<script type="text/javascript">
+	</script>
 </body>
 </html>

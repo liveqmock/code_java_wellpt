@@ -167,7 +167,7 @@ var textareactl = {};
 
 textareactl.initProperty = function(field){
 	if(field == null ||  (typeof field) == "undefined"){
-		field = new MainFormFieldClass();
+		field = new WTextAreaClass();
 		field.dbDataType = dyFormInputType.textArea;
 		field.valueCreateMethod = "1";
 	}else{
@@ -182,7 +182,7 @@ textareactl.exitDialog = function(){
 }
 
 textareactl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WTextAreaClass();
 	
 	//控件公共属性收集
 	var checkpass=$.ControlConfigUtil.collectFormCtlComProperty(field);

@@ -210,7 +210,7 @@ comboboxctl.initProperty = function(field){
 		 );
 	
 	if(field == null ||  (typeof field) == "undefined"){
-		field = new MainFormFieldClass();
+		field = new WComboBoxClass();
 		field.dbDataType = dyFormInputType.selectMutilFase;
 		field.valueCreateMethod = "1";
 		 
@@ -251,7 +251,7 @@ comboboxctl.exitDialog = function(){
 }
 
 comboboxctl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WComboBoxClass();
 	field.inputMode =  dyFormInputMode.selectMutilFase;
 
 	field.optionDataSource=$("input[name='optionDataSource']:checked").val();

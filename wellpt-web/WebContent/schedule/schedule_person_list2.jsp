@@ -5,18 +5,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<c:if test="${addCss!='yes'}">
 <title>Inbox Mail List</title>
 <%@ include file="/pt/common/meta.jsp"%>
 <link href="${ctx}/resources/bootstrap/css/bootstrap.css" rel="stylesheet"></link>
 <link rel="stylesheet" type="text/css"
 	href="${ctx}/resources/jqueryui/css/base/jquery-ui.css" />
 <style>
-	<c:if test="${addCss!='yes'}">
 	#tabtop-L3 strong{
  		background: #fee; 
 	}
-	</c:if >
 	.schedule2_left{
 		width: 25%;
 	}
@@ -36,16 +33,18 @@
 		color:blue;
 	}
 </style>
-</c:if >
 </head>
 <body style="width: 100%; height: 100%; padding: 0px; margin: 0px;">
 <div class="schedule_person_list2 schedule_css">
-<c:if test="${addCss=='yes'}">
 	<link type="text/css" rel="stylesheet" href="${ctx}/resources/theme/css/schedule_person.css" />
-</c:if>
+<input type="hidden" value="${ldate}" id="ldate"/>
+<input type="hidden" value="${stype}" id="stype"/>
+<input type="hidden" value="${mtype}" id="mtype"/>
+<input type="hidden" value="${nowTag.uuid}" id="tagId"/>
 <input type="hidden" value="${addCss}" id="addCss"/>
+
 <a href="#" style="display: none;" id="showHref">test</a>
-<%-- <input type="hidden" id="contextPath" value="${ctx}"></input> --%>
+
 <div id="toolbar">
 <table width="100%">
 	<tr>
@@ -82,28 +81,30 @@
 			</c:if>
 			</c:forEach>
 		<td align="right">
-		<button class="as_month" ldate=${ldate } mtype=${mtype }
-			><spring:message code="schedule.info.month" /></button>
-		<button class="as_day"  ldate=${ldate } mtype=${mtype }
-			><spring:message code="schedule.info.day" /></button>
+		<button class="as_month" ldate=${ldate } tagId=${nowTag.uuid } ><spring:message code="schedule.info.month" /></button>
+		<button class="as_day"  ldate=${ldate } mtype=${mtype } >
+			<spring:message code="schedule.info.day" />
+		</button>
 		</td>
 	</tr>
 </table>
 </div>
 <div class="content">
-<table width="100%"  border="2">
+	
+<table  border="2" style="float: left;width:${mtype==0?'89%':'100%'};">
 	<tr valign="top">
 		<td class="schedule2_left" valign="top">
 		<table class="schedule2_left_table">
 			<tr>
 				<td height="150">
-				<div class="schedule2_left_table_content1">
-				<font size="7"><strong><label
-					id="displayDay"><c:out value="${day.displayDay }" /></label></strong></font><br />
-				<label id="display2Day"><c:out value="${day.display2Day }" /></label><c:if test="${addCss!='yes'}"><br /></c:if>
-				<label id="fullChinaDay"><c:out value="${day.fullChinaDay }" /></label>
+					<div class="schedule2_left_table_content1">
+						<font size="7"><strong>
+							<label id="displayDay"><c:out value="${day.displayDay }" /></label>
+						</strong></font><br />
+						<label id="display2Day"><c:out value="${day.display2Day }" /></label><br />
+						<label id="fullChinaDay"><c:out value="${day.fullChinaDay }" /></label>
+					</div>
 				</td>
-				</div>
 			</tr>
 			<tr>
 				<td class="schedule2_left_table_content2_td" valign="top">
@@ -126,7 +127,6 @@
 						</tr>
 						<tr class="schedule2_left_table_content2_h2_table_ct">
 							<c:forEach items="${days }" var="row">
-	
 								<c:if test="${row.sdate==now&&row.inMonth!=0 }">
 									<td class="today_td" onclick="changeDay('${row.displayDay}','${row.sdate }','${row.display2Day }','${row.fullChinaDay }');">
 								</c:if>
@@ -191,7 +191,7 @@
 				<td class="day_detail_content_td"><table width="100%" id="${row1.sdate}fourtable"><c:forEach items="${sche[row1.sdate] }" var="row2">
 						<tr width="100%">
 							<td width="15%"><a href="#"
-								onclick="openScheduleDialog('','','${mtype }','${ldate }','${userno }','2','4','','','${row2.tipMethod }','${row2.isComplete }','${row1.sdate }','${row2.uuid }','${row2.scheduleName }','${row2.address }','${row2.dstartDate }','${row2.startTime }','${row2.dendDate }','${row2.endTime }','${row2.isView }','${row2.status }','${row2.leaderNames }','${row2.leaderIds }','${row2.pleases }','${row2.pleaseIds }','${row2.views }','${row2.viewIds }','${row2.color}','${row2.tip }','${row2.tipDate }','${row2.tipTime }','${row2.repeat }','${row2.startTime2 }','${row2.endTime2 }','${row2.tipTime2 }','${row2.creators }','${row2.creatorIds }');">
+								onclick="openScheduleDialog('','','${mtype }','${ldate }','${userno }','2','4','','','${row2.tipMethod }','${row2.isComplete }','${row1.sdate }','${row2.uuid }','${row2.scheduleName }','${row2.address }','${row2.dstartDate }','${row2.startTime }','${row2.dendDate }','${row2.endTime }','${row2.isView }','${row2.status }','${row2.leaderNames }','${row2.leaderIds }','${row2.pleases }','${row2.pleaseIds }','${row2.views }','${row2.viewIds }','${row2.color}','${row2.tip }','${row2.tipDate }','${row2.tipTime }','${row2.repeat }','${row2.startTime2 }','${row2.endTime2 }','${row2.tipTime2 }','${row2.creators }','${row2.creatorIds }','${row2.inviteeNames}','${row2.inviteeIds}','${row2.acceptIds }','${row2.acceptNames }','${row2.refuseIds}','${row2.refuseNames}','${row2.tag.uuid}');">
 							<font color="${row2.color }">
 							<c:if test="${row2.isComplete=='1' }">
 							<strike>
@@ -203,7 +203,14 @@
 							</c:if>
 							</font> </a></td>
 							<td width="20%"><a href="#"
-								onclick="openScheduleDialog('','','${mtype }','${ldate }','${userno }','2','4','','','${row2.tipMethod }','${row2.isComplete }','${row1.sdate }','${row2.uuid }','${row2.scheduleName }','${row2.address }','${row2.dstartDate }','${row2.startTime }','${row2.dendDate }','${row2.endTime }','${row2.isView }','${row2.status }','${row2.leaderNames }','${row2.leaderIds }','${row2.pleases }','${row2.pleaseIds }','${row2.views }','${row2.viewIds }','${row2.color}','${row2.tip }','${row2.tipDate }','${row2.tipTime }','${row2.repeat }','${row2.startTime2 }','${row2.endTime2 }','${row2.tipTime2 }','${row2.creators }','${row2.creatorIds }');">
+								onclick="openScheduleDialog('','','${mtype }','${ldate }','${userno }','2','4','','','${row2.tipMethod }',
+									'${row2.isComplete }','${row1.sdate }','${row2.uuid }','${row2.scheduleName }','${row2.address }',
+									'${row2.dstartDate }','${row2.startTime }','${row2.dendDate }','${row2.endTime }','${row2.isView }',
+									'${row2.status }','${row2.leaderNames }','${row2.leaderIds }','${row2.pleases }','${row2.pleaseIds }',
+									'${row2.views }','${row2.viewIds }','${row2.color}','${row2.tip }','${row2.tipDate }','${row2.tipTime }',
+									'${row2.repeat }','${row2.startTime2 }','${row2.endTime2 }','${row2.tipTime2 }','${row2.creators }',
+									'${row2.creatorIds }','${row2.inviteeNames }','${row2.inviteeIds }',
+									'${row2.acceptIds }','${row2.acceptNames }','${row2.refuseIds}','${row2.refuseNames}','${row2.tag.uuid}');">
 							<font color="${row2.color }">
 							<c:if test="${row2.isComplete=='1' }">
 							<strike>
@@ -229,7 +236,7 @@
 							</c:if>
 							</font> </a></td>
 							<td width="25%"><a href="#"
-								onclick="openScheduleDialog('','','${mtype }','${ldate }','${userno }','2','4','','','${row2.tipMethod }','${row2.isComplete }','${row1.sdate }','${row2.uuid }','${row2.scheduleName }','${row2.address }','${row2.dstartDate }','${row2.startTime }','${row2.dendDate }','${row2.endTime }','${row2.isView }','${row2.status }','${row2.leaderNames }','${row2.leaderIds }','${row2.pleases }','${row2.pleaseIds }','${row2.views }','${row2.viewIds }','${row2.color}','${row2.tip }','${row2.tipDate }','${row2.tipTime }','${row2.repeat }','${row2.startTime2 }','${row2.endTime2 }','${row2.tipTime2 }','${row2.creators }','${row2.creatorIds }');">
+								onclick="openScheduleDialog('','','${mtype }','${ldate }','${userno }','2','4','','','${row2.tipMethod }','${row2.isComplete }','${row1.sdate }','${row2.uuid }','${row2.scheduleName }','${row2.address }','${row2.dstartDate }','${row2.startTime }','${row2.dendDate }','${row2.endTime }','${row2.isView }','${row2.status }','${row2.leaderNames }','${row2.leaderIds }','${row2.pleases }','${row2.pleaseIds }','${row2.views }','${row2.viewIds }','${row2.color}','${row2.tip }','${row2.tipDate }','${row2.tipTime }','${row2.repeat }','${row2.startTime2 }','${row2.endTime2 }','${row2.tipTime2 }','${row2.creators }','${row2.creatorIds }','${row2.inviteeNames }','${row2.inviteeIds }','${row2.acceptIds }','${row2.acceptNames }','${row2.refuseIds}','${row2.refuseNames}','${row2.tag.uuid}');">
 							<font color="${row2.color }">
 							<c:if test="${row2.isComplete=='1' }">
 							<strike>
@@ -255,7 +262,7 @@
 							</c:if>
 							</font> </a></td>
 							<td width="20%"><a href="#"
-								onclick="openScheduleDialog('','','${mtype }','${ldate }','${userno }','2','4','','','${row2.tipMethod }','${row2.isComplete }','${row1.sdate }','${row2.uuid }','${row2.scheduleName }','${row2.address }','${row2.dstartDate }','${row2.startTime }','${row2.dendDate }','${row2.endTime }','${row2.isView }','${row2.status }','${row2.leaderNames }','${row2.leaderIds }','${row2.pleases }','${row2.pleaseIds }','${row2.views }','${row2.viewIds }','${row2.color}','${row2.tip }','${row2.tipDate }','${row2.tipTime }','${row2.repeat }','${row2.startTime2 }','${row2.endTime2 }','${row2.tipTime2 }','${row2.creators }','${row2.creatorIds }');">
+								onclick="openScheduleDialog('','','${mtype }','${ldate }','${userno }','2','4','','','${row2.tipMethod }','${row2.isComplete }','${row1.sdate }','${row2.uuid }','${row2.scheduleName }','${row2.address }','${row2.dstartDate }','${row2.startTime }','${row2.dendDate }','${row2.endTime }','${row2.isView }','${row2.status }','${row2.leaderNames }','${row2.leaderIds }','${row2.pleases }','${row2.pleaseIds }','${row2.views }','${row2.viewIds }','${row2.color}','${row2.tip }','${row2.tipDate }','${row2.tipTime }','${row2.repeat }','${row2.startTime2 }','${row2.endTime2 }','${row2.tipTime2 }','${row2.creators }','${row2.creatorIds }','${row2.isLeaderView }','${row2.inviteeNames }','${row2.inviteeIds }','${row2.acceptIds }','${row2.acceptNames }','${row2.refuseIds}','${row2.refuseNames}','${row2.tag.uuid}');">
 							<font color="${row2.color }">
 							<c:if test="${row2.isComplete=='1' }">
 							<strike>
@@ -281,7 +288,7 @@
 							</c:if>
 							</font> </a></td>
 							<td width="20%"><a href="#"
-								onclick="openScheduleDialog('','','${mtype }','${ldate }','${userno }','2','4','','','${row2.tipMethod }','${row2.isComplete }','${row1.sdate }','${row2.uuid }','${row2.scheduleName }','${row2.address }','${row2.dstartDate }','${row2.startTime }','${row2.dendDate }','${row2.endTime }','${row2.isView }','${row2.status }','${row2.leaderNames }','${row2.leaderIds }','${row2.pleases }','${row2.pleaseIds }','${row2.views }','${row2.viewIds }','${row2.color}','${row2.tip }','${row2.tipDate }','${row2.tipTime }','${row2.repeat }','${row2.startTime2 }','${row2.endTime2 }','${row2.tipTime2 }','${row2.creators }','${row2.creatorIds }');">
+								onclick="openScheduleDialog('','','${mtype }','${ldate }','${userno }','2','4','','','${row2.tipMethod }','${row2.isComplete }','${row1.sdate }','${row2.uuid }','${row2.scheduleName }','${row2.address }','${row2.dstartDate }','${row2.startTime }','${row2.dendDate }','${row2.endTime }','${row2.isView }','${row2.status }','${row2.leaderNames }','${row2.leaderIds }','${row2.pleases }','${row2.pleaseIds }','${row2.views }','${row2.viewIds }','${row2.color}','${row2.tip }','${row2.tipDate }','${row2.tipTime }','${row2.repeat }','${row2.startTime2 }','${row2.endTime2 }','${row2.tipTime2 }','${row2.creators }','${row2.creatorIds }','${row2.isLeaderView }','${row2.inviteeNames }','${row2.inviteeIds }','${row2.acceptIds }','${row2.acceptNames }','${row2.refuseIds}','${row2.refuseNames}','${row2.tag.uuid}');">
 							<font color="${row2.color }">
 							<c:if test="${row2.isComplete=='1' }">
 							<strike>
@@ -321,15 +328,12 @@
 				<div id="${row1.sdate }four">
 				</c:if>
 				<font size="1"><a href="#"
-					onclick="openScheduleNewDialog('','','','','2','4','','','${creators}','${creatorIds}','${row1.sdate }','${ldate }','${mtype }','${now }');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
+					onclick="openScheduleNewDialog('','','','','2','4','','','${creators}','${creatorIds}','${row1.sdate }','${ldate }','${mtype }','${now }','','','');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
 				</div>
 				</td>
 				</tr>
 				
-				
-				
-				
-</c:if>
+				</c:if>
 			</c:forEach>
 
 		</table>
@@ -344,12 +348,10 @@
 <div class="dialogcontent"></div>
 </div>
 
-<c:if test="${addCss!='yes'}">
 	<script src="${ctx}/resources/jquery/jquery.js"></script>
 	<!-- jQuery UI -->
 	<script src="${ctx}/resources/jqueryui/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="${ctx}/resources/pt/js/common/jquery.alerts.js"></script>
-</c:if>
 <script type="text/javascript"
 		src="${ctx}/resources/pt/js/org/unit/jquery.unit.js"></script>
 		<script type="text/javascript" src="${ctx}/resources/schedule/global_zh_CN.js"></script>
@@ -357,9 +359,6 @@
 	<script src="${ctx}/resources/schedule/schedule.js" type="text/javascript"></script>
 	
 	<script type="text/javascript">
-	
-	
-	
 	
 	
 	//按日显示时，日变更时，更新其他展现元素
@@ -523,12 +522,13 @@
 	$(".go_taday").click(function(){
 		var ldate = $(this).attr("ldate");
 		var mtype = $(this).attr("mtype");
+		var tagId = $("#tagId").val();
 		var addCss = $("#addCss").val();
 		if(addCss=='yes'){
 			$.ajax({
 				type:"post",
 				async:false,
-				data : {"stype":0,"ldate":ldate,"mtype":mtype,"requestType":"cms"},
+				data : {"stype":0,"ldate":ldate,"mtype":mtype,"tagId":tagId,"requestType":"cms"},
 				url:"${ctx}/schedule/person_schedule2.action",
 				success:function(result){
 					$(".schedule_person_list2").parent().html(result);
@@ -580,17 +580,17 @@
 	//月
 	$(".as_month").click(function(){
 		var ldate = $(this).attr("ldate");
-		var mtype = $(this).attr("mtype");
+		var tagId = $(this).attr("tagId");
+		var mtype = $("#mtype").val();
 		var addCss = $("#addCss").val();
 		if(addCss=='yes'){
 			$.ajax({
 				type:"post",
 				async:false,
-				data : {"ldate":ldate,"mtype":mtype,"requestType":"cms"},
-				url:"${ctx}/schedule/person_schedule.action",
+				data : {"ldate":ldate,"mtype":mtype,"tagId":tagId,"requestType":"cms"},
+				url:"${ctx}/schedule/person_schedule",
 				success:function(result){
 					$(".schedule_person_list2").parent().html(result);
-					$(".schedule_person_list").parent().children().not(".schedule_person_list").remove();
 				}
 			});
 		}else{
@@ -601,12 +601,13 @@
 	$(".as_day").click(function(){
 		var ldate = $(this).attr("ldate");
 		var mtype = $(this).attr("mtype");
+		var tagId = $(this).attr("tagId");
 		var addCss = $("#addCss").val();
 		if(addCss=='yes'){
 			$.ajax({
 				type:"post",
 				async:false,
-				data : {"mtype":mtype,"requestType":"cms"},
+				data : {"mtype":mtype,"tagId":tagId,"requestType":"cms"},
 				url:"${ctx}/schedule/person_schedule2.action",
 				success:function(result){
 					$(".schedule_person_list2").parent().html(result);
@@ -654,6 +655,57 @@
 		}else{
 			window.location.href='${ctx}/schedule/person_schedule2.action?ldate='+ldate+'&mtype='+mtype+'&stype=2';
 		}
+	});
+	
+
+	// 日历组选择 
+	$(".group_name").click(function() {
+		var tagId = $(this).attr("tagId");
+		var ldate = $(this).attr("ldate");
+		var mtype = $(this).attr("mtype");
+		$.ajax({
+			type : "post",
+			async : false,
+			data : {
+				"tagId":tagId,
+				"mtype":mtype,
+				"ldate":ldate,
+				"requestType":"cms"
+			},
+			url : "${ctx}/schedule/person_schedule2",
+			success : function(result) {
+				$(".schedule_person_list2").parent().html(result);
+			}
+		});
+	});
+	
+
+	// 日历组选择 
+	$(".second_menu_label").click(function() {
+		var tagId = $(this).attr("tagId");
+		var ldate=$("#ldate").val();
+		var mtype = $("#mtype").val();
+		$.ajax({
+			type : "post",
+			async : false,
+			data : {
+				"tagId":tagId,
+				"ldate":ldate,
+				"mtype":mtype,
+				"requestType":"cms"
+			},
+			url : "${ctx}/schedule/person_schedule2",
+			success : function(result) {
+				$(".schedule_person_list2").parent().html(result);
+			}
+		});
+	});
+
+	$(".second_menu_item").live("mouseover", function() {
+		$(this).find("a").not(".second_menu_label").css("display", "block");
+	});
+	$(".second_menu_item").live("mouseout", function() {
+		$(this).find("a").not(".second_menu_label").css("display", "none");
 	});
 	</script>
 </div>

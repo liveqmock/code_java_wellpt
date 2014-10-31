@@ -1195,7 +1195,7 @@ I18nLoader.load("/resources/pt/js/dytable/dytable");
 				obj.setUrlOnlyRead = colObj.setUrlOnlyRead;
 				obj.fontHight = colObj.fontHight;
 				obj.textAlign = colObj.textAlign;
-				obj.isHide = elementShowunEditIsSaveDb.show;
+				obj.isHide = colObj.show;
 				obj.defaultValueWay = colObj.defaultValueWay;
 				obj.inputDataType = colObj.inputDataType;
 				obj.relationDataTwoSql = colObj.relationDataTwoSql;

@@ -97,6 +97,10 @@
 									<td><label>撤销回调接口地址(商改平台使用)</label></td>
 									<td><input id="cancelCallbackUrl" name="cancelCallbackUrl" type="text" style="width:100%;"/></td>
 								</tr>
+								<tr>
+									<td><label>webServiceUrl</label></td>
+									<td><input id="webServiceUrl" name="webServiceUrl" type="text" style="width:100%;"/></td>
+								</tr>
 								<tr style="display: none;">
 									<td><label>FTP服务器地址</label></td>
 									<td><input id="ftpServerUrl" name="ftpServerUrl" type="text" style="width:100%;"/></td>
@@ -121,7 +125,12 @@
 									<td><label>备注</label></td>
 									<td><input id="remark" name="remark" type="text" style="width:100%;"/></td>
 								</tr>
-								
+								<tr>
+									<td></td>
+									<td>
+									<input id="isCallBack" name="isCallBack" type="checkbox"/>禁用回调
+									</td>
+								</tr>
 							</table>
 						</div>
 	

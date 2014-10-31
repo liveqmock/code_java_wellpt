@@ -65,8 +65,7 @@ $(function() {
 				ondblClickRow : function(id) {
 					var rowData = $(this).getRowData(id);
 					if (rowData.flowInstUuid != null && rowData.flowInstUuid != "") {
-						TabUtils.openTab(rowData["flowInstUuid"], rowData["title"], ctx
-								+ "/workflow/work/view/monitor?taskUuid=" + rowData["taskUuid"]
+						window.open(ctx + "/workflow/work/view/monitor?taskUuid=" + rowData["taskUuid"]
 								+ "&flowInstUuid=" + rowData["flowInstUuid"]);
 					}
 				},
@@ -114,6 +113,28 @@ $(function() {
 		}
 	});
 
+	// 列表查询
+	$("#query_task").keypress(function(e) {
+		if (e.keyCode == 13) {
+			$("#btn_query").trigger("click");
+		}
+	});
+	$("#btn_query").click(function(e) {
+		var queryValue = $("#query_task").val();
+		var postData = {
+			"queryPrefix" : "query",
+			"queryOr" : true,
+			"query_LIKES_title_OR_taskName" : queryValue
+		};
+		$("#list").jqGrid("setGridParam", {
+			postData : null
+		});
+		$("#list").jqGrid("setGridParam", {
+			postData : postData,
+			page : 1
+		}).trigger("reloadGrid");
+	});
+
 	// 查看待办工作
 	$("#btn_todo_view").click(
 			function() {
@@ -121,8 +142,8 @@ $(function() {
 					alert("请选择工作！");
 					return true;
 				}
-				window.open(ctx + "/workflow/work/view/monitor?taskUuid=" + bean["taskUuid"]
-						+ "&flowInstUuid=" + bean["flowInstUuid"], "_blank");
+				window.open(ctx + "/workflow/work/view/monitor?taskUuid=" + bean["taskUuid"] + "&flowInstUuid="
+						+ bean["flowInstUuid"], "_blank");
 			});
 
 });

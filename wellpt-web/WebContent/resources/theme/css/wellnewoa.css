@@ -11,7 +11,7 @@ Body {
 	Cursor:url(mouse.cur); /*自定义个性鼠标*/
 }
 body {
-	background-color: #586973;
+	background-color: #999999;
 	margin: 0;
 	padding: 0;
 	color: #2e2e2e;
@@ -24,27 +24,29 @@ body {
      height: auto;
     position: relative;
 }
+
 table {
     border-collapse: separate;
 }
 .dnrw{
-	border: 1px solid #ddd;
+	border: 0px solid #ddd;
     border-radius: 5px 5px 5px 5px;
 	color: #2E2E2E;
     font-family: "Microsoft YaHei";
     font-size: 12px;
     text-align: left;
     border-radius: 0;
-    background: url("../images/v1_bd.png") repeat-y scroll 100% 0 transparent;
     border-right: none;
     border-bottom: none;
     border-top: medium none;
     position: absolute;
+    
 }
 .dnrw ul.nav{
 	margin-bottom: 0px;
-	background: url("../images/v1_icon.png") repeat-x scroll 0 -53px ;
+	background-color:#18b3e1;
 	margin-right: 2px;
+	margin-top: -11px;
 }
 .dnrw .nav-tabs li{
 	font-size: 17px;
@@ -59,7 +61,7 @@ table {
 .dnrw ul li a:hover{
 /* 	background: url("../images/v1_icon.png") repeat-x scroll 0 -53px; */
 /* 	border:none; */
-/* 	margin-top: 2px; */
+	margin-top: 2px;
 /* 	padding-bottom: 9px; */
 /*     padding-top: 7px; */
 /*     padding-left: 13px; */
@@ -68,15 +70,35 @@ table {
 .customButton button:hover{
 	color: #ff7200;
 }
-.dnrw ul .active a{
-	background: url("../images/v1_icon.png") repeat-x scroll 0 -53px transparent;
+.dnrw ul .active a{ 
     border: medium none;
+    border-radius: 0 0 0 0;
+    color: #FFFFFF;
+    font-size: 17px;
+    padding-left: 3px;
+    cursor: pointer;
+}
+
+.nav-tabs > .active > a,
+.nav-tabs > .active > a:hover,
+.nav-tabs > .active > a:focus {
+  color: #555555;
+  background-color: #18b3e1;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  cursor: default;
+}
+
+#internetSpan {
+	border: medium none;
     border-radius: 0 0 0 0;
     color: #FFFFFF;
     font-size: 18px;
     padding-left: 3px;
     cursor: pointer;
+    font-family: microsoft yahei;
 }
+
 .nav .active a:hover{
 	color: #fff;
 	border: medium none;
@@ -92,10 +114,14 @@ table {
     overflow: hidden;
     display: block;
     float:left;
-    word-break:keep-all;
+/*     word-break:keep-all; */
     white-space:nowrap;
     overflow: hidden;
     text-overflow:ellipsis;
+}
+.dialogcontent .dnrw .table td{
+	word-break:keep-all;
+    white-space:nowrap;
 }
 .dnrw .table .tr_td_button{
 	float:right;
@@ -146,7 +172,7 @@ table {
 	margin-right: 4px;
 }
 .view_foot{
-	background: url("../images/v1_panel.png") repeat-x scroll 0 -10px transparent;
+	 
     margin-right: 2px;
     height: 3px;
 }
@@ -173,11 +199,14 @@ table {
 }
 .customButton button {
     background: url("../images/v1_icon.png") no-repeat scroll 0 -165px transparent;
-    border: 1px solid #DEE1E2;
-    color: #0F599C;
+    border: 1px solid #dee1e2;
+    color: #0f599c;
+    display: block;
+    float: left;
     font-size: 12px;
     height: 22px;
-    padding: 0px 5px;
+    margin: 0 3px;
+    padding: 0 5px;
 }
 .customButton1 {
 	display:none;
@@ -208,9 +237,43 @@ table {
 .customButton_top {
 	display: block;
     float: left;
-    height: 30px;
-    margin: 10px 0 0 20px;
+/*     margin: 10px 0 0 20px; */
 }
+#fieldSelect {
+    background: url("../images/v1_icon.png") no-repeat scroll 0 -139px transparent;
+    border: 0 none;
+    height: 23px;
+    margin-left: 5px;
+    margin-top: -11px;
+    overflow: hidden;
+    text-indent: -99px;
+    width: 50px;
+}
+
+.fieldSelectTr .fieldSelectTitleTd {
+	text-align: left;
+	padding-left: 10px;
+}
+
+.fieldSelectTr .fieldSelectTd {
+    width:40%;
+}
+
+.fieldSelectTd label{
+	display:inline;
+	padding: 5px;
+}
+.fieldSelectTd input{
+	margin-bottom: 5px;
+    margin-top: 4px;
+    padding: 0;
+    width: 90%;
+}
+.fieldSelectDiv input {
+	width:43%;
+}
+
+
 #keySelect {
     background: url("../images/v1_icon.png") no-repeat scroll 0 -139px transparent;
     border: 0 none;
@@ -221,8 +284,22 @@ table {
     text-indent: -99px;
     width: 50px;
 }
+
 #keySelect:hover{
     background:url("../images/serch_btn.png");
+}
+.queryDiv .blurBtn,.dyform .blurBtn{
+    background: url("../images/v1_icon.png") no-repeat scroll 0 -1373px transparent;
+    border: 0 none;
+    border-radius: 4px;
+    color: #fff;
+    height: 25px;
+    margin: 0 0 5px 5px;
+    overflow: hidden;
+    text-indent: 0;
+}
+.blurBtn:hover{
+    background:url("../images/serch_btn2.png");
 }
 #keyWord{
 	background: url("../images/v1_search_icon.png") no-repeat scroll 0 0 #FFFFFF;
@@ -233,6 +310,17 @@ table {
     padding: 0;
     text-indent: 20px;
 }
+
+.inputClass{
+/* 	background: url("../images/v1_search_icon.png") no-repeat scroll 0 0 #FFFFFF; */
+    color: #ababab;
+    font-family: "Microsoft YaHei";
+    font-size: 12px;
+    height: 23px;
+    padding: 0;
+    text-indent: 2px;
+}
+
 .toLine{
 	color: #ABABAB;
     display: block;
@@ -250,13 +338,13 @@ table {
     width: 110px;
 }
 #beginTime,#endTime{
-	color: #ababab;
     font-family: "Microsoft YaHei";
     font-size: 12px;
     width: 100px;
     float: left;
+	/* color: #ababab;
     height: 23px;
-    padding: 0;
+    padding: 0; */
 }
 .clearText {
     background: url("../images/v1_icon2.png") no-repeat scroll -312px 0 transparent;
@@ -268,12 +356,8 @@ table {
     width: 20px;
 }
 .view_tool2 .clearText {
-    right: 59px;
-    top: 6px;
-}
-.view_tool2 .clearText {
-    right: 59px;
-    top: 6px;
+    right: 60px;
+    top: 13px;
 }
 .indexViewSearch .clearText {
     left: 85px;
@@ -291,12 +375,19 @@ table {
     background: none repeat scroll 0 0 #FFFFFF;
 }
 .view_keyword_div,.view_timeSolt_div {
+	margin-right: 8px;
+/* 	width: 100%; */
     float: right;
-    height: 30px;
-    margin-top: 7px;
-    margin-right: 11px;
-    position: relative;
+/*     height: 30px; */
+/*     margin-top: 7px; */
+/*     margin-right: 11px; */
+/*     position: relative; */
+}
+
+.viewContent {
     clear: both;
+/*      height: 600px; */
+    overflow: auto;
 }
 .view_timeSolt_div{
 	margin-right: 70px;
@@ -335,9 +426,10 @@ table {
 	color: #ff7200;
 }
 .view_tool2 {
-    clear: both;
+/*     clear: both; */
     background: none repeat scroll 0 0 #F3F8FB;
-    height: auto;
+/*     height: auto; */
+	margin-top: 8px;
 }
 
 /**首页dff**/
@@ -350,6 +442,41 @@ table {
 .dataTr:hover{
 	color: #ff7200;
 }
+
+.isActivate_1 {
+	background: url("../images/images/jihuo.png");
+     display: inline-block;
+    height: 20px;
+    width: 20px;
+    text-indent: -9999px;
+    padding-right: 0;
+    margin-top: 0px;
+}
+
+.isActivate_0 {
+	background: url("../images/images/nojh.png");
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    text-indent: -9999px;
+    padding-right: 0;
+    margin-top: 0px;
+}
+
+.isTop_1 {
+	background: url("../images/images/ldx_top.png");
+    display: inline-block;
+    height: 15px;
+    width: 16px;
+    text-indent: -9999px;
+    padding-right: 0;
+    margin-top: 3px;
+}
+
+.isTop_0 {
+
+}
+
 .isRead_1 {
     background: url("../images/read.jpg");
     display: inline-block;
@@ -640,7 +767,7 @@ table {
     width: 50px;
 }
 .viewNum {
-    background: url("../images/v1_icon.png") no-repeat scroll -56px -142px transparent;
+    background: url("../images/v1_icon.png") no-repeat scroll -52px -142px transparent;
     color: #FFFFFF;
     font-size: 12px;
     height: 16px;
@@ -684,6 +811,7 @@ table {
 	    color: #333333;
 	    text-align: center;
 	    padding: 8px 0;
+	    word-break: keep-all;
 	}
 	.dialog_form_content .odd {
 	    background: none repeat scroll 0 0 #F7F7F7;
@@ -706,7 +834,7 @@ table {
 	    margin-left: 20px;
 	}
 	.dialog_form_content .input_photo {
-		height: 20px;
+		height: 30px;
 	    width: auto;
 	}
 	.dialog_form_content label {
@@ -850,6 +978,19 @@ table {
     width: 160px;
     z-index: 1;
 }
+.view_tool_bottom .customButton_group_buttons_bottom{
+	background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #DEE1E2;
+    box-shadow: 1px 1px 1px #DEE1E2;
+    display: none;
+    left: -1px;
+    padding-left: 5px;
+    position: absolute;
+    text-align: left;
+    bottom: 22px;
+    width: 160px;
+    z-index: 1;
+}
 .customButton_group_button {
     margin: 3px;
     padding: 2px;
@@ -901,6 +1042,12 @@ table {
 	background: url("../images/v1_input_icon.png") no-repeat scroll 100% -355px #FFFFFF;
 }
 
+.input-waiting{
+	background: url("../images/waiting.gif") no-repeat scroll 100%; 
+	background-size:20px 20px;
+	background-repeat:no-repeat; 
+}
+
 .selectKeyTableClass {
 	width:100%;
 }
@@ -929,3 +1076,10 @@ table {
 #showButton {
     margin-top: -11px;
 }
+
+.tab-content iframe{
+	border:0px;
+}
+
+
+ 

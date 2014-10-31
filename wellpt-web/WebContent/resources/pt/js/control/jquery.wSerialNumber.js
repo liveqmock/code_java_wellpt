@@ -33,180 +33,64 @@
 	 * SERIALNUMBER CLASS DEFINITION ======================
 	 */
 	var SerialNumber = function(element, options) {
-		this.init("wserialNumber", element, options);
+		this.$element = $(element);
+		this.options = $.extend({}, $.fn["wserialNumber"].defaults, options,
+				this.$element.data());
 	};
 
 	SerialNumber.prototype = {
 		constructor : SerialNumber,
-		init : function(type, element, options) {
-			this.type = type;
-			this.$element = $(element);
-			this.options = this.getOptions(options);
-			//参数初始化
-			this.initparams(this.options);
-		},
+
 		//默认参数初始化
-		initparams:function(options){
-			 //设置字段属性.根据不同的控件类型区分。
-			 $.ControlUtil.setCtrAttr(this.$element,this.options);
+		initSelf:function(){
+			
+			var inputMode=this.options.commonProperty.inputMode;
+			 this.$element.attr("id",this.$element.attr("name"));
+			 this.$element.attr("designatedId",this.options.designatedId);	//流水号定义:指定的流水号ID
+			 this.$element.attr("designatedType",this.options.designatedType);//可编辑流水号定义:指定的流水号TYPE
+			 this.$element.attr("isOverride",this.options.isOverride);	//可编辑流水号定义:是否覆盖指针
+			 this.$element.attr("isSaveDb",this.options.isSaveDb);	//流水号定义：是否保存进数据库
+			 //设置文本的css样式
+			 this.setTextInputCss();
+			 if(inputMode==dyFormInputMode.serialNumber){
+				 this.$element.addClass("input-search");//css in wellnewoa.css
+			 }
+
 			 var formUuid=this.options.formUuid;
 			 var element=this.$element;
 			 var val=this.$element.val();
-			 if(dyFormInputMode.serialNumber == options.commonProperty.inputMode) {//可编辑流水号
+			 var options=this.options;
+			 if(dyFormInputMode.serialNumber == inputMode) {//可编辑流水号
 					var designatedId_ = options.designatedId;
 					var designatedType_ = options.designatedType;
-					var isOverride_ = options.isoverride;
+					var isOverride_ = options.isOverride;
 					this.$element.live("click",function() {
-						getEditableSerialNumber(designatedId_,designatedType_,parseInt(isOverride_),formUuid,element.attr("id"),element.attr("id"));
+						getEditableSerialNumber(designatedId_,designatedType_,parseInt(isOverride_),formUuid,options.columnProperty.columnName,element.attr("id"));
 						element.val(snValue);
 					});
 					//根据show类型展示
-					 $.ControlUtil.dispalyByShowType(this.$element,this.options);
+					 this.dispalyByShowType();
 			 }else{
 				 var unEditDesignatedId = options.designatedId;
 					var unEditIsSaveDb = options.isSaveDb;
 					if(val != "") {
 						this.setValue(val);
 					}else {
-						var snValue = getNotEditableSerialNumberForDytable(unEditDesignatedId,unEditIsSaveDb,formUuid,element.attr("id"));
+					 
+						 var notEditIsSaveDb = unEditIsSaveDb == "0"? true:false;
+						 console.log("取流水号:[" + unEditDesignatedId + "]unEditIsSaveDb:[" + notEditIsSaveDb + "]formUuid:[" + formUuid + "]id:["+this.options.columnProperty.columnName+"]");
+						var snValue = getNotEditableSerialNumberForDytable(unEditDesignatedId,notEditIsSaveDb,formUuid , this.options.columnProperty.columnName);
+						 console.log(snValue);
 						this.setValue(snValue);
 					}
 					this.setDisplayAsLabel();
 			 }
 			 if(this.getValue()==""||this.getValue()==undefined){
 		         //设置默认值
-				 this.setValue(options.columnProperty.defaultValue);
+				 this.setDefaultValue(options.columnProperty.defaultValue);
 			 }
-		
+			  this.addMustMark();
 		},
-		getOptions : function(options) {
-			options = $.extend({}, $.fn[this.type].defaults, options,
-					this.$element.data());
-			return options;
-		},
-		
-		//set............................................................//
-	     
-		//设值
-		 setValue:function(value){
-			 $.ControlUtil.setValue(this.$element,this.options,value);
-		 } ,
-		 
-		 //设置必输
-		 setRequired:function(isrequire){
-			 $.ControlUtil.setRequired(isrequire,this.options);
-		 } ,
-		 
-		 //设置可编辑
-		 setEditable:function(){
-			 this.setReadOnly(false);
-			 this.setEnable(true);
-			 this.setDisplayAsCtl();
-		 } ,
-		 
-		 //只读，文本框不置灰，不可编辑
-		 setReadOnly:function(isreadonly){
-			 $.ControlUtil.setReadOnly(this.$element,isreadonly);
-			 this.options.readOnly=isreadonly;
-		 } ,
-		 
-		 //设置disabled属性
-		 setEnable:function(isenable){
-			 $.ControlUtil.setEnable(this.$element,isenable);
-			 this.options.disabled=!isenable;
-		 } ,
-		 
-		 //设置hide属性
-		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(this.$element,isvisible);
-			 this.options.isHide=!isvisible;
-		 } ,
-		 
-		 //显示为lablel
-		 setDisplayAsLabel:function(){
-			 $.ControlUtil.setIsDisplayAsLabel(this.$element,this.options,true);
-		 } ,
-		 
-		 //显示为控件
-		 setDisplayAsCtl:function(){
-			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
-		 },
-	       
-	    //get..........................................................//
-		
-		 //返回控件值
-		 getValue:function(){
-			 return this.$element.val();
-		 },
-
-		 isValueMap:function(){
-			 return false;
-		 },
-		 /**
-		  * 返回是否可编辑(由readOnly和disabled判断)
-		  * @returns {Boolean}
-		  */
-		 isEditable:function(){
-			 if(this.options.readOnly&&this.options.disabled){
-				 return false;
-			 }else{
-				 return true;
-			 }
-		 },
-		 
-		 isReadOnly:function(){
-			 return this.options.readOnly;
-		 },
-		 
-		 isEnable:function(){
-			 return !this.options.disabled;
-		 },
-		 
-		 isVisible:function(){
-			 return  this.options.isHide;
-		 }, 
-		 
-		 isRequired:function(){
-			 return $.ControlUtil.isRequired(this.options);
-		 },
-		 
-		 isShowAsLabel:function(){
-			 return this.options.isShowAsLabel;
-		 },
-		 
-		 getAllOptions:function(){
-		    	 return this.options;
-		     } ,  
-		     
-
-		 getRule:function(){
-			 return $.ControlUtil.getCheckRules(this.options);
-		 } ,
-		 
-		 getMessage:function(){
-			 return $.ControlUtil.getCheckMsg(this.options);
-		 } ,
-		 
-	     /**
-	      * 获得控件名
-	      * @returns
-	      */
-	     getCtlName:function(){
-	    	 return this.$element.attr("name");
-	     },
-		 
-	     //bind函数，桥接
-	     bind:function(eventname,event){
-	    	this.$element.bind(eventname,event);
-	    	return this;
-	     },
-		 
-		 //unbind函数，桥接
-	     unbind:function(eventname){
-	    	this.$element.unbind(eventname);
-	    	return this;
-	     }
-	    //一些其他method ---------------------
 	     
 	};
 	
@@ -240,8 +124,14 @@
 					options = typeof option == 'object'
 							&& option;
 					if (!data) {
-						$this.data('wserialNumber', (data = new SerialNumber(this,
-								options)));
+						 data = new SerialNumber(this,options);
+						 var datacopy={};
+						 var data1=$.extend(datacopy,data);
+						 var extenddata=$.extend(data,$.wControlInterface);
+						 var data2=$.extend(extenddata,data1);
+						 var data3=$.extend(data2,$.wTextCommonMethod);
+						 data3.init();
+						 $this.data('wserialNumber',data3 );
 					}
 					if (typeof option == 'string') {
 						if (method == true && args != null) {

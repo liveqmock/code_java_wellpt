@@ -1,15 +1,15 @@
 //加载全局国际化资源
 I18nLoader.load("/resources/pt/js/global");
 //加载动态表单定义模块国际化资源
-I18nLoader.load("/resources/pt/js/dytable/dytable");
+I18nLoader.load("/resources/pt/js/dyform/dyform");
  
  
 
- var formDefinition =  new MainFormClass();//用于保存定义数据
-  
-  
+var formDefinition =  new MainFormClass();//用于保存定义数据
+
+ 
 //收集用户配置信息
-function collectFormDatas(){ 
+function collectFormDatas(){
 	var uuid = $('#formUuid').val();
 	var mainTableEnName = $('#mainTableEnName').val();
 	var mainTableCnName = $('#mainTableCnName').val();
@@ -21,16 +21,14 @@ function collectFormDatas(){
 	var applyTo = $('#applyTo2').val();
 	
 	var printTemplate = $("#getPrintTemplateId").val();
-	 
+	
 	var printTemplateName = $("#getPrintTemplateName").val();
 	var showTableModel = $("#showTableModel").val();
 	var showTableModelId = $("#showTableModelId").val();
 	var version = $('#version').val(); 
-	
+	var customJs = $("#customJs").val();
+ 
 	var htmlBodyContent = editor.getData();
-	
-	 
-	 
 	
 	//formDefinition是一个全局变量,用于保存定义
 	formDefinition.outerId = tableId;
@@ -40,52 +38,72 @@ function collectFormDatas(){
 	formDefinition.displayFormModelName = showTableModel;
 	formDefinition.displayFormModelId = showTableModelId;
 	formDefinition.uuid = uuid;
-	formDefinition.name = mainTableEnName;
+	formDefinition.name = mainTableEnName.toLowerCase();//转成小写
 	formDefinition.displayName = mainTableCnName;
 	formDefinition.enableSignature = formSign;
 	formDefinition.code = tableNum;
-	 
+	//console.log(JSON.cStringify(formDefinition.fields));
 	formDefinition.moduleId = moduleId;
-	formDefinition.moduleName = moduleName;  
-	formDefinition.version = version; 
+	formDefinition.moduleName = moduleName;
+	formDefinition.version = version;
 	formDefinition.html = htmlBodyContent;
+	formDefinition.customJs = customJs;
+	console.log(JSON.cStringify(formDefinition));
+	cleanUselessDefinition();//清除无效的定义
 	
-	
-	//设置状态字段
-	/*var fieldStatus = formDefinition.fields["status"];
-	if(typeof fieldStatus == "undefined"){
-		fieldStatus = new MainFormFieldClass();
-		fieldStatus.name = "status";
-		fieldStatus.displayName = "状态";
-		fieldStatus.length = "10";
-		fieldStatus.showType = dyshowType.hide;//默认为隐藏
-		fieldStatus.sysType = dyFieldSysType.system;//系统字段
-		var optionSet = {"DYFORM_DATA_STATUS_DEFAULT":"表单数据默认状态", "DYFORM_DATA_STATUS_DEL":"数据已删除状态"}; 
-		for(var i in optionSet){//默认为第一个元素
-			fieldStatus.defaultValue = i;
-			break;
-		}
-		
-		fieldStatus.valueCreateMethod = dyFormInputValue.userImport;
-		fieldStatus.dbDataType = dyFormDataType.string;
-		fieldStatus.inputMode = dyFormInputMode.radio;
-		optionSet.optionSet= optionSet;
-		optionSet.data=[{value:"DYFORM_DATA_STATUS_DEFAULT", label:"表单数据默认状态"},{value: "DYFORM_DATA_STATUS_DEL",label:"数据已删除状态"}]; 
-		formDefinition.fields["status"] = fieldStatus;
-	}*/
-	
-	//去掉没用的字段
-	var fields = formDefinition.fields;
-	for(var i in fields){
-		
-	}
-	
-	
-	//去掉没用的从表
-	
-  
+	return true;
 }
 
+/**
+ * 清除无效的字段定义
+ */
+function cleanUselessDefinition(){
+	 
+	var $html =  $("<span>" + editor.getData() + "</span>");
+	
+	var fields = formDefinition.fields;
+	for(var fieldName in fields){
+		if($html.find(".value[name='" + fieldName + "']").size() == 0){//在模板中没有找到该字段,则删除该字段的定义
+			console.log(fieldName + " 对应的占位符已被删除，故删除对应的字段定义");
+			delete fields[fieldName];
+		}
+	}
+	
+	var subforms = formDefinition.subforms;
+	for(var formUuid in subforms){
+		if($html.find("table[formUuid='" + formUuid + "']").size() == 0){//在模板中没有找到该字段,则删除该从表 的定义
+			console.log(formUuid + " 对应的占位符已被删除，故删除对应的从表定义");
+			delete subforms[formUuid];
+		}
+	}
+	
+	var layouts =  formDefinition.layouts;
+	 
+	for(var name in layouts){
+		if($html.find(".tabLayout[name='" + name + "']").size() == 0){//在模板中没有找到该字段,则删除该从表 的定义 
+			console.log(name + " 对应的占位符已被删除，故删除对应的布局定义");
+			delete layouts[name];
+		}
+	}
+	
+	var blocks = formDefinition.blocks;
+	if(typeof blocks != "undefined"){
+		for(var blockCode in blocks){
+			if($html.find("td[blockCode='" + blockCode + "']").size() == 0){//在模板中没有找到该字段,则删除该区块的定义
+				console.log(blockCode + " 对应的占位符已被删除，故删除对应的区块");
+				delete blocks[blockCode];
+			}
+		}
+	}
+	
+	if(formDefinition.defaultFormData){
+		delete formDefinition.defaultFormData;
+	}
+	if(formDefinition.subformDefinitions){
+		delete formDefinition.subformDefinitions;
+	}
+	
+}
 
 var validateAndSaveForm = function(evenSource){
 	$(".nav-tabs li a").each(function(index) {//如果第一个页签被隐藏，目前的验证框架没对其进行验证，所以在这里把第一个面签调整出来
@@ -122,40 +140,87 @@ var saveForm = function(evenSource){
 		}
 	}
 	
-	if(!/^userform_.*$/.test(formDefinition.name.toLowerCase())){ 
-		alert("数据库表名须以字符串\"USERFORM_\"开头");
+	if(!/^(uf|userform)_.*$/.test(formDefinition.name.toLowerCase())){ 
+		alert("数据库表名须以字符串\"UF_\"开头");
 		return false;
 	}
 	
-	formDefinition.definitionJson = JSON.stringify(formDefinition);
+	if(!formDefinition){
+		throw new Error("unknown formDefinition");
+	}
 	
-	if(formDefinition){
-		delete formDefinition.fields;
-		delete formDefinition.subforms;
-		delete formDefinition.html;
+	var formDefinitionCopy = {};
+	$.extend(formDefinitionCopy, formDefinition);
+
+	var deletedFieldNames = [];
+	if(formDefinitionCopy){
+		if(typeof formDefinitionCopy.deletedFieldNames != "undefined"){
+			deletedFieldNames = formDefinitionCopy.deletedFieldNames;
+			delete formDefinitionCopy.deletedFieldNames; 
+		}
+	}
+	
+	
+	formDefinitionCopy.definitionJson = JSON.cStringify(formDefinitionCopy);
+	
+	if(formDefinitionCopy){
+		delete formDefinitionCopy.fields;
+		delete formDefinitionCopy.subforms;
+		delete formDefinitionCopy.html;
+		if(formDefinitionCopy.layouts){
+			delete formDefinitionCopy.layouts;
+		}
+		if( formDefinitionCopy.blocks){
+			delete formDefinitionCopy.blocks;
+		}
+		
+		if(typeof formDefinitionCopy.customJs =="string"){
+			delete formDefinitionCopy.customJs;
+		}
+		
 	}
 	
 	 
-	//var json = JSON.stringify(formDefinition.formDisplay);
-	 
-	 
+	
+  
 	$.ajax({
 		url:url,
 		type:"POST",
-		data:  JSON.stringify(formDefinition),
+		data:  {formDefinition:JSON.cStringify(formDefinitionCopy), deletedFieldNames:JSON.cStringify(deletedFieldNames)},
 		dataType:'json',
-		contentType:'application/json',
-		success:function (data){
-			if(dyResult.success == data){
-				$('#moduleDiv').html("");
-				alert("保存成功!");
-				$("#"+$(window.opener.document.getElementById("tt")).attr("id")).trigger('reloadGrid');
-				window.opener.location.reload();//刷新父窗口页面
-				window.close();
-			}
+		async: false,
+		timeout: 120000,
+		contentType:'application/x-www-form-urlencoded',
+		beforeSend: function(){
+			pageLock("show");
 		},
-		error:function(data){
-			console.log(JSON.stringify(data));
+		complete:function(){
+			pageLock("hide");
+		},
+		success:function (result){
+			 if(result.success == "true" || result.success == true){
+				 alert("保存成功!");
+				// $("#"+$(window.opener.document.getElementById("tt")).attr("id")).trigger('reloadGrid');
+				//window.opener.location.reload();//刷新父窗口页面
+				//window.close();
+				 window.location.href = contextPath + "/dyform/demo/openFormDefinition?uuid=" + result.data + "&flag=1";
+				 
+ 		   }else{
+ 			   alert("保存失败\n" + result.data);
+ 		   } 
+		},
+		error:function(result){
+			var responseText = result.responseText;
+			try{
+				var errorObj = eval("(" + responseText + ")");
+				alert("保存失败\n" +errorObj.data);
+			}catch(e){
+				alert(JSON.cStringify(result));
+			}
+			
+			 
+			
+			//console.log(JSON.cStringify(data));
 		}
 	});
 };	
@@ -194,6 +259,8 @@ function setValidateOptions(uuid){
 			
 			mainTableEnName : {
 				required : true,
+				maxlength: 27, 
+				regex:/^(uf|userform)_.*$/ig,
 				remote : {
 				url : ctx + "/common/validate/check/exists",
 				type : "POST",
@@ -214,14 +281,16 @@ function setValidateOptions(uuid){
 		validateMessages = {
 			tableId:{
 				required : "ID不能为空！",
-					remote : "该ID已存在!"
+					remote : "该ID已存在!", 
 			},
 			mainTableCnName : {
 				required : "表单名称不能为空!"
 			},
 			mainTableEnName : {
 				required : "数据库名称不能为空!",
-				remote : "该数据库名称已存在!"
+				remote : "该数据库名称已存在!",
+				maxlength:  $.validator.format("数据库表名不得超过 {0}个字符."),  
+				regex:"数据库表名须以 UF_ 开头"
 			}
 		};
 	
@@ -229,10 +298,31 @@ function setValidateOptions(uuid){
 		validateRules = {
 				mainTableCnName : {
 					required : true
-				}
+				}/*,
+				tableId : {
+					required : true,
+					remote : {
+						url : ctx + "/common/validate/check/exists",
+						type : "POST",
+						async: false,
+						data : {
+						  uuid:function() {
+							return $('#formUuid').val();
+						}, 
+						checkType : "dyFormDefinition",
+						fieldName : "outerId",
+						fieldValue : function() {
+										return $('#tableId').val();
+									}
+						   }
+						}
+				}*/
 			};
 		validateMessages = {
-			 
+				/*tableId:{
+					required : "ID不能为空！",
+						remote : "该ID已存在!", 
+				},*/
 			mainTableCnName : {
 				required : "表单名称不能为空!"
 			} 
@@ -246,19 +336,17 @@ function setValidateOptions(uuid){
  
  
 
-var fillFormDesignTab = function(defintionObj){ 
-	 
-	setTimeout(function(){CKEDITOR.instances.moduleText.setData(defintionObj.html);},500); 
+var fillFormDesigner = function(html){
+	CKEDITOR.instances.moduleText.setData(html);
+	//setTimeout(function(){CKEDITOR.instances.moduleText.setData(html);},300); 
 };
 
 
  
-var fillBasicPropertyTab = function(defintionObj){
-	
-	
+var fillBasicPropertyTab = function(defintionObj){ 
 	
 	$('#tableId').val(defintionObj.outerId);//该表对外暴露出去的id
-	$('#tableId').attr("readonly", true);//编辑时,表名只读
+	//$('#tableId').attr("readonly", true);//编辑时,表名只读
 	
 	$('#mainTableEnName').val(defintionObj.name);
 	
@@ -284,6 +372,7 @@ var fillBasicPropertyTab = function(defintionObj){
 	
 	$("#showTableModelId").val(defintionObj.displayFormModelId);
 	$("#showTableModel").val(defintionObj.displayFormModelName);
+	$("#customJs").text(defintionObj.customJs);
 };
 
 
@@ -291,20 +380,20 @@ function setPageAndDialogTile(uuid){
 	var flag = $("#flag").val();//根据该标签来决定该页面的功能:1为显示单据;2为表单 
 	if(uuid == "undefined") {
 		if(flag == 1) { 
-			$('#title').text("新建编辑表单");
-			$('#title_h2').text("新建编辑表单");
+			$('#title').html("新建编辑表单");
+			$('#title_h2').html("新建编辑表单");
 		}else if(flag == 2) {
 			
-			$('#title').text("新建显示表单");
-			$('#title_h2').text("新建显示表单");
+			$('#title').html("新建显示表单");
+			$('#title_h2').html("新建显示表单");
 		}
 	} else{
 		if(flag == 1) { 
-			$('#title').text("编辑表单定义");
-			$('#title_h2').text("编辑表单定义(" + formDefinition.name + ")");
+			$('#title').html("(" + formDefinition.displayName + ")编辑");
+			$('#title_h2').html("(" + formDefinition.displayName + ")编辑表单定义");
 		}else if(flag == 2) {
-			$('#title').text("编辑显示表单");
-			$('#title_h2').text("编辑显示表单(" + formDefinition.name   + ")");
+			$('#title').html("(" + formDefinition.displayName   + ")编辑");
+			$('#title_h2').html("(" + formDefinition.displayName   + ")编辑显示表单");
 		}
 	}
 	
@@ -317,41 +406,110 @@ function setPageAndDialogTile(uuid){
 }
 
 
+function removeHintInDesigner(editor){ 
+	 var _hintelement = editor.document.find("#user__hint");
+	 if(_hintelement.count() > 0){
+		 _hintelement.getItem(0).remove();
+	 }
+}
+
+function initUploadDesignTemplate(){
+	 var iframe = false; 
+		if($.browser.msie  && $.browser.version < 10){  
+			iframe = true; 
+		}
+	var url = contextPath + '/dyform/uploadDesignTemplate';
+	/* $('#uploadFile').fileupload({
+		url: url,
+		//forceIframeTransport: forceIframeTransport,
+		 iframe: iframe,
+		dataType: 'text/html',
+		//datatype: dataType,
+		autoUpload: true,
+		//sequentialUploads : true,
+		//formData: {signUploadFile: _this.signature},
+		maxFileSize: 5000000, // 5 MB
+		previewMaxWidth: 100,
+		previewMaxHeight: 100,
+		previewCrop: true
+	}).on('fileuploadadd', function (e, data) {
+		 
+		pageLock("show");
+	}).on('fileuploaddone', function (e, data) {
+		pageLock("hide"); 
+		if((typeof data) == "undefined"){
+			oAlert("不支持上传该格式的文件");
+		}else{
+			alert(data);
+		}
+		 
+	}).on('fileuploadfail', function (e, data) {
+		pageLock("hide");
+		if((typeof data.result) == "undefined"){
+			oAlert("可能您上传的文件格式不被支持!!!"); 
+		}else{
+			alert("上传失败");
+		}
+		
+	}); */
+}
+
 
 
 
 (function($) {
-	 
-	//初始化开始
-	 
-	
+	//初始化开始 
 	var uuid = $("#formUuid").val(); 
 	
 	//清除编辑器
 	var instance = CKEDITOR.instances['moduleText'];
-	if (instance) { 
+	if (instance) {
 		CKEDITOR.remove(instance);
 	}
- 
+	 
 	 //初始化编辑器
-	editor = CKEDITOR.replace( 'moduleText', {  
+	editor = CKEDITOR.replace( 'moduleText', {
 			allowedContent:true,
 			enterMode: CKEDITOR.ENTER_P,
 			toolbarStartupExpanded:true,
 			bodyId:"testest",
+			bodyClass:"dyform",
 			customConfig:"./dyform_config.js",
 			//工具栏 
 			toolbar: [
-			          ['Undo','Redo'],['Bold','Italic','Underline'], ['Cut','Copy','Paste'], 
-			          ['NumberedList','BulletedList','-'], 
+			          //['Undo','Redo'],
+			          ['Bold','Italic','Underline'], 
+			          //['Cut','Copy','Paste'], 
+			         // ['NumberedList','BulletedList','-'], 
 			          ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-			          ['Link','Unlink'],['Format','Font','FontSize'],['TextColor','BGColor'],['Image','Table','Maximize'],
-			          ["dyform","dysubform"],["control4label","control4text","control4textarea","control4ckeditor","control4radio","control4checkbox","control4combobox",'Button'],[ "control4number", "control4date","control4treeselect","control4serialnumber","control4unit","control4viewdisplay","control4dialog","control4fileupload","control4fileupload4icon", "table"],['dyformpreview'],['Source'],
+			          //['Link','Unlink'],
+			          ['Format','Font','FontSize'],
+			          ['TextColor','BGColor'],
+			         ['control4btn'],
+			          [//'Image',
+			           'Table','Maximize'], 
+			         ["block","dysubform"],
+			          ["control4label","control4text",
+			           		"control4textarea","control4ckeditor","control4radio",
+			           		"control4checkbox","control4combobox"],
+			          [ "control4number", "control4date","control4treeselect","control4serialnumber",
+			            "control4unit","control4viewdisplay","control4dialog","control4timeEmploy","control4fileupload","control4fileupload4icon",
+			            "control4fileupload4image", "table"],['dyformpreview', 'control4embedded', 'control4jobs'],
+			          ['propertiesDialog'],//['copyForm'],
+			          ['Source']
 //			          ,['titleClass','titleClass2','titleClass3']
 			          ],
 		
 			 on: {
+				 	
 			        instanceReady: function( ev ) {
+			           $(this.document.find("body").getItem(0)).attr("class", "dyform");
+			        	
+			        	var _this = this;
+			        	 
+			        	 this.document.on("click", function(){
+			        		 _this.removeHintInDesigner();
+			        	}); 
 			            this.dataProcessor.writer.setRules( 'p', {
 			                indent: true,
 			                breakBeforeOpen: false,
@@ -359,109 +517,120 @@ function setPageAndDialogTile(uuid){
 			                breakBeforeClose: false,
 			                breakAfterClose: false
 			            });
-			        }
+			      
+			          //从表设置为不可编辑
+						 var subforms = this.document.find("table[formUuid]");
+						for(var i =0 ; i < subforms.count(); i ++){
+							subforms.getItem(i).unselectable(); 
+							subforms.getItem(i).setState(CKEDITOR.TRISTATE_OFF);
+							
+						} 
+						
+						
+						//自定义表格删除事件
+						var createDef =  function ( def ) {
+				    			return CKEDITOR.tools.extend( def || {}, {
+				    				contextSensitive: 1,
+				    				refresh: function( editor, path ) {
+				    					this.setState( path.contains( 'table', 1 ) ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED );
+				    				}
+				    			});
+				    		};
+
+				    		 
+						  _this.addCommand( 'tableDelete', createDef({//重新定义表格删除事件,主表不得删除
+				    			exec: function( editor ) {
+				    			 
+				    				var path = editor.elementPath();
+				    				var	table = path.contains( 'table', 1 );
+				    				
+				    				if ( !table )
+				    					return;
+				    				
+
+				    				// If the table's parent has only one child remove it as well (unless it's the body or a table cell) (#5416, #6289)
+				    				var parent = table.getParent();
+				    				if ( parent.getChildCount() == 1 && !parent.is( 'body', 'td', 'th' ) )
+				    					table = parent;
+				    				/*var clazzOfTbl = $(table).attr("class");
+				    				if(typeof clazzOfTbl != "undefined" && clazzOfTbl.indexOf("mainform") != -1){
+				    					alert("主表不得删除");
+				    					return;
+				    				}*/
+				    				
+				    				
+				    				
+				    				var range = editor.createRange();
+				    				range.moveToPosition( table, CKEDITOR.POSITION_BEFORE_START ); 
+				    				table.remove();
+				    				range.select();
+				    				var formUuid = $(table).attr("formUuid");
+				    				if(typeof formUuid != "undefined"){//从表
+				    					//从JSON定义中删除从表的定义信息
+				    					console.log("delete subform " + formUuid);
+				    					formDefinition.deleteSubform(formUuid);
+				    				}
+				    			}
+				    		}));
+			        },
+					key:function(evt){ 
+					   
+						 if(!(evt.data.keyCode == '8' ||evt.data.keyCode == '13' || evt.data.keyCode == '46'|| evt.data.keyCode == 10000
+								 ||   (  evt.data.keyCode == '1114202')
+						 )){
+							 
+							return true;
+						} 
+						
+						//元素删除事件 
+						if( evt.data.keyCode == 10000){
+							if(evt.data.type == "field"){
+								console.log("delete field");
+								var elem = evt.data.element;
+								var name = elem.getAttribute("name");
+								console.log("delete field " + name);
+							 
+								elem.remove(); 
+								formDefinition.deleteField(name);
+							} 
+						}else if(evt.data.keyCode == '8' ||  evt.data.keyCode == '46' ){
+							 var selection = editor.getSelection();
+							 if(selection == null){
+								 return true;
+							 }
+								var elem = selection.getStartElement();
+								
+								
+								var clazz = elem.getAttribute("class"); 
+								var name = elem.getAttribute("name");
+								if(typeof name != "undefined" && typeof clazz != "undefined" && clazz == "value"  ){//占位符删除事件
+									if(typeof formDefinition.fields[name] != "undefined"){
+										formDefinition.deleteField(name);  
+									}
+								}
+						}
+						
+						return true;
+					
+					},
+					change:function(evt){
+						 
+					},
+					doubleclick:function(evt){
+						this.removeHintInDesigner();
+						//var element = evt.data.element;  //element是CKEDITOR.dom.node类的对象 
+						//var pluginContainerDomElement = CKEDITOR.getPluginContainerDomElement(pluginName, element); 
+						//return this.doubleClick(evt);
+					},
+					resize:function(evt){
+						console.log("resize");
+					}
 			    }
 		 });
-	
-	/*  editor.on("key", function(evt){
 	 
-		if(evt.data.keyCode == '8' ||evt.data.keyCode == '13' || evt.data.keyCode == '46'){
-			return true;
-		}
-		return false;
-	});  */
+	$.extend(editor, ckUtils);
 	
-	//初始化编辑器结束
-	
-	//上传按钮响应事件
-	$("#uploadBtn").click(function (){
-		$.ajaxFileUpload({
-             url:contextPath + '/dytable/upload_html_file.action',//链接到服务器的地址
-             secureuri:false,
-             fileElementId:'uploadFile',//文件选择框的ID属性
-             dataType: 'text',  //服务器返回的数据格式
-             success: function (data1, status){
-            	 var data1 = eval("("+data1+")");
-            	 if(data1 != undefined && dyResult.success == data1.result){
-            		 $('#fs2').css('display','');
-            		 var htmlPath = data1.htmlPath;
-            		 $('#htmlPath').val(htmlPath);
-		         	 $.ajax({
-		         		 url : contextPath + "/dytable/get_html_body.action",
-		         		 cache : false,
-		         		 type : "post",
-		         		 data : "tempHtmlPath=" + data1.filePath,
-		         		 dataType : "json",
-		         		 success : function(obj) {
-		         			 $('#tempHtmlPath').val(data1.filePath);
-		         			 
-		         			 $('#moduleDiv').html(obj.htmlContent);
-		         			 var iframeDocObj = $('#moduleDiv');
-		         			var inputArr = $(iframeDocObj).find("input");
-		         			for(var i=0;i<inputArr.length;i++){
-		         					if("text" == $(inputArr[i]).attr("type")){
-			         					if($(inputArr[i]).attr("name") == undefined) {
-			         						$(inputArr[i]).attr("name","text_col"+"_"+i);
-			         					}
-			         				}
-			         				if("radio" == $(inputArr[i]).attr("type")){
-			         					if($(inputArr[i]).attr("name") == undefined) {
-			         						$(inputArr[i]).attr("name","radio_col");
-			         					}
-			         				}
-			         				if("checkbox" == $(inputArr[i]).attr("type")){
-			         					if($(inputArr[i]).attr("name") == undefined) {
-			         						$(inputArr[i]).attr("name","checkbox_col");
-			         					}
-			         				}
-			         				
-			         				if("button" == $(inputArr[i]).attr("type")) {
-			         					if($(inputArr[i]).attr("name") == undefined) {
-			         						$(inputArr[i]).attr("name","body_col");
-			         					}
-			         				}
-		         			}
-		         			var textareaArr = $(iframeDocObj).find("textarea");
-		         			for(var i=0;i<textareaArr.length;i++){
-		         				if($(textareaArr[i]).attr("name") == undefined) {
-		         					$(textareaArr[i]).attr("name","textarea_col"+"_"+i);
-		         				}
-		         			}
-		         			
-		         			var buttonArr = $(iframeDocObj).find("button");
-		         			for(var i=0;i<buttonArr.length;i++){ 
-		         				if($(buttonArr[i]).attr("name") == undefined) {
-		         					$(buttonArr[i]).attr("name","file_upload");
-		         				}
-		         			}
-		         			
-		         			var selectArr = $(iframeDocObj).find("select");
-		         			for(var i=0;i<selectArr.length;i++){ 
-		         				if($(selectArr[i]).attr("name") == undefined) {
-		         					$(selectArr[i]).attr("name","select_col");
-		         				}
-		         			}
-		         			 if($('#formUuid').val() == ''){
-		         				columns = undefined;
-		         				subTables = undefined;
-		         			 }
-		         			 setEventAndInitFormData();
-		         			oAlert("上传成功");
-		         		 },
-		         		 error:function (){
-		         		 }
-		         	 });
-            	 }else{
-            		 oAlert("上传失败");
-            	 }
-             },
-             error: function (data, status, e){
-            	 oAlert("上传失败");
-             }
-		});
-	});
-	//上传按钮响应事件结束
-	
+	 
  
 	
 
@@ -486,36 +655,50 @@ function setPageAndDialogTile(uuid){
 	
 	if(uuid != "undefined" && uuid != "") {   
 		 
-		formDefinition = loadFormDefinition(uuid);//加载表单定义 
-		
+		formDefinition = loadFormDefinition(uuid);//加载表单定义  
 		
 		fillBasicPropertyTab(formDefinition);//初始化页面中的"基本属性"tab
 		
-		fillFormDesignTab(formDefinition );//初始化页面中的"表单设计"tab  
+		fillFormDesigner(formDefinition.html );//初始化页面中的"表单设计"tab  
 		
 		setValidateOptions(uuid);//设置校验规则
 		 
+		window.setTimeout(function(){
+			 
+			$(".nav-tabs li a").each(function(index) {
+				 
+				if(index == 1){
+					$(this).trigger("click");
+				}
+			}); 
+		}, 50);
 	}else{
 		$("#btn_form_save_new").hide(); 
 		 setValidateOptions();//设置校验规则
+		//var html = "<div class=\"dyform\">" ;
+		 var html = "";
+		html +=	"<div id='user__hint' style='color:gray;height:30px;line-height:30px;text-align:center'>请在白色背景区域编辑,以免造成样式混乱</div>";
+		html += "<p>&nbsp;</p>";
+			 
+		//html += "</div>";
+		  //alert(21234);
+		 fillFormDesigner(html );//初始化页面中的"表单设计"tab  
 	}
 	
 	
+	$.extend(formDefinition, formDefinitionMethod);
 	
+	try{
+		setPageAndDialogTile( uuid);//设置标题,ie8兼容性问题
+	}catch (e) {
+		// TODO: handle exception
+	}
+	
+	
+	initUploadDesignTemplate();//初始化上传模板功能
+	
+	 
 	
 		
-	setPageAndDialogTile( uuid);
-	
-	
-	
-/*	window.setTimeout(function(){
-	 
-		$(".nav-tabs li a").each(function(index) {
-			 
-			if(index == 1){
-				$(this).trigger("click");
-			}
-		}); 
-	}, 50);*/
 })(jQuery);
 

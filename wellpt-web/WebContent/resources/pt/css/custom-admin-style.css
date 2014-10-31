@@ -18,7 +18,7 @@
 ----------------------------------*/
 .ui-button { font-weight: normal; }
 
-.ui-widget input, .ui-widget select, .ui-widget textarea { width: 265px; }
+/* .ui-widget input, .ui-widget select, .ui-widget textarea { width: 265px; } */
 .ui-widget input[type="checkbox"], .ui-widget input[type="radio"] { width: 15px; }
 
 .ui-jqgrid td input, .ui-jqgrid td select .ui-jqgrid td textarea { width : auto;}

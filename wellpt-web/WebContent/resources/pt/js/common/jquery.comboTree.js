@@ -123,9 +123,40 @@
 					onAsyncSuccess : onAsyncSuccess
 				}
 			};
+			var ztreeSettingCopy = {};
+			$.extend(true,ztreeSettingCopy,  ztreeSetting);
 			var setting = $.extend(true, ztreeSetting, options.treeSetting
 					|| {});
+			
+			if(typeof setting.src != "undefined" && setting.src == "control"){
+				/*setting.callback.onClick = function(event, treeId, treeNode){ 
+			 		if(setting.check.enable){//多选
+			 			ztreeSettingCopy.callback.onClick(event,treeId, treeNode);
+			 		}
+			 		 
+			 		if(typeof options.treeSetting.callback != "undefined" && typeof options.treeSetting.callback.onClick != "undefined"){ 
+			 			options.treeSetting.callback.onClick(event,treeId, treeNode);
+			 		} 
+				}; */
+				
+				 setting.callback.onCheck = function(event, treeId, treeNode){
+				 	 
+				 		if(setting.check.enable){//多选
+				 			ztreeSettingCopy.callback.onCheck(event,treeId, treeNode);
+				 		}
+				 		 
+				 		if(typeof options.treeSetting.callback != "undefined" && typeof options.treeSetting.callback.onCheck != "undefined"){ 
+				 			options.treeSetting.callback.onCheck(event,treeId, treeNode);
+				 		} 
+					}; 
+			}
+			
+		 	 
+			 
 			window.settingParam = setting;
+			 
+			
+			
 			if (setting.check.chkStyle === 'radio') {
 				$this.enableRadio = true;
 			}
@@ -156,6 +187,19 @@
 					checkNodeByData(zTree, children[i], value);
 				}
 			}
+			
+			//检查节点是否未选中 true:未选中, false
+			function isNodeUnchecked(zTree, nodeValue){
+				var uncheckNodes =  zTree.getCheckedNodes(false);   
+				for(var index = 0; index < uncheckNodes.length; index ++){
+					var unCheckNode = uncheckNodes[index];
+					var unCheckNodeValue = unCheckNode.data;
+					if(unCheckNodeValue == nodeValue){
+						return true;
+					}
+				}
+				return false;
+			}
 			// 选中树
 			function zTreeOnCheck(event, treeId, treeNode) {
 				if (treeNode.isParent) {
@@ -169,33 +213,79 @@
 				}
 				// 设置值
 				var zTree = $.fn.zTree.getZTreeObj(treeId);
-				var checkNodes = zTree.getCheckedNodes(true);
+				
 				var path = "";
 				var value = "";
+				  
+				var oldValue = $("#" + options.valueField).val( );
+				var oldNodePath = $("#" + options.labelField).val( );
+				
+			 
+				var oldValues = oldValue.split(";");
+				var oldNodePaths = oldNodePath.split(";");
+				for(var index = 0; index < oldValues.length; index ++){
+					if(oldNodePaths.length != oldValues.length){
+						break;
+					}
+					var nodeValue = oldValues[index];
+					if(nodeValue.length == 0){
+						continue;
+					}
+					//if(typeof $this.$element.data["comboTreeValueLabelMap"] == "undefined"){continue;}
+					//var nodePath = $this.$element.data["comboTreeValueLabelMap"][nodeValue]; 
+					//if(typeof nodePath == "undefined"){continue;} 
+					var unchecked = isNodeUnchecked(zTree, nodeValue);
+					 
+					if(!unchecked){//非unchecked状态
+						if (value == "") {
+							value = nodeValue;
+							path = oldNodePaths[index];
+						} else {
+							value = value + ";" + nodeValue;
+							path = path + ";" +  oldNodePaths[index];
+						}  
+					}
+				}
+				
+				oldValue = ";"+ oldValue+";";
+				var checkNodes = zTree.getCheckedNodes(true);
 				for ( var index = 0; index < checkNodes.length; index++) {
 					var checkNode = checkNodes[index];
+					 
+					var nodePath = "";
+					var nodeValue = "";
 					if ($this.enableRadio && $this.enableRadio == true) {
 						if (checkNode !== treeNode) {
 							zTree.checkNode(checkNode, false);
 							continue;
 						}
 					}
+					
+					if(oldValue.indexOf(';'+checkNode.data+';')> -1){
+						continue;
+					}
+				 
 					if (options.labelField != null) {
+						nodePath =  getAbsolutePath(checkNode);
 						if (path == "") {
-							path = getAbsolutePath(checkNode);
+							path = nodePath;
 						} else {
-							path = path + ";" + getAbsolutePath(checkNode);
+							path = path + ";" + nodePath;
 						}
+						
 					}
 					if (options.valueField != null) {
+						nodeValue = checkNode.data;
 						if (value == "") {
-							value = checkNode.data;
+							value = nodeValue;
 						} else {
-							value = value + ";" + checkNode.data;
+							value = value + ";" + nodeValue;
 						}
+						if(!$this.$element.data["comboTreeValueLabelMap"]){$this.$element.data["comboTreeValueLabelMap"] = {};};
+						$this.$element.data["comboTreeValueLabelMap"][nodeValue] = nodePath;
 					}
 				}
-
+				
 				$("#" + options.labelField).val(path);
 				$("#" + options.valueField).val(value);
 			}
@@ -272,17 +362,28 @@
 			var treeDivId = this.treeDivId;
 			$("#" + treeDivId).fadeOut("fast");
 		},
-		initValue : function(value) {
+		_getCacheValueKey : function(value){
+			var cacheValueKey = "DY_FORM_FIELD_MAPPING" + "_" + value;
+			return cacheValueKey;
+		},
+		_getCacheLabelKey : function(value){
+			var cacheLabelKey = this._getCacheValueKey(value) + "_label";
+			return cacheLabelKey;
+		},
+		
+		initValue : function(value) {   
 			var initService = this.options.initService;
 			var initServiceParam = this.options.initServiceParam;
 			var param = initServiceParam.concat([ value ]);
 			var options = this.options;
 			var $element = this.$element;
-			var cacheValueKey = "DY_FORM_FIELD_MAPPING" + "_" + value;
+			 
+			var cacheValueKey = this._getCacheValueKey(value);
+			var cacheLabelKey =  this._getCacheLabelKey(value);
 			if ($element.data[cacheValueKey]) {
 				if (options.labelField != null) {
 					$("#" + options.labelField).val(
-							$element.data[cacheValueKey + "_label"]);
+							$element.data[cacheLabelKey]);
 				}
 				if (options.valueField != null) {
 					$("#" + options.valueField).val(
@@ -305,8 +406,19 @@
 										$("#" + options.valueField).val(
 												result.data.value);
 									}
-									$element.data[cacheValueKey + "_label"] = result.data.label;
+									$element.data[cacheLabelKey] = result.data.label;
 									$element.data[cacheValueKey] = result.data.value;
+									if( result.data.value){
+										var values = result.data.value.split(";");
+										var labels = result.data.label.split(";");
+										$element.data["comboTreeValueLabelMap"] = {};
+										for(var index = 0; values.length == labels.length && index < values.length ; index ++){ 
+											var nodeValue = values[index];
+											var nodePath = labels[index];
+											$element.data["comboTreeValueLabelMap"][nodeValue] = nodePath;
+										}
+									}
+									
 								}
 							}
 						});
@@ -318,6 +430,8 @@
 					$("#" + options.valueField).val("");
 				}
 			}
+			
+			
 		},
 		clear : function() {
 			if (this.options.labelField != null) {
@@ -343,7 +457,9 @@
 			method = true;
 			args = arguments[1];
 		}
+		 
 		return this.each(function() {
+			 
 			var $this = $(this), data = $this.data("comboTree"), options = $
 					.extend({}, $this.data(), typeof option == 'object'
 							&& option);

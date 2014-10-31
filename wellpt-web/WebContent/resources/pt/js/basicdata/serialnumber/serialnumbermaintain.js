@@ -19,6 +19,7 @@ $(function() {
 				name : "uuid",
 				index : "uuid",
 				width : "180",
+				key : true,
 				hidden : true,
 			}, {
 				name : "code",
@@ -81,7 +82,7 @@ $(function() {
 			}
 		}));
 
-	// 根据用户uuid获取流水号维护信息
+	// 根据流水号uuid获取流水号维护信息
 	function getserialNumberMaintainById(uuid) {
 		var serialNumberMaintain = {};
 		serialNumberMaintain.uuid = uuid;

@@ -26,7 +26,7 @@
 						<td>
 							<div>
 								<div style="float: left; width: 85%">
-									<label>流程名称&nbsp;&nbsp;|&nbsp;&nbsp;触发条件&nbsp;&nbsp;|&nbsp;&nbsp;创建实例的字段&nbsp;&nbsp;|&nbsp;&nbsp;合并等待&nbsp;&nbsp;|&nbsp;&nbsp;共享&nbsp;&nbsp;|&nbsp;&nbsp;提交环节</label>
+									<label>流程名称&nbsp;&nbsp;|&nbsp;&nbsp;创建方式&nbsp;&nbsp;|&nbsp;&nbsp;提交环节</label>
 									<select id="DNewFlows" name="DNewFlows" size="6"
 										class="full-width">
 									</select>

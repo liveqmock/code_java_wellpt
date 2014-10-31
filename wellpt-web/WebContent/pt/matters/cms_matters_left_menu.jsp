@@ -71,7 +71,7 @@
     width: 40%;;
 }
 </style>
-       <div class="left3" align="left" style="heigth:100px;OVERFLOW-Y: auto; OVERFLOW-X:hidden;">
+       <div class="left3" align="left" >
           	<ul >
           	
            	<c:if test="${folderList!= null && fn:length(folderList) > 0}">

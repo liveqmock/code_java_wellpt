@@ -51,7 +51,10 @@
 					value="AllLeaderOfCreator" id="useroptions_6" /><label
 					for="useroptions_6">申请人的所有领导</label><br> <input
 					type="checkbox" name="UserOptions" value="PriorTaskUser"
-					id="useroptions_7" /><label for="useroptions_7">前一个环节办理人</label></td>
+					id="useroptions_7" /><label for="useroptions_7">前一个环节办理人</label><br> 
+					<input type="checkbox" name="UserOptions"
+					value="LeaderOfUser" id="useroptions_21" /><label
+					for="useroptions_21">办理人的领导</label></td>
 				<td><input type="checkbox" name="UserOptions"
 					value="DeptOfPriorUser" id="useroptions_8" /><label
 					for="useroptions_8">前办理人的部门</label><br> <input type="checkbox"
@@ -67,7 +70,10 @@
 					type="checkbox" name="UserOptions" value="RootDeptOfCreator"
 					id="useroptions_13" /><label for="useroptions_13">申请人的根部门</label><br>
 					<input type="checkbox" name="UserOptions" value="Corp"
-					id="useroptions_14" /><label for="useroptions_14">全组织</label></td>
+					id="useroptions_14" /><label for="useroptions_14">全组织</label><br> 
+					<input type="checkbox" name="UserOptions"
+					value="AllLeaderOfUser" id="useroptions_22" /><label
+					for="useroptions_22">办理人的所有领导</label></td>
 			</tr>
 			<tr id="ID_Option_1">
 				<td class="align-top"><label>人员过滤</label></td>

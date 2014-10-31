@@ -9,7 +9,7 @@ $(function() {
 				pageSize:$("#pageSize").val(),
 				pageDefinition:$("#pageDefinition").val(),
 				conditionTypes:$("#conditionTypes").val(),
-//				clickType:"view_show"
+				clickType:"view_show"
 				}	
 		});
 	}
@@ -166,27 +166,13 @@ $(function() {
 	});
 	
 	/********点击搜索事件**************/
-	$(".indexSearchButton").unbind("click");
-	$(".indexSearchButton").die().live("click",function(){
+	$(".indexSearchButton").live("focus",function(){
 		    var dnrw = $(this).parents(".dnrw");
-			var moduleid = dnrw.attr("moduleid");
-			var viewUuid = "";
+		    var viewUuid = $(this).parents(".dnrw ").find(".viewContent").attr("id").replace("update_","");
 			var keyWord = $(this).parent().find(".indexViewKeyWord").val();
-			if(keyWord==""){
-				oAlert("请输入关键字！");
-			}else{
-				$.ajax({
-					type:"post",
-					async:false,
-					data : {"uuid":moduleid},
-					url:ctx+"/cms/cmspage/getViewIdByModuleId",
-					success:function(result){
-						viewUuid = result;
-					}
-				});
 				var dyViewQueryInfo = new Object();
 				var pageSize = $("#update_"+viewUuid).find("#pageSize").val();
-				var currentPage = $("#update_"+viewUuid).find("#pageCurrentPage").val();
+				var currentPage = 1;
 				dyViewQueryInfo.viewUuid = viewUuid;
 				var pageInfo = new Object();
 				pageInfo.currentPage = currentPage;
@@ -211,34 +197,48 @@ $(function() {
 					contentType:'application/json',
 					success:function(result){
 						$("#update_"+viewUuid).html(result);
+						//添加已阅未阅的图标
+						$("#update_"+viewUuid).find(".dataTr").each(function(){
+							if($(this).attr("class").indexOf("readed")>-1){
+								$(this).find("td").eq(0).html("<div class='icon_readed'></div>"+$(this).find("td").eq(0).html());
+							}else if($(this).attr("class").indexOf("noread")>-1){
+								$(this).find("td").eq(0).html("<div class='icon_noread'></div>"+$(this).find("td").eq(0).html());
+							}
+						});
 						formDate();
 					}
 				});
-			}
+//			}
 	});
 	
+	function stopDefault(e) {
+        //如果提供了事件对象，则这是一个非IE浏览器 
+        if(e && e.preventDefault) {
+        　　//阻止默认浏览器动作(W3C)
+        　　e.preventDefault();
+        } else {
+        　　//IE中阻止函数器默认动作的方式 
+        　　window.event.returnValue = false; 
+        }
+        return false;
+    }
+	
 	/********回车搜索事件**************/
-	$(".indexViewKeyWord").live("keyup",function(event){
+	$(".indexViewKeyWord").live("keydown",function(event){
 		var code = event.keyCode;
+		
 	    if (code == 13) {
-	    	var dnrw = $(this).parents(".dnrw");
-			var moduleid = dnrw.attr("moduleid");
-			var viewUuid = "";
+	    	stopDefault(event);
+    		var dnrw = $(this).parents(".dnrw");
 			var keyWord = $(this).val();
-			$.ajax({
-				type:"post",
-				async:false,
-				data : {"uuid":moduleid},
-				url:ctx+"/cms/cmspage/getViewIdByModuleId",
-				success:function(result){
-					viewUuid = result;
-				}
-			});
+			var viewUuid = $(this).parents(".dnrw ").find(".viewContent").attr("id").replace("update_","");
+			var pageSize = $("#update_"+viewUuid).find("#pageSize").val();
+			var currentPage = 1;
 			var dyViewQueryInfo = new Object();
 			dyViewQueryInfo.viewUuid = viewUuid;
 			var pageInfo = new Object();
-			pageInfo.currentPage = 1;
-			pageInfo.pageSize = 6;
+			pageInfo.currentPage = currentPage;
+			pageInfo.pageSize = pageSize;
 			var condSelect = new Object();
 			condSelect.beginTime = "";
 			condSelect.endTime = "";
@@ -250,19 +250,28 @@ $(function() {
 			keyWords.push(keyWordMap);
 			condSelect.keyWords = keyWords;
 			dyViewQueryInfo.condSelect = condSelect;
-			
 			var url = ctx+'/basicdata/dyview/view_show_param.action';
 			$.ajax({
 				url:url,
 				type:"POST",
+				async:false,
 				data:JSON.stringify(dyViewQueryInfo),
 				dataType:'text',
 				contentType:'application/json',
 				success:function(result){
 					$("#update_"+viewUuid).html(result);
+					//添加已阅未阅的图标
+					$("#update_"+viewUuid).find(".dataTr").each(function(){
+						if($(this).attr("class").indexOf("readed")>-1){
+							$(this).find("td").eq(0).html("<div class='icon_readed'></div>"+$(this).find("td").eq(0).html());
+						}else if($(this).attr("class").indexOf("noread")>-1){
+							$(this).find("td").eq(0).html("<div class='icon_noread'></div>"+$(this).find("td").eq(0).html());
+						}
+					});
 					formDate();
 				}
 			});
+    	
 	    }else{
 	    	var keyWord = $(this).val();
 			if(keyWord==""){

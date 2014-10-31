@@ -74,7 +74,7 @@
 	</div>
 	
 	<div class="list-item xct_div">
-	<h4><a tabid='form_definition' tabtext='编辑表单' url='${ctx}/dytable/editable/form/definition/list?flag=1'>表单管理</a></h4>
+	<h4><a tabid='form_definition' tabtext='编辑表单（新）' url='${ctx}/dyform/editable/form/definition/list?flag=1'>表单管理（新）</a></h4>
 	</div>
 	
 	<div class="list-item xct_div">

@@ -1,8 +1,43 @@
 $(function() {
 	var xzsp_view = "/resources/app/js/xzsp/xzsp_view.js";
-	$(":button[id=save]").hide();
-	$(":button[id=saveNormal]").html("保存");
-
+	var xzsp_project = "/resources/app/js/xzsp/xzsp_project.js";
+	$.getScript(ctx + xzsp_project);
+	var projectProcess = "/resources/pt/js/common/jquery.projectProcess.js";
+	
+	/***网上申报新建项目的处理开始***********************************/
+	var dytableSelector = "#fileDynamicForm";
+	var search = readSearch();
+	var fileShowTitle = urldecode(search.fileShowTitle);
+	if(fileShowTitle == "新增项目") {
+		var userDetails = SpringSecurityUtils.getUserDetails();
+		$(dytableSelector).dyform("setFieldAsHide", "SHJRHMD");
+		$(dytableSelector).dyform("setFieldAsLabelByFieldName", "XMBH");
+		$(dytableSelector).dyform("hideSubForm", "uf_xzsp_black");
+		$(dytableSelector).dyform("setFieldValueByFieldName","XMDWSYZ","{'"+userDetails.userId+"':'"+userDetails.username+"'}");
+		$(dytableSelector).dyform("setFieldValueByFieldName","XMDWSYZMC",userDetails.username);
+		$(dytableSelector).dyform("setFieldValueByFieldName","XMDWSYZDM",userDetails.userId);
+		$(dytableSelector).dyform("setFieldAsLabelByFieldName","XMDWSYZ");
+		
+		$(":button[id=saveNormal]").remove();
+		$(":button[id=save]").html("提交");
+	}else if(fileShowTitle == '新建市民') {
+		$(dytableSelector).dyform("setFieldAsHide", "SHJRHMD");
+		$(dytableSelector).dyform("hideSubForm", "uf_xzsp_black");
+		$(":button[id=save]").hide();
+		$(":button[id=saveNormal]").html("保存");
+	}
+	else {
+		$(":button[id=save]").hide();
+		$(":button[id=saveNormal]").html("保存");
+	}
+	/***网上申报新建项目的处理结束***********************************/
+	//项目单提交前执行方法
+//	File.beforeSubmitService = 'ProjectService.beforeSubmit';
+	File.setFileData("beforeSubmitService", "projectService.beforeSubmit");
+	//项目单提交后执行方法
+//	File.afterSubmitService = 'ProjectService.afterSubmit';
+	File.setFileData("afterSubmitService", "projectService.afterSubmit");
+	
 	if (!File.isFileExist()) {
 		// 保存项目单后回调事件
 		File.afterSaveFileSuccess = function(fileUuid) {
@@ -14,8 +49,10 @@ $(function() {
 	} else {
 		var btn_view_project_tree = '<button type="button" id="btn_view_project_tree">查看项目树</button>';
 		var btn_accept_project = '<button type="button" id="btn_accept_project">接件</button>';
+		var btn_project_process = '<button type="button" id="btn_project_process">生命周期</button>';
 		$(".form_operate button:first").before(btn_view_project_tree);
 		$(".form_operate button:first").before(btn_accept_project);
+		$(".form_operate button:first").before(btn_project_process);
 
 		// 接件事件处理
 		$("#btn_accept_project").click(function() {
@@ -30,7 +67,14 @@ $(function() {
 			var projectUuid = $("input[id=uuid]").val();
 			prepareAndShowProjectTreeDialog(projectUuid);
 		});
-
+		
+		// 查看生命周期
+		$("#btn_project_process").click(function() {
+			$.getScript(ctx + projectProcess);
+			var projectProcessType = 'XZSP_PROJECT_PROCESS_JSXM';
+			var projectCode = $("input[id=reservedText4]").val();
+			 XZSP_PROJECT.getProjectProcess(projectCode,projectProcessType);
+		});
 	}
 
 	/** ****************************** 查看项目树开始 ****************************** */
@@ -91,16 +135,15 @@ $(function() {
 			resultData = result.data;
 		}
 	});
-
 	if (resultData) {
-		$('input[type=radio][name="black_list"]')
+		$('input[type=radio][name="SHJRHMD"]')
 				.live(
 						"click",
 						function() {
-							var join_reason = SpringSecurityUtils.getCurrentUserName();
+							var join_reason =  SpringSecurityUtils.getCurrentUserName();
 							var joinTime = "";
 							var myDate = new Date();
-							joinTime = myDate.getFullYear() + "-" + myDate.getMonth() + "-"
+							joinTime = myDate.getFullYear() + "-" + parseInt(1+myDate.getMonth()) + "-"
 									+ myDate.getDate() + " " + myDate.getHours() + ":" + myDate.getMinutes()
 									+ ":" + myDate.getSeconds();
 							var json = new Object();
@@ -126,13 +169,14 @@ $(function() {
 									} else {
 										var blackData = new Object();
 										blackData['joinblack_reason'] = $("#join_reason").val();
-										blackData['operate_person'] = $("#join_person").attr("value");
-										blackData['joinblack_time'] = $("#join_time").attr("value");
+										blackData['CZRY'] = $("#join_person").attr("value");
+										blackData['CZSJ'] = $("#join_time").attr("value");
 										var dytableSelector = "#fileDynamicForm";
-										$(dytableSelector).dytable("addRowData", {
-											tableId : "userform_xzsp_black",
-											data : blackData
-										});
+									 
+										$(dytableSelector).dyform("addRowData",
+											 "uf_xzsp_black",
+											 blackData
+										);
 										$("#dialogModule").dialog("close");
 									}
 								},
@@ -140,7 +184,7 @@ $(function() {
 							showDialog(json);
 						});
 	} else {
-		$('input[type=radio][name="black_list"]').attr("disabled", "disabled");
+		$('input[type=radio][name="_radio_inputSHJRHMD"]').attr("disabled", "disabled");
 	}
 
 	// 获取项目卡的uuid
@@ -183,3 +227,18 @@ $(function() {
 								+ "/fileManager/file/print?printService=XZSPPrintService.printProjectCard&printTemplateId=XZSP_PROJECT_REGISTER");// 项目卡执行打印的url
 	}
 });
+
+
+//从url中获取参数值
+function readSearch() {
+	var search = window.location.search;
+	var s = new Object();
+	var searchArray = search.replace("?", "").split("&");
+	for ( var i = 0; i < searchArray.length; i++) {
+		var paraArray = searchArray[i].split("=");
+		var key = paraArray[0];
+		var value = paraArray[1];
+		s[key] = value;
+	}
+	return s;
+}

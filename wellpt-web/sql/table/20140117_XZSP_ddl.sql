@@ -1,1 +1,0 @@
-ALTER TABLE is_exchange_data_log ADD code NUMBER(1)

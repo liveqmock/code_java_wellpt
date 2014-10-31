@@ -60,6 +60,9 @@
 			<div>
 				<div class="btn-group btn-group-top">
 					<div class="query-fields">
+						<div style="float: left;margin-top: 3px;width: 85px;">
+							<select id="select_query" name="select_query" onchange="selectQuery(this)" style="width:100%;"></select>
+						</div>
 						<input id="query_keyWord"/>
 						<button id="btn_query" type="button" class="btn">查询</button>
 					</div>
@@ -178,6 +181,38 @@
 								<tr>
 									<td></td>
 									<td><input type="checkbox" id="showTitle" name="showTitle"/>显示标题</td>
+								</tr>
+								<tr>
+									<td>按钮</td>
+									<td><input type="checkbox" id="buttonPlace" name="buttonPlace"/>头尾部显示</td>
+								</tr>
+								<tr>
+									<td>数据导出模版</td>
+									<td><input type="text" id="dataModuleName" name="dataModuleName" />
+										<input type="hidden" id="dataModuleId" name="dataModuleId" />
+									</td>
+								</tr>
+								<tr>
+									<td>特殊列值计算</td>
+									<td>
+										<input type="checkbox" id="specialField" name="specialField"/>
+									</td>
+								</tr>
+								<tr class="specialFieldTemp" style="display:none;">
+									<td>计算调用的js方法</td>
+									<td>调用方法：<input type="text" id="specialFieldMethod" name="specialFieldMethod"/></td>
+								</tr>
+								<tr class="specialFieldTemp" style="display:none;">
+									<td></td>
+									<td>请求参数：<input type="text" id="requestParamName" name="requestParamName"/>
+												  <input type="hidden" id="requestParamId" name="requestParamId"/>	
+									</td>
+								</tr>
+								<tr class="specialFieldTemp" style="display:none;">
+									<td></td>
+									<td>输出参数：<input type="text" id="responseParamName" name="responseParamName"/>
+												  <input type="hidden" id="responseParamId" name="responseParamId"/>	
+									</td>
 								</tr>
 							</table>
 						</div>
@@ -361,7 +396,7 @@
 				<td><label>高级列值设置</label></td>
 				<td width="50"><input id="columnSenior" name="columnSenior" type="checkbox"
 									/></td>
-				<td><div id="columnValue_senior" style="display:none"><input id="setColumnValue_senior" type="text" value="" style="overflow:visible" maxlength="250"/></div></td>
+				<td><div id="columnValue_senior" style="display:none"><textarea id="setColumnValue_senior" style="overflow:visible;width:400px;height:200px;" maxlength="250"/></textarea></div></td>
 			</tr>
 		</table>
 	</div>
@@ -418,21 +453,5 @@
 	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/basicdata/dyview/dyview_definition.js"></script>
 	<script type="text/javascript" src="${ctx}/resources/pt/js/common/jquery.popupTreeWindow.js"></script>
-	<script type="text/javascript">
-	$('#subcolor').live("click",function(){
-		if($(".colors").css("display")=="block"){
-			$(".colors").css("display","none");
-		}else if($(".colors").css("display")=="none"){
-			$(".colors").css("display","block");
-		}
-		
-	});
-	function selColor(color){
-		 $("#scolor").val(color);
-	     $("#subject").css("color",color);
-	     $("#fontcolor").css("background-color",color);
-	     $("#fontColor").val(color);
-	}
-	</script>	
 </body>
 </html>

@@ -46,6 +46,16 @@ I18nLoader.load = function(prefixPath) {
 	}
 };
 
+var StringUtils = StringUtils || {};
+//判断字符串不为undefined、null、空串、空格串
+StringUtils.isNotBlank = function(string) {
+	return string != null && $.trim(string) != "";
+};
+//判断字符串为undefined、null、空串、空格串
+StringUtils.isBlank = function(string) {
+	return string == null || $.trim(string) == "";
+};
+
 // Tab Utils
 TabUtils = {};
 TabUtils.openTab = function(tabid, text, url, icon) {
@@ -57,38 +67,52 @@ TabUtils.openTab = function(tabid, text, url, icon) {
 };
 TabUtils.removeTab = function(tabid) {
 	if (returnWindow) {
-		returnWindow();
-	}
-	if (top.navtab) {
+		if(window.opener != null){
+			returnWindow();
+			window.close();
+		} else {
+			if(StringUtils.isBlank(ctx)){
+				window.location.href = "/";
+			} else {
+				window.location.href = ctx;
+			}
+		}
+	} else if (top.navtab) {
 		top.navtab.removeTabItem(tabid);
 	} else {
 		window.opener = null;
-		top.close();
+		if(StringUtils.isBlank(ctx)){
+			window.location.href = "/";
+		} else {
+			window.location.href = ctx;
+		}
 	}
 };
 TabUtils.reloadAndRemoveTab = function(tabid1, tabid2) {
 	if (returnWindow) {
-		returnWindow();
-	}
-	if (top.navtab) {
+		if(window.opener != null){
+			returnWindow();
+			window.close();
+		} else {
+			if(StringUtils.isBlank(ctx)){
+				window.location.href = "/";
+			} else {
+				window.location.href = ctx;
+			}
+		}
+	} else if (top.navtab) {
 		top.navtab.selectTabItem(tabid1);
 		top.navtab.reload(tabid1);
 		top.navtab.removeTabItem(tabid2);
 	} else {
-		top.close();
+		window.opener = null;
+		if(StringUtils.isBlank(ctx)){
+			window.location.href = "/";
+		} else {
+			window.location.href = ctx;
+		}
 	}
 };
-
-var StringUtils = StringUtils || {};
-// 判断字符串不为undefined、null、空串、空格串
-StringUtils.isNotBlank = function(string) {
-	return string != null && $.trim(string) != "";
-};
-// 判断字符串为undefined、null、空串、空格串
-StringUtils.isBlank = function(string) {
-	return string == null || $.trim(string) == "";
-};
-
 // JSON Data Services
 var JDS = {};
 JDS.call = function(options) {
@@ -143,10 +167,10 @@ JDS.call = function(options) {
 					}
 				};
 				if ($.alerts) {
-					oAlert(faultData.msg, logout);
+					oAlert2(faultData.msg);
 				} else {
 					alert(faultData.msg);
-					logout();
+					// logout();
 				}
 			} else if (faultData != null && "StaleObjectState" == faultData.errorCode) {
 				// Hibernate乐观锁
@@ -177,7 +201,7 @@ Browser.isIE = function() {
 	if (_browser == 'msie') {
 		return true;
 	} else {
-		return false;
+		return ("ActiveXObject" in window);
 	}
 };
 // 检测是否是chrome浏览器
@@ -438,15 +462,12 @@ function readSearch() {
 	}
 	return s;
 }
-function refreshPage(){
+function refreshPage() {
 	location.href = location.href;
 }
 var SpringSecurityUtils = {};
 SpringSecurityUtils.getCurrentUserName = function() {
-	if (window.opener == null) {
-		window.opener = top;
-	}
-	if (window.opener.userDetails == null) {
+	if (window.opener == null || $(window.opener).data("userDetails") == null) {
 		$.ajax({
 			type : "GET",
 			url : ctx + "/security/user/details/",
@@ -454,15 +475,40 @@ SpringSecurityUtils.getCurrentUserName = function() {
 			dataType : "json",
 			async : false,
 			success : function(success, statusText, jqXHR) {
-				window.opener.userDetails = success;
+				if(window.opener != null){
+					$(window.opener).data("userDetails", success);
+				}else{
+					$(window).data("userDetails", success);
+				}
 			}
 		});
 	}
-	return window.opener.userDetails == null ? "" : window.opener.userDetails["userName"];
+	if(window.opener != null){
+		return $(window.opener).data("userDetails") == null ? ""
+				: $(window.opener).data("userDetails")["userName"];
+	}
+	return $(window).data("userDetails") == null ? ""
+			: $(window).data("userDetails")["userName"];
 };
 SpringSecurityUtils.getUserDetails = function() {
 	SpringSecurityUtils.getCurrentUserName();
-	return window.opener.userDetails;
+	if(window.opener != null){
+		return $(window.opener).data("userDetails");
+	}
+	return $(window).data("userDetails");
+};
+SpringSecurityUtils.hasRole = function(roleId) {
+	var userDetails = SpringSecurityUtils.getUserDetails();
+	if (userDetails == null || userDetails["authorities"] == null) {
+		return false;
+	}
+	for ( var i = 0; i < userDetails["authorities"].length; i++) {
+		var authority = userDetails["authorities"][i];
+		if (authority["authority"] === roleId) {
+			return true;
+		}
+	}
+	return false;
 };
 /** ******************************** 验证CAKey开始 ***************************** */
 function checkCAKey() {
@@ -471,7 +517,15 @@ function checkCAKey() {
 		// 这里检测是否安装客户端版本
 		var b = false;
 		try {
+
 			b = fjcaWs.OpenFJCAUSBKey();
+			if (!b) {
+				try {
+					fjcaWs.CloseUSBKey();
+				} catch (e) {
+				}
+				return false;
+			}
 		} catch (e) {
 			oAlert("打开证书失败");
 			try {
@@ -480,14 +534,7 @@ function checkCAKey() {
 			}
 			return false;
 		}
-		if (!b) {
-			oAlert("打开证书失败");
-			try {
-				fjcaWs.CloseUSBKey();
-			} catch (e) {
-			}
-			return false;
-		}
+
 		// 读取证书
 		if (!fjcaWs.ReadCertFromKey()) {
 			oAlert("读取证书失败");
@@ -519,3 +566,116 @@ function checkCAKey() {
 	}
 }
 /** ******************************** 验证CAKey结束 ***************************** */
+
+if (typeof window.console == "undefined" || typeof window.console.log == "undefined") {
+	window.console = {};
+	window.console.log = function() {
+	};
+	window.console.error = function() {
+	};
+}
+
+function urldecode(str) {
+	// discuss at: http://phpjs.org/functions/urldecode/
+	// original by: Philip Peterson
+	// improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+	// improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+	// improved by: Brett Zamir (http://brett-zamir.me)
+	// improved by: Lars Fischer
+	// improved by: Orlando
+	// improved by: Brett Zamir (http://brett-zamir.me)
+	// improved by: Brett Zamir (http://brett-zamir.me)
+	// input by: AJ
+	// input by: travc
+	// input by: Brett Zamir (http://brett-zamir.me)
+	// input by: Ratheous
+	// input by: e-mike
+	// input by: lovio
+	// bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+	// bugfixed by: Rob
+	// reimplemented by: Brett Zamir (http://brett-zamir.me)
+	// note: info on what encoding functions to use from:
+	// http://xkr.us/articles/javascript/encode-compare/
+	// note: Please be aware that this function expects to decode from UTF-8
+	// encoded strings, as found on
+	// note: pages served as UTF-8
+	// example 1: urldecode('Kevin+van+Zonneveld%21');
+	// returns 1: 'Kevin van Zonneveld!'
+	// example 2: urldecode('http%3A%2F%2Fkevin.vanzonneveld.net%2F');
+	// returns 2: 'http://kevin.vanzonneveld.net/'
+	// example 3:
+	// urldecode('http%3A%2F%2Fwww.google.nl%2Fsearch%3Fq%3Dphp.js%26ie%3Dutf-8%26oe%3Dutf-8%26aq%3Dt%26rls%3Dcom.ubuntu%3Aen-US%3Aunofficial%26client%3Dfirefox-a');
+	// returns 3:
+	// 'http://www.google.nl/search?q=php.js&ie=utf-8&oe=utf-8&aq=t&rls=com.ubuntu:en-US:unofficial&client=firefox-a'
+	// example 4: urldecode('%E5%A5%BD%3_4');
+	// returns 4: '\u597d%3_4'
+
+	return decodeURIComponent((str + '').replace(/%(?![\da-f]{2})/gi, function() {
+		// PHP tolerates poorly formed escape sequences
+		return '%25';
+	}).replace(/\+/g, '%20'));
+}
+
+function urlencode(str) {
+	// discuss at: http://phpjs.org/functions/urlencode/
+	// original by: Philip Peterson
+	// improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+	// improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+	// improved by: Brett Zamir (http://brett-zamir.me)
+	// improved by: Lars Fischer
+	// input by: AJ
+	// input by: travc
+	// input by: Brett Zamir (http://brett-zamir.me)
+	// input by: Ratheous
+	// bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+	// bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+	// bugfixed by: Joris
+	// reimplemented by: Brett Zamir (http://brett-zamir.me)
+	// reimplemented by: Brett Zamir (http://brett-zamir.me)
+	// note: This reflects PHP 5.3/6.0+ behavior
+	// note: Please be aware that this function expects to encode into UTF-8
+	// encoded strings, as found on
+	// note: pages served as UTF-8
+	// example 1: urlencode('Kevin van Zonneveld!');
+	// returns 1: 'Kevin+van+Zonneveld%21'
+	// example 2: urlencode('http://kevin.vanzonneveld.net/');
+	// returns 2: 'http%3A%2F%2Fkevin.vanzonneveld.net%2F'
+	// example 3:
+	// urlencode('http://www.google.nl/search?q=php.js&ie=utf-8&oe=utf-8&aq=t&rls=com.ubuntu:en-US:unofficial&client=firefox-a');
+	// returns 3:
+	// 'http%3A%2F%2Fwww.google.nl%2Fsearch%3Fq%3Dphp.js%26ie%3Dutf-8%26oe%3Dutf-8%26aq%3Dt%26rls%3Dcom.ubuntu%3Aen-US%3Aunofficial%26client%3Dfirefox-a'
+
+	str = (str + '').toString();
+
+	// Tilde should be allowed unescaped in future versions of PHP (as reflected
+	// below), but if you want to reflect current
+	// PHP behavior, you would need to add ".replace(/~/g, '%7E');" to the
+	// following.
+	return encodeURIComponent(str).replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28').replace(
+			/\)/g, '%29').replace(/\*/g, '%2A').replace(/%20/g, '+');
+}
+// 对Date的扩展，将 Date 转化为指定格式的String
+// 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+// 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+// 例子：
+// (new Date()).format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
+// (new Date()).format("yyyy-M-d h:m:s.S") ==> 2006-7-2 8:9:4.18
+Date.prototype.format = function(fmt) { // author: meizz
+	var o = {
+		"M+" : this.getMonth() + 1, // 月份
+		"d+" : this.getDate(), // 日
+		"H+" : this.getHours(), // 小时
+		"m+" : this.getMinutes(), // 分
+		"s+" : this.getSeconds(), // 秒
+		"q+" : Math.floor((this.getMonth() + 3) / 3), // 季度
+		"S" : this.getMilliseconds()
+	// 毫秒
+	};
+	if (/(y+)/.test(fmt))
+		fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+	for ( var k in o)
+		if (new RegExp("(" + k + ")").test(fmt))
+			fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k])
+					.substr(("" + o[k]).length)));
+	return fmt;
+};

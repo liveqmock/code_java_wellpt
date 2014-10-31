@@ -5,7 +5,7 @@
 	<form id="messageTemplateForm" name="messageTemplateForm">
 		<table style="width: 100%;">
 			<tr>
-				<td style="width: 65px;" class="align-top"><label for="type">类型</label></td>
+				<td style="width: 65px;" class="align-top"><label for="type">消息类型</label></td>
 				<td><select id="type" name="type" style="width: 100%">
 						<option value="TODO">1、工作到达通知</option>
 						<option value="SUPERVISE">2、督办工作到达通知</option>
@@ -46,7 +46,7 @@
 			</tr>
 			<tr>
 				<td style="width: 65px;" class="align-top"><label
-					for="templateId">模板</label></td>
+					for="templateId">消息格式</label></td>
 				<td><select id="templateId" name="templateId"
 					style="width: 100%">
 				</select></td>
@@ -59,6 +59,27 @@
 					style="width: 100%"></td>
 				<td></td>
 			</tr>
+			<!-- modified by huanglinchuan 2014.10.21 begin -->
+			<tr>
+				<td style="width: 65px;" class="align-top"><label
+					for="condition">抄送对象</label></td>
+				<td><textarea id="DextraMsgRecipients" name="DextraMsgRecipients" class="full-width"></textarea>
+				    <input name="DextraMsgRecipient1"
+							value="" type="hidden"> <input name="extraMsgRecipient1"
+							type="hidden" /> <input name="extraMsgRecipient2" type="hidden" /> <input
+							name="extraMsgRecipient4" type="hidden" /> <input
+							name="extraMsgRecipient8" type="hidden" />
+					注意！这里设置的是消息需要额外抄送人员。
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td style="width: 65px;" class="align-top"><label
+					for="condition">是否启用</label></td>
+				<td><input id="isSendMsg" name="isSendMsg" type="radio" value="1" checked>是<input id="isSendMsg" name="isSendMsg" type="radio" value="0">否</td>
+				<td></td>
+			</tr>
+			<!-- modified by huanglinchuan 2014.10.21 end -->
 		</table>
 	</form>
 </div>

@@ -117,7 +117,7 @@ html,body {
 						<br />
 					</div>
 				</div>
-	
+				
 				<div class="tabs">
 					<!-- <ul>
 						<li><a href="#tabs-4">手机短信二次验证的IP设置</a></li>
@@ -148,6 +148,34 @@ html,body {
 							name="validPeriod" type="text" style="width:30px;"/><label for="validPeriod">秒</label>
 					</div>
 					<br />
+				</div>
+				
+						<div class="tabs">
+					<!-- <ul>
+						<li><a href="#tabs-5">用户登录的域设置</a></li>
+					</ul> -->
+					<div class="dytable_form">
+						<div class="post-sign">
+							<div class="post-detail">
+								<table>
+									<tbody>
+										<tr class="title">
+											<td class="Label" colspan="4">用户登录的域设置</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div id="tabs-5">
+						<div class="btn-group">
+							<button id="btn_domain_login_limit_add" type="button" class="btn">新增</button>
+							<button id="btn_domain_login_limit_del" type="button" class="btn">删除</button>
+						</div>
+						<table id="domain_login_limit_list"></table>
+						<div id="domain_login_limit_pager"></div>
+						<br />
+					</div>
 				</div>
 	
 				<div class="btn-group btn-group-bottom">

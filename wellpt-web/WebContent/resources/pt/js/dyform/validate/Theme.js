@@ -52,32 +52,84 @@ var Theme = function () {
 			wrapper: 'div',
 			errorElement: 'span',
 			
-			highlight: function(element) { 
+			highlight: function(element) {
 				 
-				 
-				 $(element).after("<span class=\"Validform_checktip\"></span>");
-				$(element).next(".Validform_checktip").show(); 
+				 if(v_checkable(element)){ 
+					 var name = $(element)[0].name;
+					 var elem = $("input[name=" + name +  "]:last"); 
+					 if( $(elem).next().next(".Validform_checktip").size() > 0){
+						 if($(elem).not(":hidden")){
+							 $(elem).next().next(".Validform_checktip").show();
+						 }
+						 return;
+					 } 
+					 $(elem).next().after("<span class=\"Validform_checktip\"></span>");
+					 $(elem).next().next(".Validform_checktip").show(); 
+				    }else{
+				    	// console.log($(element).next(".Validform_checktip").size());
+				    	 if( $(element).next(".Validform_checktip").size() > 0){
+				    		 if($(element).not(":hidden")){
+				    			 $(element).next(".Validform_checktip").show();
+							 }
+							 return;
+						 }
+				    	 $(element).after("<span class=\"Validform_checktip\"></span>");
+						 $(element).next(".Validform_checktip").show(); 
+						 
+				    }
+				
 			},
 			
-			success: function(element) {
-				console.log($(element).attr("class"));
-				$(element).parent().remove(); 
+			success: function(errorMsgElement, validatedElement) { 
+				 
+				 if(v_checkable(validatedElement)){
+					 var name = $(validatedElement)[0].name;
+					 
+					 var elem = $("input[name=" + name +  "]:last"); 
+					$(validatedElement).attr("valid", "true");
+					 $(elem).next().next(".Validform_checktip").remove();
+				}else{
+					$(validatedElement).attr("valid", "true");
+					 $(validatedElement).next(".Validform_checktip").remove();
+				}
+				
 			},
-			errorPlacement: function(error, element) {
+			errorPlacement: function(error, validatedElement) {
+				 
 				var html = error.html();
 			    if(html.indexOf("><") != -1){
 			    	return;
 			    }
-				$(element).next(".Validform_checktip").html(html);
+			  
+			    
+			    if(v_checkable(validatedElement)){
+			    	 var name = $(validatedElement)[0].name;
+					 var elem = $("input[name=" + name +  "]:last");  
+			    	$(validatedElement).attr("valid", "false");
+			    	$(elem).next().next(".Validform_checktip").html(html);
+			    }else{
+			    	$(validatedElement).attr("valid", "false");
+			    	$(validatedElement).next(".Validform_checktip").html(html);
+			    }
+			    
+			    
+				
 				if($.browser.msie ){
 					$(".Validform_checktip .error").css("display", "block");
 				}
 				
 			}
-	    	
 	    };
 	    
 	    return custom;
 	}
 	
 }();
+
+var v_checkable =function(element){
+	 if((/radio|checkbox/i).test($(element)[0].type)){
+		 return true;
+	 }else{
+		 return false;
+	 }
+}

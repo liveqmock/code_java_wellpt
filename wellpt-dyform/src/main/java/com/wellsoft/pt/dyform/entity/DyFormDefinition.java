@@ -2,7 +2,9 @@ package com.wellsoft.pt.dyform.entity;
 
 import java.sql.Clob;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -15,6 +17,9 @@ import org.json.JSONObject;
 
 import com.wellsoft.pt.core.annotation.UnCloneable;
 import com.wellsoft.pt.core.entity.IdEntity;
+import com.wellsoft.pt.dyform.support.DyFormDefinitionJSON;
+import com.wellsoft.pt.dyform.support.FieldDefinition;
+import com.wellsoft.pt.dyform.support.SubformDefinition;
 import com.wellsoft.pt.utils.security.SpringSecurityUtils;
 
 /**
@@ -63,6 +68,8 @@ public class DyFormDefinition extends IdEntity {
 	//描述
 	private String remark;
 
+	private String relationTbl;
+
 	//html body内容 
 	@UnCloneable
 	private Clob html;
@@ -86,6 +93,12 @@ public class DyFormDefinition extends IdEntity {
 
 	//是否升级1.是 0.否
 	private String isUp = "0";//非持久化属性
+
+	private DyFormDefinitionJSON jsonHandler = null;
+
+	private List<FieldDefinition> fieldDefintions = new ArrayList<FieldDefinition>();
+
+	private List<SubformDefinition> subformDefinitions = new ArrayList<SubformDefinition>();
 
 	/** default constructor */
 	public DyFormDefinition() {
@@ -221,11 +234,43 @@ public class DyFormDefinition extends IdEntity {
 	}
 
 	public String getDefinitionJson() {
-		return definitionJson;
+		return this.jsonHandler == null ? this.definitionJson : this.jsonHandler.toString();
 	}
 
 	public void setDefinitionJson(String definitionJson) {
+		if (definitionJson == null) {
+			return;
+		}
 		this.definitionJson = definitionJson;
+		try {
+			this.jsonHandler = new DyFormDefinitionJSON(definitionJson);
+			List<String> fieldNames = this.jsonHandler.getFieldNamesOfMainform();
+			List<String> formUuidOfSubforms = this.jsonHandler.getFormUuidsOfSubform();
+			if (fieldNames != null) {
+				for (String fieldName : fieldNames) {
+					FieldDefinition df = new FieldDefinition(fieldName, this.jsonHandler);
+					this.fieldDefintions.add(df);
+				}
+			}
+
+			if (formUuidOfSubforms != null) {
+				for (String formUuidOfSubform : formUuidOfSubforms) {
+					SubformDefinition df = new SubformDefinition(formUuidOfSubform, this.jsonHandler);
+					this.subformDefinitions.add(df);
+				}
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String getRelationTbl() {
+		return relationTbl;
+	}
+
+	public void setRelationTbl(String relationTbl) {
+		this.relationTbl = relationTbl;
 	}
 
 	@Transient
@@ -303,8 +348,9 @@ public class DyFormDefinition extends IdEntity {
 		try {
 			JSONObject json = new JSONObject(this.getDefinitionJson());
 			String uuid = json.getString("uuid");
-			if (uuid == null || uuid.trim().length() == 0 || "undefined".equals(uuid)) {
-				String thisUuid = this.getUuid();
+			String thisUuid = this.getUuid();
+			if (uuid == null || uuid.trim().length() == 0 || "undefined".equals(uuid) || !uuid.trim().equals(thisUuid)) {
+
 				if (thisUuid != null && thisUuid.trim().length() > 0 && !thisUuid.equals("undefined")) {
 					json.put("uuid", thisUuid);
 					this.setDefinitionJson(json.toString());
@@ -317,4 +363,31 @@ public class DyFormDefinition extends IdEntity {
 		}
 
 	}
+
+	@Transient
+	public DyFormDefinitionJSON getJsonHandler() {
+		if (this.jsonHandler == null) {
+			/*	try {
+					this.jsonHandler = new DyFormDefinitionJSON(this.definitionJson);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}*/
+		}
+		return jsonHandler;
+	}
+
+	public void setJsonHandler(DyFormDefinitionJSON jsonHandler) {
+		this.jsonHandler = jsonHandler;
+	}
+
+	@Transient
+	public List<FieldDefinition> getFieldDefintions() {
+		return fieldDefintions;
+	}
+
+	@Transient
+	public List<SubformDefinition> getSubformDefinitions() {
+		return subformDefinitions;
+	}
+
 }

@@ -7,9 +7,11 @@ $(function() {
 		"formId": null,
 		"unitId": null,
 		"retain": null,
+		"toSys": null,
 		"tableName" : null,
 		"text" : null,
 		"businessTypeId" : null,
+		"synchronous" : null,
 		"showToUnit" : null,
 		"businessId" : null,
 		"reportLimit" : null,
@@ -155,10 +157,10 @@ $(function() {
 			alert("接收时限请输入合法的数字");
 			return false;
 		}
-		if($("#formName").val()== ""){
-			alert("请选择动态表单");
-			return false;
-		}
+//		if($("#formName").val()== ""){
+//			alert("请选择动态表单");
+//			return false;
+//		}
 		
 		
 		//收集表单数据

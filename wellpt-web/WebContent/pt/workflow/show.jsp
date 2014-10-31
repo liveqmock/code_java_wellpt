@@ -7,6 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=Quirks">
 <script src="${ctx}/resources/jquery/jquery.js"></script>
+<script type="text/javascript" src="${ctx}/resources/utils/json2.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/global.js"></script>
 <script src="${ctx}/pt/workflow/js/JSConstant.js"></script>
 <script src="${ctx}/pt/workflow/js/workflow.js"></script>
@@ -62,6 +63,14 @@
 <!--
 $(function(){
 	attachEvent();
+	// IE滚轮事件处理(刷新流程图)
+	if(eWorkFlow && eWorkFlow.document){
+		var scrollFunc = function(event){
+			// document.location.reload();
+			return false;
+		};
+		eWorkFlow.document.attachEvent('onmousewheel',scrollFunc); 
+	}
 });
 //-->
 </script>

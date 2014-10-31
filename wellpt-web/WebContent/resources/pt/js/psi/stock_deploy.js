@@ -7,11 +7,11 @@ $(function() {
 	var dytableSelector = "#abc";
 	// 初使化
 	JDS.call({
-		service : 'dytableDemoService.getData',
-		data : [$("#formUuid").val(), $("#dataUuid").val()],
+		service : 'formDataService.getFormData',
+		data : [$("#formUuid").val(), $("#dataUuid").val(),null],
 		success : function(result) {
 			$("#abc").dytable({
-				data : result.data.formAndDataBean,
+				data : result.data,
 				isFile2swf:false,
 				setReadOnly:null,//是否设置所有字段只读，true表示设置,false表示不设置
 				supportDown:"1",//2表示防止下载 1表示支持下载 不设置表示默认支持下载
@@ -45,8 +45,8 @@ $(function() {
 		customformData.creator = $("#creator").val();
 		customformData.rootFormDataBean = rootFormData;
 		JDS.call({
-			service : 'dytableDemoService.saveData',
-			data : customformData,
+			service : 'formDataService.save',
+			data : rootFormData,
 			success : function(result) {
 				var formUuid =	$('#formUuid').val();
 				var flag = $('#flag').val();
@@ -54,7 +54,7 @@ $(function() {
 				if(flag == 1) {
 					JDS.call({
 						service:'stockService.saveTopFolder',
-						data:["GOOD_MANAGE",result.data,formUuid],
+						data:["GOOD_MANAGE",result.data.uuid,formUuid],
 						success :function(result) {
 							//设置数据UUID
 							$("#dataUuid").val(result.data);
@@ -67,7 +67,7 @@ $(function() {
 					//新建分类
 					JDS.call({
 						service:'stockService.createNewFolder',
-						data:[formUuid,result.data,status],
+						data:[formUuid,result.data.uuid,status],
 						success :function(result) {
 							//设置数据UUID
 							oAlert("保存成功！",function refresh() {
@@ -80,7 +80,7 @@ $(function() {
 					//新建品名
 					JDS.call({
 						service:'stockService.createNewFolder',
-						data:[formUuid,result.data,status],
+						data:[formUuid,result.data.uuid,status],
 						success :function(result) {
 							//设置数据UUID
 							oAlert("保存成功！",function refresh() {
@@ -93,9 +93,8 @@ $(function() {
 					//新建物品规格
 					JDS.call({
 						service:'stockService.createNewFile',
-						data:[formUuid,result.data],
+						data:[formUuid,result.data.uuid],
 						success :function(result) {
-							alert(JSON.stringify(result));
 							//设置数据UUID
 							oAlert("保存成功！",function refresh() {
 								window.opener.location.reload(); 

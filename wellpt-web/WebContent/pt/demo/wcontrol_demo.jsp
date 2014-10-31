@@ -43,16 +43,27 @@ right: -2px;
 -->
 </style>
 
-
+<%-- <link rel="stylesheet" href="${ctx}/resources/theme/css/wellnewoa.css  " type="text/css" /> --%>
  <c:set var="ctx" value="${pageContext.request.contextPath}" />
 <link rel="stylesheet" href="${ctx}/resources/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css" />
 <link rel="stylesheet" href="${ctx}/resources/pt/css/jquery-ui-1.8.21.custom.css" type="text/css" />
 <link rel="stylesheet" type="text/css" href="${ctx}/resources/jqueryui/css/base/jquery-ui.css" />
+<link href="${ctx}/resources/jBox/Skins/Blue/jbox.css" rel="stylesheet" type="text/css" /> 
 
+<link rel="stylesheet" type="text/css" media="screen"
+href="${ctx}/resources/jqgrid/themes/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" media="screen"
+href="${ctx}/resources/jqgrid/themes/ui.multiselect.css" /> 
 <script type="text/javascript" src="${ctx}/resources/jquery/jquery.js"></script>
 <script type="text/javascript" src="${ctx}/resources/utils/json2.js"></script>
 <script type="text/javascript" src="${ctx}/resources/bootstrap/js/bootstrap.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/global.js"></script>
+<script type="text/javascript" src="${ctx}/resources/pt/js/control/common/jquery.wControlUtil.js"></script>
+<script type="text/javascript" src="${ctx}/resources/pt/js/control/common/jquery.wabstractCtl.js"></script>
+<script type="text/javascript" src="${ctx}/resources/pt/js/control/common/jquery.wControlInterface.js"></script>
+<script type="text/javascript" src="${ctx}/resources/pt/js/control/common/jquery.wTextCommonMethod.js"></script>
+<script type="text/javascript" src="${ctx}/resources/pt/js/control/subform/jquery.wSubFormMethod.js"></script>
+
 <script type="text/javascript" src="${ctx}/resources/My97DatePicker/WdatePicker.js" ></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/dyform/common/dyform_constant.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wPubTools.js"></script>
@@ -63,13 +74,15 @@ right: -2px;
 <script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wComboBox.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wNumberInput.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wDatePicker.js"></script>
-<script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wControlUtil.js"></script>
-<script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wControlManager.js"></script>
+
+<script type="text/javascript" src="${ctx}/resources/pt/js/control/common/jquery.wControlManager.js"></script>
 <script type="text/javascript" src='${ctx}/resources/pt/js/org/unit/jquery.unit.js'></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wUnit.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wSerialNumber.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wViewDisplay.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wDialog.js"></script>
+<script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wFileUpload4Image.js"></script>
+<script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wSubForm.js"></script>
 
 <script type="text/javascript" src="${ctx}/resources/pt/js/common/jquery.alerts.js"></script>
 
@@ -87,6 +100,7 @@ right: -2px;
 <script type="text/javascript"src="${ctx}/resources/pt/js/fileupload/well.fileupload.js"></script>
 <script type="text/javascript"src="${ctx}/resources/pt/js/fileupload/well.fileupload4Icon.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wFileUpload4Icon.js"></script>
+<script type="text/javascript"src="${ctx}/resources/pt/js/fileupload/well.fileupload4Image.js"></script>
 
 <link rel="stylesheet" type="text/css" href="${ctx}/resources/fileupload/jquery.fileupload-ui.css" />
 <link rel="stylesheet" type="text/css" href="${ctx}/resources/fileupload/fileupload.css" />
@@ -95,11 +109,27 @@ right: -2px;
 <script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wComboTree.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/common/jquery.comboTree.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/control/jquery.wctlproperty.js"></script>
- <script src="wcontroljson.js"></script>
+ 
+ <script type="text/javascript"
+src="${ctx}/resources/pt/js/dyform/common/function.js"></script> 
+<script type="text/javascript"
+src="${ctx}/resources/pt/js/dyform/dyform_explain.js"></script> 
+<script type="text/javascript"
+src="${ctx}/resources/pt/js/dyform/dyform_zh_CN.js"></script> 
 
+<script type="text/javascript"
+src="${ctx}/resources/jqgrid/js/jquery.jqGrid.js"></script> 
+<script src="${ctx}/resources/jBox/jquery.jBox.src.js"
+type="text/javascript"></script>
+<script src="${ctx}/resources/jBox/i18n/jquery.jBox-zh-CN.js"
+type="text/javascript"></script> 
+
+<script type="text/javascript"
+src="${ctx}/resources/jqgrid/js/i18n/grid.locale-cn.js"></script> 
+<script src="${ctx}/resources/fileupload/js/uuid.js"></script>
 <script type="text/javascript">
 
-		var radiomap="{'1':'apple','2':'orange','3':'lemon',}";
+		var radiomap="{'1':'apple','2':'orange','3':'lemon','4':'其他1'}";
 		var optionSet=eval("("+radiomap+")");//
 		var checkboxdata="[{value:'1',label:'红'},"+
         "{value:'2',label:'绿'},"+
@@ -178,8 +208,15 @@ var columnjson={
 		            	 inputMode:'16',
 		            	 fontColor:'red',
 		            	 textAlign:'center',
-		            	 fontSize:15,
+		            	 fontSize:12,
 		            	 serviceName:treeservername},
+		            	  {
+		            		 displayName:'字段9',
+		            		 name:'fieldName9',
+		            		 defaultValue:'fieldName9',
+		            		 inputMode:'1',
+		            		 showType:'2'},
+			            
 		            {
 	            		 displayName:'字段10',
 	            		 name:'fieldName10',
@@ -248,14 +285,14 @@ var columnjson={
 			            	name:'fieldName19',
 			            	showType:'1',
 			            	inputMode:'6',
-			            	fileuploadConfig:'{allowUpload:true,allowDownload:true,allowDelete:true,mutiselect:true,sign:false}'
 			            	},
 		            	{
 			            	displayName:'字段21',
 			            	name:'fieldName21',
 			            	showType:'1',
-			            	inputMode:'4',
-			            	fileuploadConfig:'{allowUpload:false,allowDownload:false,allowDelete:true,mutiselect:true,sign:true}'
+			            	inputMode:'33',
+			            	ctlWidth:300,//宽度
+			    			ctlHight:300//高度
 			            	},
 		            	{
 		            		displayName:'字段22',
@@ -275,6 +312,7 @@ var columnjson={
 
 	$(document).ready(function() {
 		var columns=columnjson.fields;
+		var formDefinition={};
 		//控件初始化
 		$("#btn_init_json").click(function(){
 			var inputArr = $("body").find('input');
@@ -282,10 +320,18 @@ var columnjson={
 				var fieldname = $(inputArr[i]).attr("name");//容器或inputname
 				for(var j=0;j<columns.length;j++){
 					if(fieldname==columns[j].name){
-						 	$.ControlManager.createControl(columns[j]);
+						 	$.ControlManager.createControl(columns[j].name,columns[j],formDefinition);
 					}
 				}
 			} 
+		});
+		
+		//从表控件初始化
+		//
+		var formDefinition = loadFormDefinition('a204cdc1-e699-4d7f-b385-8aa7f7c34b94');
+		$("#fieldName25").wsubForm({
+			$paranentelement:$("#abc"),
+			formDefinition:formDefinition
 		});
 		
 		//返回控件对象，并显示其属性.
@@ -331,6 +377,7 @@ var columnjson={
 			 + '<tr><td>disabled</td><td>'+ctr.getAllOptions().disabled+'</td></tr>'
 			 + '<tr><td>readOnly</td><td>'+ctr.getAllOptions().readOnly+'</td></tr>'
 			 + '<tr><td>isHide</td><td>'+ctr.getAllOptions().isHide+'</td></tr>'
+			 + '<tr><td>isShowAsLabel</td><td>'+ctr.getAllOptions().isShowAsLabel+'</td></tr>'
 			 + '<tr><td>get属性列表</td></tr>'
 			 + '<tr><td>控件name</td><td>'+ctr.getCtlName()+'</td></tr>'
 			 + '<tr><td>isedit</td><td>'+ctr.isEditable()+'</td></tr>'
@@ -361,16 +408,18 @@ var columnjson={
 			getCtr().setDisplayAsLabel();
 		});
 		
-		$("#btn_setnoedit").click(function(){
-			//getCtr().setEditable(false);
-			$("#_inputfieldName7")
-			.wrap('<div style="position: relative; height:100%;"></div>')
-			.after('<span class="ui-icon ui-icon-calendar" style="position: absolute; right:2px; top:1px;"></span>');
+		$("#btn_cancellabel").click(function(){
+			getCtr().setDisplayAsCtl();
+		});
+		
+		
+		$("#btn_setEnable").click(function(){
+			getCtr().setEnable(false);
 		});
 		
 		$("#btn_setedit").click(function(){
-			getCtr().setEditable(true);
-
+			getCtr().setEditable();
+			document.getElementsByName(getCtr().getCtlName()).item(0).select();
 		});
 		
 		$("#btn_setrequire").click(function(){
@@ -384,12 +433,12 @@ var columnjson={
 		});
 		
 		$("#btn_setmapvalue").click(function(){
-			getCtr().setValueByMap({"DY_EXCHANGE_FIELD_COPY_UNIT":"公文交换/抄送单位"});
+			getCtr().setValueByMap('{"DY_EXCHANGE_FIELD_COPY_UNIT":"公文交换/抄送单位"}');
 
 		});
 		$("#btn_setmapvalue1").click(function(){
-			getCtr().setValueByMap({"2":"orange","3":"lemon"});
-
+			getCtr().setValueByMap('{"2":"orange"}');
+//
 		});
 		
 		$("#btn_setvalue").click(function(){
@@ -406,12 +455,43 @@ var columnjson={
 
 		});
 		
+		$("#btn_setValue").click(function(){
+			getCtr().setValue($("#value").val());
+
+		});
+		
+		$("#btn_setDisplayValue").click(function(){
+			getCtr().setDisplayValue($("#value").val());
+
+		});
+		
+		$("#btn_setHide").click(function(){
+			getCtr().setVisible(false);
+
+		});
+		
+		$("#btn_cancelHide").click(function(){
+			getCtr().setVisible(true);
+
+		});
+		
+		$("#btn_subformcollect").click(function(){
+			var data=$("#fieldName25").wsubForm("getObject").collectSubformData('1660c076-82a7-4e73-8d44-b0b94708e1ac');
+		    alert(JSON.stringify(data));
+		});
+		
+		
+		
+		
+		
 		$("#btn_bind").click(function(){
 			ctr=getCtr();
 			ctr.bind('focus',function(){
-				alert("focus!");
+				
 			}).bind('keydown',function(){
 				alert("btnkeydown事件触发1");
+			}).bind('blur',function(){
+				ctr.setDisplayAsLabel();
 			});
 		});
 		
@@ -451,8 +531,10 @@ var columnjson={
          <input type="button" id="btn_init_json" value="表单初始化" />
     <br>
 	请输入字段名:<input type="text" id="inputvalue" value="No1" />
-	<input type="button" id="btn_getvalue" value="控件属性" /><input type="button" id="btn_setedit" value="可编辑" /><input type="button" id="btn_setnoedit" value="不可编辑" /><input type="button" id="btn_setrequire" value="设置必输" />
-	<input type="button" id="btn_setnorequire" value="取消必输" /><input type="button" id="btn_showlabel" value="显示为label." /><input type="button" id="btn_setselect" value="设置选中" /><input type="button" id="btn_bind" value="bind事件" />
+	<input type="button" id="btn_getvalue" value="控件属性" /><input type="button" id="btn_setedit" value="可编辑" /><input type="button" id="btn_setEnable" value="禁用" /><input type="button" id="btn_setrequire" value="设置必输" />
+	<input type="button" id="btn_setnorequire" value="取消必输" /><input type="button" id="btn_showlabel" value="显示为label." /><input type="button" id="btn_cancellabel" value="取消label显示." /><input type="button" id="btn_setselect" value="设置选中" /><input type="button" id="btn_bind" value="bind事件" />
+	请输入:<input type="text" id="value" value="TEXTVALUE" /><input type="button" id="btn_setValue" value="设置值" />
+	<input type="button" id="btn_setDisplayValue" value="设置显示值" /><input type="button" id="btn_setHide" value="设置隐藏" /><input type="button" id="btn_cancelHide" value="取消隐藏" />
 	<div id='getvalue'></div>
 	
 	<br>
@@ -472,7 +554,7 @@ var columnjson={
     <tr>
     
      <td>数字输入框:No7:</td><td><input  name="fieldName7"   /><td>
-     <td><font color='red'>树型下拉控件</font>No8:</td><td><input  name="fieldName8"   /><input type="button" id="btn_setmapvalue" value="根据valuemap设置值" /><input type="button" id="btn_setvalue" value="设置值" /><td>
+     <td><font color='red'>树型下拉控件</font>No8:</td><td><input  name="fieldName8"  class="input-search" /><input type="button" id="btn_setmapvalue" value="根据valuemap设置值" /><input type="button" id="btn_setvalue" value="设置值" /><td>
      <td>测试9:No9:</td><td><input  id="fieldName9" name="fieldName9"   /></tr>
      
      <tr>
@@ -504,6 +586,15 @@ var columnjson={
 	<br>
 <input type="button" id="btn_jds" value="JDS" />
 <input type="button" id="btn_showfile" value="获得控件文件" />
-       <font color='red'>视图展示框</font>No17:</td><td><input  name="fieldName17"  />
+ <font color='red'>视图展示框</font>No17:</td><td><input  name="fieldName17"  />
+
+
+<input type="button" id="btn_subformcollect" value="从表数据收集" />
+<form id="abc" action="">
+<input  id="fieldName25" />
+<table  border="1" formuuid="1660c076-82a7-4e73-8d44-b0b94708e1ac" style="border-collapse:collapse;" title="userform_hunt_test47">
+</table>
+
+</form>
 </body>
 </html>

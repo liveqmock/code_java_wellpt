@@ -615,6 +615,7 @@
   * ============ */
 
   $(document).on('click.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
+	 // alert(1);
     e.preventDefault()
     $(this).tab('show')
   })

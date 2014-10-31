@@ -813,7 +813,7 @@ wellwin.dealConflict = function(point) {
 	while (points && points.length > 0 && i > 0) {
 		toMovePoint = points.shift();
 		//移动已经冲突的widget,接着可能自己的移动引起的冲突要继续处理
-		win.wellwin.moveConflict(toMovePoint, point);
+//		win.wellwin.moveConflict(toMovePoint, point);
 		i--;
 	}
 

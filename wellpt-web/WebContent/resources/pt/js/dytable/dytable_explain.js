@@ -3215,10 +3215,10 @@ function initForm(table,columns,editable,formData,mainTableName){
 					}
 					if(isMod){
 						if(val != undefined && methodName != "" && methodName != null) {
-							var method = methodName.split(".");
-							var servicename = method[0];
-							var Method = method[1].split("(")[0]; //方法名
-							var datas = method[1].split("(")[1].replace(")",""); //数据
+							var methodOld = methodName.split(".");
+							var servicename = methodOld[0];
+							var Method = methodOld[1].split("(")[0]; //方法名
+							var datas = methodOld[1].split("(")[1].replace(")",""); //数据
 							var data = datas.split(",")[0];
 							data = data.replace("\'","").replace("\'","");
 							var initService = servicename+ "."+Method;
@@ -3269,6 +3269,9 @@ function initForm(table,columns,editable,formData,mainTableName){
 							}
 						}
 					}else {
+//						alert(1);
+//						alert(servicename);
+//						alert(method);
 						var setting = {
 								async : {
 									otherParam : {
@@ -3921,10 +3924,9 @@ function initForm(table,columns,editable,formData,mainTableName){
 					}
 					
 					
-					
 					if(dataShow == dyFormDataShow.indirect){
 						$(inputArr[i]).hide();
-						$(inputArr[i]).next().hide();						
+						$(inputArr[i]).next().hide();	
 						if(val == undefined) {
 							var opt = new Array();
 							$.each(options,function (i,obj){
@@ -3945,9 +3947,9 @@ function initForm(table,columns,editable,formData,mainTableName){
 							var vals = val.split(",");
 							for(var p=0;p<vals.length;p++) {
 								var checkboxValue = vals[p];
-								if(vals.length==1&&checkboxValue==1){
-									$('input[type=checkbox][name=' + colEnName + ']').val(1);
-								}
+//								if(vals.length==1&&checkboxValue==1){
+//									$('input[type=checkbox][name=' + colEnName + ']').val(1);
+//								}
 								$('input[type=checkbox][name=' + colEnName + '][value=' + vals[p] + ']').attr('checked',true);
 							}
 						}
@@ -3969,9 +3971,9 @@ function initForm(table,columns,editable,formData,mainTableName){
 								var vals = val.split(",");
 								for(var k=0;k<vals.length;k++){
 									var checkboxValue = vals[k];
-									if(vals.length==1&&checkboxValue==1){
-										$('input[type=checkbox][name=' + colEnName + ']').val(1);
-									}
+//									if(vals.length==1&&checkboxValue==1){
+//										$('input[type=checkbox][name=' + colEnName + ']').val(1);
+//									}
 									$('input[type=checkbox][name=' + colEnName + '][value="' + vals[k] + '"]').attr('checked',true);
 								}
 							}
@@ -4141,7 +4143,7 @@ function initForm(table,columns,editable,formData,mainTableName){
 								}
 							}
 							if(relationDataTextTwo!="" && relationDataTextTwo!= null && relationDataTextTwo!= undefined){
-								if(relationDataShowMethod == "direct") {
+								if(relationDataShowMethod == "direct") {//关联数据的展示方式为直接展示(另一种为视图展示)
 									//获得要查询的字段
 									var str = "";
 									var tempArray = $(inputArr[i]).attr("relationDataDefiantion").split("|");
@@ -4253,8 +4255,9 @@ function initForm(table,columns,editable,formData,mainTableName){
 												url : ctx + path,
 												success : function(data) {
 													var json = new Object(); 
-													json.content = "<div class='dnrw' style='width:99%;'>" +data+"</div>";
-											        json.title = "相关数据源";
+//													json.content = "<div class='queryDiv'><input class='hisKeyWord'/><button id='queryBtn' class='blurBtn' type='button'>查询历史数据</button></div><div class='dnrw' style='width:99%;background:none;'>" +data+"</div>";
+													json.content = "<div class='dnrw' style='width:99%;background:none;'>" +data+"</div>";
+													json.title = "相关数据源";
 											        json.height= 600;
 											        json.width= 800;
 											        showDialog(json);

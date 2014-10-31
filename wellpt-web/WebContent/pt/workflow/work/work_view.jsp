@@ -5,8 +5,8 @@
 <head>
 <%@ include file="/pt/common/taglibs.jsp"%>
 <%@ include file="/pt/common/meta.jsp"%>
+<%@ include file="/pt/dyform/dyform_css.jsp"%>
 <title>${workBean.title}</title>
-<%@ include file="/pt/dytable/form_css.jsp"%>
 <link type="text/css" rel="stylesheet"
 	href="${ctx}/resources/chosen/chosen.min.css" />
 <link rel="stylesheet" type="text/css"
@@ -15,10 +15,14 @@
 <body>
 	<div class="div_body">
 		<div class="div_body_content">
+		    <!-- add by huanglinchuan 2014.10.18 begin -->
+		    <div class="" id="topHeader">
+		    <!-- add by huanglinchuan 2014.10.18 end -->
 			<div class="form_header">
 				<!--标题-->
 				<div class="form_title">
 					<h2>${workBean.title}</h2>
+					<div class="form_close" title="关闭"></div>
 				</div>
 				<div id="toolbar" class="form_toolbar"
 					style="padding: 8px 0 10px 0px;">
@@ -116,10 +120,10 @@
 						<!-- 					</div> -->
 						<!-- 				</div> -->
 					</div>
-					<div class="form_operate" style="display: none;">
+					<div class="form_operate wf_operate" style="display: none;">
 						<c:forEach var="btn" items="${workBean.buttons}">
 							<button id="${btn.id}" name="${btn.code}" taskId="${btn.taskId}"
-								userIds="${btn.users}" copyUserIds="${btn.copyUsers}">${btn.name}</button>
+								userIds="${btn.users}" copyUserIds="${btn.copyUsers}" style="display: none;">${btn.name}</button>
 						</c:forEach>
 						<!-- 				<button id="btn_close" onclick="window.close();" type="button">关闭</button> -->
 						<!-- 				&nbsp;&nbsp; -->
@@ -135,8 +139,9 @@
 					<!-- 	<a href="#" id="print" class="easyui-linkbutton">套打</a> -->
 				</div>
 			</div>
+			</div>
 			<div class="form_content"
-				style="width: 875px; margin: 0 15px 0 25px;">
+				style="width: 875px; overflow-x:hidden; margin: 0 15px 0 25px;background-color:#ffffff;">
 				<div id="process" style="display: none;">
 					<div class="proce proce1">
 						<ul>
@@ -165,6 +170,7 @@
 					<!-- 					</div> -->
 				</div>
 			</div>
+			
 			<form:form id="wf_form" commandName="workBean" action="new"
 				method="post" cssClass="cleanform">
 				<form:hidden id="wf_flowDefUuid" path="flowDefUuid"></form:hidden>
@@ -178,13 +184,14 @@
 				<form:hidden id="wf_aclRole" path="aclRole"></form:hidden>
 				<form:hidden id="wf_serialNoDefId" path="serialNoDefId"></form:hidden>
 				<form:hidden id="wf_suspensionState" path="suspensionState"></form:hidden>
+				<form:hidden id="wf_isFirstTaskNode" path="isFirstTaskNode"></form:hidden>
 				<c:forEach var="extraParam" items="${workBean.extraParams}">
 					<input id="${extraParam.key}" name="${extraParam.key}"
 						type="hidden" value="${extraParam.value}" />
 				</c:forEach>
 			</form:form>
 			<!-- 动态表单 -->
-			<div id="dyform"></div>
+			<form id="dyform"></form>
 			<div class="view_process_list">
 				<div class="view_process_header">
 					<a>办理过程</a>
@@ -215,9 +222,11 @@
 
 			<div>
 				<!-- 环节选择 -->
-				<div id="dlg_select_task"></div>
+				<div id="dlg_select_task" class="wf-dlg"></div>
+				<!-- 跳转环节选择 -->
+				<div id="dlg_select_goto_task" class="wf-dlg"></div>
 				<!-- 退回环节选择 -->
-				<div id="dlg_select_rollback_task"></div>
+				<div id="dlg_select_rollback_task" class="wf-dlg"></div>
 				<!-- 子流程选择 -->
 				<div id="dlg_select_sub_flow">
 					<input id="wf_select_sub_flow" type="hidden">
@@ -358,6 +367,9 @@
 						</label> <label class="checkbox inline"> <input
 							id="show_no_opinion_record" type="checkbox" checked="checked">显示未签署意见记录
 						</label>
+						<label class="checkbox inline view_process">
+						<span class="view_process_img"><a href="#">查阅流程图</a></span>
+						 </label>
 					</div>
 					<div id="process_content" style="margin-left: 10px;"></div>
 				</div>
@@ -379,7 +391,8 @@
 				</div>
 			</div>
 			<!-- Project -->
-			<%@ include file="/pt/dytable/form_js.jsp"%>
+			<%@ include file="/pt/dyform/dyform_js.jsp"%>
+	 		<%@ include file="/pt/dyform/dyform_excel_js.jsp"%>
 			<script type="text/javascript"
 				src="${ctx}/resources/chosen/chosen.jquery.min.js"></script>
 			<script type="text/javascript"
@@ -393,7 +406,18 @@
 	<div class="body_foot"></div>
 	<script type="text/javascript">
 		$(function() {
-
+			/*add by huanglinchuan 2014.10.18 begin*/
+			window.onscroll=function(){ 
+				if ($(document).scrollTop() > 0) 
+				{ 
+					$("#topHeader").addClass('floatHeader'); 
+					$(".form_header").addClass("formHeader_top0");
+				}else{ 
+					$("#topHeader").removeClass('floatHeader'); 
+					$(".form_header").removeClass("formHeader_top0");
+				} 
+			}; 	
+			/*add by huanglinchuan 2014.10.18 end*/
 		});
 	</script>
 </body>

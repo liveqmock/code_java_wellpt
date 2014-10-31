@@ -24,6 +24,9 @@
 			<div>
 				<div class="btn-group btn-group-top">
 					<div class="query-fields">
+						<div style="float: left;margin-top: 3px;width: 85px;">
+							<select id="select_query" name="select_query" onchange="selectQuery(this)" style="width:100%;"></select>
+						</div>
 						<input id="query_keyWord"/>
 						<button id="btn_query" type="button" class="btn">查询</button>
 					</div>
@@ -72,7 +75,9 @@
 									<td>元素类型</td>
 									<td><select id="isEdit" name="isEdit" style="width:100%;">
 											<option value="false">视图元素</option>
+											<option value="newview">新版视图元素</option>
 											<option value="true">静态元素</option>
+											<option value="category">导航元素</option>
 											<option value="other">url元素</option>
 									</select></td>
 								</tr>
@@ -87,6 +92,20 @@
 								<tr class="urlClass" style="display: none;">
 									<td>url</td>
 									<td><input id="customPath" value="" style="width:100%;"/>
+									</td>
+								</tr>
+								<tr class="cateEffectClass" style="display:none;">
+									<td>导航效果</td>
+									<td>
+										<input id="categoryEffect" name="categoryEffect" type="text" style="width:100%;"/>
+										<input id="categoryEffectValue" name="categoryEffectValue" type="hidden" style="width:100%;"/>
+									</td>
+								</tr>
+								<tr class="cateClass" style="display:none;">
+									<td>导航</td>
+									<td>
+										<input id="categoryName" name="categoryName" type="text" style="width:100%;"/>
+										<input id="categoryPath" name="categoryPath" type="hidden"/>
 									</td>
 								</tr>
 								<tr>
@@ -151,6 +170,8 @@
 <%-- 		src="${ctx}/resources/pt/js/common/jquery.dyviewTree.js"></script> --%>
 	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/system_admin.js"></script>
+	<script type="text/javascript"
+		src="${ctx}/resources/ztree/js/jquery.ztree.exhide-3.5.js"></script>
 	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/cms/module.js"></script>
 	<script type="text/javascript" src="${ctx}/resources/utils/ajaxfileupload.js"></script>

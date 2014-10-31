@@ -90,7 +90,7 @@
 			<c:forEach items="${sche[row.sdate]}" var="row2">
 			<tr valign="top" class="table_tr2">
 			<td width="17%">
-				<a href="#" onclick="openScheduleDialog('','','${mtype}','${ldate}','${userno}','2','5','${ctype}','${groupid}','${row2.tipMethod}','${row2.isComplete}','${row.sdate}','${row2.uuid}','${row2.scheduleName}','${row2.address}','${row2.dstartDate}','${row2.startTime}','${row2.dendDate}','${row2.endTime}','${row2.isView}','${row2.status}','${row2.leaderNames}','${row2.leaderIds}','${row2.pleases}','${row2.pleaseIds}','${row2.views}','${row2.viewIds}','${row2.color}','${row2.tip}','${row2.tipDate}','${row2.tipTime}','${row2.repeat}','${row2.startTime2}','${row2.endTime2}','${row2.tipTime2}','${row2.creators}','${row2.creatorIds}');">
+				<a href="#" onclick="openScheduleDialog('','','${mtype}','${ldate}','${userno}','2','5','${ctype}','${groupid}','${row2.tipMethod}','${row2.isComplete}','${row.sdate}','${row2.uuid}','${row2.scheduleName}','${row2.address}','${row2.dstartDate}','${row2.startTime}','${row2.dendDate}','${row2.endTime}','${row2.isView}','${row2.status}','${row2.leaderNames}','${row2.leaderIds}','${row2.pleases}','${row2.pleaseIds}','${row2.views}','${row2.viewIds}','${row2.color}','${row2.tip}','${row2.tipDate}','${row2.tipTime}','${row2.repeat}','${row2.startTime2}','${row2.endTime2}','${row2.tipTime2}','${row2.creators}','${row2.creatorIds}','${row2.isLeaderView}','${row2.inviteeNames}','${row2.inviteeIds}','${row2.acceptIds }','${row2.acceptNames }','${row2.refuseIds}','${row2.refuseNames}','${row2.tag.uuid}');">
 				<font color="${row2.color}">
 				<c:if test="${row2.isComplete=='1'}">
 				<strike>
@@ -107,7 +107,7 @@
 			</td>
 			
 			<td width="20%">
-				<a href="#" onclick="openScheduleDialog('','','${mtype}','${ldate}','${userno}','2','5','${ctype}','${groupid}','${row2.tipMethod}','${row2.isComplete}','${row.sdate}','${row2.uuid}','${row2.scheduleName}','${row2.address}','${row2.dstartDate}','${row2.startTime}','${row2.dendDate}','${row2.endTime}','${row2.isView}','${row2.status}','${row2.leaderNames}','${row2.leaderIds}','${row2.pleases}','${row2.pleaseIds}','${row2.views}','${row2.viewIds}','${row2.color}','${row2.tip}','${row2.tipDate}','${row2.tipTime}','${row2.repeat}','${row2.startTime2}','${row2.endTime2}','${row2.tipTime2}','${row2.creators}','${row2.creatorIds}');">
+				<a href="#" onclick="openScheduleDialog('','','${mtype}','${ldate}','${userno}','2','5','${ctype}','${groupid}','${row2.tipMethod}','${row2.isComplete}','${row.sdate}','${row2.uuid}','${row2.scheduleName}','${row2.address}','${row2.dstartDate}','${row2.startTime}','${row2.dendDate}','${row2.endTime}','${row2.isView}','${row2.status}','${row2.leaderNames}','${row2.leaderIds}','${row2.pleases}','${row2.pleaseIds}','${row2.views}','${row2.viewIds}','${row2.color}','${row2.tip}','${row2.tipDate}','${row2.tipTime}','${row2.repeat}','${row2.startTime2}','${row2.endTime2}','${row2.tipTime2}','${row2.creators}','${row2.creatorIds}','${row2.isLeaderView}','${row2.inviteeNames}','${row2.inviteeIds}','${row2.acceptIds }','${row2.acceptNames }','${row2.refuseIds}','${row2.refuseNames}','${row2.tag.uuid}');">
 				<font color="${row2.color}">
 				<c:if test="${row2.isComplete=='1'}">
 				<strike>
@@ -121,7 +121,7 @@
 				</a>
 			</td>
 			<td width="30%">
-			<a href="#" onclick="openScheduleDialog('','','${mtype}','${ldate}','${userno}','2','5','${ctype}','${groupid}','${row2.tipMethod}','${row2.isComplete}','${row.sdate}','${row2.uuid}','${row2.scheduleName}','${row2.address}','${row2.dstartDate}','${row2.startTime}','${row2.dendDate}','${row2.endTime}','${row2.isView}','${row2.status}','${row2.leaderNames}','${row2.leaderIds}','${row2.pleases}','${row2.pleaseIds}','${row2.views}','${row2.viewIds}','${row2.color}','${row2.tip}','${row2.tipDate}','${row2.tipTime}','${row2.repeat}','${row2.startTime2}','${row2.endTime2}','${row2.tipTime2}','${row2.creators}','${row2.creatorIds}');">
+			<a href="#" onclick="openScheduleDialog('','','${mtype}','${ldate}','${userno}','2','5','${ctype}','${groupid}','${row2.tipMethod}','${row2.isComplete}','${row.sdate}','${row2.uuid}','${row2.scheduleName}','${row2.address}','${row2.dstartDate}','${row2.startTime}','${row2.dendDate}','${row2.endTime}','${row2.isView}','${row2.status}','${row2.leaderNames}','${row2.leaderIds}','${row2.pleases}','${row2.pleaseIds}','${row2.views}','${row2.viewIds}','${row2.color}','${row2.tip}','${row2.tipDate}','${row2.tipTime}','${row2.repeat}','${row2.startTime2}','${row2.endTime2}','${row2.tipTime2}','${row2.creators}','${row2.creatorIds}','${row2.isLeaderView}','${row2.inviteeNames}','${row2.inviteeIds}','${row2.acceptIds }','${row2.acceptNames }','${row2.refuseIds}','${row2.refuseNames}','${row2.tag.uuid}');">
 			<font color="${row2.color}">
 			<c:if test="${row2.isComplete=='1'}">
 			<strike>
@@ -136,7 +136,7 @@
 			</a>
 			</td>
 			<td width="31%" style="border-right-style:solid;">
-			<a href="#" onclick="openScheduleDialog('','','${mtype}','${ldate}','${userno}','2','5','${ctype}','${groupid}','${row2.tipMethod}','${row2.isComplete}','${row.sdate}','${row2.uuid}','${row2.scheduleName}','${row2.address}','${row2.dstartDate}','${row2.startTime}','${row2.dendDate}','${row2.endTime}','${row2.isView}','${row2.status}','${row2.leaderNames}','${row2.leaderIds}','${row2.pleases}','${row2.pleaseIds}','${row2.views}','${row2.viewIds}','${row2.color}','${row2.tip}','${row2.tipDate}','${row2.tipTime}','${row2.repeat}','${row2.startTime2}','${row2.endTime2}','${row2.tipTime2}','${row2.creators}','${row2.creatorIds}');">
+			<a href="#" onclick="openScheduleDialog('','','${mtype}','${ldate}','${userno}','2','5','${ctype}','${groupid}','${row2.tipMethod}','${row2.isComplete}','${row.sdate}','${row2.uuid}','${row2.scheduleName}','${row2.address}','${row2.dstartDate}','${row2.startTime}','${row2.dendDate}','${row2.endTime}','${row2.isView}','${row2.status}','${row2.leaderNames}','${row2.leaderIds}','${row2.pleases}','${row2.pleaseIds}','${row2.views}','${row2.viewIds}','${row2.color}','${row2.tip}','${row2.tipDate}','${row2.tipTime}','${row2.repeat}','${row2.startTime2}','${row2.endTime2}','${row2.tipTime2}','${row2.creators}','${row2.creatorIds}','${row2.isLeaderView}','${row2.inviteeNames}','${row2.inviteeIds}','${row2.acceptIds }','${row2.acceptNames }','${row2.refuseIds}','${row2.refuseNames}','${row2.tag.uuid}');">
 			<font color="${row2.color}">
 			<c:if test="${row2.isComplete=='1'}">
 			<strike>

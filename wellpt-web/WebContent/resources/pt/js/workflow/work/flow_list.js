@@ -129,6 +129,28 @@ $(function() {
 			triggerEventsOnLoad : true
 		}
 	});
+	
+	// 列表查询
+	$("#query_flow").keypress(function(e) {
+		if (e.keyCode == 13) {
+			$("#btn_query").trigger("click");
+		}
+	});
+	$("#btn_query").click(function(e) {
+		var queryValue = $("#query_flow").val();
+		var postData = {
+			"queryPrefix" : "query",
+			"queryOr" : true,
+			"query_LIKES_name_OR_id" : queryValue
+		};
+		$("#list").jqGrid("setGridParam", {
+			postData : null
+		});
+		$("#list").jqGrid("setGridParam", {
+			postData : postData,
+			page : 1
+		}).trigger("reloadGrid");
+	});
 
 	// 新增操作
 	$("#btn_work_new").click(function() {

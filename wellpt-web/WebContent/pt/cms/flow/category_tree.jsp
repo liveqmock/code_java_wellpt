@@ -18,7 +18,7 @@
 			<c:if test="${index.index%2==0}"><div class="jo" ></c:if>
 			   <div class="list-item <c:if test="${index.index%2==0}"> list-item_left</c:if><c:if test="${index.index%2==1}"> list-item_right</c:if>">
 			   	<h4>
-			   		<a class="openchild" newpage="${l.cc.newPage}" fullwindow="${l.cc.fullWindow}" moduleid="${l.cc.moduleId}" opentype="${l.cc.openType}" inputurl="${l.cc.inputUrl}" pageurl="${l.cc.pageUrl}" divid="${l.cc.divId}">${l.cc.title }</a>
+			   		<a class="openchild" newpage="${l.cc.newPage}" fullwindow="${l.cc.fullWindow}" jscontent="${l.cc.jsContent}" moduleid="${l.cc.moduleId}" opentype="${l.cc.openType}" inputurl="${l.cc.inputUrl}" pageurl="${l.cc.pageUrl}" divid="${l.cc.divId}">${l.cc.title }</a>
 			   		<c:if test="${l.cc.showNum == true}"><span class="nums">${l.count}</span></c:if>
 			   	</h4>
 			   	<c:if test="${l.clist.size()!=0}"><span class="fold"></span></c:if>
@@ -26,7 +26,7 @@
 			        <div class="hide-border"></div>
 			        	<ul>
 			        		<c:forEach items="${l.clist}" var="ll">
-			            	<li><a class="cateherfbtn" fullwindow="${ll.fullWindow}" newpage="${ll.newPage}" moduleid="${ll.moduleId}" opentype="${ll.openType}" inputurl="${ll.inputUrl}" pageurl="${ll.pageUrl}" divid="${ll.divId}">${ll.title }</a></li>
+			            	<li><a class="cateherfbtn" fullwindow="${ll.fullWindow}" jscontent="${ll.jsContent}" newpage="${ll.newPage}" moduleid="${ll.moduleId}" opentype="${ll.openType}" inputurl="${ll.inputUrl}" pageurl="${ll.pageUrl}" divid="${ll.divId}">${ll.title }</a></li>
 			            	</c:forEach>
 			            </ul>
 			     </div>
@@ -40,6 +40,17 @@
 		$(function(){
 			/**页面刷新时绑定选项**/
 			var search = readSearch();
+			$.each(search,function(n,value) {   
+		           if(n == "uuid" || n == "treeName" || n =="viewName" || n =="keyword"
+		        	|| n == "keyword2" || n == "keyword3" || n == "keyword4" || n == "keywordTime1" 
+		        	|| n == "doSearch" || n == "keywordTime2" 
+		           ) {
+		        	   
+		           }else {
+		        	   search.mid = n;
+		        	   search.moduleid = value;
+		           }
+		         }); 
 			if(search.moduleid){
 				$(".newoa_cate").find("a").each(function(){
 					var moduleid = $(this).attr("moduleid");
@@ -147,6 +158,7 @@
 					var inputurl = elemet_a.attr("inputurl");
 					var pageurl = elemet_a.attr("pageurl");
 					var divid = elemet_a.attr("divid");
+					var jsContent = elemet_a.attr("jsContent");
 					var fullwindow =  elemet_a.attr("fullwindow");
 					var name = elemet_a.text();
 					if(newpage=="dialog"){
@@ -175,10 +187,12 @@
 										jsmod(".dnrw .tab-content");
 									}else{
 										$("#"+divid+" .viewContent").parent().html(result);
-										jsmod("#"+divid+" .tab-content");
+										jsmod(".dnrw .tab-content");
 									}
 									/**格式化时间***/
 									formDate();
+									/**初始化控件**/
+									initCtl();
 								}
 							});
 						}else if(opentype=="pageUrl"){
@@ -194,10 +208,17 @@
 								window.open("${ctx}/"+inputurl);
 							}
 						}else if(opentype=="jsContent"){
-							${parent.jsContent}
+							eval(jsContent); 
 						}
 					}
 				}
+				$("#update_"+viewUuid).find(".dataTr").each(function(){
+					if($(this).attr("class").indexOf("readed")>-1 && $(this).find("td").eq(0).find("input").attr("class").indexOf("checkeds") ==-1){
+						$(this).find("td").eq(0).html("<div class='icon_readed'></div>"+$(this).find("td").eq(0).html());
+					}else if($(this).attr("class").indexOf("noread")>-1 && $(this).find("td").eq(0).find("input").attr("class").indexOf("checkeds") ==-1){
+						$(this).find("td").eq(0).html("<div class='icon_noread'></div>"+$(this).find("td").eq(0).html());
+					}
+				});
 			});	
 			$(".cateherfbtn").click(function(e){
 				$(".cateherfbtn").css("color","#000000");
@@ -260,6 +281,13 @@
 				e.stopPropagation();
 			});	
 		});
+// 		$("#update_"+viewUuid).find(".dataTr").each(function(){
+// 			if($(this).attr("class").indexOf("readed")>-1){
+// 				$(this).find("td").eq(0).html("<div class='icon_readed'></div>"+$(this).find("td").eq(0).html());
+// 			}else if($(this).attr("class").indexOf("noread")>-1){
+// 				$(this).find("td").eq(0).html("<div class='icon_noread'></div>"+$(this).find("td").eq(0).html());
+// 			}
+// 		});
 	</script>
 </body>
 </html>

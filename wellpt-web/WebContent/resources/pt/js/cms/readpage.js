@@ -6,9 +6,13 @@ $(function() {
 	$(".dnrw ul .active").click(function(){
 		var moreUrl = $(this).attr("moreurl");
 		if(moreUrl!="" && moreUrl != "null"){
-			window.location.href = ctx+moreUrl;
+			if(moreUrl.indexOf("http") != -1) {
+				window.open(moreUrl);
+			}else {
+				window.location.href = ctx+moreUrl;
+			}
 		}else{
-			window.location.href = location.href;
+//			window.location.href = location.href;
 		}
 	});
 });

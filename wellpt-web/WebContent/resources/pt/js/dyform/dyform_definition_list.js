@@ -102,38 +102,55 @@ $(function() {
 	});
 
 	// 删除动态表单
-	/*$("#btn_del").click(function() {
+	 $("#btn_del").click(function() {
 		var uuid = $('#list').jqGrid('getGridParam', 'selrow');
 		if (uuid && uuid.length > 0) {
 			if (confirm(dymsg.delConfirm)) {
 				$.ajax({
 					type : "POST",
-					url : ctx + "/dytable/delete_form.action",
-					data : "uuid=" + uuid,
+					url : ctx + "/dyform/delete_form.action",
+					data : {formUuid:uuid}, 
 					dataType : "json",
-					success : function(result) {
-						if (result == dyResult.success) {
+					success : function(result) {  
+						if (result.success) {
 							alert(dymsg.delSuccess);
 							$('#list').trigger('reloadGrid');
 						}
+					},
+					error:function(result){ 
+						var responseText = result.responseText;
+						responseText = eval("(" + responseText + ")"); 
+						alert(responseText.data);
 					}
 				});
 			}
 		} else {
 			alert(dymsg.selectRecordDel);
 		}
-	});*/
+	}); 
 
 	$("#btn_open").click(function() {
-		
-		var uuid = $('#list').jqGrid('getGridParam', 'selrow');// 获取选中行的ID
-		console.log(uuid);
-		if (uuid && uuid.length > 0) { 
+		var uuid = $('#list').jqGrid('getGridParam', 'selrow');// 获取选中行的ID 
+		if (uuid && uuid.length > 0) {
 			var url = ctx + '/dyform/demo?formUuid=' + uuid; 
 			window.open(url);
-			
+		} else {
+			alert(dymsg.selectRecordMod);
 		}
 	});
+	
+	$("#btn_export").click(function() { 
+		var uuid = $('#list').jqGrid('getGridParam', 'selrow');// 获取选中行的ID
+		 
+		if (uuid && uuid.length > 0) { 
+			var url = ctx + '/dyform/export?formUuid=' + uuid; 
+			window.open(url); 
+		} else {
+			alert(dymsg.selectRecordMod);
+		}
+	});
+	
+	
 	function openFormDefinition(flag, uuid) {
 		var url = ctx + "/dyform/demo/openFormDefinition?uuid=" + uuid + "&flag=" + flag + "";
 		window.open(url);

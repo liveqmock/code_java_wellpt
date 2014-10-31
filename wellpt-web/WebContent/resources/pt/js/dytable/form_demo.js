@@ -1,5 +1,6 @@
 $(function() {
-	
+	var a=[]; 
+	var a={}; 
 	//保存数据时错误代码
 	var SaveDataErrorCode = {
 			SaveDataException:"SaveDataException"//保存数据错误  
@@ -24,8 +25,61 @@ $(function() {
 				         {"text": "选择未完务","method":function(){alert(4);},"subtableMapping":"dy_form_id_report_plan"},
 				         ],
 				open: function(){
+				},
+				afterDialogSelect: function(params) {
 				}
 			});
+			
+			$("#abc").dytable("updateRowData", {
+				tableId:"userform_xzsp_subbjsqd_cad",
+				data : {"schedule_name":"123","original_schedule_name":""},
+				rowid:"9937595f4b994ab1bdb2a8d967cf9f44"
+			});
+
+			
+//			$("#abc").dytable("setSubFieldProperty", {
+//				tableId:"userform_xzsp_subbjsqd_cad",
+//				field:"schedule_name",
+//			});
+//			$("#abc").dytable("showSubFormField", {
+//				tableId:"userform_xzsp_subbjsq",
+//				field:"bujian_reason",
+//				type:"1"
+//			});
+			// 事项名称
+//			$("#abc").dytable("setFieldValue", {
+//				mappingName : "matters_name",
+//				value : "12321312"
+//			});
+			
+//			$("#abc").dytable("setFieldValue", {
+//				mappingName : "promise_transact_deadline",
+//				value : "123个工作日",
+//				type : "label",
+//			});
+			
+//			$("#abc").dytable("setFieldValue",{
+//				mappingName:"approval_type",
+//				value:"015005001,015005002",
+//				type:"checkbox"
+//			})
+			
+//			$("#abc").dytable("hideSubForm",{
+//				tableId : "001",
+//			});
+			
+//			$("#abc").dytable("addRowData",{
+//				tableId : "001",
+//				data : {"apply_material_file":"fileC60F4B2084400001C2EF16D01A881DDF"}
+//			});
+//			
+//			$("#abc").dytable("getAllRowData",{
+//				tableId:"001"
+//		});
+//			$("#abc").dytable("delRowData",{
+//				tableId:"001",
+//				rowid:""
+//			});
 		},
 		error : function(xhr, textStatus, errorThrown) {
 		}

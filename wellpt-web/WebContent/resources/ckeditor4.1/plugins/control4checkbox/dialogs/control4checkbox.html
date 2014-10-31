@@ -176,7 +176,7 @@ var checkboxctl = {};
 	}
 	
 	this.initProperty(field);
-
+	console.log(JSON.stringify(field));
 };
 
 checkboxctl.initProperty = function(field){
@@ -201,7 +201,7 @@ checkboxctl.initProperty = function(field){
 		 );
 	
 	if(field == null ||  (typeof field) == undefined){
-		field = new MainFormFieldClass();
+		field = new WCheckBoxClass();
 		field.inputMode =  dyFormInputMode.checkbox;
 		field.valueCreateMethod = "1";
 	}
@@ -241,7 +241,7 @@ checkboxctl.exitDialog = function(){
 }
 
 checkboxctl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WCheckBoxClass();
 	field.ctrlField=$("#checkboxAttrCfgDiv_ctrlField").val();
 	field.inputMode =  dyFormInputMode.checkbox;
 

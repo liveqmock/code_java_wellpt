@@ -41,10 +41,11 @@
 						<li><a href="#tabs-1">基本信息</a></li>
 						<li><a href="#tabs-2">角色/权限</a></li>
 						<li><a href="#tabs-3">角色树</a></li>
-						<li><a href="#tabs-4">人员/部门/群组</a></li>
+						<li><a href="#tabs-4">分配信息</a></li>
 					</ul>
 					<div id="tabs-1">
 						<input type="hidden" id="uuid" name="uuid" />
+						<input type="hidden" id="sourceUuid" name="sourceUuid" />
 						<table>
 							<tr>
 								<td style="width: 65px;"><label>名称</label></td>
@@ -63,6 +64,12 @@
 								<td><input id="code" name="code" type="text"
 									class="full-width" /></td>
 								<td></td>
+							</tr>
+								<tr>
+								<td><label for="categoryName">分类</label></td>
+								<td><input id="categoryName" name="categoryName" type="text"
+									class="full-width" /></td>
+								<td><input type="hidden" id="categoryUuid" name="categoryUuid" /></td>
 							</tr>
 							<tr>
 								<td class="align-top"><label>备注</label></td>
@@ -93,6 +100,10 @@
 						</div>
 					</div>
 					<div id="tabs-4">
+					<div class="btn-group">
+								<button id="btn_add_org" type="button" class="btn">新增</button>
+								<button id="btn_del_org" type="button" class="btn">删行</button>
+						</div>
 						<table id="role_owner_list"></table>
 						<div id="role_owner_list"></div>
 					</div>
@@ -103,11 +114,13 @@
 				<!-- 				</div> -->
 				<div class="btn-group btn-group-bottom">
 					<button id="btn_save" type="button" class="btn">保存</button>
-					<button id="btn_del" type="button" class="btn">删除</button>
+			<!-- 		<button id="btn_del" type="button" class="btn" >删除</button> -->
 				</div>
 			</form>
 		</div>
 	</div>
+	
+	<div id="dlg_cell"><input id="org_select"></input></div>
 
 	<!-- Project -->
 	<script type="text/javascript" src="${ctx}/resources/jquery/jquery.js"></script>
@@ -128,5 +141,8 @@
 		src="${ctx}/resources/pt/js/system_admin.js"></script>
 	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/security/role.js"></script>
+			<script type="text/javascript" 
+	    src='${ctx}/resources/pt/js/org/unit/jquery.unit.js'></script>
+	    <script type="text/javascript" src="${ctx}/resources/pt/js/common/jquery.comboTree.js"></script>
 </body>
 </html>

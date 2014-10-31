@@ -213,7 +213,7 @@ var serialnumberctl = {};
 
 serialnumberctl.initProperty = function(field){
 	if(field == null ||  (typeof field) == "undefined"){
-		field = new MainFormFieldClass();
+		field = new WSerialNumberClass();
 		field.dbDataType = dyFormInputType.textArea;
 		field.valueCreateMethod = "1";
 	}else{
@@ -249,10 +249,18 @@ serialnumberctl.initProperty = function(field){
 				$("#tr_isOverride").hide();
 				$("#tr_designatedType").hide();
 				$("#tr_isSaveDb").show();
+				 $("input[name='showType'][value='1']").attr("disabled","disabled");
+				 $("input[name='showType'][value='3']").attr("disabled","disabled");
+				 $("input[name='showType'][value='4']").attr("disabled","disabled");
+				 $("input[name='showType'][value='2']").prop("checked","true");
 			}else{
 				$("#tr_isOverride").show();
 				$("#tr_designatedType").show();
 				$("#tr_isSaveDb").hide();
+				 $("input[name='showType'][value='1']").removeAttr("disabled");
+				 $("input[name='showType'][value='3']").removeAttr("disabled");
+				 $("input[name='showType'][value='4']").removeAttr("disabled");
+				 $("input[name='showType'][value='1']").prop("checked","true");
 			}
 	});
 	
@@ -260,10 +268,16 @@ serialnumberctl.initProperty = function(field){
 			$("#tr_isOverride").hide();
 			$("#tr_designatedType").hide();
 			$("#tr_isSaveDb").show();
+			 $("input[name='showType'][value='1']").attr("disabled","disabled");
+			 $("input[name='showType'][value='3']").attr("disabled","disabled");
+			 $("input[name='showType'][value='4']").attr("disabled","disabled");
 		}else{
 			$("#tr_isOverride").show();
 			$("#tr_designatedType").show();
 			$("#tr_isSaveDb").hide();
+			 $("input[name='showType'][value='1']").removeAttr("disabled");
+			 $("input[name='showType'][value='3']").removeAttr("disabled");
+			 $("input[name='showType'][value='4']").removeAttr("disabled");
 		}
 	
 }
@@ -274,7 +288,7 @@ serialnumberctl.exitDialog = function(){
 }
 
 serialnumberctl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WSerialNumberClass();
 	
 
 	//控件公共属性收集
@@ -294,7 +308,10 @@ serialnumberctl.collectFormAndFillCkeditor = function(){
 		field.isSaveDb=$("#isSaveDb").val();
 	}
 	
-	
+	if(field.showType==''||field.showType==undefined){
+		alert('请选择编辑模式!');
+		return false;
+	}
 	
 	var ctlHtml = "<img  class='value' name='" + field.name + "' title='" + field.displayName +"' src='" + this.editor.imageOfSerialNumberctl + "'/>";
 	$(this.editor.fieldClazzElement).attr("class", "field");

@@ -587,37 +587,7 @@
 			+ '						style="right: -7px; top: 28px;">' + '						<li class="nav-header"><span><i'
 			+ '								class="icon-cog-blue"></i>管理</span></li>' + '						<li><a href="#">'
 			+ '								<div class="clearfix" style="margin: 0 2px; border: none;">'
-			+ '									<div class="accordion" id="accordion">' + '										<div class="accordion-group">'
-			+ '											<div class="accordion-heading">'
-			+ '												<a class="accordion-toggle collapsed" href="#">意见分类1'
-			+ '												</a> <span class="accordion-toggle-icon collapsed"></span>' + '											</div>'
-			+ '											<div class="accordion-body collapse in">'
-			+ '												<div class="accordion-inner">' + '													<ul>'
-			+ '														<li class="opinion-menu-item"><a href="#"'
-			+ '															tabindex="-1">同意1同意1同意1同意1同意1同意1同意1</a></li>'
-			+ '														<li class="opinion-menu-item"><a href="#"'
-			+ '															tabindex="-1">不同意1</a></li>'
-			+ '														<li class="opinion-menu-item"><a href="#"'
-			+ '															tabindex="-1">同意1</a></li>'
-			+ '														<li class="opinion-menu-item"><a href="#"'
-			+ '															tabindex="-1">同意1</a></li>'
-			+ '														<li class="opinion-menu-item"><a href="#"'
-			+ '															tabindex="-1">同意同意同意同意同意同意不同意不同意fffffffff</a></li>' + '													</ul>'
-			+ '												</div>' + '											</div>' + '										</div>'
-			+ '										<div class="accordion-group">' + '											<div class="accordion-heading">'
-			+ '												<a class="accordion-toggle" href="#">意见分类2</a> <span'
-			+ '													class="accordion-toggle-icon"></span>' + '											</div>'
-			+ '											<div class="accordion-body collapse">'
-			+ '												<div class="accordion-inner">' + '													<ul>'
-			+ '														<li>同意2</li>' + '														<li>不同意2</li>' + '													</ul>'
-			+ '												</div>' + '											</div>' + '										</div>'
-			+ '										<div class="accordion-group">' + '											<div class="accordion-heading">'
-			+ '												<a class="accordion-toggle" href="#">意见分类3</a> <span'
-			+ '													class="accordion-toggle-icon"></span>' + '											</div>'
-			+ '											<div class="accordion-body collapse">'
-			+ '												<div class="accordion-inner">' + '													<ul>'
-			+ '														<li>同意3</li>' + '														<li>不同意3</li>' + '													</ul>'
-			+ '												</div>' + '											</div>' + '										</div>' + '									</div>'
+			+ '									<div class="accordion" id="accordion"><a href="#"> </a>' + '									</div>'
 			+ '								</div>' + '						</a></li>' + '					</ul></li>' + '			</ul>' + '		</div>' + '	</div>'
 			+ '</div>' + '</div>';
 	var WorkFlowMiniOpinion = function(element, options) {
@@ -699,13 +669,16 @@
 			// 签署意见管理
 			$(".nav-header>span").click($.proxy(onManagerOpinion2, this));
 
-			// 加载常用意见
-			JDS.call({
-				service : getAllOpinionCategoryBeansService,
-				data : [],
-				success : function(result) {
-					onGetAllOpinionCategoryBeansSuccess2(options, result);
-				}
+			$(".btn-sign-opinion").one("click", function() {
+				$("#accordion").html("");
+				// 加载常用意见
+				JDS.call({
+					service : getAllOpinionCategoryBeansService,
+					data : [],
+					success : function(result) {
+						onGetAllOpinionCategoryBeansSuccess2(options, result);
+					}
+				});
 			});
 
 			bindEvent();
@@ -718,8 +691,10 @@
 		},
 		setWidth : function(width) {
 			var w = width - 24;
-			if (w > 500) {
-				w = 500;
+			if (w > 450) {
+				w = 450;
+			} else if(w < 100){
+				w = 200;
 			}
 			var $input = $(".wf_opinion .sign-opinion-input");
 			var $txt = $(".sign-opinion-input textarea");

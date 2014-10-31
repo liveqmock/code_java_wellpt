@@ -35,13 +35,26 @@ $(function() {
 		"leaders" : [],
 		"minorJobs" : [],
 		"subjectDN" : null,
-		"receiveSmsMessage" : null
+		"receiveSmsMessage" : null,
+		"privileges" : [],
+		"homePhone":null,
+		"personnelArea":null,
+		"majorJobName":null,
+		"otherJobNames":null,
+		"majorJobId":null,
+		"otherJobIds":null,
+		"externalId":null,
+		"email":null,
+		"englishName":null,
+		"otherMobilePhone":null,
+		"mainEmail":null,
+		"otherEmail":null
 	};
 	var isDepartmentAdmin = $("#isDepartmentAdmin").val();
-	var departmentUuid = $("#departmentUuid").val();
+	var departmentUuid = "";
 	$("#list").jqGrid($.extend($.common.jqGrid.settings, {
 		url : ctx + '/org/department/user/list?departmentUuid=' + departmentUuid,
-		colNames : [ "uuid", "登录名", "姓名", "性别", "员工编号", "部门", "岗位", "上级领导", "状态" ],
+		colNames : [ "uuid", "登录名", "姓名", "性别", "员工编号", "部门", "岗位","职位", "上级领导", "状态" ],
 		colModel : [ {
 			name : "uuid",
 			index : "uuid",
@@ -78,8 +91,13 @@ $(function() {
 		}, {
 			name : "jobName",
 			index : "jobName",
+			width : "180",
+			hidden : true
+		},{
+			name : "majorJobName",
+			index : "majorJobName",
 			width : "180"
-		}, {
+		},  {
 			name : "leaderNames",
 			index : "leaderNames",
 			width : "180"
@@ -132,6 +150,12 @@ $(function() {
 				}
 				// 设置角色树
 				loadRoleTree(bean.uuid);
+				
+				//加载权限树 20140806+ by zky
+				//loadPrivilegeTree(bean.uuid);
+				
+				// 加载部门权限树+ by zky
+				//loadUserPrivilegeTree(bean.uuid);
 
 				var active = $(".tabs").tabs("option", "active");
 				if (active == 3) {
@@ -140,6 +164,87 @@ $(function() {
 			}
 		});
 	}
+	
+	/**-----------初始化权限树开始 ------------------------------------------**/
+	var privilegesetting = {
+			check : {
+				enable : true
+			},
+			callback : {
+				onCheck : setSelectedPrivilege
+			}
+		};
+	
+	// 设置已选中的角色和权限到多选下拉框
+	function setSelectedPrivilege(e, treeId, treeNode) {
+		var zTree = $.fn.zTree.getZTreeObj("privilege_tree");
+		var checkNodes = zTree.getCheckedNodes(true);
+		// 清空
+		$("#selected_privilege").html("");
+		$.each(checkNodes, function(index) {
+			var id = this.id;
+			var name = this.name;
+			var option = "<option value='" + id + "'>" + name + "</option>";
+			$("#selected_privilege").append(option);
+		});
+	}
+	
+	// 加载角色权限树，自动选择已选角色权限
+	function loadPrivilegeTree(uuid) {
+		var role = {};
+		role.uuid = uuid;
+		JDS.call({
+			service : "userService.getPrivilegeTree",
+			data : [ uuid ],
+			success : function(result) {
+				var zTree = $.fn.zTree.init($("#privilege_tree"), privilegesetting, result.data);
+				var nodes = zTree.getNodes();
+				// 默认展开第一个节点
+				if (nodes.length > 0) {
+					var node = nodes[0];
+					zTree.expandNode(node, true, false, false, true);
+					// 设置已选中的权限到多选下拉框
+					setSelectedPrivilege();
+				}
+			}
+		});
+	}
+	
+	// 收集权限树
+	function privilegeToObject(bean) {
+		var zTree = $.fn.zTree.getZTreeObj("privilege_tree");
+		if (zTree != null) {
+			var checkNodes = zTree.getCheckedNodes(true);
+			bean["privileges"] = [];
+			$.each(checkNodes, function(index) {
+				var privilege = {};
+				privilege.uuid = this.id;
+				bean["privileges"].push(privilege);
+			});
+		}
+	}
+	
+	// 加载部门权限树
+	function loadUserPrivilegeTree(uuid) {
+		JDS.call({
+			service : "userService.getUserPrivilegeTree",
+			data : uuid,
+			success : function(result) {
+				var zTree = $.fn.zTree
+						.init($("#user_privilege_tree"), {},
+								result.data);
+				var nodes = zTree.getNodes();
+				// 默认展开第一个节点
+				if (nodes.length > 0) {
+					var node = nodes[0];
+					zTree.expandNode(node, true, false, false, true);
+				}
+			}
+		});
+	}
+	
+	/**----------------- 初始化权限树结束 --------------------------------------------**/
+	
 
 	// JQuery UI按钮
 	$("input[type=submit], a, button", $(".btn-group")).button();
@@ -310,6 +415,20 @@ $(function() {
 		$("#user_photo").hide();
 		// 只能以证书登录
 		$("input[name=onlyLogonWidthCertificate]").attr("checked", "checked");
+		
+	/*	//清空权限树
+		$("#selected_privilege").html("");
+		var prtree = $.fn.zTree.getZTreeObj("privilege_tree");
+		if (prtree != null) {
+			prtree.checkAllNodes(false);
+		}
+		
+		//清空权限树
+		var prtree1 = $.fn.zTree.getZTreeObj("user_privilege_tree");
+		if (prtree1 != null) {
+			prtree1.destroy();
+		}*/
+		
 	}
 
 	// 导入用户信息
@@ -337,12 +456,11 @@ $(function() {
 							fileElementId : 'uploadfile',// 文件选择框的ID属性
 							dataType : 'text', // 服务器返回的数据格式
 							success : function(data, status) {
-								if (data == "success") {
-									alert("导入成功");
-									;
-									window.parent.document.location.reload();
+								if (data.indexOf("Error:")>0) {
+									alert(data);
 								} else {
 									alert(data);
+									window.parent.document.location.reload();
 								}
 							},
 							error : function(data, status, e) {
@@ -443,6 +561,8 @@ $(function() {
 		$("#user_form").form2json(bean);
 		// 收集角色树
 		rolesToObject(bean);
+		//收集权限树
+		//privilegeToObject(bean);
 		JDS.call({
 			service : "userService.saveBean",
 			data : [ bean ],
@@ -510,7 +630,7 @@ $(function() {
 
 	// 工作信息
 	// 所在部门
-	if ($("#isDepartmentAdmin").val() != "1") {
+/*	if ($("#isDepartmentAdmin").val() != "1") {
 		$("#departmentName").click(function() {
 			$.unit.open({
 				title : "选择部门",
@@ -520,7 +640,7 @@ $(function() {
 				selectType : 2
 			});
 		});
-	}
+	}*/
 	// 上级领导
 	$("#leaderNames").click(function() {
 		$.unit.open({
@@ -549,6 +669,31 @@ $(function() {
 			selectType : 2
 		});
 	});
+	
+	// 主职位
+	$("#majorJobName").click(function() {
+		$.unit.open({
+			title : "选择职位",
+			labelField : "majorJobName",
+			valueField : "majorJobId",
+			selectType : 1,
+			multiple:false,
+			type : "Job",
+			showType : false
+		});
+	});
+	
+	// 其他职位
+	$("#otherJobNames").click(function() {
+		$.unit.open({
+			title : "选择其他职位",
+			labelField : "otherJobNames",
+			valueField : "otherJobIds",
+			selectType : 1,
+			type : "Job",
+			showType : false
+		});
+	});
 
 	// 列表查询
 	$("#query_user").keypress(function(e) {
@@ -562,7 +707,7 @@ $(function() {
 		var postData = {
 			"queryPrefix" : "query",
 			"queryOr" : true,
-			"query_LIKES_loginName_OR_userName_OR_remark" : queryValue
+			"query_LIKES_loginName_OR_userName_OR_employeeNumber_OR_remark" : queryValue
 		};
 		$("#list").jqGrid("setGridParam", {
 			postData : null

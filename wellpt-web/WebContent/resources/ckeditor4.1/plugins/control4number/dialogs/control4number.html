@@ -46,19 +46,29 @@
 						<option value="14">  长整数</option>
 						<option value="15">  浮点数</option>
 					</select>
-				
 				</td>
-			</tr> 
-			
-				<tr id="tr_decimal" style="display:none;">
+			</tr>
+			<tr id="tr_decimal" style="display:none;">
 				<td class="Label" >小数位数</td>
 				<td class="value">
 				<input type="text"  name="decimal"
-					id="decimal" value="" style="width: 25px;float: left;"/>
-					
-				
+					id="decimal" value="" style="width: 25px;float: left;"/> 
 				</td>
-			</tr> 
+			</tr>
+			
+			<tr id="tr_plusminus">
+				<td class="Label" >加减功能</td>
+				<td class="value">
+				<input type="checkbox"  name="plusMark" 
+					id="plusMark" value="" style="width: 25px;float: left;"/> <label for="plusMark">加号</label>
+					<input type="text"  name="plusUnit"
+					id="plusUnit" value="1" style="width: 25px;float: left;"/> 
+				<input type="checkbox"  name="minusMark" 
+					id="minusMark" value="" style="width: 25px;float: left;"/> <label for="minusMark">减号</label>
+					<input type="text"  name="minusUnit"
+					id="minusUnit" value="1" style="width: 25px;float: left;"/> 
+				</td>
+			</tr>
 			
 			<tr>
 				<td class="Label">字体样式</td>
@@ -203,7 +213,7 @@ numberctl.initProperty = function(field){
 	 
 	
 	if(field == null ||  (typeof field) == "undefined"){
-		field = new MainFormFieldClass();
+		field = new WNumberInputClass();
 		field.dbDataType = '13';
 		field.decimal = '0';
 		field.valueCreateMethod = "1";
@@ -242,7 +252,7 @@ numberctl.exitDialog = function(){
 }
 
 numberctl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WNumberInputClass();
 	field.inputMode =  dyFormInputMode.number;
 	//控件公共属性收集
 	var checkpass=$.ControlConfigUtil.collectFormCtlComProperty(field);

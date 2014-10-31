@@ -34,39 +34,44 @@
 	 * UNIT CLASS DEFINITION ======================
 	 */
 	var Unit = function(element, options) {
-		this.init("wunit", element, options);
+		this.$element = $(element);
+		this.options = $.extend({}, $.fn["wunit"].defaults, options,
+				this.$element.data());
 	};
 
 	Unit.prototype = {
 		constructor : Unit,
-		init : function(type, element, options) {
-			this.type = type;
-			this.$element = $(element);
-			this.options = this.getOptions(options);
-			//参数初始化
-			this.initparams(this.options);
-		},
+	
 		//默认参数初始化
-		initparams:function(options){
-			
+		initSelf:function(){
 			 //设置字段属性.根据不同的控件类型区分。
-			 $.ControlUtil.setCtrAttr(this.$element,this.options);
+			this.$element.attr("id",this.$element.attr("name"));
+			 if(this.options.commonProperty.inputMode==dyFormOrgSelectType.orgSelectStaff){
+				 this.$element.addClass("input-people");//css in wellnewoa.css
+			 }else{
+				 this.$element.addClass("input-search");//css in wellnewoa.css
+			 }
+			 //设置文本的css样式
+			 this.setTextInputCss();
 			//设置默认值
-			this.$element.val(options.columnProperty.defaultvalue);
-			 
+			 this.setDefaultValue(this.options.columnProperty.defaultValue); 
+			
 			 //只显示为label.
-			if(options.columnProperty.showType==dyshowType.showAsLabel){
-				 $.ControlUtil.setIsDisplayAsLabel(this.$element,options,true);
-			}else if(options.columnProperty.showType==dyshowType.disabled){
-				 $.ControlUtil.setEnable(this.$element,false);
-			 }else if(options.columnProperty.showType==dyshowType.hide){
-				 $.ControlUtil.setVisible(this.$element,false);
-			 }else if(options.columnProperty.showType==dyshowType.readonly){
-				 $.ControlUtil.setReadOnly(this.$element,true);
+			 var showType=this.options.columnProperty.showType;
+			if(showType==dyshowType.showAsLabel){
+				 this.setDisplayAsLabel();
+			}else if(showType==dyshowType.disabled){
+				 this.setEnable(false);
+			 }else if(showType==dyshowType.hide){
+				 this.setVisible(false);
+			 }else if(showType==dyshowType.readonly){
+				 this.setReadOnly(true);
 			 }else {
 			 var labelField = this.$element.attr("id");
 			 var inputMode=this.options.commonProperty.inputMode;
+			 var _this = this;
 			 if(dyFormOrgSelectType.orgSelectAddress == inputMode) {//单位通讯录
+				
 				 this.$element.mousedown(function(){
 						$.unit.open({
 							labelField:labelField, 
@@ -75,6 +80,8 @@
 							close:function(){
 								$("#"+labelField).focus();
 								$("#"+labelField).blur();
+								
+								_this.setToRealDisplayColumn( );
 							}
 						});
 					});
@@ -85,6 +92,7 @@
 						close:function(){
 							$("#"+labelField).focus();
 							$("#"+labelField).blur();
+							_this.setToRealDisplayColumn( );
 						}
 					});
 					});
@@ -97,6 +105,7 @@
 						close:function(){
 							$("#"+labelField).focus();
 							$("#"+labelField).blur();
+							_this.setToRealDisplayColumn( );
 						}
 					});
 				 });
@@ -107,72 +116,31 @@
 						selectType : 4,
 						close:function(){
 							$("#"+labelField).focus();
-							$("#"+labelField).blur();
+							$("#"+labelField).blur(); 
+							_this.setToRealDisplayColumn( );
 						}
 					});
 				 });
 			 }
 			 }
+			  this.addMustMark();
 		},
-		getOptions : function(options) {
-			options = $.extend({}, $.fn[this.type].defaults, options,
-					this.$element.data());
-			return options;
-		},
+		
+		
 				
 		//set............................................................//
 	     
 		//设值
 		 setValue:function(value){
 	    	  this.$element.attr("hiddenvalue",value);
+	    	  this.setToRealDisplayColumn(); 
 		 } ,
 		 
 			
 		 //设置显示值。
 		 setDisplayValue:function(value){
 	    	  this.$element.val(value);
-	    	  this.$element.attr("value",value);
 		 } ,
-		 
-		 //设置必输
-		 setRequired:function(isrequire){
-			 $.ControlUtil.setRequired(isrequire,this.options);
-		 } ,
-		 
-		 //设置可编辑
-		 setEditable:function(){
-			 this.setReadOnly(false);
-			 this.setEnable(true);
-			 this.setDisplayAsCtl();
-		 } ,
-		 
-		 //只读，文本框不置灰，不可编辑
-		 setReadOnly:function(isreadonly){
-			 $.ControlUtil.setReadOnly(this.$element,isreadonly);
-			 this.options.readOnly=isreadonly;
-		 } ,
-		 
-		 //设置disabled属性
-		 setEnable:function(isenable){
-			 $.ControlUtil.setEnable(this.$element,isenable);
-			 this.options.disabled=!isenable;
-		 } ,
-		 
-		 //设置hide属性
-		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(this.$element,isvisible);
-			 this.options.isHide=!isvisible;
-		 } ,
-		 
-		 //显示为lablel
-		 setDisplayAsLabel:function(){
-			 $.ControlUtil.setIsDisplayAsLabel(this.$element,this.options,true);
-		 } ,
-		 
-		 //显示为控件
-		 setDisplayAsCtl:function(){
-			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
-		 },
 		 
 		 setValueByMap:function(valuemap){
 			 var valueobj=eval("("+valuemap+")");
@@ -182,8 +150,9 @@
 				 valuearray.push(attribute);
 				 displayvaluearray.push(valueobj[attribute]);
 				}
-			 this.setValue((valuearray.toString()).replace(/\,/g, ";"));
+			 
 			 this.setDisplayValue((displayvaluearray.toString()).replace(/\,/g, ";"));
+			 this.setValue((valuearray.toString()).replace(/\,/g, ";"));
 		     
 			 if(this.options.isShowAsLabel==true){
 				 this.$element.next().html(this.getDisplayValue());
@@ -220,71 +189,6 @@
 			}
 			 return v;
 		 },
-		 
-		 /**
-		  * 返回是否可编辑(由readOnly和disabled判断)
-		  * @returns {Boolean}
-		  */
-		 isEditable:function(){
-			 if(this.options.readOnly&&this.options.disabled){
-				 return false;
-			 }else{
-				 return true;
-			 }
-		 },
-		 
-		 isReadOnly:function(){
-			 return this.options.readOnly;
-		 },
-		 
-		 isEnable:function(){
-			 return !this.options.disabled;
-		 },
-		 
-		 isVisible:function(){
-			 return  this.options.isHide;
-		 }, 
-		 
-		 isShowAsLabel:function(){
-			 return this.options.isShowAsLabel;
-		 },
-		 
-		 isRequired:function(){
-			 return $.ControlUtil.isRequired(this.options);
-		 },
-		 
-		 getAllOptions:function(){
-		    	 return this.options;
-		     } ,  
-		     
-		 getRule:function(){
-			 return $.ControlUtil.getCheckRules(this.options);
-		 } ,
-		 
-		 getMessage:function(){
-			 return $.ControlUtil.getCheckMsg(this.options);
-		 } ,
-		 
-	     /**
-	      * 获得控件名
-	      * @returns
-	      */
-	     getCtlName:function(){
-	    	 return this.$element.attr("name");
-	     },
-		 
-	     //bind函数，桥接
-	     bind:function(eventname,event){
-	    	this.$element.bind(eventname,event);
-	    	return this;
-	     },
-		 
-		 //unbind函数，桥接
-	     unbind:function(eventname){
-	    	this.$element.unbind(eventname);
-	    	return this;
-	     }
-	    //一些其他method ---------------------
 	     
 	};
 	
@@ -318,8 +222,14 @@
 					options = typeof option == 'object'
 							&& option;
 					if (!data) {
-						$this.data('wunit', (data = new Unit(this,
-								options)));
+						 data = new Unit(this,options);
+						 var datacopy={};
+						 var data1=$.extend(datacopy,data);
+						 var extenddata=$.extend(data,$.wControlInterface);
+						 var data2=$.extend(extenddata,data1);
+						 var data3=$.extend(data2,$.wTextCommonMethod);
+						 data3.init();
+						 $this.data('wunit',data3 );
 					}
 					if (typeof option == 'string') {
 						if (method == true && args != null) {
@@ -342,6 +252,7 @@
 	        readOnly:false,
 	        disabled:false,
 	        isHide:false,//是否隐藏
+	        
 	};
 	
 })(jQuery);

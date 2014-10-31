@@ -9,7 +9,6 @@
         su = new SmartUpload();   
         su.initialize(pageContext);   
         su.upload();   
-        pageErrorInfo = FileUtil.fileUpload(su,pageContext);   
         System.out.println(pageErrorInfo);
         //if(pageErrorInfo.indexOf("error")<0){   
         //    out.print(pageErrorInfo);   

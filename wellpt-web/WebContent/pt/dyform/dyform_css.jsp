@@ -1,30 +1,20 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@page import="com.wellsoft.pt.utils.security.SpringSecurityUtils"%>
+
+<!-- 这两个css的引入顺序不可调换 -->
 <link type="text/css" rel="stylesheet"
-	href="${ctx}/resources/validform/css/style.css" />
-<link rel="stylesheet" type="text/css"
-	href="${ctx}/resources/jqueryui/css/base/jquery-ui.css" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="${ctx}/resources/jqgrid/themes/ui.jqgrid.css" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="${ctx}/resources/jqgrid/themes/ui.multiselect.css" />
-<link rel="stylesheet"
-	href="${ctx}/resources/bootstrap/css/bootstrap.min.css" />
-<link href="${ctx}/resources/jBox/Skins/Blue/jbox.css" rel="stylesheet"
-	type="text/css" />
-<link rel="stylesheet"
+	href="${ctx}/resources/pt/css/dyform/dyform_combine.css" /> 
+	<link rel="stylesheet"
 	href="${ctx}/resources/ztree/css/zTreeStyle/zTreeStyle.css"
-	type="text/css" />
-<link rel="stylesheet" type="text/css" 
-		href="${ctx}/resources/theme/css/wellnewoa.css" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="${ctx}/resources/pt/css/dyform.css" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="${ctx}/resources/pt/css/calendar.css" />
-<link rel="stylesheet" type="text/css"
-	href="${ctx}/resources/fileupload/jquery.fileupload-ui.css" />
-<link rel="stylesheet" type="text/css"
-	href="${ctx}/resources/fileupload/fileupload.css" />
+	<link type="text/css" rel="stylesheet"
+	href="${ctx}/resources/pt/css/dyform/dyform.css" /> 
+	
+	<link rel="stylesheet" type="text/css" 
+		href="${ctx}/resources/theme/css/wellnewoa.css" /> 
+<!-- --------------------------------------- -->
+ 
+	
+
 <style>
 /* Component containers
 ----------------------------------*/

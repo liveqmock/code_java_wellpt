@@ -64,6 +64,19 @@
 							for="deactive">禁用</label></td>
 						<td></td>
 					</tr>
+					<!-- add by huanglinchuan 2014.10.18 begin -->
+					<tr>
+						<td class="align-top"><label>标题表达式</label></td>
+						<td><textarea id="title_expression" name="title_expression" class="full-width"></textarea>
+							<br>
+							可使用\${流程内置变量或者绑定表单字段名}动态获取数据，支持的流程内置变量包括：
+							\${流程名称},\${流程ID},\${流程编号},\${发起人姓名},\${发起人所在部门名称},\${年},\${简年},\${月},\${日},\${时},\${分},\${秒} <br>
+							支持绑定动态表单的所有字段编码，格式为\${字段编码 }<br>
+							或者直接拷贝下面的格式：\${流程名称}-\${发起人姓名 }（\${年}\${月}\${日}\${时}\${分}\${秒}）
+						</td>
+						<td></td>
+					</tr>
+					<!-- add by huanglinchuan 2014.10.18 end -->
 				</table>
 			</div>
 			<div id="tabs-2">
@@ -106,6 +119,17 @@
 							type="hidden" /> <input name="admin8" value="" type="hidden" /></td>
 						<td></td>
 					</tr>
+					<!-- add by huanglinchuan 2014.10.28 begin -->
+					<tr>
+						<td class="align-top"><label for="Dadmins">阅读者</label></td>
+						<td><textarea id="Dviewers" name="Dviewers" class="full-width"></textarea>
+							<input name="Dviewer1" value="" type="hidden" /> <input
+							name="viewer1" value="" type="hidden" /> <input name="viewer2"
+							value="" type="hidden" /> <input name="viewer4" value=""
+							type="hidden" /> <input name="viewer8" value="" type="hidden" /></td>
+						<td></td>
+					</tr>
+					<!-- add by huanglinchuan 2014.10.28 end -->
 				</table>
 			</div>
 			<div id="tabs-3">
@@ -175,6 +199,8 @@
 							name="listener" type="hidden" /></td>
 						<td></td>
 					</tr>
+					<!-- modified by huanglinchuan 2014.10.21 begin -->
+					<!-- 
 					<tr>
 						<td><label>文件分发</label></td>
 						<td><input id="sendFile" name="isSendFile" type="radio"
@@ -211,6 +237,7 @@
 							name="msgRecipient8" type="hidden" /></td>
 						<td></td>
 					</tr>
+					-->
 					<tr>
 						<td style="width: 75px;" class="align-top"><label
 							for="DBackUser">岗位替代</label></td>
@@ -232,11 +259,12 @@
 					</tr>
 					<tr>
 						<td style="width: 75px;" class="align-top"><label
-							for="DMessageTemplate">消息模板</label></td>
+							for="DMessageTemplate">消息分发</label></td>
 						<td>
+						    消息类型  | 消息模板  | 是否启用  | 约束条件  | 抄送对象
 							<div>
 								<div style="float: left; width: 85%">
-									<select id="DMessageTemplate" name="DMessageTemplate" size="6"
+									<select id="DMessageTemplate" name="DMessageTemplate" size="20"
 										class="full-width">
 									</select>
 								</div>
@@ -249,6 +277,7 @@
 						</td>
 						<td></td>
 					</tr>
+					<!-- modified by huanglinchuan 2014.10.21 end -->
 				</table>
 			</div>
 		</div>

@@ -22,7 +22,7 @@
 		destroy-method="close">
 		<property name="className" value="org.apache.activemq.ActiveMQXAConnectionFactory" />
 		<property name="uniqueName" value="activemq-integration" />
-		<property name="maxPoolSize" value="10" />
+		<property name="maxPoolSize" value="20" />
 		<property name="driverProperties">
 			<props>
 				<prop key="brokerURL">${jms.broker_url}?jms.redeliveryPolicy.maximumRedeliveries=1</prop>
@@ -41,7 +41,7 @@
 			<!-- lets wrap in a pool to avoid creating a connection per send -->
 			<bean class="org.springframework.jms.connection.CachingConnectionFactory">
 				<property name="targetConnectionFactory" ref="integrationConnectionFactory" />
-				<property name="sessionCacheSize" value="10" />
+				<property name="sessionCacheSize" value="20" />
 			</bean>
 		</property>
 	</bean>

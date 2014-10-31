@@ -7,8 +7,7 @@
 <head>
 <%@ include file="/pt/common/taglibs.jsp"%>
 <%@ include file="/pt/common/meta.jsp"%>
-<!-- <title>威尔 - 统一业务应用与开发云平台</title> -->
-<title>厦门市行政审批云平台</title>
+<title>立达信云平台</title>
 <link rel="stylesheet" type="text/css"
 	href="${ctx}/resources/ligerUI/skins/Aqua/css/ligerui-all.css" />
 <link rel="stylesheet" type="text/css"
@@ -124,6 +123,7 @@
 .mouse_hand {
 	cursor:pointer;
 }
+
 body{background-color:#EAF4FD}
 </style>
 </head>
@@ -132,35 +132,8 @@ body{background-color:#EAF4FD}
 		<div id="pageloading"></div>
 		<div id="header" class="row-fluid">
 			<div class="span9">
-				<div class="row-fluid">
-<!-- 	OA后台页面log				<div style="float: left;height: 65px;line-height: 60px;"> -->
-<!-- 						<img style="height: 34px;margin: 5px 0px 5px 0px;" alt="Well-Soft" -->
-<%-- 							src="${ctx}/resources/pt/images/logo.png"> --%>
-<!-- 					</div> -->
-					<div style="float: left;height: 65px;line-height: 60px;width: 322px;">
-						<img style="height: 50px;margin: 5px 0px 5px 0px;float: left;" alt="Well-Soft"
-							src="${ctx}/resources/pt/img/zzffzx-logo6.png">
-    <div style="font-size: 16px;
-    height: 50px;
-    margin-left: 55px;
-    margin-top: 5px;
-    text-align: left;">
-    	<div style="height: 25px;
-    line-height: 25px;font-size:18px;letter-spacing: 15px;">厦门市审批服务云</div>
-	    <div style="border-top: 1px solid #000000;
-    font-size: 14px;
-    height: 25px;
-    line-height: 25px;
-    text-align: left;">厦门市行政审批（商事登记）信息管理平台</div>
-    </div>
-     
-					</div>
-<!-- 					<div style="float: left; height: 50px"> -->
-<!-- 						<h3 -->
-<!-- 							style="vertical-align: bottom; height: 45px; line-height: 45px; font-family: '黑体', 'Helvetica Neue', Helvetica, Arial, sans-serif;"> -->
-<!-- 							<i>&nbsp;统一业务应用与开发云平台</i> -->
-<!-- 						</h3> -->
-<!-- 					</div> -->
+				<div class="row-fluid" >
+					<div style="width: 185px;background:url('${ctx}/resources/pt/images/login/ldx_logo.png');height: 54px;cursor: auto;" >&nbsp;</div>
 				</div>
 			</div>
 			<div class="span3" style="text-align: right">
@@ -177,7 +150,7 @@ body{background-color:#EAF4FD}
 			%>
 				<security:authentication property="principal.username" />,欢迎您!
 				<a href="${ctx}<%=homePage%>" target="_blank">我的主页</a>
-				<a href="${ctx}/security_logout">退出登录</a>
+				<a href="${ctx}/j_spring_security_logout" />退出登录</a>  
 			</div>
 		</div>
 		<!-- header end -->
@@ -227,6 +200,27 @@ body{background-color:#EAF4FD}
 						</a>
 					</div>
 					</privilege:access>
+					
+					<privilege:access ifGranted="001010">
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('org_duty','职务','${ctx}/org/duty/list')">
+							<img src="${ctx}/resources/pt/images/kontact.png"></img><br />
+							<span>职务</span>
+						</a>
+					</div>
+					</privilege:access>
+					
+					<privilege:access ifGranted="001009">
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('org_department_job','职位','${ctx}/org/department/job')">
+							<img src="${ctx}/resources/pt/images/kontact.png"></img><br />
+							<span>职位</span>
+						</a>
+					</div>
+					</privilege:access>
+					
 					<privilege:access ifGranted="001003">
 					<div class="nav-item">
 						<a href="javascript:addTab('org_group','群组','${ctx}/org/group/list')">
@@ -272,7 +266,7 @@ body{background-color:#EAF4FD}
 					</privilege:access>
 				</div>
 				</privilege:access>
-				<privilege:access ifGranted="004">
+			<privilege:access ifGranted="004">
 				<div title="流程管理" style="overflow: auto;">
 					<privilege:access ifGranted="004001">
 					<div class="nav-item">
@@ -301,8 +295,93 @@ body{background-color:#EAF4FD}
 						</a>
 					</div>
 					</privilege:access>
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('define_dev','二次开发配置','${ctx}/workflow/define/develop')">
+							<img src="${ctx}/resources/pt/images/print_class.png"></img><br />
+							<span>二次开发配置</span>
+						</a>
+					</div>
 				</div>
 				</privilege:access>
+				<div title="工作流程" style="overflow: auto;">
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('flow_list','新建工作','${ctx}/workflow/work/flow/list')">
+							<img src="${ctx}/resources/pt/images/print_class.png"></img><br />
+							<span>新建工作</span>
+						</a>
+					</div>
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('work_todo','待办工作','${ctx}/workflow/work/todo')">
+							<img src="${ctx}/resources/pt/images/print_class.png"></img><br />
+							<span>待办工作</span>
+						</a>
+					</div>
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('work_done','已办工作','${ctx}/workflow/work/done')">
+							<img src="${ctx}/resources/pt/images/print_class.png"></img><br />
+							<span>已办工作</span>
+						</a>
+					</div>
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('work_over','已办工作','${ctx}/workflow/work/over')">
+							<img src="${ctx}/resources/pt/images/print_class.png"></img><br />
+							<span>办结工作</span>
+						</a>
+					</div>
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('work_draft','工作草稿','${ctx}/workflow/work/draft')">
+							<img src="${ctx}/resources/pt/images/print_class.png"></img><br />
+							<span>工作草稿</span>
+						</a>
+					</div>
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('work_unread','未阅工作','${ctx}/workflow/work/unread')">
+							<img src="${ctx}/resources/pt/images/print_class.png"></img><br />
+							<span>未阅工作</span>
+						</a>
+					</div>
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('work_read','已阅工作','${ctx}/workflow/work/read')">
+							<img src="${ctx}/resources/pt/images/print_class.png"></img><br />
+							<span>已阅工作</span>
+						</a>
+					</div>
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('work_attention','关注工作','${ctx}/workflow/work/attention')">
+							<img src="${ctx}/resources/pt/images/print_class.png"></img><br />
+							<span>我关注</span>
+						</a>
+					</div>
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('work_supervise','工作督办','${ctx}/workflow/work/supervise')">
+							<img src="${ctx}/resources/pt/images/print_class.png"></img><br />
+							<span>工作督办</span>
+						</a>
+					</div>
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('work_monitor','工作监控','${ctx}/workflow/work/monitor')">
+							<img src="${ctx}/resources/pt/images/print_class.png"></img><br />
+							<span>工作监控</span>
+						</a>
+					</div>
+										<div class="nav-item">
+											<a href="javascript:addTab('work_3','工作委托','device/index')"> <img
+												src="${ctx}/resources/pt/images/print_class.png"></img><br />
+												<span>工作委托</span>
+											</a>
+										</div>
+				</div>
 				<privilege:access ifGranted="005">
 				<div title="表单管理" style="overflow: auto;">
 					<privilege:access ifGranted="005001">
@@ -332,6 +411,15 @@ body{background-color:#EAF4FD}
 						</a>
 					</div>
 					</privilege:access>
+					<privilege:access ifGranted="005004">
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('form_definition4','显示表单(新)','${ctx}/dyformmodel/list/list')">
+							<img src="${ctx}/resources/pt/images/kdmconfig.png"></img><br />
+							<span>显示表单(新)</span>
+						</a>
+					</div>
+					</privilege:access>
 				</div>
 				
 				
@@ -345,7 +433,7 @@ body{background-color:#EAF4FD}
 					<privilege:access ifGranted="002001">
 					<div class="nav-item">
 						<a
-							href="javascript:addTab('security_role','角色','${ctx}/security/role')">
+							href="javascript:addTab('security_role','角色','${ctx}/security/category/role')">
 							<img src="${ctx}/resources/pt/images/kontact.png"></img><br /> <span>角色</span>
 						</a>
 					</div>
@@ -353,7 +441,7 @@ body{background-color:#EAF4FD}
 					<privilege:access ifGranted="002002">
 					<div class="nav-item">
 						<a
-							href="javascript:addTab('authority','权限','${ctx}/security/privilege')">
+							href="javascript:addTab('authority','权限','${ctx}/security/category/privilege')">
 							<img src="${ctx}/resources/pt/images/print_class.png"></img><br />
 							<span>权限</span>
 						</a>
@@ -380,7 +468,7 @@ body{background-color:#EAF4FD}
 						</a>
 					</div>
 					</privilege:access>
-					<privilege:access ifGranted="006002">
+					<privilege:access ifGranted="006007">
 					<div class="nav-item">
 						<a
 							href="javascript:addTab('cms_category','导航','${ctx}/cms/category')">
@@ -404,6 +492,15 @@ body{background-color:#EAF4FD}
 							href="javascript:addTab('dyview','视图','${ctx}/basicdata/dyview')">
 							<img src="${ctx}/resources/pt/images/kappfinder.png"></img><br />
 							<span>视图</span>
+						</a>
+					</div>
+					</privilege:access>
+					<privilege:access ifGranted="006008">
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('view','视图','${ctx}/basicdata/view')">
+							<img src="${ctx}/resources/pt/images/kappfinder.png"></img><br />
+							<span>视图（新）</span>
 						</a>
 					</div>
 					</privilege:access>
@@ -471,6 +568,33 @@ body{background-color:#EAF4FD}
 							href="javascript:addTab('excel_import_rule','数据导入规则','${ctx}/basicdata/excelimportrule')">
 							<img src="${ctx}/resources/pt/images/kappfinder.png"></img><br />
 							<span>数据导入规则</span>
+						</a>
+					</div>
+					</privilege:access>
+					<privilege:access ifGranted="003009">
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('excel_export_rule','excel导出规则','${ctx}/basicdata/excelexportrule')">
+							<img src="${ctx}/resources/pt/images/kappfinder.png"></img><br />
+							<span>数据导出规则</span>
+						</a>
+					</div>
+					</privilege:access>
+					<privilege:access ifGranted="003010">
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('data_source','数据源','${ctx}/basicdata/datasource')">
+							<img src="${ctx}/resources/pt/images/kappfinder.png"></img><br />
+							<span>数据源</span>
+						</a>
+					</div>
+					</privilege:access>
+					<privilege:access ifGranted="003010">
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('data_source_profile','外部数据源配置信息','${ctx}/basicdata/datasource/profile')">
+							<img src="${ctx}/resources/pt/images/kappfinder.png"></img><br />
+							<span>外部数据源配置信息</span>
 						</a>
 					</div>
 					</privilege:access>
@@ -557,6 +681,15 @@ body{background-color:#EAF4FD}
 						</a>
 					</div>
 					</privilege:access>
+					<privilege:access ifGranted="009003">
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('exchange_config','商改设置', '${ctx}/exchangedata/dataconfig/exchange_sg_set')">
+							<img src="${ctx}/resources/pt/images/package_settings.png"></img><br />
+							<span>商改设置</span>
+						</a>
+					</div>
+					</privilege:access>
 				</div>
 				</privilege:access>
 				<privilege:access ifGranted="011">
@@ -604,13 +737,13 @@ body{background-color:#EAF4FD}
 				</div>
 				</privilege:access>
 				<privilege:access ifGranted="012">
-				<div title="数据交换设置" style="overflow: auto;">
+				<div title="数据交换" style="overflow: auto;">
 					<privilege:access ifGranted="012001">
 					<div class="nav-item">
 						<a
 							href="javascript:addTab('exchange_system','接入系统设置','${ctx}/exchangedata/dataconfig/exchange_systemlist')">
 							<img src="${ctx}/resources/pt/images/package_settings.png"></img><br />
-							<span>接入系统设置</span>
+							<span>接入系统</span>
 						</a>
 					</div>
 					</privilege:access>
@@ -619,7 +752,7 @@ body{background-color:#EAF4FD}
 						<a
 							href="javascript:addTab('exchange_data_type','数据类型设置','${ctx}/exchangedata/dataconfig/exchange_data_typelist')">
 							<img src="${ctx}/resources/pt/images/package_settings.png"></img><br />
-							<span>数据类型设置</span>
+							<span>数据类型</span>
 						</a>
 					</div>
 					</privilege:access>
@@ -628,7 +761,7 @@ body{background-color:#EAF4FD}
 						<a
 							href="javascript:addTab('exchange_data_transform','数据转换设置','${ctx}/exchangedata/dataconfig/exchange_data_transformlist')">
 							<img src="${ctx}/resources/pt/images/package_settings.png"></img><br />
-							<span>数据转换设置</span>
+							<span>数据转换</span>
 						</a>
 					</div>
 					</privilege:access>
@@ -637,7 +770,7 @@ body{background-color:#EAF4FD}
 						<a
 							href="javascript:addTab('exchange_route','路由规则设置','${ctx}/exchangedata/dataconfig/exchange_routelist')">
 							<img src="${ctx}/resources/pt/images/package_settings.png"></img><br />
-							<span>路由规则设置</span>
+							<span>路由规则</span>
 						</a>
 					</div>
 					</privilege:access>
@@ -647,6 +780,33 @@ body{background-color:#EAF4FD}
 							href="javascript:addTab('exchange_log','日志跟踪','${ctx}/exchangedata/dataconfig/exchange_loglist')">
 							<img src="${ctx}/resources/pt/images/kontact.png"></img><br />
 							<span>日志跟踪</span>
+						</a>
+					</div>
+					</privilege:access>
+					<privilege:access ifGranted="012008">
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('synchronous_source','同步数据','${ctx}/exchangedata/dataconfig/synchronous_source')">
+							<img src="${ctx}/resources/pt/images/package_settings.png"></img><br />
+							<span>同步数据</span>
+						</a>
+					</div>
+					</privilege:access>
+<%-- 					<privilege:access ifGranted="012009"> --%>
+<!-- 					<div class="nav-item"> -->
+<!-- 						<a -->
+<%-- 							href="javascript:addTab('synchronous_rules','同步规则','${ctx}/exchangedata/dataconfig/synchronous_rules')"> --%>
+<%-- 							<img src="${ctx}/resources/pt/images/package_settings.png"></img><br /> --%>
+<!-- 							<span>同步规则</span> -->
+<!-- 						</a> -->
+<!-- 					</div> -->
+<%-- 					</privilege:access> --%>
+					<privilege:access ifGranted="012005">
+					<div class="nav-item">
+						<a
+							href="javascript:addTab('system_pro','系统参数设置','${ctx}/exchangedata/dataconfig/sys_properties')">
+							<img src="${ctx}/resources/pt/images/package_settings.png"></img><br />
+							<span>系统参数设置</span>
 						</a>
 					</div>
 					</privilege:access>
@@ -665,7 +825,7 @@ body{background-color:#EAF4FD}
 		<!-- layout1 end -->
 		<div id="footer" class="row-fluid">
 			<div class="span4 offset4" style="height: 30px; line-height: 30px; text-align: center; vertical-align: middle;">
-				Copyright &copy; <a>厦门市行政服务中心管理委员会</a>
+				Copyright &copy; <a>立达信</a>
 			</div>
 		</div>
 		<!-- footer end -->

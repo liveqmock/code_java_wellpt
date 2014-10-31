@@ -54,7 +54,7 @@
 	<a class="member-info-show" href="${ctx}/basicdata/rtx/singlesignon" id="rtx" target="rtx">RTX</a>
 	</c:if>
 	
-	<c:if test="${user.admin == true}">
+	<c:if test="${user.isAdmin == true}">
 	<a class="member-info-show" href="${ctx}/passport/admin/main" id="admin_manage" target="_blank">管理后台</a>
 	</c:if>
 	<a class="member-info-show" href="${ctx}/security_logout">注销</a></div>

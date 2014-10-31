@@ -1,3 +1,4 @@
+var selectCategory={};
 $(function() {
 	var bean = {
 		"uuid" : null,
@@ -6,11 +7,13 @@ $(function() {
 		"remark" : null,
 		"roles" : [],
 		"resources" : [],
-		"viewFieldUuid":[]
+		"viewFieldUuid":[],
+		"categoryName":null,
+		"categoryUuid":null
 	};
-
+	var categoryUuid="";
 	$("#list").jqGrid($.extend($.common.jqGrid.settings, {
-		url : ctx + '/common/jqgrid/query?queryType=privilege',
+		url : ctx + '/security/category/privilege/list?categoryUuid=' + categoryUuid,
 		mtype : 'POST',
 		datatype : "json",
 		colNames : [ "uuid", "名称", "编号", "备注" ],
@@ -155,6 +158,43 @@ $(function() {
 		}
 	}
 
+	var otherParam={"serviceName" : "dataDictionaryService",
+			"methodName" : "getFromTypeAsTreeAsync",
+			"data":"SECURITY_CATEGORY"};
+	//初始化职能树
+	initDataDictTree(otherParam,"categoryName", "categoryUuid", false,200,300);
+	
+	//--------------初始化职能树---------------------------------
+	function initDataDictTree(otherParam,nameField,IdField,mutiselect,width,height){
+		var setting = {
+				async : {
+					otherParam : otherParam
+				},
+				view : {
+					showLine : true
+				},
+				check : {//复选框的选择做成可配置项
+					enable:mutiselect
+				},
+				callback : {
+					onClick:function (event, treeId, treeNode) {
+						var inputId = treeId.replace("_ztree","");
+							$("#"+inputId).val(treeNode.name);
+							$("#"+IdField).val(treeNode.id);
+					}
+				}
+			};
+	
+		$("#"+nameField).comboTree({
+			labelField : nameField,
+			valueField : IdField,
+			width: width,
+			height: height,
+			treeSetting : setting
+		});
+	}
+	//--------------初始化职能树结束---------------------------------
+	
 	// 新增操作
 	$("#btn_add").click(function() {
 		// 清空表单
@@ -163,6 +203,13 @@ $(function() {
 		// 清空权限资源树
 		var zTree = $.fn.zTree.getZTreeObj("resource_tree");
 		zTree.checkAllNodes(false);
+	
+		if(selectCategory.uuid!='NOCATEGORY'){
+			$("#categoryName").val(selectCategory.name);
+			$("#categoryUuid").val(selectCategory.uuid);
+		}
+		
+		
 	});
 
 	// 保存用户信息
@@ -243,4 +290,16 @@ $(function() {
 
 	// 页面布局
 	Layout.layout();
+	sizePane("west", "53%");
 });
+
+//重新加载用户列表
+function reloadCategoryGrid(category) {
+	selectCategory=category;
+	var url = ctx + '/security/category/privilege/list?categoryUuid=' + selectCategory.uuid;
+	$("#list").jqGrid("setGridParam", {
+		postData : {},
+		page : 1,
+		url : url
+	}).trigger("reloadGrid");
+}

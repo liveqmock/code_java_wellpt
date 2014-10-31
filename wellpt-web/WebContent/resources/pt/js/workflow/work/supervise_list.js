@@ -65,8 +65,7 @@ $(function() {
 				ondblClickRow : function(id) {
 					var rowData = $(this).getRowData(id);
 					if (rowData.flowInstUuid != null && rowData.flowInstUuid != "") {
-						TabUtils.openTab(rowData["flowInstUuid"], rowData["title"], ctx
-								+ "/workflow/work/view/supervise?taskUuid=" + rowData["taskUuid"]
+						window.open(ctx + "/workflow/work/view/supervise?taskUuid=" + rowData["taskUuid"]
 								+ "&flowInstUuid=" + rowData["flowInstUuid"]);
 					}
 				},
@@ -121,8 +120,8 @@ $(function() {
 					alert("请选择工作！");
 					return true;
 				}
-				window.open(ctx + "/workflow/work/view/supervise?taskUuid=" + bean["taskUuid"]
-						+ "&flowInstUuid=" + bean["flowInstUuid"], "_blank");
+				window.open(ctx + "/workflow/work/view/supervise?taskUuid=" + bean["taskUuid"] + "&flowInstUuid="
+						+ bean["flowInstUuid"], "_blank");
 			});
 
 });

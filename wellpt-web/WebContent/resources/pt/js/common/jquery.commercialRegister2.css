@@ -17,7 +17,13 @@
 .rowFirstDiv{
 	border-left: 1px solid;
     border-top: 1px solid;
-    bottom: 0;
+    bottom: -1px;
+    position: absolute;
+}
+.rowFirstDiv2{
+/* 	border-left: 1px solid; */
+    border-top: 1px solid;
+    bottom: -1px;
     position: absolute;
 }
 .rowMiddleDiv{

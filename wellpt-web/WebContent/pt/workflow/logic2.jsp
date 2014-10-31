@@ -23,7 +23,7 @@
 			</tr>
 			<tr id="Logic_ID_Field">
 				<td colspan="2"><span><select name="LBracket"
-						style="width: 50px;"><option selected="selected">&nbsp;</option>
+						style="width: 50px;"><option selected="selected"> </option>
 							<option value="(">(</option></select></span>&nbsp;<span><select
 						id="FieldNameLabel" name="FieldNameLabel" style="width: 100px;"><option
 								value="">--选择字段--</option></select> <input id="FieldName"
@@ -41,7 +41,7 @@
 					</select>
 				</span><span>&nbsp;<input name="Value" style="width: 200px;" /></span> <span><select
 						name="RBracket" style="width: 50px;"><option
-								selected="selected">&nbsp;</option>
+								selected="selected"> </option>
 							<option value=")">)</option></select></span></td>
 				<td></td>
 			</tr>
@@ -60,7 +60,7 @@
 					</select></span> <span><input name="vValue" style="width: 190px;"
 						emptymsg="请输入所占百分比！" errormsg="不需要在所占百分比中输入百分号“％”！">% </span> <span><select
 						name="vRBracket" style="width: 50px;"><option
-								selected="selected">&nbsp;</option>
+								selected="selected"> </option>
 							<option value=")">)</option></select></span></td>
 				<td></td>
 			</tr>
@@ -69,7 +69,7 @@
 						<div style="float: left;">
 							<span><select name="gLBracket"
 								style="width: 50px; margin-top: 2em;"><option
-										selected="selected">&nbsp;</option>
+										selected="selected"> </option>
 									<option value="(">(</option></select></span>&nbsp;
 						</div>
 						<div style="float: left;">
@@ -93,7 +93,7 @@
 						<div style="float: left;">
 							<span>&nbsp;<select name="gRBracket"
 								style="width: 50px; margin-top: 2em;"><option
-										selected="selected">&nbsp;</option>
+										selected="selected"> </option>
 									<option value=")">)</option></select></span>
 						</div>
 						<div style="clear: both;"></div>

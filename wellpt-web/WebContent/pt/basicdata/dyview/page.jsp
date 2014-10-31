@@ -6,8 +6,21 @@
 <html>
 	<head>
 		<style type="text/css">
+		
+#everyPage {
+	float: left;
+	padding-top: 1px;
+}
+
 #pageSizeSelect{
 	width:60px;
+}	
+
+#pageSizeInput{
+	height: 20px;
+    margin: 0;
+    padding: 0;
+    width: 20px;
 }		
 		
 .finder-footer {
@@ -69,7 +82,9 @@
     margin-left: 5px;
     margin-right: 5px;
 }
-
+.v1_prev_icon{
+	display: none;
+}
 .nub_page {
     color: #0F599C;
     cursor: pointer;
@@ -233,9 +248,14 @@
     	    	go("goto",currentPage,obj);
     	    }
     	}
-    	
+    	$("#jumppage").die().live("blur",function() {
+    		var currentPage = $(this).val();
+    		var obj = this;
+    		go("goto",currentPage,obj);
+    	});
     	/**到第几页点击相应事件**/
 		function gotopage_btn(currentPage,topage,obj){
+    		
 			var parmStr = $(obj).parents("#abc").find("#parmStr").val(); 
 			var parmStr2 = "";
 			if(parmStr != undefined) {
@@ -329,6 +349,14 @@
 					contentType:'application/json',
 					success:function(data) {
 						$("#update_"+viewUuid).html(data);
+						//添加已阅未阅的图标
+						$("#update_"+viewUuid).find(".dataTr").each(function(){
+							if($(this).attr("class").indexOf("readed")>-1){
+								$(this).find("td").eq(0).html("<div class='icon_readed'></div>"+$(this).find("td").eq(0).html());
+							}else if($(this).attr("class").indexOf("noread")>-1){
+								$(this).find("td").eq(0).html("<div class='icon_noread'></div>"+$(this).find("td").eq(0).html());
+							}
+						});
 						formDate();
 					}
 				});
@@ -362,6 +390,14 @@
 					contentType:'application/json',
 					success:function(data) {
 						$("#update_"+viewUuid).html(data);
+						//添加已阅未阅的图标
+						$("#update_"+viewUuid).find(".dataTr").each(function(){
+							if($(this).attr("class").indexOf("readed")>-1){
+								$(this).find("td").eq(0).html("<div class='icon_readed'></div>"+$(this).find("td").eq(0).html());
+							}else if($(this).attr("class").indexOf("noread")>-1){
+								$(this).find("td").eq(0).html("<div class='icon_noread'></div>"+$(this).find("td").eq(0).html());
+							}
+						});
 						formDate();
 					}
 				});
@@ -485,6 +521,14 @@
 					contentType:'application/json',
 					success:function(data) {
 						$("#update_"+viewUuid).html(data);
+						//添加已阅未阅的图标
+						$("#update_"+viewUuid).find(".dataTr").each(function(){
+							if($(this).attr("class").indexOf("readed")>-1){
+								$(this).find("td").eq(0).html("<div class='icon_readed'></div>"+$(this).find("td").eq(0).html());
+							}else if($(this).attr("class").indexOf("noread")>-1){
+								$(this).find("td").eq(0).html("<div class='icon_noread'></div>"+$(this).find("td").eq(0).html());
+							}
+						});
 						formDate();
 					}
 				});
@@ -546,6 +590,14 @@
 					contentType:'application/json',
 					success:function(data) {
 						$("#update_"+viewUuid).html(data);
+						//添加已阅未阅的图标
+						$("#update_"+viewUuid).find(".dataTr").each(function(){
+							if($(this).attr("class").indexOf("readed")>-1){
+								$(this).find("td").eq(0).html("<div class='icon_readed'></div>"+$(this).find("td").eq(0).html());
+							}else if($(this).attr("class").indexOf("noread")>-1){
+								$(this).find("td").eq(0).html("<div class='icon_noread'></div>"+$(this).find("td").eq(0).html());
+							}
+						});
 						formDate();
 					}
 				});
@@ -583,6 +635,90 @@
 				}
 			});
 		}
+		
+		$("#pageSizeInput").die().live("blur",function() {
+// 			pageLock("show");
+			var $this = $(this);
+			var pageSize = $this.val();
+			var code = event.keyCode;
+   	    	if(pageSize==""){
+   				oAlert("请输入页数！");
+   				return false;
+   			}
+   			if(!pageSize.match(/^\+?[1-9][0-9]*$/)){
+   				oAlert("请输入合法的页数！");
+   				return false;
+   			}
+			var parmStr =$this.parents("#abc").find("#parmStr").val(); 
+			var parmStr2 = parmStr.substring(1);
+			var totalPages = $this.parents("#abc").find("#totalPages").val();
+			var gotopage = $this.parents("#abc").find("#jumppage").val();
+			var mark = $this.parents("#abc").find("#mark").val();
+			var viewUuid = $this.parents("#abc").find("#viewUuid").val();
+			var dyViewQueryInfo = new Object();
+			var pageInfo = new Object();
+			pageInfo.currentPage = 1;
+			pageInfo.pageSize = pageSize;
+			dyViewQueryInfo.pageInfo = pageInfo;
+			dyViewQueryInfo.viewUuid = viewUuid;
+			dyViewQueryInfo.openBy = parmStr2.split("=")[1];
+			var url = ctx + '/basicdata/dyview/view_show_forpage.action';
+			$.ajax({
+				url:url,
+				type:"POST",
+				data:JSON.stringify(dyViewQueryInfo),
+				dataType:'text',
+				contentType:'application/json',
+				success:function(data) {
+					$("#update_"+viewUuid).html(data);
+					formDate();
+// 					pageLock("hide");
+					jsmod(".dnrw .tab-content");
+				}
+			});
+		});
+		$("#pageSizeInput").die().live("keyup",function(event) {
+			var $this = $(this);
+			var pageSize = $this.val();
+			var code = event.keyCode;
+			if (code == 13) {
+    	    	if(pageSize==""){
+    				oAlert("请输入页数！");
+    				return false;
+    			}
+    			if(!pageSize.match(/^\+?[1-9][0-9]*$/)){
+    				oAlert("请输入合法的页数！");
+    				return false;
+    			}
+    			var parmStr =$this.parents("#abc").find("#parmStr").val(); 
+    			var parmStr2 = parmStr.substring(1);
+    			var totalPages = $this.parents("#abc").find("#totalPages").val();
+    			var gotopage = $this.parents("#abc").find("#jumppage").val();
+    			var mark = $this.parents("#abc").find("#mark").val();
+    			var viewUuid = $this.parents("#abc").find("#viewUuid").val();
+    			var dyViewQueryInfo = new Object();
+    			var pageInfo = new Object();
+    			pageInfo.currentPage = 1;
+    			pageInfo.pageSize = pageSize;
+    			dyViewQueryInfo.pageInfo = pageInfo;
+    			dyViewQueryInfo.viewUuid = viewUuid;
+    			dyViewQueryInfo.openBy = parmStr2.split("=")[1];
+    			var url = ctx + '/basicdata/dyview/view_show_forpage.action';
+    			$.ajax({
+    				url:url,
+    				type:"POST",
+    				data:JSON.stringify(dyViewQueryInfo),
+    				dataType:'text',
+    				contentType:'application/json',
+    				success:function(data) {
+    					$("#update_"+viewUuid).html(data);
+    					formDate();
+    					jsmod(".dnrw .tab-content",this);
+    				}
+    			});
+	    	}
+			
+		});
 		
 		function changePageSize(pageSize,obj) {
 			var parmStr = $(obj).parents("#abc").find("#parmStr").val(); 
@@ -638,12 +774,16 @@
 		<div class="table-footer" id="footBar">
 			<div id="finder-footer-333c3e" class="finder-footer">
 					<c:if test="${pageDefinition.isPaging == true}">
-					<div style="float: left;padding-top: 1px;">每页<select id="pageSizeSelect" onChange="changePageSize(this.value,this);">
-											<option value="10">10</option>
-											<option value="20">20</option>
-											<option value="50">50</option>
-											<option value="100">100</option>
-											</select>行  共${page.totalCount}行 &nbsp; </div>
+					<div id="everyPage">每页
+<!-- 											<select id="pageSizeSelect" onChange="changePageSize(this.value,this);"> -->
+<!-- 												<option value="10">10</option> -->
+<!-- 												<option value="20">20</option> -->
+<!-- 												<option value="50">50</option> -->
+<!-- 												<option value="100">100</option> -->
+<!-- 											</select> -->
+											<input type="text" id="pageSizeInput" value="${page.pageSize}"/>
+											行  共${page.totalCount}行 &nbsp;
+					</div>
 					<div class="firstpage" onclick="go('first',${page.currentPage  },this);">
 					<c:if test="${page.currentPage !=1 }">
 						<img src="${ctx}/resources/pt/images/v1_first.png" />
@@ -657,7 +797,7 @@
 							<c:if test="${page.currentPage !=1 && page.totalPages != 0}">class="txt_page" onclick="go('back',${page.currentPage },this)"</c:if>
 							<c:if test="${page.currentPage ==1 }">class="txt_page_no"</c:if>>
 							<c:if test="${page.currentPage !=1 }">
-								<img src="${ctx}/resources/pt/images/v1_prev.png" width="11" height="11" />
+								<img class="v1_prev_icon" src="${ctx}/resources/pt/images/v1_prev.png" width="11" height="11" />
 							</c:if>
 							<c:if test="${page.currentPage ==1 }">
 								<img src="${ctx}/resources/pt/images/v1_prev_gray.png" width="11" height="11" />
@@ -689,7 +829,7 @@
 							<c:if test="${page.currentPage !=1 }">class="txt_page" onclick="go('back',${page.currentPage },this)"</c:if>
 							<c:if test="${page.currentPage ==1 }">class="txt_page_no"</c:if>>
 							<c:if test="${page.currentPage !=1 }">
-								<img src="${ctx}/resources/pt/images/v1_prev.png" width="11" height="11" />
+								<img class="v1_prev_icon" src="${ctx}/resources/pt/images/v1_prev.png" width="11" height="11" />
 							</c:if>
 							<c:if test="${page.currentPage ==1 }">
 								<img src="${ctx}/resources/pt/images/v1_prev_gray.png" width="11" height="11" />
@@ -732,7 +872,7 @@
 							<c:if test="${page.currentPage !=1 }">class="txt_page" onclick="go('back',${page.currentPage },this)"</c:if>
 							<c:if test="${page.currentPage ==1 }">class="txt_page_no"</c:if>>
 							<c:if test="${page.currentPage !=1 }">
-								<img src="${ctx}/resources/pt/images/v1_prev.png" width="11" height="11" />
+								<img class="v1_prev_icon" src="${ctx}/resources/pt/images/v1_prev.png" width="11" height="11" />
 							</c:if>
 							<c:if test="${page.currentPage ==1 }">
 								<img src="${ctx}/resources/pt/images/v1_prev_gray.png" width="11" height="11" />
@@ -779,7 +919,7 @@
 							<c:if test="${page.currentPage !=1 }">class="txt_page" onclick="go('back',${page.currentPage },this)"</c:if>
 							<c:if test="${page.currentPage ==1 }">class="txt_page_no"</c:if>>
 							<c:if test="${page.currentPage !=1 }">
-								<img src="${ctx}/resources/pt/images/v1_prev.png" width="11" height="11" />
+								<img class="v1_prev_icon" src="${ctx}/resources/pt/images/v1_prev.png" width="11" height="11" />
 							</c:if>
 							<c:if test="${page.currentPage ==1 }">
 								<img src="${ctx}/resources/pt/images/v1_prev_gray.png" width="11" height="11" />

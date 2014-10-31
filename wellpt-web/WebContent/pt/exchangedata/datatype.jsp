@@ -95,6 +95,8 @@
 									<td>
 									<input id="showToUnit" name="showToUnit" type="checkbox"/>允许输入收件单位
 									<input id="retain" name="retain" type="checkbox"/>数据留存
+									<input id="toSys" name="toSys" type="checkbox"/>查询系统
+									<input id="synchronous" name="synchronous" type="checkbox"/>同步处理
 									</td>
 								</tr>
 								<tr>

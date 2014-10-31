@@ -42,6 +42,8 @@
 						<li><a href="#tabs-2">在线消息</a></li>
 						<li><a href="#tabs-3">电子邮件</a></li>
 						<li><a href="#tabs-4">手机短信</a></li>
+						<li><a href="#tabs-5">日程</a></li>
+						<li><a href="#tabs-6">restful web services</a></li>
 					</ul>
 					<div id="tabs-1">
 						<input type="hidden" id="uuid" name="uuid" />
@@ -85,7 +87,11 @@
 									<input id="sendWay_email" name="sendWays" type="checkbox"
 									value="EMAIL" /><label for="sendWay_email">邮件</label> <input
 									id="sendWay_sms" name="sendWays" type="checkbox" value="SMS" /><label
-									for="sendWay_sms">手机短信</label> <input id="sendWay_none"
+									for="sendWay_sms">手机短信</label>
+									<!--  <input id="sendWay_schedule" name="sendWays"
+									type="checkbox" value="SCHEDULE" /><label for="sendWay_schedule">日程</label>-->
+									<input id="sendWay_restful" name="sendWays"
+									type="checkbox" value="WEB_SERVICE" /><label for="sendWay_restful">restful web services</label>  <input id="sendWay_none"
 									name="sendWays" type="checkbox" value="NONE" /><label
 									for="sendWay_none">不通知</label></td>
 								<td></td>
@@ -105,10 +111,76 @@
 										name="mappingRule"></textarea></td>
 								<td></td>
 							</tr>
+							<tr>
+								<td class="align-top"><label>发送消息触发事件</label></td>
+								<td>
+								<input type="text" id="messageEventText"  name="messageEventText" style="width:400px;"/>
+									<input type="hidden" id="messageEvent"  name="messageEvent"/></td>
+								<td></td>
+							</tr>
 						</table>
 					</div>
 					<div id="tabs-2">
 						<table>
+						    <tr>
+						      <td><label>弹窗提醒</label></td>
+								<td><input id="online_popup_y" name="isOnlinePopup" type="radio" 
+									value="Y" /><label for="online_popup_y">是</label> 
+									<input id="online_popup_n" name="isOnlinePopup" type="radio" value="N" /><label
+									for="online_popup_n">否</label>
+								</td>
+							</tr>
+							  <tr>
+						      <td><label>征求意见</label></td>
+								<td><input id="show_viewpoint_y" name="showViewpoint" type="radio" 
+									value="Y" /><label for="show_viewpoint_y">是</label> 
+									<input id="show_viewpoint_n" name="showViewpoint" type="radio" value="N" /><label
+									for="show_viewpoint_n">否</label>
+								</td>
+							</tr>
+							 <tr>
+						      <td><label>意见立场</label></td>
+								<td>
+								<table >
+								   <tr>
+								   <td><input id="viewpoint_y" name="viewpointY" type="text" 
+									value="" /> (通过)</td>
+								  <td><label></label></td>
+								   <td><input id="viewpoint_n" name="viewpointN" type="text" 
+									value="" />(不通过)</td>
+								   <td></td>
+								   <td><input id="viewpoint_none" name="viewpointNone" type="text" 
+									value="" />(不处理) </td>
+									<td></td>
+								   </tr>
+								 </table>  
+								</td>
+							</tr>
+							<tr>
+								<td><label>确定立场后操作</label></td>
+								<td>
+								<table style="border:1px solid #000000;">
+								<tr>
+								<td><label>前台JS事件</label></td>
+								<td><input type="text" id="foregroundEventText"  name="foregroundEventText" style="width:400px;"/>
+									<input type="hidden" id="foregroundEvent"  name="foregroundEvent"/></td>
+								</tr>
+								<tr>
+								<td><label>后台事件</label></td>
+								<td><input type="text" id="backgroundEventText"  name="backgroundEventText" style="width:400px;"/>
+									<input type="hidden" id="backgroundEvent"  name="backgroundEvent"/></td>
+								</tr>
+								</table>
+								<td></td>
+							</tr>
+							<tr>
+								<td><label>是否咨询列入日程</label></td>
+								<td><input id="ask_for_schedule_y" name="askForSchedule" type="radio" 
+									value="Y" /><label for="ask_for_schedule_y">是</label> 
+									<input id="ask_for_schedule_n" name="askForSchedule" type="radio" value="N" /><label
+									for="ask_for_schedule_n">否</label>
+								</td>
+								</tr>
 							<tr>
 								<td style="width: 65px;"><label>标题</label></td>
 								<td><input class="full-width" id="onlineSubject"
@@ -149,6 +221,140 @@
 							</tr>
 						</table>
 					</div>
+					<div id="tabs-5">
+						<table>
+						    <tr>
+								<td style="width: 65px;"><label>标题</label></td>
+								<td><input class="full-width" id="scheduleTitle"
+									name="scheduleTitle" type="text" size="50" /></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td style="width: 65px;"><label>起止时间</label></td>
+								<td>
+								<table>
+								<tr>
+								<td>
+								<input class="full-width" id="scheduleDates"
+									name="scheduleDates" type="text" size="50" />
+								</td>
+								<td>至</td>
+								<td>
+								<input class="full-width" id="scheduleDatee"
+									name="scheduleDatee" type="text" size="50" />
+								</td>
+								</tr>
+								</table>
+								</td>
+								<td></td>
+							</tr>
+							 <tr>
+								<td style="width: 65px;"><label>地点</label></td>
+								<td><input class="full-width" id="scheduleAddress"
+									name="scheduleAddress" type="text" size="50" /></td>
+								<td></td>
+							</tr>
+							 <tr>
+								<td style="width: 65px;"><label>提醒时间</label></td>
+								<td> 
+								<input class="full-width" id="reminderTime"
+									name="reminderTime" type="text" size="50" /></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td class="align-top" style="width: 65px;"><label>内容</label></td>
+								<td><textarea class="full-width" id="scheduleBody"
+										name="scheduleBody" rows="10" cols="50"></textarea></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td style="width: 65px;"><label>源标题</label></td>
+								<td><input class="full-width" id="srcTitle"
+									name="srctitle" type="text" size="50" /></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td style="width: 65px;"><label>源地址</label></td>
+								<td><input class="full-width" id="srcAddress"
+									name="srcAddress" type="text" size="50" /></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+					<div id="tabs-6">
+						<table>
+							<tr>
+								<td style="width: 65px;"><label>webService地址</label></td>
+								<td><input class="full-width" id="webServiceUrl" name="webServiceUrl"
+									type="text" /></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><label>验证账号</label></td>
+								<td>
+								<table>
+								<tr>
+								<td><input class="full-width" id="usernameKey" name="usernameKey" 
+									type="text" />
+								</td>
+								<td>(key)</td>
+								<td>
+									<input class="full-width" id="usernameValue" name="usernameValue"
+									type="text" />
+								</td>
+								<td>(value)</td>
+								</tr>
+								</table>
+								</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><label>验证密码</label></td>
+								<td>
+								<table>
+								<tr>
+								<td><input class="full-width" id="passwordKey" name="passwordKey"
+									type="text" />
+								</td>
+								<td>(key)</td>
+								<td>
+									<input class="full-width" id="passwordValue" name="passwordValue"
+									type="text" />
+								</td>
+								<td>(value)</td>
+								</tr>
+								</table>
+								</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><label>租户id</label></td>
+								<td>
+								<table>
+								<tr>
+								<td><input class="full-width" id="tenantidKey" name="tenantidKey"
+									type="text" />
+								</td>
+								<td>(key)</td>
+								<td>
+									<input class="full-width" id="tenantidValue" name="tenantidValue"
+									type="text" />
+								</td>
+								<td>(value)</td>
+								</tr>
+								</table>
+								</td>
+								<td></td>
+							</tr>
+						</table>
+						<div id="tabs-2">
+							<div class="btn-group">
+								<button id="btn_parm_add" type="button" class="btn">新增</button>
+								<button id="btn_parm_del" type="button" class="btn">删除</button>
+							</div>
+							<table id="child_parm_list"></table>
+						</div>
+					</div>
 				</div>
 
 				<div class="btn-group btn-group-bottom">
@@ -176,10 +382,13 @@
 	<script type="text/javascript"
 		src="${ctx}/resources/ztree/js/jquery.ztree.js"></script>
 	<script type="text/javascript"
+		src="${ctx}/resources/pt/js/common/jquery.comboTree.js"></script>
+	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/org/unit/jquery.unit.js"></script>
 	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/system_admin.js"></script>
 	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/message/template.js"></script>
+		
 </body>
 </html>

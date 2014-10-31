@@ -9,7 +9,7 @@ var MainFormClass = function(){
 	this.recVer	 = "" ;	//
 	this.modifier = "";	 //	修改人
 	this.applyTo = "";	 //	应用于
-	
+	this.relationTbl = "";//与数据表对应的数据关系表
 	
 	 //表单属性id
 	//该字段也是该记录的唯一标识,
@@ -35,6 +35,7 @@ var MainFormClass = function(){
 	this.html	 = "" 	;
 	this.fields	 =  {};//字段定义
 	this.subforms = {};
+	this.customJs = "";//自定义JS
 };
 
 
@@ -43,8 +44,9 @@ var MainFormClass = function(){
  */
 var MainFormFieldClass = function(){
 	this.applyTo = "";
-	this.name = "";
+	this.name = "";//最新的名字
 	this.displayName = "";
+	this.oldName = "";//旧的字段名
 	
 	//数据库里面对应的字段类型
 	//text:'1',//文本输入框 
@@ -59,7 +61,7 @@ var MainFormFieldClass = function(){
 	//long:'14',//长整型输入
 	//float:'15',//浮点数输入
 	//clob:'16',//大字段
-	this.dbDataType = dyFormDataType.string;
+	this.dbDataType = dyFormDataType._string;
 	
 	
 	this.indexed = ""; 		 	//该列要不要索引
@@ -91,7 +93,7 @@ var MainFormFieldClass = function(){
 	//只读状态下设置跳转的url
 	//(在字段为只读的状态下，可为该字段的文本值设置超级链接,例如该字段的//值为某人的姓名，那么通过点击姓名跳转到该人的简历页面)
 	this.onlyreadUrl = ""; 		 	
-
+	
 	this.inputMode =  dyFormInputMode.text; 		 	//控件类型
 	this.textAlign = "left"; 		 	
 	this.ctlWidth = ""; 		 	
@@ -100,6 +102,7 @@ var MainFormFieldClass = function(){
 	this.fontColor = "black"; 		 	
 	this.fieldCheckRules = []; 		 	//检验规则,该字段的值为JSON如[{"value":"2","label":"必须是URL","rule":""},{"value":"3","label":"必须是邮箱地址","rule":""}]
 
+	this.realDisplay={real:"", display:""}; //真实值与显示值的字段名，一个JSON对象,key为真实值的字段名，value为显示值的字段名
 	/*
 	 * 私有属性挪到控件各自对应的class类中.
 	 * this.relationDataText = ""; 		 	
@@ -172,13 +175,15 @@ var SubFormClass = function(){
 	
 	this.isGroupShowTitle = "";				//是否要分组展示
 	this.groupShowTitle = "";				//分组展示标题
+	this.isGroupColumnShow="";//分组字段是否展示 20140701 add 
+	   
 	this.subformApplyTableId = "";
 	this.subrRelationDataDefiantion = "";				
 	this.tableOpen = "";				//从表是展示还是折叠（收缩）
 	
 	// 编辑模式1.行内编辑 2.弹出窗口编辑
 	this.editMode = "";
-
+ 
 	this.hideButtons = "";	//1：不隐藏;2:隐藏			
 	this.fields = {};				//参照表单从表字段定义 
 };
@@ -187,13 +192,28 @@ var SubFormClass = function(){
  * 从表字段属性类
  */
 var SubFormFieldClass = function(){
-	this.name = "";		
-	this.displayName = "";		
-	this.order	 = false;	
+	this.name = "";
+	this.displayName = "";
+	this.order	 = "0";	//在展示从表时各字段的排列顺序
+	this.sortable = false;//在展示从表时是否允许列排序
 	this.srcFieldName = "";		//来源字段
-	this.hidden		 = false;
-	this.width	 = "";	
-	this.editable	 = true;	 
+	this.hidden		 = dySubFormFieldShow.show;//从表字段是否展示
+	this.width	 = "";
+	this.editable	 = dySubFormFieldEdit.edit;
+	this.controlable = dySubFormFieldCtl.label;//在从表中的控件在光标移开之后仍然展示为控件，不展示为标签,在editable的属性为edit的前提下该属性才有效
+	this.formula = "";//运算公式
 };
 
+/**
+ * 布局
+ */
+var LayOut = function(){
+	this.name = "";//布局唯一标识
+	this.inputMode="";//布局类型
+	this.displayName = "";//布局标题
+	//this.isActive = false;//是否激活,对页签而言即是否激活,对于区块而言就是是否展开.
+	this.isHide = false;//是否隐藏 
+}
+
+ 
 

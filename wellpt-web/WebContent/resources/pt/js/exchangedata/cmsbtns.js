@@ -4,6 +4,9 @@ $(function() {
 	
 
 	ExData.ToSendData = function() {
+		if(!checkCAKey()){
+			return false;
+		}
 		var json = new Object(); 
 		$.ajax({
 			type:"post",
@@ -157,7 +160,7 @@ $(function() {
 				service : "exchangeDataClientService.refuseData",
 				data : [uuid,msg,"receive"],
 				success : function(result) {
-					oAlert("退回成功",function (){refreshWindow($("button[value='B003006056']"));});
+					oAlert("退回成功",function (){refreshWindow($("button[value='B012002']"));formDate();});
 				},
 				error : function(jqXHR) {
 					oAlert("退回失败");
@@ -182,7 +185,7 @@ $(function() {
 				 service : "exchangeDataClientService.signData",
 				 data : [uuid],
 				 success : function(result) {
-					 oAlert("签收成功",function (){refreshWindow($("button[value='B003006037']"));});
+					 oAlert("签收成功",function (){refreshWindow($("button[value='B012001']"));formDate();});
 				 },
 				 error : function(jqXHR) {
 					 oAlert("签收失败");

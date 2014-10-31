@@ -1,5 +1,4 @@
 $(function() {
-	var flag = 0;
 	//发送
 	var btn_send = "B012008";
 	var btn_aginSend = "B012014";
@@ -27,7 +26,7 @@ $(function() {
 			"toId" : null,
 			"rel" : null,
 			"typeId" : null,
-			"rootFormDataBean" : {}
+			"dyFormData" : {}
 	};
 	if($("#rel").val()==23){
 		$("#to").val($("#from").val());
@@ -80,46 +79,39 @@ $(function() {
 		$("#bccNames").val("");
 	});
 	
-	//$(".form_title h2").html($("#typeName").val());
-	
-	var dataUuid = $("#dataUuid").val();
-	
 	// 初使化
-	JDS.call({
-		service : 'formDataService.getFormData',
-		data : [$("#formId").val(), dataUuid, null],
-		success : function(result) {
-			$("#dyform").dytable({
-				data : result.data,
-				isFile2swf:false,
-				enableSignature:true,
-				setReadOnly:null,//是否设置所有字段只读，true表示设置,false表示不设置
-				supportDown:"1",//2表示防止下载 1表示支持下载 不设置表示默认支持下载
-				btnSubmit : btn_send,
-				beforeSubmit : submit,
-				buttons:[{"text": "选择完成任务","method":function(){alert(1);},"subtableMapping":"dy_form_id_report_evaluate"},
-				         {"text": "选择未完成任务","method":function(){alert(2);},"subtableMapping":"dy_form_id_report_evaluate"},
-				         {"text": "选择未成任务","method":function(){alert(3);},"subtableMapping":"dy_form_id_report_plan"},
-				         {"text": "选择未完务","method":function(){alert(4);},"subtableMapping":"dy_form_id_report_plan"},
-				         ],
-				open: function(){
-				}
-			});
-			if($("#rel").val()!=27){
-				$("#ZCH").val($("#ZCHval").val());
-				$("#ZTMC").val($("#ZTMCval").val());
-				$("#FDDBR").val($("#FDDBRval").val());
-				$("#JYCS").val($("#JYCSval").val());
-				$("#ZTLX").val($("#ZTLXval").val());
+	var dataUuid = $("#dataUuid").val();
+	var formDatas = loadFormDefinitionData($("#formId").val(), dataUuid);
+	if(typeof formDatas == "string"){
+		formDatas = (eval("(" + formDatas +  ")"));
+	}
+	$("#dyform").dyform(
+		{
+			definition:  formDatas.formDefinition ,
+			data:formDatas.formDatas,
+			displayAsFormModel:false,
+			success:function(){
+				console.log("表单解析完毕");
+			},
+			error:function(){
+				console.log("表单解析失败");
 			}
-			if($("#typeId").val() == "000000000XK") {
-				$("#BZDWDM").val($("#unitId").val());
-				$("#BZDWMC").val($("#unitName").val());
-			}
-		},
-		error : function(xhr, textStatus, errorThrown) {
-		}
-	});
+		} 
+	); 
+	$("#dyform").dyform("setEditable");
+	
+	if($("#rel").val()!=27){
+		$("#ZCH").val($("#ZCHval").val());
+		$("#ZTMC").val($("#ZTMCval").val());
+		$("#FDDBR").val($("#FDDBRval").val());
+		$("#JYCS").val($("#JYCSval").val());
+		$("#ZTLX").val($("#ZTLXval").val());
+	}
+	if($("#typeId").val() == "000000000XK") {
+		$("#dyform").dyform("setFieldValue", "BZDWDM", $("#unitId").val());
+		$("#dyform").dyform("setFieldValue", "BZDWMC", $("#unitName").val());
+	}
+	
 	adjustWidthToForm();
 	$(window).resize(function(e) {
 		// 调整自适应表单宽度
@@ -127,7 +119,7 @@ $(function() {
 	});
 	// 调整自适应表单宽度
 	function adjustWidthToForm() {
-		var div_body_width = $(window).width() * 0.76;
+		var div_body_width = $(window).width() * 0.95;
 		$(".form_header").css("width", div_body_width - 5);
 		$(".div_body").css("width", div_body_width);
 	}
@@ -174,52 +166,149 @@ $(function() {
 	});
 	
 	/** ******************************** 发送开始 ***************************** */
-	$("#"+btn_aginSend).live("click",function(){
-		if(flag==0){
-			submit();
-		}
-	});
 	// 发送处理
-	function submit() {
-		if(flag==0){
-			flag = 1;
-			if(!checkCAKey()){
-				return false;
-			}
-			var rootFormData = $("#dyform").dytable("formData");
-			//console.log(JSON.stringify(rootFormData));
-			bean.rootFormDataBean = rootFormData;
-			bean.cc = $("#cc").val();
-			bean.bcc = $("#bcc").val();
-			bean.toId = $("#to").val();
-			bean.typeId = $("#typeId").val();
-			bean.rel = $("#rel").val();
-			bean.matterId = $("#matterId").val();
-			bean.sendMonitorUuid = $("#sendUuid").val();
-			if(btn_send == "B012010"){
-				bean.rel = 26;//提交审核
-			}else if(btn_send == "B012014"){
-				bean.rel = 27;//重新提交审核
-			}
-			bean.correlationDataId = $("#correlationDataId").val();
-			bean.correlationRecver = $("#correlationRecver").val();
-			JDS.call({
-				service : "exchangeDataClientService.saveAndSendData",
-				data : [bean],
-				success : function(result) {
-					if(result.data="Success"){
-						oAlert("发送成功",function (){returnWindow();window.close();});
-					}else{
-						oAlert("发送失败");
-					}
-				},
-				error : function(xhr, textStatus, errorThrown) {
+	$("#"+btn_send).click(function(){
+		validateForm = $("#dyform").dyform("validateForm");
+		if(validateForm ==  undefined){
+			return false;
+		}else if(validateForm == false){
+			return false;
+		}
+		var formData = $("#dyform").dyform("collectFormData");
+		if(!checkCAKey()){
+			return false;
+		}
+		bean.dyFormData = formData;
+		bean.cc = $("#cc").val();
+		bean.bcc = $("#bcc").val();
+		bean.toId = $("#to").val();
+		bean.typeId = $("#typeId").val();
+		bean.rel = $("#rel").val();
+		bean.matterId = $("#matterId").val();
+		bean.sendMonitorUuid = $("#sendUuid").val();
+		if(btn_send == "B012010"){
+			bean.rel = 26;//提交审核
+		}else if(btn_send == "B012014"){
+			bean.rel = 27;//重新提交审核
+		}
+		bean.correlationDataId = $("#correlationDataId").val();
+		bean.correlationRecver = $("#correlationRecver").val();
+		JDS.call({
+			service : "exchangeDataClientService.saveAndSendData",
+			data : [bean],
+			success : function(result) {
+				if(result.data="Success"){
+					oAlert("发送成功",function (){returnWindow();window.close();});
+				}else{
 					oAlert("发送失败");
+				}
+			},
+			error : function(xhr, textStatus, errorThrown) {
+				oAlert("发送失败");
+			}
+		});
+	});
+	$("#"+btn_aginSend).click(function(){
+		$("#"+btn_Send).trigger("click");
+	});
+	
+	$("#openHisModule").live("click",function(){
+		var json = new Object(); 
+		json.content = "<div class='queryDiv' style='height:50px;'>" +
+				"<div style='float: left;margin: 5px 0 0 5px;'><div style='width:45px;float: left;'>注册号:</div><div style='float: left;'><input class='zch'/></div></div>" +
+				"<div style='float: left;margin: 5px 0 0 5px;'><div style='width:60px;float: left;'>主体名称:</div><div style='float: left;'><input class='ztmc'/></div></div>" +
+				"<div style='float: left;margin: 5px 0 0 5px;'><button id='queryBtn' class='blurBtn' type='button'>查询历史数据</button>" +
+				"<button id='sendBtn' class='blurBtn' style='display:none;' type='button'>提取历史数据</button></div>" +
+				"</div>"+
+				"<div class='dnrw' style='width:99%;background:none;'></div>";
+		json.title = "查询历史数据";
+        json.height= 600;
+        json.width= 800;
+        showDialog(json);
+        
+	});
+	$("#relationDate").live("click",function(){
+		 var ctl = 	$("#dyform").dyform("getControl", "ZCH");
+		 $("input[name='" + ctl.getCtlName() + "']").click();
+	});
+	
+	$("#queryBtn").live("click",function(){
+		$("#sendBtn").hide();
+		var unitId = $("#unitId").val();
+		var zch = $(".zch").val();
+		var ztmc = $(".ztmc").val();
+		if(zch==""&&ztmc==""){
+			oAlert("注册号或主体名称必须输入一项!");
+			return false;
+		}
+		pageLock("show");
+		$.ajax({
+			type:"post",
+			async:false,
+			data:{"unitId":unitId,"zch":zch,"ztmc":ztmc},
+			url:ctx+"/exchangedata/client/queryHistoryDate",
+			success:function(result){
+				var htmlStr = "";
+				var code = result.code;
+				var msg = result.msg;
+				var totalRow = result.totalRow;
+				var datalist = result.datalist;
+				if(code == 1){
+					htmlStr = "<table class='table'>"+
+						"<thead>"+
+							"<tr class='thead_tr'>"+
+								"<td width='15px' class='checks_td'><input type='checkbox' class='checkall'></td>"+
+								"<td width='30%'>企业名称</td>"+
+								"<td width='20%'>注册号</td>"+
+								"<td width='15%'>企业类型</td>"+
+								"<td width='20%' class='last'>法定代表人</td>"+
+							"</tr>"+
+							"</thead>"+
+							"<tbody id='template' style='clear: both;'>";
+					for(var i=0;i<datalist.length;i++){
+						var map = datalist[i];
+						htmlStr += "<tr class='dataTr'>";
+						htmlStr += "<td width='15px'><input type='checkbox' class='checkeds' value='"+map['ZCH']+"'></td>"+
+						"<td width='30%'>"+map['ZCH']+"</td>"+
+						"<td width='20%'>"+map['ZTMC']+"</td>"+
+						"<td width='15%'>"+map['ZTLX']+"</td>"+
+						"<td width='20%'>"+map['FDDBR']+"</td>";
+						htmlStr += "</tr>";
+					}		
+					htmlStr += "</tbody></table>";
+					htmlStr += "共返回"+totalRow+"条数据";
+//					$(".queryDiv").append("<button id='sendBtn' class='blurBtn' type='button'>请求历史数据</button>");
+					$("#sendBtn").show();
+				}else{
+					htmlStr = msg;
+				}
+				$(".dnrw").html(htmlStr);
+				pageLock("hide");
+			}
+		});
+	});
+	
+	$("#sendBtn").live("click",function(){
+		if($(".checkeds:checked").length==0){
+			oAlert("请选择一条数据");
+		}else if($(".checkeds:checked").length>1){
+			oAlert("每次只能选择一条数据");
+		}else{
+			var zch = $(".checkeds:checked").val();
+			var unitId = $("#unitId").val();
+			pageLock("show");
+			JDS.call({
+				service : "exchangeDataFlowService.historyDataRequest",
+				data : [ zch,unitId],
+				success : function(result) {
+					pageLock("hide");
+					oAlert("请求成功");
+				},
+				error : function(jqXHR) {
+					pageLock("hide");
+					oAlert("请求失败");
 				}
 			});
 		}
-	}
-	
-	/** ******************************** 发送结束 ***************************** */
-	
+	});
 });

@@ -146,6 +146,28 @@ $(function() {
 			triggerEventsOnLoad : true
 		}
 	});
+	
+	// 列表查询
+	$("#query_task").keypress(function(e) {
+		if (e.keyCode == 13) {
+			$("#btn_query").trigger("click");
+		}
+	});
+	$("#btn_query").click(function(e) {
+		var queryValue = $("#query_task").val();
+		var postData = {
+			"queryPrefix" : "query",
+			"queryOr" : true,
+			"query_LIKES_title_OR_taskName" : queryValue
+		};
+		$("#list").jqGrid("setGridParam", {
+			postData : null
+		});
+		$("#list").jqGrid("setGridParam", {
+			postData : postData,
+			page : 1
+		}).trigger("reloadGrid");
+	});
 
 	// 查看待办工作
 	$("#btn_todo_view").click(

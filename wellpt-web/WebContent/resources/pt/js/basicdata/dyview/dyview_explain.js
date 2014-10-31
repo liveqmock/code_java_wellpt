@@ -22,10 +22,11 @@
 						var $this = this;
 						
 						//敲击回车的搜索事件
-						$(".selectKeyText").die().live("keyup",(function(event){
+						$(".selectKeyText").die().live("keydown",(function(event){
 							ele = $(this);
 							var code = event.keyCode;
 							if (code == 13) {
+								stopDefault(event);
 								var keyWordsArray = new Array();
 								var keyWordObj = new Object();
 								if($("#selectKeyTableId").attr("id") != undefined) {
@@ -60,10 +61,11 @@
 						}));
 						
 						//关键字查询
-						$("#keyWord").die().live("keyup",(function(event){
+						$("#keyWord").live("keydown",(function(event){
 							ele = $(this);
 							var code = event.keyCode;
 				    	    if (code == 13) {
+				    	    	stopDefault(event);
 				    	    	var keyWordsArray = new Array();
 								var keyWordObj = new Object();
 								//精确关键字查询
@@ -164,12 +166,12 @@
 								$("#selectKeyTableId").css("display","");
 								$("#keyWord").css("display","none");
 								$this.text("↓");
-								jsmod(".dnrw .tab-content");
+								jsmod(".dnrw .tab-content",true);
 							}else if($this.text() == "↓") {
 								$("#selectKeyTableId").css("display","none");
 								$("#keyWord").css("display","");
 								$this.text("↑");
-//								jsmod(".dnrw .tab-content");
+//								jsmod(".dnrw .tab-content",true);
 							}
 							
 						});
@@ -185,7 +187,7 @@
 								$(this).find("a").attr("class","cond_class_a cond_class_bg");
 								var value = $(this).attr("value");
 								var appointColumn = $(this).attr("appointColumn");
-								window.viewId_ = $(this).parents("#abc").find(".view_content_list").attr("id");
+								var viewUuid = $(this).parents("#abc").find("#viewUuid").val();
 								$this.condSelectClick({value:value,appointColumn:appointColumn});
 							}
 						}));
@@ -304,20 +306,19 @@
 				
 				//按条件查询
 				condSelectClick:function(params) {
-					var dyViewQueryInfo = new Object();
+					var dyViewQueryInfo = this.collectData(this);
 					var pageInfo = new Object();
 					var condSelect = new Object();
-					var viewUuid = window.viewId_.replace("update_","");
 					var currentPage = this.options.data.pageCurrentPage;
 					var pageSize = this.options.data.pageSize;
 					dyViewQueryInfo.viewUuid = viewUuid;
 					pageInfo.currentPage = currentPage;
 					pageInfo.pageSize = pageSize;
-					condSelect.optionValue = param.value;
-					condSelect.appointColumn = param.appointColumn;
+					condSelect.optionValue = params.value;
+					condSelect.appointColumn = params.appointColumn;
 					dyViewQueryInfo.pageInfo = pageInfo;
 					dyViewQueryInfo.condSelect = condSelect;
-					var url = ctx + '/basicdata/dyview/view_data_condSelect.action';
+					var url = ctx + '/basicdata/dyview/view_show_param.action';
 					$.ajax({
 						url:url,
 						type:"POST",
@@ -328,7 +329,7 @@
 							if(data == "") {
 								alert("抱歉,没有符合条件的记录!");
 							}
-							$("#"+window.viewId_).html(data);
+							$("#update_"+viewUuid).html(data);
 							formDate();
 						}
 					});
@@ -397,7 +398,8 @@
 					var pageInfo = new Object();
 					var viewUuid = this.options.data.viewUuid;
 					var pageSize = this.options.data.pageSize;
-					var pageCurrentPage = this.options.data.pageCurrentPage;
+//					var pageCurrentPage = this.options.data.pageCurrentPage;
+					var pageCurrentPage = 1;
 					dyViewQueryInfo.viewUuid = viewUuid;
 					dyViewQueryInfo.viewName = "";
 					pageInfo.currentPage = pageCurrentPage;
@@ -440,6 +442,32 @@
 		$.fn.dyView.defaults = {
 		};
 })(jQuery);
+
+//视图解析的导出功能
+function exportData() {
+	var dataArray = new Array();
+	$(".checkeds").each(function(){
+		var $this = $(this);
+		if($this.attr("checked")){
+			var dataUuid = $this.val();
+			dataArray.push(dataUuid);
+		}
+	});
+	
+	 var url = ctx+"/basicdata/excelexportrule/export?viewUuid="+viewUuid+"&dataArray="+dataArray;
+	 window.location.href=url;
+}
+function stopDefault(e) {
+    //如果提供了事件对象，则这是一个非IE浏览器 
+    if(e && e.preventDefault) {
+    　　//阻止默认浏览器动作(W3C)
+    　　e.preventDefault();
+    } else {
+    　　//IE中阻止函数器默认动作的方式 
+    　　window.event.returnValue = false; 
+    }
+    return false;
+}
 
 //格式化时间
 function formDate(){

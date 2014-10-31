@@ -7,7 +7,11 @@
 			<ul>
 				<li><a href="#tabs-1">基本属性</a></li>
 				<li class="fork_condition"><a href="#tabs-2">分支条件</a></li>
+				<!-- modified by huanglinchuan 2014.10.21 begin -->
+				<!-- 
 				<li><a href="#tabs-3">消息分发</a></li>
+				 -->
+				<!-- modified by huanglinchuan 2014.10.21 end -->
 			</ul>
 			<div id="tabs-1">
 				<table>
@@ -22,6 +26,15 @@
 						<td><input id="id" name="id" type="text" class="full-width"></td>
 						<td></td>
 					</tr>
+					<!-- modified by huanglinchuan 2014.10.21 begin -->
+					<tr>
+						<td class="align-top"><label for="listenerName">事件监听</label></td>
+						<td><textarea id="listenerName" name="listenerName"
+								class="full-width"></textarea><input id="listener"
+							name="listener" type="hidden" /></td>
+						<td></td>
+					</tr>
+					<!-- modified by huanglinchuan 2014.10.21 end -->
 				</table>
 			</div>
 			<div id="tabs-2" class="fork_condition">
@@ -61,6 +74,8 @@
 					</tr>
 				</table>
 			</div>
+			 <!-- modified by huanglinchuan 2014.10.21 begin -->
+			 <!-- 
 			<div id="tabs-3">
 				<table>
 					<tr>
@@ -108,6 +123,8 @@
 					</tr>
 				</table>
 			</div>
+			-->
+			 <!-- modified by huanglinchuan 2014.10.21 end -->
 		</div>
 		<div class="btn-group btn-group-bottom">
 			<button id="btn_save" type="button" class="btn"

@@ -47,7 +47,19 @@ $(function() {
 		"readFile" : null,
 		"readFileChange" : null,
 		"uploadFileNames" : null,
-		"uploadFileIds" : null
+		"uploadFileIds" : null,
+		"beforeSubmitService" : null,
+		"afterSubmitService" : null
+	};
+	var beforeSubmitService;
+	var afterSubmitService;
+	File.setFileData = function(propName, propValue) {
+		bean[propName] = propValue;
+		if(propName =='beforeSubmitService'){
+			beforeSubmitService = propValue;
+		} else if(propName =='afterSubmitService'){
+			afterSubmitService = propValue;
+		}
 	};
 	var customformData = {};
 	var historyVersionDialogOptions = {
@@ -121,35 +133,61 @@ $(function() {
 					var canDownload = $("#canDownload").val();
 					//如果为1表示允许下载,参考form_demo.js
 					if(canDownload == "1"){
-						$("#fileDynamicForm").dytable({
-							data : result.data.formAndDataBean,
-							isFile2swf : false,
-							setReadOnly : readOnly,
-							supportDown : "1",
-							beforeSubmit : otherSubmit,
-							open : function() {
-								// 调整自适应表单宽度
-								adjustWidthToForm();
-								
-								var scriptUrl  = $("#scriptUrl").val();
-								$.getScript(ctx + scriptUrl);
-							}
-						});
+						$("#fileDynamicForm").dyform(
+								{
+									definition:result.data.dyFormData.formDefinition ,
+									data:result.data.dyFormData.formDatas,
+									displayAsFormModel:false,
+									success:function(){
+										console.log("表单解析完毕");
+										// 调整自适应表单宽度
+										adjustWidthToForm();
+										
+										var scriptUrl  = $("#scriptUrl").val();
+										if(typeof scriptUrl != "undefined" && $.trim(scriptUrl).length > 0){
+											$.getScript(ctx + scriptUrl);
+										}
+										
+									},
+									error:function(){
+										console.log("表单解析失败");
+									}
+								} 
+						); 
+						$("#fileDynamicForm").dyform("setTextFile2SWF", false);
+						if(readOnly == true){
+							$("#fileDynamicForm").dyform("showAsLabel");
+						} else if(readOnly == false){
+							$("#fileDynamicForm").dyform("setEditable");
+						}
+						
 					} else {//不为1表示防止下载
-						$("#fileDynamicForm").dytable({
-							data : result.data.formAndDataBean,
-							isFile2swf : true,
-							setReadOnly : readOnly,
-							supportDown : "2",
-							beforeSubmit : otherSubmit,
-							open : function() {
-								// 调整自适应表单宽度
-								adjustWidthToForm();
-								
-								var scriptUrl  = $("#scriptUrl").val();
-								$.getScript(ctx + scriptUrl);
-							}
-						});
+						$("#fileDynamicForm").dyform(
+								{
+									definition:result.data.dyFormData.formDefinition ,
+									data:result.data.dyFormData.formDatas,
+									displayAsFormModel:false,
+									success:function(){
+										console.log("表单解析完毕");
+										// 调整自适应表单宽度
+										adjustWidthToForm();
+										
+										var scriptUrl  = $("#scriptUrl").val();
+										if(typeof scriptUrl != "undefined" && $.trim(scriptUrl).length > 0){
+											$.getScript(ctx + scriptUrl);
+										}
+									},
+									error:function(){
+										console.log("表单解析失败");
+									}
+								} 
+						); 
+						$("#fileDynamicForm").dyform("setTextFile2SWF", true);
+						if(readOnly == true){
+							$("#fileDynamicForm").dyform("showAsLabel");
+						} else if(readOnly == false){
+							$("#fileDynamicForm").dyform("setEditable");
+						}
 					}
 					
 					initFileInfo();// 初始化文件表单的相关信息
@@ -165,7 +203,7 @@ $(function() {
 	});
 	// 调整自适应表单宽度
 	function adjustWidthToForm() {
-		var div_body_width = $(window).width() * 0.76;
+		var div_body_width = $(window).width() * 0.95;
 		$(".form_header").css("width", div_body_width - 5);
 		$(".div_body").css("width", div_body_width);
 	}
@@ -175,32 +213,15 @@ $(function() {
 	}
 
 	function initFileInfo() {
-		$("#title").val($("#fileDynamicForm").dytable("getFieldForFormData", {
-			formuuid : $("#dynamicFormId").val(),
-			fieldMappingName : "File_title"
-		}));
-
-		$("#editFile").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_editFile"
-				}));
-
+		$("#title").val($("#fileDynamicForm").dyform("getFieldValue",  "File_title"));
+		$("#editFile").val($("#fileDynamicForm").dyform("getFieldValue",  "File_editFile"));
 		$("#sourceEditFileValue").html($("#editFile").val());
 
-		$("#readFile").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_readFile"
-				}));
-
+		$("#readFile").val($("#fileDynamicForm").dyform("getFieldValue",  "File_readFile"));
 		$("#sourceReadFileValue").html($("#readFile").val());
 
 		if (uuid.length == 0) {// 新创建的情况
-			$("#fileDynamicForm").dytable("setFieldValue", {
-				mappingName : "File_parent_id",
-				value : $("#folderId").val()
-			});
+			$("#fileDynamicForm").dyform("setFieldValue",  "File_parent_id", $("#folderId").val());
 		}
 
 		// 文件历史版本对话框
@@ -450,202 +471,143 @@ $(function() {
 	var isInitFirst = "1";// 是第一次初始化，用于版本号增加
 
 	function submit() {
-		$("#title").val($("#fileDynamicForm").dytable("getFieldForFormData", {
-			formuuid : $("#dynamicFormId").val(),
-			fieldMappingName : "File_title"
-		}));
+		$("#title").val($("#fileDynamicForm").dyform("getFieldValue",  "File_title"));
 		if ($("#title").val().length == 0) {
 			oAlert(fileManager.titleNotBeNull);
 			return;
 		}
-		$("#editFile").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_editFile"
-				}));
+		$("#editFile").val($("#fileDynamicForm").dyform("getFieldValue",  "File_editFile"));
 
 		$("#sourceEditFileValue").html($("#editFile").val());
 
-		$("#readFile").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_readFile"
-				}));
-
-		$("#reservedText1").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedText1"
-				}));
-		$("#reservedText2").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedText2"
-				}));
-		$("#reservedText3").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedText3"
-				}));
-		$("#reservedText4").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedText4"
-				}));
-		$("#reservedText5").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedText5"
-				}));
-		$("#reservedText6").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedText6"
-				}));
-		$("#reservedText7").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedText7"
-				}));
-		$("#reservedText8").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedText8"
-				}));
-		$("#reservedNumber1").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedNumber1"
-				}));
-		$("#reservedNumber2").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedNumber2"
-				}));
-		$("#reservedNumber3").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedNumber3"
-				}));
-		$("#reservedDate1").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedDate1"
-				}));
-		$("#reservedDate2").val(
-				$("#fileDynamicForm").dytable("getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_reservedDate2"
-				}));
-
+		$("#readFile").val($("#fileDynamicForm").dyform("getFieldValue",  "File_readFile"));
+		$("#reservedText1").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedText1"));
+		$("#reservedText2").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedText2"));
+		$("#reservedText3").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedText3"));
+		$("#reservedText4").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedText4"));
+		$("#reservedText5").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedText5"));
+		$("#reservedText6").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedText6"));
+		$("#reservedText7").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedText7"));
+		$("#reservedText8").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedText8"));
+		$("#reservedNumber1").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedNumber1"));
+		$("#reservedNumber2").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedNumber2"));
+		$("#reservedNumber3").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedNumber3"));
+		$("#reservedDate1").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedDate1"));
+		$("#reservedDate2").val($("#fileDynamicForm").dyform("getFieldValue",  "File_reservedDate2"));
+		
 		$("#sourceReadFileValue").html($("#readFile").val());
 
-		var currentParentId = $("#fileDynamicForm").dytable(
-				"getFieldForFormData", {
-					formuuid : $("#dynamicFormId").val(),
-					fieldMappingName : "File_parent_id"
-				});
+		var currentParentId =$("#fileDynamicForm").dyform("getFieldValue",  "File_parent_id");
 		if (currentParentId && currentParentId.length > 0) {
 			$("#folderId").val(currentParentId);
 		}
 
 		checkInputValueEq("editFile", "sourceEditFileValue", "editFileChange");
 		checkInputValueEq("readFile", "sourceReadFileValue", "readFileChange");
+		
+		//收集数据前要执行表单验证
+		var validateForm = undefined;
+		validateForm   = 	$("#fileDynamicForm").dyform("validateForm");
+		if(validateForm){
+			var formData = $("#fileDynamicForm").dyform("collectFormData");
 
-		var rootFormData = $("#fileDynamicForm").dytable("formData");
+			// 清空JSON
+			$.common.json.clearJson(bean);
+			// 收集表单数据
+			$("#fileForm").form2json(bean);
+			customformData.dyFormData = formData;
+			bean.beforeSubmitService = beforeSubmitService;
+			bean.afterSubmitService = afterSubmitService;
+			customformData.fileBean = bean;
+			customformData.operate = $("#operate").val();
+			customformData.attach = $('#attach').val();
+			$('#save').attr('disabled', "true");
+			if (chooseVersionNum == "1") {// 修改之后，需要对比
 
-		// 清空JSON
-		$.common.json.clearJson(bean);
-		// 收集表单数据
-		$("#fileForm").form2json(bean);
-		customformData.rootFormDataBean = rootFormData;
-		customformData.fileBean = bean;
-		customformData.operate = $("#operate").val();
-		customformData.attach = $('#attach').val();
-		$('#save').attr('disabled', "true");
-		if (chooseVersionNum == "1") {// 修改之后，需要对比
+				if (isInitFirst == '1') {
+					var currentVersion = parseFloat($("#currentSetVersion").val());
 
-			if (isInitFirst == '1') {
-				var currentVersion = parseFloat($("#currentSetVersion").val());
+					currentVersion = currentVersion + 0.1;
+					currentVersion = Math.round((currentVersion * 100) * 1000) / 100000;
+					currentVersion = toDecimal1(currentVersion);
+					$("#currentSetVersion").val(currentVersion);
+					isInitFirst = "0";
+				}
+				// 选择版本号
 
-				currentVersion = currentVersion + 0.1;
-				currentVersion = Math.round((currentVersion * 100) * 1000) / 100000;
-				currentVersion = toDecimal1(currentVersion);
-				$("#currentSetVersion").val(currentVersion);
-				isInitFirst = "0";
-			}
-			// 选择版本号
+				$("#showDifDialog").oDialog("open");
+				chooseVersionNum = "0";
 
-			$("#showDifDialog").oDialog("open");
-			chooseVersionNum = "0";
-
-		} else {
-			JDS
-					.call({
-						service : 'fileManagerService.saveOrUpdateFile',
-						data : customformData,
-						success : function(result) {
-							// window.location.href=ctx+"/fileManager/folder/indexList?id="+$("#folderId").val();
-							if(result.data.indexOf("字段") > -1 ){//如果返回的信息包含“字段”，则为表单提示信息（如字段唯一等）
-								oAlert(result.data);
-							} else {
-								if (customformData.currentAction == "SAVE_CURRENT_VERSION") {
-									oAlert(fileManager.fileInSuccess, function(){
-										afterSaveRefleshWindow(result.data);
-				    				});
-								} else if (customformData.currentAction == "SAVE_NEW_VERSION") {
-									oAlert(fileManager.fileInSuccess, function(){
-										afterSaveRefleshWindow(result.data);
-				    				});
-								} else if (customformData.currentAction == "FILE_OUT") {
-									oAlert(fileManager.fileOutSuccess, function(){
-										afterSaveRefleshWindow(result.data);
-				    				});
-								} else if (customformData.currentAction == "FILE_SEND_FOLW") {
-									oAlert(fileManager.fileSendFlowSuccess, function(){
-										afterSaveRefleshWindow(result.data);
-				    				});
-								} else if (customformData.currentAction == "FILE_SEND_CHECK_IN") {
-									oAlert(fileManager.fileSendCheckInSuccess, function(){
-										afterSaveRefleshWindow(result.data);
-				    				});
-								} else if (customformData.currentAction == "SAVE_DRAFT"
-										|| customformData.currentAction == "SAVE_NORMAL") {
-									oAlert(fileManager.saveSuccess, function(){
-										afterSaveRefleshWindow(result.data);
-				    				});
-								} else if (customformData.currentAction == "DISCARD_SAVE"
-										|| customformData.currentAction == "FILE_CANCEL") {
-									oAlert(fileManager.fileCancelSuccess, function(){
-										afterSaveRefleshWindow(result.data);
-				    				});
+			} else {
+				JDS
+						.call({
+							service : 'fileManagerService.saveOrUpdateFile',
+							data : customformData,
+							success : function(result) {
+								// window.location.href=ctx+"/fileManager/folder/indexList?id="+$("#folderId").val();
+								if(result.data.indexOf("字段") > -1 ){//如果返回的信息包含“字段”，则为表单提示信息（如字段唯一等）
+									oAlert(result.data);
 								} else {
-									oAlert(fileManager.operateSuccess, function(){
-										afterSaveRefleshWindow(result.data);
-				    				});
+									if (customformData.currentAction == "SAVE_CURRENT_VERSION") {
+										oAlert(fileManager.fileInSuccess, function(){
+											afterSaveRefleshWindow(result.data);
+					    				});
+									} else if (customformData.currentAction == "SAVE_NEW_VERSION") {
+										oAlert(fileManager.fileInSuccess, function(){
+											afterSaveRefleshWindow(result.data);
+					    				});
+									} else if (customformData.currentAction == "FILE_OUT") {
+										oAlert(fileManager.fileOutSuccess, function(){
+											afterSaveRefleshWindow(result.data);
+					    				});
+									} else if (customformData.currentAction == "FILE_SEND_FOLW") {
+										oAlert(fileManager.fileSendFlowSuccess, function(){
+											afterSaveRefleshWindow(result.data);
+					    				});
+									} else if (customformData.currentAction == "FILE_SEND_CHECK_IN") {
+										oAlert(fileManager.fileSendCheckInSuccess, function(){
+											afterSaveRefleshWindow(result.data);
+					    				});
+									} else if (customformData.currentAction == "SAVE_DRAFT"
+											|| customformData.currentAction == "SAVE_NORMAL") {
+										oAlert(fileManager.saveSuccess, function(){
+											afterSaveRefleshWindow(result.data);
+					    				});
+									} else if (customformData.currentAction == "DISCARD_SAVE"
+											|| customformData.currentAction == "FILE_CANCEL") {
+										oAlert(fileManager.fileCancelSuccess, function(){
+											afterSaveRefleshWindow(result.data);
+					    				});
+									} else {
+										oAlert(fileManager.operateSuccess, function(){
+											afterSaveRefleshWindow(result.data);
+					    				});
+									}
+								}
+							},
+							error : function(xhr, textStatus, errorThrown) {
+								$('#save').attr('disabled', "false");
+								var msg = JSON.parse(xhr.responseText);
+								if (msg && msg.errorCode === "TaskNotAssignedUser") {
+									// 选择流程审批人员
+									selectFlowUsers(msg.data);
+								} else if (msg
+										&& msg.errorCode === "FileHasCheckOut") {
+									oAlert(msg.data);
+								} else {
+								/*	$("#fileDynamicForm").dytable(
+											"showCompareData", {
+												data : msg.data,
+												id : "fileDynamicForm"
+											});*/
+									// $("#fileDynamicForm").dytable("showCompareData",
+									// {data:$("#dynamicDataId").val(),id:"fileDynamicForm"});
 								}
 							}
-						},
-						error : function(xhr, textStatus, errorThrown) {
-							$('#save').attr('disabled', "false");
-							var msg = JSON.parse(xhr.responseText);
-							if (msg && msg.errorCode === "TaskNotAssignedUser") {
-								// 选择流程审批人员
-								selectFlowUsers(msg.data);
-							} else if (msg
-									&& msg.errorCode === "FileHasCheckOut") {
-								oAlert(msg.data);
-							} else {
-								$("#fileDynamicForm").dytable(
-										"showCompareData", {
-											data : msg.data,
-											id : "fileDynamicForm"
-										});
-								// $("#fileDynamicForm").dytable("showCompareData",
-								// {data:$("#dynamicDataId").val(),id:"fileDynamicForm"});
-							}
-						}
-					});
+						});
+			}
+		} else {
+			return false;
 		}
 	}
 	

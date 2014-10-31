@@ -13,15 +13,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-
-import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.hibernate.HibernateException;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cache.internal.CacheDataDescriptionImpl;
@@ -32,6 +31,7 @@ import org.hibernate.cache.spi.access.CollectionRegionAccessStrategy;
 import org.hibernate.cache.spi.access.EntityRegionAccessStrategy;
 import org.hibernate.cache.spi.access.NaturalIdRegionAccessStrategy;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.CustomConfiguration;
 import org.hibernate.cfg.Settings;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.engine.spi.Mapping;
@@ -48,6 +48,7 @@ import org.hibernate.persister.spi.PersisterFactory;
 import org.hibernate.type.AssociationType;
 import org.hibernate.type.Type;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +59,10 @@ import com.google.common.collect.Lists;
 import com.wellsoft.pt.common.component.jqgrid.JqGridQueryInfo;
 import com.wellsoft.pt.common.component.jqgrid.JqTreeGridNode;
 import com.wellsoft.pt.common.component.tree.TreeNode;
+import com.wellsoft.pt.common.enums.Separator;
 import com.wellsoft.pt.core.context.ApplicationContextHolder;
 import com.wellsoft.pt.core.dao.PropertyFilter;
+import com.wellsoft.pt.core.mt.service.TenantService;
 import com.wellsoft.pt.core.resource.Config;
 import com.wellsoft.pt.core.support.QueryData;
 import com.wellsoft.pt.core.support.QueryInfo;
@@ -71,11 +74,17 @@ import com.wellsoft.pt.dyform.facade.DyFormApiFacade;
 import com.wellsoft.pt.dyform.service.DyFormDefinitionService;
 import com.wellsoft.pt.dyform.support.DyFormConfig;
 import com.wellsoft.pt.dyform.support.DyFormConfig.DbDataType;
-import com.wellsoft.pt.dyform.support.DyFormConfig.DyFieldSysType;
-import com.wellsoft.pt.dyform.support.DyFormConfig.ValueCreateMethod;
-import com.wellsoft.pt.dyform.support.DyFormDefinitionUtils;
+import com.wellsoft.pt.dyform.support.DyFormConfig.EnumFieldPropertyName;
+import com.wellsoft.pt.dyform.support.DyFormConfig.EnumFormPropertyName;
+import com.wellsoft.pt.dyform.support.DyFormDefinitionJSON;
+import com.wellsoft.pt.dyform.support.TableConfig;
+import com.wellsoft.pt.dyform.support.cache.DyformCacheUtils;
+import com.wellsoft.pt.dyform.support.enums.EnumRelationTblSystemField;
+import com.wellsoft.pt.dyform.support.enums.EnumSystemField;
+import com.wellsoft.pt.dyform.support.exception.hibernate.HibernateDataExistException;
 import com.wellsoft.pt.dytable.bean.TreeNodeBean;
-import com.wellsoft.pt.dytable.support.TableConfig;
+import com.wellsoft.pt.mt.entity.Tenant;
+import com.wellsoft.pt.utils.security.SpringSecurityUtils;
 
 /**
  * 
@@ -94,11 +103,15 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 	@Autowired
 	private DyFormApiFacade dyFormApiFacade;
 
+	public DyFormDefinitionServiceImpl() {
+		//初始化表单缓存
+		//initDyformCache();
+	}
+
 	private void saveFormDefinition(DyFormDefinition formDefinition) {
 
 		//设置版本
-		if (StringUtils.isEmpty(formDefinition.getUuid()) || "undefined".equals(formDefinition.getUuid())) {//新增
-
+		if (StringUtils.isEmpty(formDefinition.getUuid()) || "undefined".equals(formDefinition.getUuid())) {//新增 
 			formDefinition.doBindVersionAsMinVersion();
 			this.dyFormDefinitionDao.save(formDefinition);
 			formDefinition.doBindUuid2Json();
@@ -120,6 +133,7 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 					copyUtils.copyProperties(obj, formDefinition);
 				} catch (Exception e) {
 				}
+				obj.doBindUuid2Json();
 				this.dyFormDefinitionDao.save(obj);
 			}
 
@@ -127,73 +141,72 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 
 	}
 
-	private void createOrUpdateDyForm(String defintionJson) {
-		//将定义json转换成hibernate配置文件(也就是hibernate.cfg.xml格式的文件)
-		String hbmCfgXml = convertDefinitionJson2HbmCfg(defintionJson);
-		this.updateSubformRelation(defintionJson);
+	/** 
+	 * 获取动态表单下拉框的初始值
+	 * 
+	 * (non-Javadoc)
+	 * @see com.wellsoft.pt.dytable.service.FormDefinitionService#getFormKeyValuePair(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public QueryItem getFormKeyValuePair(String s, String formUuidsStr) {
+		QueryItem queryitem = new QueryItem();
+		if (StringUtils.isNotBlank(formUuidsStr)) {
+			String[] formUuids = formUuidsStr.split(Separator.SEMICOLON.getValue());
+			int j = formUuids.length;
+			for (int i = 0; i < j; i++) {
+				String formUuid = formUuids[i];
+				DyFormDefinition definition = this.dyFormApiFacade.getFormDefinition(formUuid);
 
-		logger.debug("用户配置后生成相应的hbm文件内容(新建):" + hbmCfgXml);
+				if (definition != null) {
+					String displayName = definition.getDisplayName();
+					String moduleName = definition.getModuleName();
+					if (queryitem.get("value") == null) {
+						queryitem.put("label", moduleName + "/" + displayName);
+						queryitem.put("value", formUuid);
+					} else {
+						queryitem.put(
+								"label",
+								(new StringBuilder()).append(queryitem.get("label"))
+										.append(Separator.SEMICOLON.getValue()).append(moduleName + "/" + displayName)
+										.toString());
+						queryitem.put(
+								"value",
+								(new StringBuilder()).append(queryitem.get("value"))
+										.append(Separator.SEMICOLON.getValue()).append(formUuid).toString());
+					}
 
-		//根据hibernate配置文件生成或者更新表结构
-		Configuration config = new Configuration();
-		config.addXML(hbmCfgXml);
-		this.addNewConfig(config);
-		TableConfig tableconfig = new TableConfig(config);
-
-		if (!this.isFormExistByFormTblName(JSONObject.fromObject(defintionJson).getString("name"))) {//数据表单表不存在
-			tableconfig.addTable();
-		} else {//数据表单表已存在 
-			tableconfig.updateTable();
-		}
-
-	}
-
-	@SuppressWarnings("unchecked")
-	private void updateSubformRelation(String defintionJson) {
-		JSONObject definitionJsonObj = JSONObject.fromObject(defintionJson);//表单定义信息
-		JSONObject subformsDefinitionRelation = definitionJsonObj.getJSONObject("subforms");//主表从表关系
-		String mainformName = definitionJsonObj.getString("name");//主表表名
-		Iterator<String> it = subformsDefinitionRelation.keys();
-		while (it.hasNext()) {
-			String formUuid = it.next();
-			DyFormDefinition subformDefinition = this.dyFormApiFacade.getFormDefinitionByFormUuid(formUuid);
-			JSONObject subformJsonDefinition = JSONObject.fromObject(subformDefinition.getDefinitionJson());
-			JSONObject subformFieldJsonDefinitons = subformJsonDefinition.getJSONObject("fields");
-			JSONObject subformFieldJsonDefinitonOfMainForm = subformFieldJsonDefinitons.getJSONObject(mainformName);
-			if (subformFieldJsonDefinitonOfMainForm.isNullObject() || subformFieldJsonDefinitonOfMainForm.isEmpty()) {
-
-				/*JSONObject statusFieldDefinitionJsonDefinition = subformFieldJsonDefinitons.getJSONObject("status");
-				JSONObject mainFormFieldDefinitionJsonDefinition = JSONObject
-						.fromObject(statusFieldDefinitionJsonDefinition.toString());
-				mainFormFieldDefinitionJsonDefinition.put("name", mainformName);
-				mainFormFieldDefinitionJsonDefinition.put("sysType", DyFieldSysType.parentForm);
-				mainFormFieldDefinitionJsonDefinition.put("length", 50);*/
-				//设置在子表设置主表的关联字段,子表的数据通过该字段可以找到其主表对应的数据,该字段的名字为主表的表名
-				JSONObject mainFormFieldInSubform = new JSONObject();
-				mainFormFieldInSubform.put("name", mainformName);
-				mainFormFieldInSubform.put("sysType", DyFieldSysType.parentForm);
-				mainFormFieldInSubform.put("length", 50);
-				mainFormFieldInSubform.put("dbDataType", DbDataType._string);
-				mainFormFieldInSubform.put("valueCreateMethod", ValueCreateMethod.userImport);
-				mainFormFieldInSubform.put("inputMode", DyFormConfig.INPUTMODE_Text);
-				subformFieldJsonDefinitons.put(mainformName, mainFormFieldInSubform);
-				subformJsonDefinition.put("fields", subformFieldJsonDefinitons);
-
-				//保存排序
-				JSONObject mainFormFieldOrderInSubform = new JSONObject();
-				mainFormFieldOrderInSubform.put("name", DyFormDefinitionUtils.getFieldNameOfOrder(mainformName));
-				mainFormFieldOrderInSubform.put("sysType", DyFieldSysType.parentForm);
-				mainFormFieldOrderInSubform.put("length", 50);
-				mainFormFieldOrderInSubform.put("dbDataType", DbDataType._string);
-				mainFormFieldOrderInSubform.put("valueCreateMethod", ValueCreateMethod.userImport);
-				mainFormFieldOrderInSubform.put("inputMode", DyFormConfig.INPUTMODE_Text);
-				subformFieldJsonDefinitons.put(mainformName, mainFormFieldInSubform);
-				subformJsonDefinition.put("fields", subformFieldJsonDefinitons);
-				subformDefinition.setDefinitionJson(subformJsonDefinition.toString());
-				this.createFormDefinitionAndFormTable(subformDefinition);
+				} else {
+					queryitem.put("label", formUuid);
+					queryitem.put("value",
+							(new StringBuilder()).append(queryitem.get("value")).append(Separator.SEMICOLON.getValue())
+									.append(formUuid).toString());
+				}
 			}
 
 		}
+		return queryitem;
+
+	}
+
+	private String createRelationTblHbmXML(DyFormDefinition dyFormDefinition) {
+		JSONObject formDefinition = new JSONObject();
+		JSONObject fieldDefinitions = new JSONObject();
+		JSONObject suboformDefinitions = new JSONObject();
+		try {
+			String relationTblName = dyFormDefinition.getName() + DyFormConfig.DYFORM_RELATIONTBL_POSTFIX;
+			dyFormDefinition.getJsonHandler().addFormProperty(EnumFormPropertyName.relationTbl, relationTblName);
+			dyFormDefinition.setRelationTbl(relationTblName);
+			formDefinition.put(EnumFormPropertyName.name.name(), relationTblName);
+			formDefinition.put(EnumFormPropertyName.fields.name(), fieldDefinitions);
+			formDefinition.put(EnumFormPropertyName.subforms.name(), suboformDefinitions);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		String xml = convertDefinitionJson2HbmCfg(formDefinition.toString(), EnumRelationTblSystemField.class,
+				new ArrayList<String>());
+
+		return xml;
 	}
 
 	/**
@@ -212,32 +225,56 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 		}
 	}
 
+	public void initDyformCache() {
+		if (DyformCacheUtils.isInitOk()) {//已被初始化完毕
+			return;
+		}
+		List<DyFormDefinition> defs = this.getAllFormDefintions();
+		for (DyFormDefinition def : defs) {//底层框架设置bug,导致要加这段代码，否则会导致这些持久化对象中被属性被同步至数据库中
+			def.setJsonHandler(null);
+		}
+		DyformCacheUtils.initDyformDefinitionCache(defs);
+	}
+
 	@Override
+	@Transactional(readOnly = true)
 	public DyFormDefinition findDyFormDefinitionByFormUuid(String formUuid) {
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("uuid", formUuid);
-
-		DyFormDefinition dydf = this.dyFormDefinitionDao.findUnique(
-				"select o from DyFormDefinition o where o.uuid = :uuid", params);
-
-		//getSessionFactory().getCurrentSession().close();//session由自己管理
-		return dydf;
+		initDyformCache();
+		return DyformCacheUtils.getDyformDefinitionByUuid(formUuid);
 	}
 
 	@Override
 	public DyFormDefinition findDyFormDefinitionByOuterId(String outerId) {
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("id", outerId);
+		initDyformCache();
+		return DyformCacheUtils.getDyformDefinitionOfMaxVersionById(outerId);//获取最高版本的定义
+	}
 
-		return this.dyFormDefinitionDao.findUnique("select o from DyFormDefinition o where o.outerId = :id", params);
+	public List<DyFormDefinition> findDyFormDefinitionsByOuterId(String outerId) {
+		return this.dyFormDefinitionDao.find(Restrictions.eq("outerId", outerId));
+	}
+
+	public DyFormDefinition getFormDefinitionOfMaxVersionByOuterId(String outerId) {
+		String hql = QUERY_MAX_VERSION_LIST + " and a.outer_id = :outerId";
+		SQLQuery sqlQuery = this.dyFormDefinitionDao.getSession().createSQLQuery(hql);
+		sqlQuery.setString("outerId", outerId);
+		List<DyFormDefinition> list = sqlQuery.addEntity(DyFormDefinition.class).list();
+		if (list == null || list.size() == 0) {
+			return null;
+		} else {
+			return list.get(0);
+		}
 	}
 
 	@Override
 	public List<DyFormDefinition> findDyFormDefinitionByTblName(String tblName) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("name", tblName);
+
 		List<DyFormDefinition> list = this.dyFormDefinitionDao.find(
 				"select o from DyFormDefinition o where o.name = :name", params);
+		for (DyFormDefinition dydf : list) {
+			dydf.setJsonHandler(null);//dydf.getDefinitionJson//由于系统问题，这句不可删除
+		}
 		return list;
 
 	}
@@ -258,8 +295,15 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 		}
 	}
 
-	private String convertDefinitionJson2HbmCfg(String defintionJson) {
-		JSONObject definitionJsonObj = JSONObject.fromObject(defintionJson);//表单定义信息
+	private String convertDefinitionJson2HbmCfg(String defintionJson, Class clazz, List<String> delFieldNames) {
+
+		DyFormDefinitionJSON dJson;
+		try {
+			dJson = new DyFormDefinitionJSON(defintionJson);
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+			return null;
+		}
 		Document doc = DocumentHelper.createDocument();
 
 		doc.addDocType("hibernate-mapping", "-//Hibernate/Hibernate Mapping DTD 3.0//EN",
@@ -267,101 +311,123 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 
 		Element root = doc.addElement("hibernate-mapping");
 
-		Element classEl = root.addElement("class").addAttribute("entity-name", definitionJsonObj.getString("name"));
+		String tblName = dJson.getTblNameOfMainform();
 
-		// uuid字段
-		Element uuidEl = classEl.addElement("id");
-		uuidEl.addAttribute("name", "uuid");
-		uuidEl.addAttribute("column", "uuid");
-		uuidEl.addAttribute("type", "string");
-		uuidEl.addElement("generator").addAttribute("class", "org.hibernate.id.UUIDGenerator");
+		Element classEl = root.addElement("class").addAttribute("entity-name", tblName);
+		TenantService tenantService = ApplicationContextHolder.getBean(TenantService.class);
+		Tenant tenant = tenantService.getById(SpringSecurityUtils.getCurrentTenantId());
+		classEl.addAttribute("schema", tenant.getJdbcUsername());
+		if (delFieldNames != null) {
+			Element commentEl = classEl.addElement("comment");
+			JSONObject commentJSON = new JSONObject();
+			try {
+				commentJSON.put("delFieldNames", delFieldNames);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			commentEl.setText(commentJSON.toString());
+		}
 
-		// creator字段
-		Element creatorEl = classEl.addElement("property");
-		creatorEl.addAttribute("name", "creator");
-		creatorEl.addAttribute("column", "creator");
-		creatorEl.addAttribute("type", "string");
+		//创建系统字段
+		if (clazz == EnumSystemField.class) {
+			for (EnumSystemField field : EnumSystemField.values()) {
+				Element sysElement = null;
+				sysElement = classEl.addElement(field.getElementType());
+				sysElement.addAttribute("name", field.getName());
+				sysElement.addAttribute("column", field.getColumn());
+				String type = field.getDataType();
+				sysElement.addAttribute("type", type);
 
-		// createTime字段
-		Element createTimeEl = classEl.addElement("property");
-		createTimeEl.addAttribute("name", "createTime");
-		createTimeEl.addAttribute("column", "create_time");
-		createTimeEl.addAttribute("type", "java.sql.Timestamp");
+				if ("id".equals(field.getElementType())) {
+					sysElement.addElement("generator").addAttribute("class", "org.hibernate.id.UUIDGenerator");
+				}
+				if (type.equals("string")) {//字段串类型加长度
+					sysElement.addAttribute("length", field.getLength().toString());
+				}
+			}
+		} else if (clazz == EnumRelationTblSystemField.class) {
+			for (EnumRelationTblSystemField field : EnumRelationTblSystemField.values()) {
+				Element sysElement = null;
+				sysElement = classEl.addElement(field.getElementType());
+				sysElement.addAttribute("name", field.getName());
+				sysElement.addAttribute("column", field.getColumn());
+				String type = field.getDataType();
+				sysElement.addAttribute("type", type);
 
-		// modifier字段
-		Element modifierEl = classEl.addElement("property");
-		modifierEl.addAttribute("name", "modifier");
-		modifierEl.addAttribute("column", "modifier");
-		modifierEl.addAttribute("type", "string");
-
-		// modifyTime字段
-		Element modifyTimeEl = classEl.addElement("property");
-		modifyTimeEl.addAttribute("name", "modifyTime");
-		modifyTimeEl.addAttribute("column", "modify_time");
-		modifyTimeEl.addAttribute("type", "java.sql.Timestamp");
-
-		// sortOrder字段
-		Element sortOrderEl = classEl.addElement("property");
-		sortOrderEl.addAttribute("name", "sortOrder");
-		sortOrderEl.addAttribute("column", "sort_order");
-		sortOrderEl.addAttribute("type", "int");
-
-		// 表dytable_form_definition的外键
-		Element formUuidEl = classEl.addElement("property");
-		formUuidEl.addAttribute("name", "formUuid");
-		formUuidEl.addAttribute("column", "form_uuid");
-		formUuidEl.addAttribute("type", "string");
-
-		//在表单数据中也存在父节点和子节点的关系,父节点和子节点的关系即通过该字段关联起来
-		Element subTableEl = classEl.addElement("property");
-		subTableEl.addAttribute("name", "parentUuid");
-		subTableEl.addAttribute("column", "parent_uuid");
-		subTableEl.addAttribute("type", "string");
-
-		// 从表指向主表的外键
-		Element statusEl = classEl.addElement("property");
-		statusEl.addAttribute("name", "status");
-		statusEl.addAttribute("column", "status");
-		statusEl.addAttribute("type", "string");
-
-		//设置用户自定义字段
-
-		Iterator it = definitionJsonObj.getJSONObject("fields").entrySet().iterator();
-		while (it.hasNext()) {
-			Entry<String, JSONObject> jsonObjEntry = (Entry<String, JSONObject>) it.next();
-			String fieldName = jsonObjEntry.getKey();
-			JSONObject fieldDefinitionJsonObj = jsonObjEntry.getValue();
-			Element proEl = classEl.addElement("property");
-
-			proEl.addAttribute("name", fieldName);//设置字段名
-			proEl.addAttribute("column", fieldName);
-
-			//设置字段的类型
-			String dataType = fieldDefinitionJsonObj.getString("dbDataType");
-			if (DbDataType._date.equals(dataType)) {//日期类型的字段
-				proEl.addAttribute("type", "java.sql.Timestamp");
-			} else if (DbDataType._int.equals(dataType)) {
-				proEl.addAttribute("type", "int");
-			} else if (DbDataType._long.equals(dataType)) {
-				proEl.addAttribute("type", "long");
-			} else if (DbDataType._float.equals(dataType)) {
-				proEl.addAttribute("type", "float");
-			} else if (DbDataType._clob.equals(dataType)) {
-				proEl.addAttribute("type", "clob");
-			} else {
-				proEl.addAttribute("type", "string");
-
-				//设置字段的长度，默认长度为255
-				String dataLength = fieldDefinitionJsonObj.getString("length");
-				if (null != dataLength && dataLength.trim().length() > 0) {
-					proEl.addAttribute("length", dataLength);
-				} else {
-					proEl.addAttribute("length", "255");
+				if ("id".equals(field.getElementType())) {
+					sysElement.addElement("generator").addAttribute("class", "org.hibernate.id.UUIDGenerator");
+				}
+				if (type.equals("string")) {//字段串类型加长度
+					sysElement.addAttribute("length", field.getLength().toString());
 				}
 			}
 		}
 
-		return doc.asXML();
+		//设置用户自定义字段
+
+		Iterator<String> it = dJson.getFieldNamesOfMainform().iterator();
+		while (it.hasNext()) {
+
+			String fieldName = it.next();
+
+			String oldFieldName = "";//对于已有表单，该值为原来的字段名,用于修改字段名
+
+			try {
+				oldFieldName = dJson.getFieldPropertyOfStringType(fieldName, EnumFieldPropertyName.oldName);
+			} catch (Exception e) {//如果调用者没传入该值，则直接用现有的name做为旧字段名,当现有的字段和旧字段名一样时，则不执行字段名更新操作
+				oldFieldName = fieldName;
+			}
+
+			Element proEl = classEl.addElement("property");
+
+			proEl.addAttribute("name", fieldName);//设置原来的字段名
+
+			Element colEl = proEl.addElement("column");
+
+			colEl.addAttribute("name", fieldName);
+
+			//设置字段的类型
+			String dataType = dJson.getFieldPropertyOfStringType(fieldName, EnumFieldPropertyName.dbDataType);
+			String type = "";
+			if (DbDataType._date.equals(dataType)) {//日期类型的字段 
+				type = "java.sql.Timestamp";
+			} else if (DbDataType._int.equals(dataType)) {
+				type = "int";
+			} else if (DbDataType._long.equals(dataType)) {
+				type = "long";
+			} else if (DbDataType._float.equals(dataType)) {
+				type = "float";
+			} else if (DbDataType._double.equals(dataType)) {
+				type = "double";
+			} else if (DbDataType._clob.equals(dataType)) {
+				type = "clob";
+			} else {
+				type = "string";
+				//设置字段的长度，默认长度为255
+				String dataLength = dJson.getFieldPropertyOfStringType(fieldName, EnumFieldPropertyName.length);
+				if (null != dataLength && dataLength.trim().length() > 0) {
+					colEl.addAttribute("length", dataLength);
+				} else {
+					colEl.addAttribute("length", "255");
+				}
+			}
+
+			//设置原字段名
+			proEl.addAttribute("type", type);
+			Element commentEl = colEl.addElement("comment");
+			JSONObject commentJSON = new JSONObject();
+			try {
+				commentJSON.put("oldName", oldFieldName);
+			} catch (JSONException e) {
+
+				e.printStackTrace();
+			}
+			commentEl.setText(commentJSON.toString());
+
+		}
+		String xml = doc.asXML();
+		System.out.println(xml);
+		return xml;
 
 	}
 
@@ -394,8 +460,8 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 		Field entityPerField;
 		Map entityPersisters;
 
-		Field namedQueriesField;
-		Map namedQueries;
+		//Field namedQueriesField;
+		//Map namedQueries;
 
 		Field namedSqlQueriesField;
 		Map namedSqlQueries;
@@ -432,9 +498,9 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 			entityPerField.setAccessible(true);
 			entityPersisters = (Map) (entityPerField.get(((SessionFactoryImpl) getSessionFactory())));
 
-			namedQueriesField = ((SessionFactoryImpl) getSessionFactory()).getClass().getDeclaredField("namedQueries");
-			namedQueriesField.setAccessible(true);
-			namedQueries = (Map) (namedQueriesField.get(((SessionFactoryImpl) getSessionFactory())));
+			//namedQueriesField = ((SessionFactoryImpl) getSessionFactory()).getClass().getDeclaredField("namedQueries");
+			//namedQueriesField.setAccessible(true);
+			//namedQueries = (Map) (namedQueriesField.get(((SessionFactoryImpl) getSessionFactory())));
 
 			namedSqlQueriesField = ((SessionFactoryImpl) getSessionFactory()).getClass().getDeclaredField(
 					"namedSqlQueries");
@@ -532,7 +598,7 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 			}
 
 			//Named Queries:  
-			namedQueries.putAll(cfg.getNamedQueries());
+			//namedQueries.putAll(cfg.getNamedQueries());
 			namedSqlQueries.putAll(cfg.getNamedSQLQueries());
 			sqlResultSetMappings.putAll(cfg.getSqlResultSetMappings());
 			imports.putAll(cfg.getImports());
@@ -609,7 +675,7 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 				((CollectionPersister) iter.next()).postInstantiate();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			logger.error("add NewConfig error.....");
 		}
 	}
@@ -632,12 +698,205 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 
 	@Override
 	public void createFormDefinitionAndFormTable(DyFormDefinition formDefinition) {
-		//保存表单数据表定义信息
+
+		/*//保存表单数据表定义信息
 		this.saveFormDefinition(formDefinition);
 
-		//生成表单数据表
-		this.createOrUpdateDyForm(formDefinition.getDefinitionJson());
+		//创建表单数据表结构
 
+		this.createOrUpdateDyForm(formDefinition.getDefinitionJson(), null);*/
+
+		this.updateFormDefinitionAndFormTable(formDefinition, new ArrayList<String>());
+
+	}
+
+	@Override
+	public void updateFormDefinitionAndFormTable(DyFormDefinition formDefinition, List<String> deletedFieldNames) {
+
+		//this.removeFieldsAndTheirAssistedFields(formDefinition, deletedFieldNames);//删除辅助性字段
+		formDefinition.getJsonHandler().removeFields(deletedFieldNames);
+
+		//对于在新版本中被删除的列，在其他版本的定义也需要同步删除
+		try {
+			doSynDefinitionWithOtherVersions(formDefinition, deletedFieldNames);
+		} catch (JSONException e) {
+			throw new HibernateException(e.getMessage());
+		}
+
+		//dUtils.removeFieldByFieldName("deletedFieldNames");
+
+		//保存或者更新表单数据表定义信息
+		String relationTblHbmXML = this.createRelationTblHbmXML(formDefinition);//生成数据关系表
+
+		String tblHbmXML = this.createTblHbmXML(formDefinition, deletedFieldNames);
+
+		this.saveFormDefinition(formDefinition);
+
+		//创建或者更新表单数据表结构 
+		//this.createOrUpdateDyFormTbl(formDefinition, deletedFieldNames);
+		this.createOrUpdateTbl(formDefinition, tblHbmXML, relationTblHbmXML);
+
+		DyformCacheUtils.updateOrAdd(formDefinition);
+
+	}
+
+	/**
+	 * 删除辅助性字段
+	 * 
+	 * @param formDefinition
+	 * @param deletedFieldNames
+	 */
+	private void removeFieldsAndTheirAssistedFields(DyFormDefinition formDefinition, List<String> deletedFieldNames) {
+		DyFormDefinitionJSON dJson = formDefinition.getJsonHandler();
+		List<String> deletedRealDisplayFieldNames = new ArrayList<String>();
+		for (String deletedFieldName : deletedFieldNames) {
+			if (dJson.isValueAsMap(deletedFieldName)) {
+				String realFieldName = dJson.getAssistedFieldNameRealValue(deletedFieldName);
+				if (realFieldName == null) {
+					continue;
+				}
+				String displayFieldName = dJson.getAssistedFieldNameDisplayValue(deletedFieldName);
+
+				deletedRealDisplayFieldNames.add(realFieldName);
+				deletedRealDisplayFieldNames.add(displayFieldName);
+			}
+		}
+
+		deletedFieldNames.addAll(deletedRealDisplayFieldNames);
+		formDefinition.getJsonHandler().removeFields(deletedFieldNames);
+
+	}
+
+	private void createOrUpdateTbl(DyFormDefinition formDefinition, String tblHbmXML, String relationTblHbmXML) {
+
+		//将定义json转换成hibernate配置文件(也就是hibernate.cfg.xml格式的文件)
+		String defintionJson = formDefinition.getDefinitionJson();
+
+		//this.updateSubformRelation(defintionJson);
+
+		logger.debug("用户配置后生成相应的hbm文件内容(新建):" + tblHbmXML);
+
+		//根据hibernate配置文件生成或者更新表结构
+		CustomConfiguration config = new CustomConfiguration();
+		config.addXML(tblHbmXML);
+		this.addNewConfig(config);
+		TableConfig tableconfig = new TableConfig(config);
+		CustomConfiguration config2 = new CustomConfiguration();
+		config2.addXML(relationTblHbmXML);
+		this.addNewConfig(config2);
+		TableConfig tableconfig2 = new TableConfig(config2);
+
+		if (!this.isFormExistByFormTblName(formDefinition.getName())) {//数据表单表不存在
+
+			//生成数据关系表 
+			tableconfig2.addTable();
+
+			//生成数据表
+			tableconfig.addTable();
+		} else {//更新数据表 
+			tableconfig.updateTable();
+			tableconfig2.updateTable();
+		}
+	}
+
+	private String createTblHbmXML(DyFormDefinition formDefinition, List<String> deletedFieldNames) {
+		//createAssistedField(formDefinition);//生成辅助性字段
+		return convertDefinitionJson2HbmCfg(formDefinition.getDefinitionJson(), EnumSystemField.class,
+				deletedFieldNames);
+	}
+
+	/**
+	 * 添加辅助性字段
+	 * 
+	 * @param formDefinition
+	
+	private void createAssistedField(DyFormDefinition formDefinition) {
+		DyFormDefinitionJSON dJon = formDefinition.getJsonHandler();
+		Iterator<String> it = dJon.getFieldNamesOfMainform().iterator();
+		while (it.hasNext()) {
+			String fieldName = it.next();
+
+			if (dJon.isSysTypeAsCustom(fieldName) && dJon.isValueAsMap(fieldName)) {
+
+				JSONObject assistedFieldName = dJon.getFieldPropertyOfJSONType(fieldName,
+						EnumFieldPropertyName.realDisplay);
+
+				if (assistedFieldName == null || assistedFieldName.length() == 0) {
+					if (!(StringUtils.isEmpty(formDefinition.getUuid()) || "undefined".equals(formDefinition.getUuid()))) {
+						DyFormDefinition dbFormDef = this.dyFormApiFacade.getFormDefinition(formDefinition.getUuid());
+						assistedFieldName = dbFormDef.getJsonHandler().getFieldPropertyOfJSONType(fieldName,
+								EnumFieldPropertyName.realDisplay);
+					}
+				}
+
+				if (assistedFieldName == null || assistedFieldName.length() == 0) {
+					String realFieldName = fieldName + DyFormConfig.assistedpofix4realValue;
+					try {
+						JSONObject realFieldDefinition = new JSONObject();
+
+						realFieldDefinition.put(EnumFieldPropertyName.name.name(), realFieldName);
+						realFieldDefinition.put(EnumFieldPropertyName.dbDataType.name(), DbDataType._string);
+						realFieldDefinition.put(EnumFieldPropertyName.length.name(), 1000);
+						realFieldDefinition.put(EnumFieldPropertyName.sysType.name(), DyFieldSysType.assist);
+						dJon.addField(realFieldName, realFieldDefinition);
+
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					String displayFieldName = fieldName + DyFormConfig.assistedpofix4DisplayValue;
+					try {
+						JSONObject displayFieldDefinition = new JSONObject();
+
+						displayFieldDefinition.put(EnumFieldPropertyName.name.name(), displayFieldName);
+						displayFieldDefinition.put(EnumFieldPropertyName.dbDataType.name(), DbDataType._string);
+						displayFieldDefinition.put(EnumFieldPropertyName.length.name(), 1000);
+						displayFieldDefinition.put(EnumFieldPropertyName.sysType.name(), DyFieldSysType.assist);
+						dJon.addField(displayFieldName, displayFieldDefinition);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+
+					try {
+						assistedFieldName = new JSONObject();
+						assistedFieldName.put(realFieldName, displayFieldName);
+						dJon.addFieldProperty(fieldName, EnumFieldPropertyName.realDisplay, assistedFieldName);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+
+				}
+
+			}
+		}
+	} */
+
+	/**
+	 * 将参数中的表单的JSON信息同步到其他版本的表单定义中
+	 * @param formDefinition
+	 * @throws JSONException 
+	 */
+	private void doSynDefinitionWithOtherVersions(DyFormDefinition formDefinition, List<String> delFieldNames)
+			throws JSONException {
+		if (delFieldNames == null || delFieldNames.size() == 0) {
+			logger.debug("没有字段需要删除");
+			return;
+		}
+
+		List<DyFormDefinition> formDefinitions = dyFormApiFacade.getFormDefinitionsByTblName(formDefinition.getName());
+
+		for (DyFormDefinition df : formDefinitions) {
+
+			if (df.getUuid().equalsIgnoreCase(formDefinition.getUuid())) {
+				continue;
+			}
+
+			for (String delFn : delFieldNames) {
+				if (df.getJsonHandler().isFieldInDefinition(delFn)) {
+					df.getJsonHandler().removeFieldByFieldName(delFn);
+				}
+			}
+			this.dyFormDefinitionDao.save(df);
+		}
 	}
 
 	@Override
@@ -810,7 +1069,7 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 	 */
 	@Override
 	public List<TreeNode> getFieldByFormUuid(String s, String formUuid) {
-		org.json.JSONObject fieldjson = dyFormApiFacade.getJsonObject4FieldDefinitionByFormUuid(formUuid);
+		JSONObject fieldjson = this.dyFormApiFacade.getFormDefinition(formUuid).getJsonHandler().getFieldDefinitions();
 		Iterator<String> it = fieldjson.keys();
 		List<TreeNode> treeNodes = new ArrayList<TreeNode>();
 		while (it.hasNext()) {
@@ -835,4 +1094,133 @@ public class DyFormDefinitionServiceImpl implements DyFormDefinitionService {
 		}
 		return treeNodes;
 	}
+
+	@Override
+	public List<DyFormDefinition> getFormDefinitionsByTblName(String tblName) {
+
+		return dyFormDefinitionDao.getFormDefinitionsByTblName(tblName);
+	}
+
+	@Override
+	public List<DyFormDefinition> getAllFormDefintions() {
+		List<DyFormDefinition> dydefs = new ArrayList<DyFormDefinition>();
+		for (DyFormDefinition dydef : this.dyFormDefinitionDao.getAll()) {
+			dydef.setJsonHandler(null);
+			dydefs.add(dydef);
+		}
+		return dydefs;
+	}
+
+	private final String QUERY_MAX_VERSION_LIST = "select * from DYFORM_FORM_DEFINITION a,"
+			+ "(select name, max(version) version from DYFORM_FORM_DEFINITION group by name) b"
+			+ " where a.name = b.name and a.version = b.version";
+
+	@Override
+	public List<DyFormDefinition> getMaxVersionList() {
+
+		List<DyFormDefinition> list = this.dyFormDefinitionDao.getSession().createSQLQuery(QUERY_MAX_VERSION_LIST)
+				.addEntity(DyFormDefinition.class).list();
+
+		for (DyFormDefinition dydf : list) {
+			dydf.setJsonHandler(null);//dydf.getDefinitionJson//由于系统问题，这句不可删除
+		}
+		return list;
+	}
+
+	@Override
+	public DyFormDefinition getFormDefinitionOfMaxVersionByTblName(String tableName) {
+		String hql = QUERY_MAX_VERSION_LIST + " and a.name = :name";
+		SQLQuery sqlQuery = this.dyFormDefinitionDao.getSession().createSQLQuery(hql);
+		sqlQuery.setString("name", tableName);
+		List<DyFormDefinition> list = sqlQuery.addEntity(DyFormDefinition.class).list();
+		if (list == null || list.size() == 0) {
+			return null;
+		} else {
+			return list.get(0);
+		}
+	}
+
+	@Override
+	public DyFormDefinition getFormDefinition(String tblName, String version) {
+		return this.dyFormDefinitionDao.findUnique(Restrictions.and(Restrictions.eq("name", tblName),
+				Restrictions.eq("version", version)));
+	}
+
+	@Override
+	public void dropForm(String formUuid) {
+
+		DyFormDefinition dy = this.dyFormApiFacade.getFormDefinition(formUuid);
+		if (dy == null) {
+			return;
+		}
+
+		List<DyFormDefinition> dys = this.dyFormApiFacade.getFormDefinitionsByTblName(dy.getName());
+
+		if (dys.size() > 1) {//该表的定义有多个版本
+			if (this.existDataInFormByFormUuid(formUuid)) {
+				throw new HibernateDataExistException("cann't drop this form definition,  some  datas exist in table["
+						+ dy.getName() + "]formUuid[" + formUuid + "]");
+			}
+
+			this.dyFormDefinitionDao.delete(formUuid);//只删除定义,因为还有其他版本的定义,所以表结构不得删除
+
+		} else {//定义只有一个版本
+			long count = this.dyFormApiFacade.countDataInForm(dy.getName());
+			if (count > 0) {//表单中中有数据，不得删除
+				throw new HibernateDataExistException("cann't drop this form , there are " + count + " datas in table["
+						+ dy.getName() + "] ");
+			}
+
+			//this.dyFormDefinitionDao.dropFormTbl(dy.getName());
+
+			String tblHbmXML = this.convertDefinitionJson2HbmCfg(dy.getDefinitionJson(), EnumSystemField.class, null);
+			CustomConfiguration config = new CustomConfiguration();
+			config.addXML(tblHbmXML);
+			this.addNewConfig(config);
+			TableConfig tableconfig = new TableConfig(config);
+
+			String tblHbmXML2 = this.createRelationTblHbmXML(dy);
+			CustomConfiguration config2 = new CustomConfiguration();
+			config2.addXML(tblHbmXML2);
+			this.addNewConfig(config2);
+			TableConfig tableconfig2 = new TableConfig(config2);
+
+			this.dyFormDefinitionDao.delete(formUuid);
+			tableconfig.dropTable();
+			tableconfig2.dropTable();
+		}
+
+		DyformCacheUtils.delete(formUuid);
+	}
+
+	/**
+	 * 判断指定的formUuid在数据表中是否有数据
+	 * 
+	 * @param formUuid
+	 * @return
+	 */
+	public boolean existDataInFormByFormUuid(String formUuid) {
+		float i = 10.334132412344f;
+		long countOfSpecifiedForm = this.dyFormApiFacade.countByFormUuid(formUuid);//查看该版本是否有数据
+		if (countOfSpecifiedForm > 0) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	@Override
+	public List<DyFormDefinition> getFormDefinitionByModelId(String modelId) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("displayFormModelId", modelId);
+
+		List<DyFormDefinition> list = this.dyFormDefinitionDao.find(
+				"select o from DyFormDefinition o where o.displayFormModelId = :displayFormModelId", params);
+		for (DyFormDefinition dydf : list) {
+			dydf.setJsonHandler(null);//dydf.getDefinitionJson//由于系统问题，这句不可删除
+		}
+		return list;
+	}
+
 }

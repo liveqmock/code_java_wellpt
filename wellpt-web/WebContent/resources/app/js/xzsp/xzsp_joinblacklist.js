@@ -1,6 +1,6 @@
 $(function() {
 		//判断该用户是否具有删除权限、编辑权限
-		var xiangmuId = $("#project_id").next().text();
+		var xiangmuId = $("#_inputXMBH").val();
 		var isProject = "";
 		JDS.call({
 			async:false,
@@ -23,8 +23,8 @@ $(function() {
 			    var dynamicDataId = result.data.dynamicDataId;	
 			    JDS.call({
 					async:false,
-					service : "formDataService.query2",
-					data : [formUuid,fieldNameArray,"",selectionArgs,"","","",0,0],
+					service : "dyFormDataService.query2",
+					data : [formUuid,fieldNameArray," uuid='" + dynamicDataId + "' ",selectionArgs,"","","",0,0],
 					success : function(result) {
 						var createTime = "";
 							var data = result.data;
@@ -68,11 +68,11 @@ $(function() {
 		});
 		
 		if(resultData) {
-			$('input[type=radio][name="black_list"]').live("click",function(){
+			$('input[type=radio][name="SHJRHMD"]').live("click",function(){
 				var join_reason = SpringSecurityUtils.getCurrentUserName();
 				var joinTime = "";
 				var myDate = new Date();
-				joinTime = myDate.getFullYear() + "-" + myDate.getMonth() + "-" + myDate.getDate() + " " + myDate.getHours() + ":" + myDate.getMinutes() + ":" +myDate.getSeconds() ;
+				joinTime = myDate.getFullYear() + "-" + parseInt(myDate.getMonth()+1) + "-" + myDate.getDate() + " " + myDate.getHours() + ":" + myDate.getMinutes() + ":" +myDate.getSeconds() ;
 				var json = new Object();
 				var data = "<div style='padding:20px;'><table style='width: 90%;'><tr><td>加入或解除黑名单原因</td>" +
 						"<td><textarea style='width:380px;height: 150px;' name='join_reason' id='join_reason'></textarea>" +
@@ -91,22 +91,21 @@ $(function() {
 		        			}else {
 		        				var blackData = new Object();
 			        			blackData['joinblack_reason'] = $("#join_reason").val();
-			        			blackData['operate_person'] = $("#join_person").attr("value");
-			        			blackData['joinblack_time'] = $("#join_time").attr("value");
-			        			var dytableSelector = "#fileDynamicForm";
-			        			$(dytableSelector).dytable("addRowData", {
-									tableId : "userform_xzsp_black",
-									data : blackData
-								});
+			        			blackData['CZRY'] = $("#join_person").attr("value");
+			        			blackData['CZSJ'] = $("#join_time").attr("value");
+			        			var dytableSelector = "#fileDynamicForm"; 
+			        			$(dytableSelector).dyform("addRowData", 
+									 "uf_xzsp_black",
+									  blackData
+								);
 			        			 $("#dialogModule").dialog( "close" );
 		        			}
 		        		},
 		        }
 		        showDialog(json);
-			
 		});
 		}else {
-			$('input[type=radio][name="black_list"]').attr("disabled","disabled");
+			$('input[type=radio][name="_radio_inputSHJRHMD"]').attr("disabled","disabled");
 		}
 	
 });

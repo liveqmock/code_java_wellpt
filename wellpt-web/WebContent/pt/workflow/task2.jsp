@@ -8,7 +8,8 @@
 				<li><a href="#tabs-1">基本设置</a></li>
 				<li><a href="#tabs-2">权限设置</a></li>
 				<li><a href="#tabs-3">表单控制</a></li>
-				<li><a href="#tabs-4">高级设置</a></li>
+				<li><a href="#tabs-4">运转模式</a></li>
+				<li><a href="#tabs-5">高级设置</a></li>
 			</ul>
 			<div id="tabs-1">
 				<table>
@@ -288,7 +289,7 @@
 					<tr>
 						<td style="width: 65px;"><label for="DForm">使用表单</label></td>
 						<td><select id="DForm" name="DForm" class="full-width">
-								<option value="0">--请选择--</option>
+								<option value="-1">--请选择--</option>
 						</select></td>
 						<td></td>
 					</tr>
@@ -321,6 +322,13 @@
 						<td></td>
 					</tr>
 					<tr>
+						<td class="align-top"><label for="hideBlockLabels">隐藏区块</label></td>
+						<td><textarea id="hideBlockLabels"
+								name="hideBlockLabels" class="full-width"></textarea> <input
+							id="hideBlocks" name="hideBlocks" type="hidden" /></td>
+						<td></td>
+					</tr>
+					<tr>
 						<td class="align-top"><label for="DRemark">信息记录</label></td>
 						<td>
 							<div>
@@ -340,6 +348,26 @@
 				</table>
 			</div>
 			<div id="tabs-4">
+				<table>
+					<tr>
+						<td style="width: 65px;"><label for="forkMode">分支模式</label></td>
+						<td><input id="forkMode_1" name="forkMode" type="radio"
+							value="1" checked="checked" /><label for="forkMode_1">单一分支</label>
+							<input id="forkMode_2" name="forkMode" type="radio" value="2" /><label
+							for="forkMode_2">多路分支</label> <input id="forkMode_3"
+							name="forkMode" type="radio" value="3" /><label for="forkMode_3">全部分支</label></td>
+					</tr>
+					<tr>
+						<td class="align-top"><label for="joinMode">聚合模式</label></td>
+						<td><input id="joinMode_1" name="joinMode" type="radio"
+							value="1" checked="checked" /><label for="joinMode_1">单一聚合</label>
+							<input id="joinMode_2" name="joinMode" type="radio" value="2" /><label
+							for="joinMode_2">多路聚合</label> <input id="joinMode_3"
+							name="joinMode" type="radio" value="3" /><label for="joinMode_3">全部聚合</label></td>
+					</tr>
+				</table>
+			</div>
+			<div id="tabs-5">
 				<table>
 					<tr>
 						<td style="width: 65px;" class="align-top"><label for="sn">环节编号</label></td>

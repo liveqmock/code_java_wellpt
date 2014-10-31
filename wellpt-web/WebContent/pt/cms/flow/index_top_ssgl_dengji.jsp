@@ -65,7 +65,7 @@
 	<a class="member-info-show" href="${ctx}/basicdata/rtx/singlesignon" id="rtx" target="rtx">RTX</a>
 	</c:if>
 	
-	<c:if test="${user.admin == true}">
+	<c:if test="${user.isAdmin == true}">
 	<a class="member-info-show" href="${ctx}/passport/admin/main" id="admin_manage" target="_blank">管理后台</a>
 	</c:if>
 	<a class="member-info-show" href="${ctx}/security_logout">注销</a></div>
@@ -76,10 +76,13 @@
 </ul>
 
 <ul class="top-nav">
-		<li><a href="${ctx}/cms/cmspage/readPage?uuid=42868502-ceca-4515-a281-9b3aa2205ece&treeName=NOTICE_SSGL&mid=2013121919639588&moduleid=f17ff76b-c520-4ec7-bccc-a881f4bf82fc">通知公告</a></li>
-		<li><a href="${ctx}/cms/cmspage/readPage?uuid=42868502-ceca-4515-a281-9b3aa2205ece&treeName=ZCFG_SSGL&mid=2013121919639588&moduleid=bf213f05-98a7-481b-ae8a-a364dfd802cb">政策法规</a></li>
-		<li><a href="${ctx}/cms/cmspage/readPage?uuid=42868502-ceca-4515-a281-9b3aa2205ece&treeName=ZLXZ_SSGL&mid=2013121919639588&moduleid=4ff33d74-3e6e-4c51-99c8-0474f2830a45">资料下载</a></li>
-		<li><a href="${ctx}/cms/cmspage/readPage?uuid=42868502-ceca-4515-a281-9b3aa2205ece&treeName=CJWT_SSGL_DENGJI&mid=2013121919639588&moduleid=29ba9f2e-1622-4128-bfff-8a668715e5a1">常见问题</a></li>
+	<c:forEach var="cmsCategory" items="${cmsCategorys}">
+		<li><a href="${ctx}${cmsCategory.cc.inputUrl}">${cmsCategory.cc.title}</a></li>
+	</c:forEach>
+<%-- 		<li><a href="${ctx}/cms/cmspage/readPage?uuid=42868502-ceca-4515-a281-9b3aa2205ece&treeName=NOTICE_SSGL&mid=2013121919639588&moduleid=f17ff76b-c520-4ec7-bccc-a881f4bf82fc">通知公告</a></li> --%>
+<%-- 		<li><a href="${ctx}/cms/cmspage/readPage?uuid=42868502-ceca-4515-a281-9b3aa2205ece&treeName=ZCFG_SSGL&mid=2013121919639588&moduleid=bf213f05-98a7-481b-ae8a-a364dfd802cb">政策法规</a></li> --%>
+<%-- 		<li><a href="${ctx}/cms/cmspage/readPage?uuid=42868502-ceca-4515-a281-9b3aa2205ece&treeName=ZLXZ_SSGL&mid=2013121919639588&moduleid=4ff33d74-3e6e-4c51-99c8-0474f2830a45">资料下载</a></li> --%>
+<%-- 		<li><a href="${ctx}/cms/cmspage/readPage?uuid=42868502-ceca-4515-a281-9b3aa2205ece&treeName=CJWT_SSGL_DENGJI&mid=2013121919639588&moduleid=29ba9f2e-1622-4128-bfff-8a668715e5a1">常见问题</a></li> --%>
 </ul>
 
 </div>

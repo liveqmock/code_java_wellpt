@@ -9,6 +9,8 @@ var fileManager={
 	templateChooseTitle:"动态表单模板选择框",
 	deleteConfirm:"确认要删除吗？",
 	deleteSuccess:"删除成功!",
+	restoreConfirm:"确认要还原吗？",
+	restoreSuccess:"还原成功!",
 	fileUploadSuccess:"文件上传成功！",
 	fileImport:"文件导入",
 	buttonYes:"确定",

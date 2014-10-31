@@ -181,7 +181,7 @@ var unitctl = {};
 
 unitctl.initProperty = function(field){
 	if(field == null ||  (typeof field) == "undefined"){
-		field = new MainFormFieldClass();
+		field = new WUnitClass();
 		field.dbDataType = dyFormInputType.text;
 		field.valueCreateMethod = "1";
 	}
@@ -198,7 +198,7 @@ unitctl.exitDialog = function(){
 }
 
 unitctl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WUnitClass();
 	//控件公共属性收集
 	var checkpass=$.ControlConfigUtil.collectFormCtlComProperty(field);
 	if(!checkpass){

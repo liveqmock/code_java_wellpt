@@ -1,9 +1,11 @@
 var WorkFlow = WorkFlow || {};
 $(function() {
+	// 点击
+	var btn_click = "B004000";
 	// 保存
 	var btn_save = "B004001";
 	// 动态表单提交
-	var btn_submit_form = "btn_dyform";
+	// var btn_submit_form = "btn_dyform";
 	// 提交
 	var btn_submit = "B004002";
 	// 退回
@@ -42,6 +44,12 @@ $(function() {
 	var btn_resume = "B004018";
 	// 退件
 	var btn_reject = "B004019";
+	// 删除
+	var btn_delete = "B004023";
+	// 可编辑文档
+	var btn_editable = "B004025";
+	// 必须签署意见
+	var btn_required_sign_opinion = "B004026";
 
 	// 流程错误代码
 	var WorkFlowErrorCode = {
@@ -56,7 +64,8 @@ $(function() {
 		SubFlowNotFound : "SubFlowNotFound", // 没有指定子流程
 		SubFlowMerge : "SubFlowMerge", // 子流程合并等待
 		IdentityNotFlowPermission : "IdentityNotFlowPermission", // 用户没有权限访问流程
-		RollbackTaskNotFound : "RollbackTaskNotFound" // 找不到退回操作的退回环节异常类
+		RollbackTaskNotFound : "RollbackTaskNotFound", // 找不到退回操作的退回环节异常类
+		SaveData : "SaveData" // 表单数据保存失败
 	};
 	var bean = {
 		"taskInstUuid" : null,
@@ -71,8 +80,6 @@ $(function() {
 		"userName" : null,
 		"formUuid" : null,
 		"dataUuid" : null,
-		"formAndDataBean" : null,
-		"rootFormDataBean" : null,
 		"buttons" : [],
 		"taskUsers" : {},
 		"taskCopyUsers" : {},
@@ -85,9 +92,9 @@ $(function() {
 		"customDynamicButton" : null,
 		"rollbackToTaskId" : null,
 		"printTemplateId" : null,
-		"opinionValue" : null,
-		"opinionLabel" : null,
-		"opinionText" : null,
+		"opinionValue" : "",
+		"opinionLabel" : "",
+		"opinionText" : "",
 		"records" : []
 	};
 
@@ -114,9 +121,11 @@ $(function() {
 	var remindService = "workService.remind";
 	var unfollowdService = "workService.unfollow";
 	var handOverService = "workService.handOver";
-	var getToTasksdoGotoService = "workService.getToTasks";
+	var getGotoTaskService = "workService.getGotoTasks";
+	var gotoTaskService = "workService.gotoTask";
 	var suspendService = "workService.suspend";
 	var resumeService = "workService.resume";
+	var deleteService = "workService.delete";
 	var timelineService = "workService.getTimeline";
 
 	bean.flowDefUuid = $("#wf_flowDefUuid").val();
@@ -130,6 +139,7 @@ $(function() {
 	bean.aclRole = $("#wf_aclRole").val();
 	bean.serialNoDefId = $("#wf_serialNoDefId").val();
 	bean.suspensionState = $("#wf_suspensionState").val();
+	bean.isFirstTaskNode = $("#wf_isFirstTaskNode").val();
 
 	// 保留自定义运行时参数
 	bean.extraParams = {};
@@ -138,8 +148,12 @@ $(function() {
 		bean.extraParams[$(this).attr("name")] = $(this).val();
 	});
 
+	// 是否可编辑动态表单，如果可编辑按流程设置处理，不可编辑设置有只读
+	var editDyform = $(":button[name='" + btn_editable + "']", ".wf_operate").length > 0;
+	// 是否显示签署意见框
+	var showSignOpinion = $(":button[name='" + btn_sign_opinion + "']", ".wf_operate").length > 0;
 	// 是否需要签署意见
-	var requiredSignOpinion = $(":button[name='" + btn_sign_opinion + "']", ".form_operate").length > 0;
+	var requiredSignOpinion = $(":button[name='" + btn_required_sign_opinion + "']", ".wf_operate").length > 0;
 
 	// 如果流程ID或流程定义UUID都为空，则提示错误并返回
 	if (isBlank(bean.flowDefId) && isBlank(bean.flowDefUuid)) {
@@ -150,8 +164,9 @@ $(function() {
 	// JQuery UI按钮
 	// $("input[type=submit], a, button", $("#toolbar")).button();
 	// 绑定动态表单提交按钮
-	$(".form_operate").append("<button id='btn_dyform' name='btn_dyform' style='display: none'>保存</button>");
+	$(".wf_operate").append("<button id='btn_dyform' name='btn_dyform' style='display: none'>保存</button>");
 
+	var workProcess = null;
 	var subDataParams = [];
 	var $eps = $("input[name^=ep_]", "#wf_form");
 	$eps.each(function() {
@@ -160,46 +175,63 @@ $(function() {
 		});
 	});
 
+	$(".form_title>.form_close").click(function() {
+		window.close();
+	});
+
 	// 初使化
 	JDS
 			.call({
 				service : "workService.getWorkData",
 				data : [ bean ],
 				success : function(result) {
+					var isFirst = isBlank(bean.flowInstUuid);
 					var workData = result.data;
-					$(dytableSelector).dytable({
-						data : workData.formAndDataBean,
-						subDataParams : subDataParams,
-						btnSubmit : btn_submit_form,
-						beforeSubmit : submitForm,
-						open : function() {
-							bean.taskStartTime = workData.taskStartTime;
+					workProcess = workData.workProcess;
+					var dyFormData = workData.dyFormData;
+					// 如果是开始环节可编辑，若设置可编辑，则可编辑，否则不可编辑
+					var displayAsLabel = false;
+					if (isBlank(bean.taskInstUuid)) {
+					} else if (bean.aclRole != "TODO") {
+						// $(dytableSelector).dyform("showAsLabel");
+						displayAsLabel = true;
+					} else if (!editDyform) {
+						// $(dytableSelector).dyform("showAsLabel");
+						displayAsLabel = true;
+					}
+					try {
+						$(dytableSelector).dyform({
+							definition : dyFormData.formDefinition,
+							data : dyFormData.formDatas,
+							displayAsLabel : displayAsLabel,
+							optional : {
+								isFirst : isFirst
+							},
+							success : function() {
+								onDyformOpen(workData.developJson);
+							},
+							error : function() {
+								oAlert("表单解析失败!");
+							}
+						});
+					} catch (e) {
+						oAlert2("表单解析失败： " + e);
+						$(":button", ".wf_operate").each(function() {
+							$(this).hide();
+						});
+						throw e;
+					}
 
-							bean.reservedText1 = workData.reservedText1;
-							bean.reservedText2 = workData.reservedText2;
-							bean.reservedText3 = workData.reservedText3;
-							bean.reservedText4 = workData.reservedText4;
-							bean.reservedText5 = workData.reservedText5;
-							bean.reservedText6 = workData.reservedText6;
-							bean.reservedText7 = workData.reservedText7;
-							bean.reservedText8 = workData.reservedText8;
-							bean.reservedText9 = workData.reservedText9;
-							bean.reservedNumber1 = workData.reservedNumber1;
-							bean.reservedNumber2 = workData.reservedNumber2;
-							bean.reservedNumber3 = workData.reservedNumber3;
-							bean.reservedDate1 = workData.reservedDate1;
-							bean.reservedDate2 = workData.reservedDate2;
-
-							onDyformOpen();
-						}
-					});
-
-					bean.records = result.data.records;
+					onWorkDataLoaded(workData);
 
 					// 是否查看办理过程
-					var requiredViewProcess = $(":button[name='" + btn_view_process + "']", ".form_operate").length > 0;
+					var requiredViewProcess = $(":button[name='" + btn_view_process + "']", ".wf_operate").length > 0;
+					if (!(bean.aclRole == "TODO")) {
+						requiredViewProcess = true;
+					}
 					// 办理过程
 					var process = result.data.workProcess;
+					result.data.workProcess = null;
 					// 1、流程新建时
 					if ((process && !process["previous"] && process["current"] && process["next"])
 							|| (process && process["previous"] && process["current"] && !process["next"])) {
@@ -215,24 +247,21 @@ $(function() {
 						$("#process .proce1").hide();
 						$("#process").css("min-width", "700px");
 						$("#process .proce2").addClass("proce2_start");
-						$("#pre_task_name").html("");
-						$("#pre_task_assignee").html("");
-						$("#cur_task_name").html(proce1.taskName);
-						$("#cur_task_assignee").html(proce1.assignee);
-						$("#next_task_name").html(proce2.taskName);
-						$("#next_task_assignee").html(proce2.assignee);
+						setProcessInfo($("#pre_task_name"), "", $("#pre_task_assignee"), "");
+						setProcessInfo($("#cur_task_name"), proce1.taskName, $("#cur_task_assignee"), proce1.assignee);
+						setProcessInfo($("#next_task_name"), proce2.taskName, $("#next_task_assignee"), proce2.assignee);
 
 						$("#process").show();
 
 						requiredViewProcess = false;
 					} else if (process && process["previous"] && process["current"] && process["next"]) {
 						// 2、流程办理中
-						$("#pre_task_name").html(process["previous"].taskName);
-						$("#pre_task_assignee").html(process["previous"].assignee);
-						$("#cur_task_name").html(process["current"].taskName);
-						$("#cur_task_assignee").html(process["current"].assignee);
-						$("#next_task_name").html(process["next"].taskName);
-						$("#next_task_assignee").html(process["next"].assignee);
+						setProcessInfo($("#pre_task_name"), process["previous"].taskName, $("#pre_task_assignee"),
+								process["previous"].assignee);
+						setProcessInfo($("#cur_task_name"), process["current"].taskName, $("#cur_task_assignee"),
+								process["current"].assignee);
+						setProcessInfo($("#next_task_name"), process["next"].taskName, $("#next_task_assignee"),
+								process["next"].assignee);
 
 						$("#process").show();
 					} else if (process && !process["previous"] && process["current"] && !process["next"]) {
@@ -241,13 +270,11 @@ $(function() {
 						$("#process .proce1").hide();
 						$("#process").css("min-width", "700px");
 						$("#process .proce2").addClass("proce2_start");
-						$("#pre_task_name").html("");
-						$("#pre_task_assignee").html("");
-						$("#cur_task_name").html(proce1.taskName);
-						$("#cur_task_assignee").html(proce1.assignee + "(已办结)");
+						setProcessInfo($("#pre_task_name"), "", $("#pre_task_assignee"), "");
+						setProcessInfo($("#cur_task_name"), proce1.taskName, $("#cur_task_assignee"), proce1.assignee
+								+ "(已办结)");
 						$("#process .proce3").hide();
-						$("#next_task_name").html("");
-						$("#next_task_assignee").html("");
+						setProcessInfo($("#next_task_name"), "", $("#next_task_assignee"), "");
 
 						$("#process").show();
 					}
@@ -271,36 +298,132 @@ $(function() {
 					});
 
 					// 如果流程实例UUID不为空，显示共享数据
-					if (isNotBlank(bean.flowInstUuid)) {
-						showShareFlow(bean.flowInstUuid);
+					// 办理过程
+					var shareData = result.data.shareData;
+					result.data.shareData = null;
+					showShareFlow(shareData);
+
+					// 显示签署意见
+					if (showSignOpinion == true) {
+						showOpinion();
+					} else if (requiredSignOpinion == true) {
+						showOpinion();
 					}
 				}
 			});
 
+	function setProcessInfo(nameEle, name, assigneeEle, assignee) {
+		nameEle.html(name);
+
+		if (assignee.length > 20) {
+			assigneeEle.html(assignee.substring(0, 20) + "...");
+		} else {
+			assigneeEle.html(assignee);
+		}
+		assigneeEle.attr("title", assignee);
+	}
+
+	// 工作数据加载后处理
+	function onWorkDataLoaded(workData) {
+		bean.records = workData.records;
+		bean.taskStartTime = workData.taskStartTime;
+
+		setReservedFields(workData);
+	}
+
+	function setReservedFields(workData) {
+		bean["reservedText1"] = workData["reservedText1"];
+		bean["reservedText2"] = workData["reservedText2"];
+		bean["reservedText3"] = workData["reservedText3"];
+		bean["reservedText4"] = workData["reservedText4"];
+		bean["reservedText5"] = workData["reservedText5"];
+		bean["reservedText6"] = workData["reservedText6"];
+		bean["reservedText7"] = workData["reservedText7"];
+		bean["reservedText8"] = workData["reservedText8"];
+		bean["reservedText9"] = workData["reservedText9"];
+		bean["reservedText10"] = workData["reservedText10"];
+		bean["reservedText11"] = workData["reservedText11"];
+		bean["reservedText12"] = workData["reservedText12"];
+		bean["reservedNumber1"] = workData["reservedNumber1"];
+		bean["reservedNumber2"] = workData["reservedNumber2"];
+		bean["reservedNumber3"] = workData["reservedNumber3"];
+		bean["reservedDate1"] = workData["reservedDate1"];
+		bean["reservedDate2"] = workData["reservedDate2"];
+	}
+
 	// 动态表单初始化后回调处理
-	function onDyformOpen() {
+	function onDyformOpen(developJson) {
 		// 调整自适应表单宽度
 		adjustWidthToForm();
 
+		var loadJs = function(jsUrl) {
+			if (isBlank(jsUrl)) {
+				return;
+			}
+			var jsUrls = jsUrl.split(";");
+			if (jsUrls != null && jsUrls.length != 0) {
+				for ( var i = 0; i < jsUrls.length; i++) {
+					if (isNotBlank(jsUrls[i])) {
+						$.ajax({
+							url : ctx + jsUrls[i],
+							dataType : "script",
+							async : false
+						});
+					}
+				}
+			}
+		}
+		// 加载二次开发JS
+		if (isNotBlank(developJson)) {
+			var devJson = JSON.parse(developJson);
+			if (devJson != null && isNotBlank(devJson["customJsUrl"])) {
+				loadJs(devJson["customJsUrl"]);
+			}
+		}
+
 		// 加载执行运行时扩展js
 		var epScriptUrl = $("#custom_rt_script_url").val();
-		if (isNotBlank(epScriptUrl)) {
-			$.getScript(ctx + epScriptUrl);
-		}
+		loadJs(epScriptUrl);
 
 		// 加载自定义扩展JS
 		var scriptUrl = $("#custom_script_url").val();
-		if (isNotBlank(scriptUrl)) {
-			$.getScript(ctx + scriptUrl);
+		loadJs(scriptUrl);
+
+		// 输入的办理意见
+		var opinionName = $("#ep_wf_opinion_name").val();
+		var opinionValue = $("#ep_wf_opinion_value").val();
+		var opinionText = $("#ep_wf_opinion_text").val();
+		if (isNotBlank(opinionName) && isNotBlank(opinionValue) && isNotBlank(opinionText)) {
+			var data = {
+				label : opinionName,
+				value : opinionValue,
+				text : opinionText
+			};
+			$("#mini_wf_opinion").workflowMiniOpinion("signOpinion", data);
+		}
+
+		// 输入的动态表单值
+		var $dyfields = $("input[name^=ep_dyfs_]");
+		$dyfields.each(function() {
+			var pName = $(this).attr("name");
+			var fieldName = pName.substring(8);
+			var fieldVal = $(this).val();
+			$(dytableSelector).dyform("setFieldValue", fieldName, fieldVal);
+		});
+
+		// 是否自动提交
+		var autoSubmit = $("input[name=auto_submit]", "#wf_form").val();
+		if (isNotBlank(autoSubmit) && "true" === autoSubmit) {
+			$("button[name='" + btn_submit + "']", ".wf_operate").trigger("click");
 		}
 	}
-	$(window).resize(function(e) {
+	$(window).bind("resize", function(e) {
 		// 调整自适应表单宽度
 		adjustWidthToForm();
 	});
 	// 调整自适应表单宽度
 	function adjustWidthToForm() {
-		var div_body_width = $(window).width() * 0.76;
+		var div_body_width = $(window).width() * 0.95;
 		$(".form_header").css("width", div_body_width - 5);
 		$(".div_body").css("width", div_body_width);
 
@@ -311,58 +434,75 @@ $(function() {
 		$(".share_flow_content").css("width", div_body_width - 45);
 
 		// 显示签署意见
-		if (requiredSignOpinion == true) {
+		if (showSignOpinion == true) {
+			showOpinion();
+		} else if (requiredSignOpinion == true) {
 			showOpinion();
 		}
 	}
 
 	// 显示共享数据
-	function showShareFlow(flowInstUuid) {
-		JDS.call({
-			service : "workService.getShareData",
-			data : [ flowInstUuid ],
-			success : function(result) {
-				// 调整自适应表单宽度
-				adjustWidthToForm();
-				$("#share_flow_body").html("");
-				$(result.data).each(
-						function() {
-							$("#share_flow").show();
+	function showShareFlow(shareData) {
+		$("#share_flow_body").html("");
+		$(shareData).each(
+				function() {
+					$("#share_flow").show();
 
-							var rowData = "<tr>" + "<td>" + this.title + "</td>" + "<td>" + this.todoUser
-									+ "</td>" + "<td>" + this.opinion + "</td>" + "<td>" + this.currentTask
-									+ "</td>" + "<td>" + this.currentUser + "</td>" + "</tr>";
-							$("#share_flow_body").append(rowData);
-						});
-			}
-		});
+					var rowData = "<tr>" + "<td>" + this.title + "</td>" + "<td>" + this.todoUser + "</td>" + "<td>"
+							+ this.opinion + "</td>" + "<td>" + this.currentTask + "</td>" + "<td>" + this.currentUser
+							+ "</td>" + "</tr>";
+					$("#share_flow_body").append(rowData);
+				});
 	}
+
+	/** ****************************** 按钮点击扩展开始 ****************************** */
+	// 点击
+	$(":button[name='" + btn_click + "']", ".wf_operate").each(function() {
+		$(this).click($.proxy(onClick, this));
+	});
+	// 点击事件处理
+	function onClick() {
+		if (typeof (WorkFlow.onClick) == "function") {
+			WorkFlow.onClick.call(this, bean);
+		}
+	}
+	/** ****************************** 按钮点击扩展结束 ****************************** */
 
 	/** ********************************* 保存开始 ********************************* */
 	// 保存
-	$(":button[name='" + btn_save + "']").each(function() {
+	$(":button[name='" + btn_save + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onSave, this, true));
+		$(this).show();
 	});
 	// 保存事件处理
 	function onSave(async, callback) {
 		// 操作动作及类型
-		bean.action = $(this).text();
-		bean.actionType = "Submit";
+		if (isBlank(bean.action)) {
+			bean.action = $(this).text();
+		}
+		if (isBlank(bean.actionType)) {
+			bean.actionType = "Save";
+		}
 
 		// 获取表单数据
-		var rootFormData = $(dytableSelector).dytable("formData");
-		bean.rootFormDataBean = rootFormData;
-		// 设置表单映射标题
-		var formTitle = getFormTitle();
-		if (isNotBlank(formTitle)) {
-			bean.title = formTitle;
+		var dyFormData = null;
+		try {
+			dyFormData = $(dytableSelector).dyform("collectFormData");
+		} catch (e) {
+			oAlert2("表单数据收集失败" + e + "，无法保存数据！");
+			throw e;
 		}
+		bean.dyFormData = dyFormData;
 		JDS.call({
 			service : saveService,
 			data : [ bean ],
 			async : async,
 			success : function(result) {
 				var data = result.data;
+
+				$("input[name=flowInstUuid]", $("#print_form")).val(data["flowInstUuid"]);
+				bean.flowInstUuid = data["flowInstUuid"];
+
 				// 局部回调callback
 				if (typeof (callback) == "function") {
 					callback.call(this, data);
@@ -377,40 +517,56 @@ $(function() {
 					} else {
 						oAlert("保存成功!", function() {
 							// 保存成功，刷新当前页面
-							var taskInstUuid = bean.taskInstUuid;
-							var flowInstUuid = bean.flowInstUuid;
-							if (isNotBlank(taskInstUuid) || isNotBlank(flowInstUuid)) {
-								window.location.reload();
-							} else {
-								window.location = ctx + "/workflow/work/view/draft?flowInstUuid="
-										+ data["flowInstUuid"];
-							}
+							reload();
 						});
 					}
 				}
 			},
 			error : function(jqXHR) {
 				// 处理流程操作返回 的错误信息
-				hanlderError(jqXHR);
+				handlerError(jqXHR);
 			}
 		});
 	}
+	function reload(urlSuffix) {
+		var taskInstUuid = bean.taskInstUuid;
+		var flowInstUuid = bean.flowInstUuid;
+		if (isNotBlank(taskInstUuid)) {
+			window.location.reload();
+		} else if (isNotBlank(flowInstUuid)) {
+			var suffix = "";
+			if (isNotBlank(urlSuffix)) {
+				suffix = urlSuffix;
+			}
+			window.location = ctx + "/workflow/work/view/draft?flowInstUuid=" + flowInstUuid + suffix;
+		} else {
+			window.location.reload();
+		}
+	}
+	;
+	// 刷新当前页面
+	WorkFlow.reload = reload;
 	/** ********************************* 保存结束 ********************************* */
 
 	/** ********************************* 提交开始 ********************************* */
 	// 提交
-	$(":button[name='" + btn_submit + "']").each(function() {
+	$(":button[name='" + btn_submit + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onSubmit, this));
+		$(this).show();
 	});
 	// 提交事件处理
-	function onSubmit() {
+	function onSubmit(event) {
 		// 设置提交按钮ID
 		var btnId = $(this).attr("id");
 		bean.submitButtonId = btnId;
 
 		// 操作动作及类型
-		bean.action = $(this).text();
-		bean.actionType = "Submit";
+		if (isBlank(bean.action)) {
+			bean.action = $(this).text();
+		}
+		if (isBlank(bean.actionType)) {
+			bean.actionType = "Submit";
+		}
 
 		// 提交前回调处理
 		if (WorkFlow.beforeSubmit) {
@@ -420,7 +576,7 @@ $(function() {
 			}
 		}
 		// 确保提交时有签署意见
-		if (isNotBlank(bean.taskInstUuid) && !isNotBlank(bean.opinionText) && requiredSignOpinion == true) {
+		if (isRequiredSignOpinion()) {
 			showSignOpinionDialog(true);
 		} else {
 			// 处理自定义动态按钮
@@ -432,8 +588,7 @@ $(function() {
 				// 去掉按钮提交主送对象字符串的字符'['、']'
 				var customUserIds = $(this).attr("userIds");
 				var customCopyUserIds = $(this).attr("copyUserIds");
-				if (customUserIds.indexOf("[") == 0
-						&& customUserIds.lastIndexOf("]") == (customUserIds.length - 1)) {
+				if (customUserIds.indexOf("[") == 0 && customUserIds.lastIndexOf("]") == (customUserIds.length - 1)) {
 					var users = customUserIds.substring(1, customUserIds.length - 1);
 					customDynamicButton.users = users.split(",");
 				}
@@ -449,19 +604,35 @@ $(function() {
 			}
 
 			// 提交动态表单
-			$("#" + btn_submit_form).trigger('click');
+			// $("#" + btn_submit_form).trigger('click');
+			try {
+				if ($(dytableSelector).dyform("validateForm") === true) {
+					submitForm(event);
+				}
+			} catch (e) {
+				oAlert2("表单数据验证出错" + e + "，无法保存数据！");
+				throw e;
+			}
 		}
 	}
-	// 提交动态表单操作
-	function submitForm() {
-		// 获取表单数据
-		var rootFormData = $(dytableSelector).dytable("formData");
-		bean.rootFormDataBean = rootFormData;
-		// 设置表单映射标题
-		var formTitle = getFormTitle();
-		if (isNotBlank(formTitle)) {
-			bean.title = formTitle;
+	// 判断是否需要签署意见
+	function isRequiredSignOpinion() {
+		if (isNotBlank(bean.taskInstUuid) && !isNotBlank(bean.opinionText) && requiredSignOpinion == true) {
+			return true;
 		}
+		return false;
+	}
+	// 提交动态表单操作
+	function submitForm(event) {
+		// 获取表单数据
+		var dyFormData = null;
+		try {
+			dyFormData = $(dytableSelector).dyform("collectFormData");
+		} catch (e) {
+			oAlert2("表单数据收集失败[ + " + e + "]，无法提交数据！");
+			throw e;
+		}
+		bean.dyFormData = dyFormData;
 		JDS.call({
 			service : submitService,
 			data : [ bean ],
@@ -473,40 +644,52 @@ $(function() {
 				if (retVal == false) {
 					requiredSignOpinion = true;
 					oAlert("提交成功!", function() {
-						hanlderSuccess(result);
+						handlerSuccess(result);
 					});
 				}
 			},
 			error : function(jqXHR) {
 				// 处理流程操作返回 的错误信息
-				hanlderError(jqXHR);
+				handlerError(jqXHR);
 			}
 		});
+		event.stopPropagation();
 	}
+	WorkFlow.submit = function(btnId) {
+		$("#" + btnId).trigger("click");
+	};
 	/** ********************************* 提交结束 ********************************* */
 
 	/** ******************************** 回调处理开始 ******************************** */
 	// 处理流程操作成功信息
-	function hanlderSuccess(result) {
-		// 操作成功，关闭相关页面
-		var taskInstUuid = bean.taskInstUuid; // 从待办工作中打开
-		var flowInstUuid = bean.flowInstUuid; // 从草搞箱打开
-		var flowDefUuid = bean.flowDefUuid; // 从新建工作打开
-		if (taskInstUuid != null && taskInstUuid != "") {
-			TabUtils.reloadAndRemoveTab("work_todo", taskInstUuid);
-		} else if (flowInstUuid != null && flowInstUuid != "") {
-			TabUtils.reloadAndRemoveTab("work_draft", flowInstUuid);
-		} else if (flowDefUuid != null && flowDefUuid != "") {
-			TabUtils.removeTab(bean.flowDefUuid, bean.flowDefUuid);
+	function handlerSuccess(result) {
+		try {
+			// 操作成功，关闭相关页面
+			var taskInstUuid = bean.taskInstUuid; // 从待办工作中打开
+			var flowInstUuid = bean.flowInstUuid; // 从草搞箱打开
+			var flowDefUuid = bean.flowDefUuid; // 从新建工作打开
+			if (isNotBlank(taskInstUuid)) {
+				TabUtils.reloadAndRemoveTab("work_todo", taskInstUuid);
+			} else if (flowInstUuid != null && flowInstUuid != "") {
+				TabUtils.reloadAndRemoveTab("work_draft", flowInstUuid);
+			} else if (flowDefUuid != null && flowDefUuid != "") {
+				TabUtils.removeTab(bean.flowDefUuid, bean.flowDefUuid);
+			}
+		} catch (e) {
+			if (isBlank(ctx)) {
+				window.location.href = "/";
+			} else {
+				window.location.href = ctx;
+			}
 		}
 	}
 	// 处理流程操作返回 的错误信息
-	function hanlderError(jqXHR) {
+	function handlerError(jqXHR, $btn) {
 		var msg = JSON.parse(jqXHR.responseText);
 		if (WorkFlowErrorCode.WorkFlowException === msg.errorCode) {
 			WorkFlowException(msg.data);
 		} else if (WorkFlowErrorCode.TaskNotAssignedUser === msg.errorCode) {
-			TaskNotAssignedUser(msg.data);
+			TaskNotAssignedUser(msg.data, $btn);
 		} else if (WorkFlowErrorCode.TaskNotAssignedCopyUser === msg.errorCode) {
 			TaskNotAssignedCopyUser(msg.data);
 		} else if (WorkFlowErrorCode.TaskNotAssignedMonitor === msg.errorCode) {
@@ -514,7 +697,7 @@ $(function() {
 		} else if (WorkFlowErrorCode.ChooseSpecificUser === msg.errorCode) {
 			ChooseSpecificUser(msg.data);
 		} else if (WorkFlowErrorCode.OnlyChooseOneUser === msg.errorCode) {
-			OnlyChooseOneUser(msg.data);
+			OnlyChooseOneUser(msg.data, $btn);
 		} else if (WorkFlowErrorCode.JudgmentBranchFlowNotFound === msg.errorCode) {
 			JudgmentBranchFlowNotFound(msg.data);
 		} else if (WorkFlowErrorCode.MultiJudgmentBranch === msg.errorCode) {
@@ -527,6 +710,15 @@ $(function() {
 			IdentityNotFlowPermission(msg.data);
 		} else if (WorkFlowErrorCode.RollbackTaskNotFound === msg.errorCode) {
 			RollbackTaskNotFound(msg.data);
+		} else if (WorkFlowErrorCode.SaveData === msg.errorCode) {
+			var msg = "<div><a id='wf_save_data_error_msg' title='" + msg.msg
+					+ "' style='color: #000;text-decoration: none;'>表单数据保存失败！</a></div>"
+			oAlert2(msg);
+			$("#wf_save_data_error_msg").mouseover(function() {
+				alert($(this).attr("title"));
+			});
+		} else {
+			oAlert2("工作流无法处理的未知异常：" + jqXHR.responseText);
 		}
 	}
 	// 1、工作流异常
@@ -535,7 +727,7 @@ $(function() {
 	}
 
 	// 2、任务没有指定参与者，弹出人员选择框选择参与人(人员、部门及群组)
-	function TaskNotAssignedUser(eData) {
+	function TaskNotAssignedUser(eData, $btn) {
 		var title = "";
 		if (isNotBlank(eData.title)) {
 			title = eData.title;
@@ -557,6 +749,8 @@ $(function() {
 				// 重新触发提交事件
 				if (isNotBlank(eData.submitButtonId)) {
 					$("#" + eData.submitButtonId).trigger('click');
+				} else if ($btn) {
+					$btn.trigger('click');
 				} else {
 					// $("#" + btn_submit).trigger('click');
 					oAlert("请重新提交!");
@@ -625,32 +819,59 @@ $(function() {
 	}
 	// 5、选择具体办理人
 	function ChooseSpecificUser(eData) {
+		var taskName = eData.taskName;
 		var taskId = eData.taskId;
 		var userIds = eData.userIds;
 		var users = [];
 		var dlgSelector = "#dlg_choose_specific_user";
 		// 创建弹出框Div
 		createDiv(dlgSelector);
-		JDS.call({
-			service : "workService.getUsers",
-			data : [ userIds ],
-			async : false,
-			success : function(result) {
-				users = result.data;
-			}
-		});
-		for ( var i = 0; i < users.length; i++) {
-			var user = users[i];
-			var checkbox = "<div><label class='checkbox inline'><input id='" + user.id
-					+ "' name='chooseSpecificUser' type='checkbox' value='" + user.id + "'>" + user.userName
-					+ "</label></div>";
-			$(dlgSelector).append(checkbox);
+		var searchBox = "<div class='query-fields form_operate'>" + "<input name='query_input' />"
+				+ "<button type='button' class='btn'>查询</button></div>";
+		$(dlgSelector).append(searchBox);
+		$(dlgSelector).append("<div class='user-to-choose'></div>");
+		var listChooseUser = function(userIds, queryValue) {
+			JDS.call({
+				service : "workService.queryUsers",
+				data : [ userIds, queryValue ],
+				async : false,
+				success : function(result) {
+					var users = result.data;
+					$("div.user-to-choose", dlgSelector).html("");
+					for ( var i = 0; i < users.length; i++) {
+						var user = users[i];
+						var $checkbox = $("<label class='checkbox inline'><input id='" + user.id
+								+ "' name='chooseSpecificUser' type='checkbox' value='" + user.id + "'>"
+								+ user.userName + "</label>");
+						if (i % 2 == 0) {
+							$checkbox.css("width", "150px").css("margin-left", "50px");
+						}
+						$("div.user-to-choose", dlgSelector).append($checkbox);
+					}
+				}
+			});
 		}
 		var options = {
-			title : "选择具体办理人",
+			title : "选择具体办理人" + "(" + taskName + ")",
 			modal : true,
 			autoOpen : true,
 			resizable : false,
+			width : 400,
+			height : 300,
+			open : function() {
+				// 列表查询
+				$("input[name='query_input']", dlgSelector).keypress(function(e) {
+					if (e.keyCode == 13) {
+						listChooseUser(userIds, $(this).val());
+						return false;
+					}
+				});
+				$("button[type='button']", dlgSelector).click(function(e) {
+					var queryValue = $("input[name='query_input']", dlgSelector).val();
+					listChooseUser(userIds, queryValue);
+				});
+				listChooseUser(userIds, "");
+			},
 			buttons : {
 				"确定" : function(e) {
 					if ($("input[name=chooseSpecificUser]:checked").length < 1) {
@@ -687,33 +908,60 @@ $(function() {
 		$(dlgSelector).oDialog(options);
 	}
 	// 6、只能选择一个人办理
-	function OnlyChooseOneUser(eData) {
+	function OnlyChooseOneUser(eData, $btn) {
+		var taskName = eData.taskName;
 		var taskId = eData.taskId;
 		var userIds = eData.userIds;
 		var users = [];
 		var dlgSelector = "#dlg_choose_one_user";
 		// 创建弹出框Div
 		createDiv(dlgSelector);
-		JDS.call({
-			service : "workService.getUsers",
-			data : [ userIds ],
-			async : false,
-			success : function(result) {
-				users = result.data;
-			}
-		});
-		for ( var i = 0; i < users.length; i++) {
-			var user = users[i];
-			var radio = "<div><label class='radio inline'><input id='" + user.id
-					+ "' name='onlyOneUser' type='radio' value='" + user.id + "'>" + user.userName
-					+ "</label></div>";
-			$(dlgSelector).append(radio);
+		var searchBox = "<div class='query-fields form_operate'>" + "<input name='query_input' />"
+				+ "<button type='button' class='btn'>查询</button></div>";
+		$(dlgSelector).append(searchBox);
+		$(dlgSelector).append("<div class='user-to-choose'></div>");
+		var listChooseUser = function(userIds, queryValue) {
+			JDS.call({
+				service : "workService.queryUsers",
+				data : [ userIds, queryValue ],
+				async : false,
+				success : function(result) {
+					var users = result.data;
+					$("div.user-to-choose", dlgSelector).html("");
+					for ( var i = 0; i < users.length; i++) {
+						var user = users[i];
+						var $radio = $("<label class='radio inline'><input id='" + user.id
+								+ "' name='onlyOneUser' type='radio' value='" + user.id + "'>" + user.userName
+								+ "</label>");
+						if (i % 2 == 0) {
+							$radio.css("width", "150px").css("margin-left", "50px");
+						}
+						$("div.user-to-choose", dlgSelector).append($radio);
+					}
+				}
+			});
 		}
 		var options = {
-			title : "选择一个办理人",
+			title : "选择一个办理人" + "(" + taskName + ")",
 			modal : true,
 			autoOpen : true,
 			resizable : false,
+			width : 400,
+			height : 300,
+			open : function() {
+				// 列表查询
+				$("input[name='query_input']", dlgSelector).keypress(function(e) {
+					if (e.keyCode == 13) {
+						listChooseUser(userIds, $(this).val());
+						return false;
+					}
+				});
+				$("button[type='button']", dlgSelector).click(function(e) {
+					var queryValue = $("input[name='query_input']", dlgSelector).val();
+					listChooseUser(userIds, queryValue);
+				});
+				listChooseUser(userIds, "");
+			},
 			buttons : {
 				"确定" : function(e) {
 					if ($("input[name=onlyOneUser]:checked").val() == null) {
@@ -728,8 +976,9 @@ $(function() {
 					// 重新触发提交事件
 					if (isNotBlank(eData.submitButtonId)) {
 						$("#" + eData.submitButtonId).trigger('click');
+					} else if ($btn) {
+						$btn.trigger('click');
 					} else {
-						// $("#" + btn_submit).trigger('click');
 						oAlert("请重新提交!");
 					}
 				},
@@ -748,13 +997,20 @@ $(function() {
 	function JudgmentBranchFlowNotFound(eData) {
 		var toTasks = eData.toTasks;
 		bean.fromTaskId = eData.fromTaskId;
+		var multiselect = eData.multiselect;
 		if (toTasks != null) {
 			for ( var i = 0; i < toTasks.length; i++) {
 				var task = toTasks[i];
-				var radio = "<div><label class='radio inline'><input id='" + task.id
-						+ "' name='toTaskId' type='radio' value='" + task.id + "'>" + task.name
-						+ "</label></div>";
-				$("#dlg_select_task").append(radio);
+				if (multiselect) {
+					var checkbox = "<div><label class='checkbox inline'><input id='" + task.id
+							+ "' name='toTaskId' type='checkbox' value='" + task.id + "'>" + task.name
+							+ "</label></div>";
+					$("#dlg_select_task").append(checkbox);
+				} else {
+					var radio = "<div><label class='radio inline' style='margin-left: 20px;'><input id='" + task.id
+							+ "' name='toTaskId' type='radio' value='" + task.id + "'>" + task.name + "</label></div>";
+					$("#dlg_select_task").append(radio);
+				}
 			}
 		}
 		// 显示选择下一环节弹出框
@@ -772,12 +1028,20 @@ $(function() {
 			modal : true,
 			buttons : {
 				"确定" : function(e) {
-					if ($("input[name=toTaskId]:checked").val() == null) {
+					var $checkbox = $("input[name=toTaskId]:checked");
+					if ($checkbox.length == 0) {
 						bean.fromTaskId = null;
 						oAlert("请选择环节!");
 						return;
 					}
-					bean.toTaskId = $("input[name=toTaskId]:checked").val();
+					var toTaskId = "";
+					$.each($checkbox, function(i) {
+						toTaskId += $(this).val();
+						if (i != $checkbox.length - 1) {
+							toTaskId += ";";
+						}
+					});
+					bean.toTaskId = toTaskId;
 					e.stopPropagation();
 					$(this).oDialog("close");
 					// 重新触发提交事件
@@ -896,9 +1160,9 @@ $(function() {
 		if (toTasks != null) {
 			for ( var i = 0; i < toTasks.length; i++) {
 				var task = toTasks[i];
-				var radio = "<div><label class='radio inline'><input id='" + task.id
-						+ "' name='rollbackToTaskId' type='radio' value='" + task.id + "'>" + task.name
-						+ "</label></div>";
+				var radio = "<div><label class='radio inline' style='margin-left: 20px;'><input id='" + task.id
+						+ "' name='rollbackToTaskId' type='radio' taskInstUuid='" + task.taskInstUuid + "' value='"
+						+ task.id + "'>" + task.name + "</label></div>";
 				$("#dlg_select_rollback_task").append(radio);
 			}
 		}
@@ -922,6 +1186,7 @@ $(function() {
 						return;
 					}
 					bean.rollbackToTaskId = $("input[name=rollbackToTaskId]:checked").val();
+					bean.rollbackToTaskInstUuid = $("input[name=rollbackToTaskId]:checked").attr("taskInstUuid");
 					e.stopPropagation();
 					$(this).oDialog("close");
 					// 重新触发提交事件
@@ -947,49 +1212,66 @@ $(function() {
 	hideTaskButtons(btn_direct_rollback);
 
 	// 退回
-	$(":button[name='" + btn_rollback + "']").each(function() {
+	$(":button[name='" + btn_rollback + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onRollback, this));
+		showTaskButton(this);
 	});
 	// 退回处理
 	function onRollback() {
+		// 确保提交时有签署意见
 		// 操作动作及类型
-		bean.action = isBlank($(this).text()) ? "退回" : $(this).text();
-		bean.actionType = "Rollback";
+		if (isBlank(bean.action)) {
+			bean.action = isBlank($(this).text()) ? "退回" : $(this).text();
+		}
+		if (isBlank(bean.actionType)) {
+			bean.actionType = "Rollback";
+		}
 		JDS.call({
 			service : rollbackService,
 			data : [ bean ],
 			success : function(result) {
 				oAlert("退回成功!", function() {
-					hanlderSuccess(result);
+					handlerSuccess(result);
 				});
 			},
 			error : function(jqXHR) {
 				// 处理流程操作返回 的错误信息
-				hanlderError(jqXHR);
+				handlerError(jqXHR);
 			}
 		});
 	}
 	WorkFlow.rollback = onRollback;
 
 	// 直接退回
-	$(":button[name='" + btn_direct_rollback + "']").each(function() {
+	$(":button[name='" + btn_direct_rollback + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onDirectRollback, this));
+		showTaskButton(this);
 	});
 	// 直接退回处理
 	function onDirectRollback() {
-		var taskInstUuids = [];
-		taskInstUuids.push(bean.taskInstUuid);
+		var $btn = $(this);
+		// 确保提交时有签署意见
+		// 操作动作及类型
+		if (isBlank(bean.action)) {
+			bean.action = isBlank($(this).text()) ? "退回" : $(this).text();
+		}
+		if (isBlank(bean.actionType)) {
+			bean.actionType = "Rollback";
+		}
+		bean.rollbackToPreTask = true;
 		JDS.call({
-			service : directRollbackService,
-			data : [ taskInstUuids ],
+			service : rollbackService,
+			data : [ bean ],
 			success : function(result) {
 				oAlert("直接退回成功!", function() {
-					hanlderSuccess(result);
+					handlerSuccess(result);
+					bean.rollbackToPreTask = false;
 				});
 			},
 			error : function(jqXHR) {
 				// 处理流程操作返回 的错误信息
-				hanlderError(jqXHR);
+				handlerError(jqXHR, $btn);
+				bean.rollbackToPreTask = false;
 			}
 		});
 	}
@@ -1000,48 +1282,53 @@ $(function() {
 	hideTaskButtons(btn_cancel);
 
 	// 撤回
-	$(":button[name='" + btn_cancel + "']").each(function() {
+	$(":button[name='" + btn_cancel + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onCancel, this));
+		showTaskButton(this);
 	});
 	// 撤回处理
 	function onCancel() {
-		var taskInstUuids = [];
-		taskInstUuids.push(bean.taskInstUuid);
-		JDS.call({
-			service : cancelService,
-			data : [ taskInstUuids ],
-			success : function(result) {
-				// 打开待办工作界面
-				JDS.call({
-					service : "workService.getTodoTaskByFlowInstUuid",
-					data : [ bean.flowInstUuid ],
-					success : function(result) {
-						if (isNotBlank(result.data.uuid)) {
-							oAlert("撤回成功!", function() {
-								// 刷新父窗口
-								if (returnWindow) {
-									returnWindow();
-								}
-								var taskInstUuid = result.data.uuid;
-								var flowInstUuid = bean.flowInstUuid;
-								window.location = ctx + "/workflow/work/view/todo?taskInstUuid="
-										+ taskInstUuid + "&flowInstUuid=" + flowInstUuid;
-							});
-						} else {
-							oAlert("撤回失败!");
+		if (typeof (WorkFlow.onCancel) == "function") {
+			WorkFlow.onCancel.call(this, bean);
+		} else {
+			var taskInstUuids = [];
+			taskInstUuids.push(bean.taskInstUuid);
+			JDS.call({
+				service : cancelService,
+				data : [ taskInstUuids ],
+				success : function(result) {
+					// 打开待办工作界面
+					JDS.call({
+						service : "workService.getTodoTaskByFlowInstUuid",
+						data : [ bean.flowInstUuid ],
+						success : function(result) {
+							if (isNotBlank(result.data.uuid)) {
+								oAlert("撤回成功!", function() {
+									// 刷新父窗口
+									if (returnWindow) {
+										returnWindow();
+									}
+									var taskInstUuid = result.data.uuid;
+									var flowInstUuid = bean.flowInstUuid;
+									window.location = ctx + "/workflow/work/view/todo?taskInstUuid=" + taskInstUuid
+											+ "&flowInstUuid=" + flowInstUuid;
+								});
+							} else {
+								oAlert("撤回失败!");
+							}
+						},
+						error : function(jqXHR) {
+							// 处理流程操作返回 的错误信息
+							handlerError(jqXHR);
 						}
-					},
-					error : function(jqXHR) {
-						// 处理流程操作返回 的错误信息
-						hanlderError(jqXHR);
-					}
-				});
-			},
-			error : function(jqXHR) {
-				// 处理流程操作返回 的错误信息
-				hanlderError(jqXHR);
-			}
-		});
+					});
+				},
+				error : function(jqXHR) {
+					// 处理流程操作返回 的错误信息
+					handlerError(jqXHR);
+				}
+			});
+		}
 	}
 	/** ********************************* 撤回结束 ********************************* */
 
@@ -1050,11 +1337,16 @@ $(function() {
 	hideTaskButtons(btn_transfer);
 
 	// 转办
-	$(":button[name='" + btn_transfer + "']").each(function() {
+	$(":button[name='" + btn_transfer + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onTransfer, this));
+		showTaskButton(this);
 	});
 	// 转办处理
 	function onTransfer() {
+		// 确保提交时有签署意见
+		var on = bean.opinionLabel;
+		var ov = bean.opinionValue;
+		var ot = bean.opinionText;
 		$.unit.open({
 			title : "选择转办人员",
 			afterSelect : function(laReturn) {
@@ -1062,15 +1354,15 @@ $(function() {
 					var transferUserIds = laReturn.id.split(";");
 					JDS.call({
 						service : transferService,
-						data : [ [ bean.taskInstUuid ], transferUserIds ],
+						data : [ [ bean.taskInstUuid ], transferUserIds, on, ov, ot ],
 						success : function(result) {
 							oAlert("转办成功!", function() {
-								hanlderSuccess(result);
+								handlerSuccess(result);
 							});
 						},
 						error : function(jqXHR) {
 							// 处理流程操作返回 的错误信息
-							hanlderError(jqXHR);
+							handlerError(jqXHR);
 						}
 					});
 				} else {
@@ -1086,11 +1378,16 @@ $(function() {
 	hideTaskButtons(btn_counterSign);
 
 	// 会签
-	$(":button[name='" + btn_counterSign + "']").each(function() {
+	$(":button[name='" + btn_counterSign + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onCounterSign, this));
+		showTaskButton(this);
 	});
 	// 会签处理
 	function onCounterSign() {
+		// 确保提交时有签署意见
+		var on = bean.opinionLabel;
+		var ov = bean.opinionValue;
+		var ot = bean.opinionText;
 		$.unit.open({
 			title : "选择会签人员",
 			afterSelect : function(laReturn) {
@@ -1098,15 +1395,15 @@ $(function() {
 					var counterSignUserIds = laReturn.id.split(";");
 					JDS.call({
 						service : counterSignService,
-						data : [ [ bean.taskInstUuid ], counterSignUserIds ],
+						data : [ [ bean.taskInstUuid ], counterSignUserIds, on, ov, ot ],
 						success : function(result) {
 							oAlert("会签成功!", function() {
-								hanlderSuccess(result);
+								handlerSuccess(result);
 							});
 						},
 						error : function(jqXHR) {
 							// 处理流程操作返回 的错误信息
-							hanlderError(jqXHR);
+							handlerError(jqXHR);
 						}
 					});
 				} else {
@@ -1122,8 +1419,9 @@ $(function() {
 	hideTaskButtons(btn_attention);
 
 	// 关注
-	$(":button[name='" + btn_attention + "']").each(function() {
+	$(":button[name='" + btn_attention + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onAttention, this));
+		showTaskButton(this);
 	});
 	// 关注处理
 	function onAttention(e) {
@@ -1137,7 +1435,7 @@ $(function() {
 			},
 			error : function(jqXHR) {
 				// 处理流程操作返回 的错误信息
-				hanlderError(jqXHR);
+				handlerError(jqXHR);
 			}
 		});
 	}
@@ -1148,45 +1446,48 @@ $(function() {
 	hideTaskButtons(btn_print);
 
 	// 套打
-	$(":button[name='" + btn_print + "']").each(function() {
+	$(":button[name='" + btn_print + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onPrint, this));
+		showTaskButton(this);
 	});
 	// 套打处理
 	function onPrint(e) {
-		if (isBlank(bean.flowInstUuid)) {
-			onSave(false, function(data) {
-				$("input[name=flowInstUuid]", $("#print_form")).val(data["flowInstUuid"]);
-				bean.flowInstUuid = data["flowInstUuid"];
-				// window.location = ctx +
-				// "/workflow/work/view/draft?flowInstUuid=" +
-				// data["flowInstUuid"];
-				// $(dytableSelector).dytable("setDataUuid", data["dataUuid"]);
-				// 打印处理
-				doPrint(e);
-			});
-		} else {
-			if (isBlank($("input[name=flowInstUuid]", $("#print_form")).val())) {
-				$("input[name=flowInstUuid]", $("#print_form")).val(flowInstUuid);
-			}
-			// 打印处理
-			doPrint(e);
+		// CA检验
+		if (checkCAKey() == false) {
+			return false;
 		}
 
+		// 打印处理
+		doPrint(e);
 	}
 	// 打印处理
 	function doPrint(e) {
+		var printToDisplay = bean["printToDisplay"];
 		// 提交前回调处理
-		if (WorkFlow.getPrintService) {
-			var printService = WorkFlow.getPrintService.call(this);
+		if (isNotBlank(bean["printService"])) {
+			var printService = bean["printService"];
 			$("input[name=printService]", $("#print_form")).val(printService);
 		}
-		var $printForm = $("#print_form");
-		$printForm.attr("action", ctx + printUrl);
-		$printForm[0].submit();
-		e.stopPropagation();
-		// 重置打印表单
-		$printForm[0].reset();
+		if (printToDisplay === true) {
+			var fullPrintUrl = ctx + printUrl + "?printToDisplay=true&" + $("#print_form").serialize();
+			window.open(fullPrintUrl);
+		} else {
+			var $printForm = $("#print_form");
+			$printForm.attr("action", ctx + printUrl);
+			$printForm[0].submit();
+			if (e) {
+				e.stopPropagation();
+			}
+			// 重置打印表单
+			$printForm[0].reset();
+		}
 	}
+	// 打印成功后处理，对打开新浏览器的方式有效
+	WorkFlow.onSuccessPrint = function() {
+		if (typeof (WorkFlow.afterSuccessPrint) == "function") {
+			WorkFlow.afterSuccessPrint.call(this, bean);
+		}
+	};
 	// iframe加载内容事件处理
 	var document = this;
 	$("#print_form_iframe").load(function(e) {
@@ -1259,8 +1560,9 @@ $(function() {
 	hideTaskButtons(btn_copyTo);
 
 	// 抄送
-	$(":button[name='" + btn_copyTo + "']").each(function() {
+	$(":button[name='" + btn_copyTo + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onCopyTo, this));
+		showTaskButton(this);
 	});
 	// 抄送处理
 	function onCopyTo() {
@@ -1274,12 +1576,12 @@ $(function() {
 						data : [ [ bean.taskInstUuid ], copyToUserIds ],
 						success : function(result) {
 							oAlert("抄送成功!", function() {
-								// hanlderSuccess(result);
+								// handlerSuccess(result);
 							});
 						},
 						error : function(jqXHR) {
 							// 处理流程操作返回 的错误信息
-							hanlderError(jqXHR);
+							handlerError(jqXHR);
 						}
 					});
 				}
@@ -1293,8 +1595,8 @@ $(function() {
 	hideTaskButtons(btn_sign_opinion);
 
 	// 签署意见
-	$(":button[name='" + btn_sign_opinion + "']").hide();
-	$(":button[name='" + btn_sign_opinion + "']").each(function() {
+	$(":button[name='" + btn_sign_opinion + "']", ".wf_operate").hide();
+	$(":button[name='" + btn_sign_opinion + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onSignOpinion, this));
 	});
 	// 签署意见处理
@@ -1311,7 +1613,7 @@ $(function() {
 	// 显示签署意见
 	function showOpinion() {
 		if (isNotBlank(bean.taskInstUuid) && bean.aclRole === "TODO") {
-			var $btn = $(".form_toolbar>.form_operate>button:visible:first");
+			var $btn = $(".form_toolbar>.wf_operate>button:visible:first");
 			var $opinion = $("#mini_wf_opinion");
 			var position1 = {
 				left : 1000
@@ -1340,8 +1642,8 @@ $(function() {
 	// 如果任务不存在，则隐藏办理意见按钮
 	hideTaskButtons(btn_view_opinion);
 	// 办理意见
-	$(":button[name='" + btn_view_opinion + "']").hide();
-	$(":button[name='" + btn_view_opinion + "']").each(function() {
+	$(":button[name='" + btn_view_opinion + "']", ".wf_operate").hide();
+	$(":button[name='" + btn_view_opinion + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onViewOpinion, this));
 	});
 	// 办理意见处理
@@ -1360,7 +1662,7 @@ $(function() {
 					},
 					error : function(jqXHR) {
 						// 处理流程操作返回 的错误信息
-						hanlderError(jqXHR);
+						handlerError(jqXHR);
 					}
 				});
 			},
@@ -1402,12 +1704,18 @@ $(function() {
 				$("#process_content").html(result.data);
 				$("#dlg_view_process").oDialog("open");
 
+				var url = ctx + "/workflow/show?open&id=" + bean.flowDefUuid;
+				$("#dlg_view_process .view_process").unbind("click");
+				$("#dlg_view_process .view_process").click(function() {
+					window.open(url);
+				});
+
 				// 调整自适应表单宽度
 				adjustWidthToForm();
 			},
 			error : function(jqXHR) {
 				// 处理流程操作返回 的错误信息
-				hanlderError(jqXHR);
+				handlerError(jqXHR);
 			}
 		});
 	}
@@ -1438,8 +1746,9 @@ $(function() {
 	// 如果任务不存在，则隐藏办理过程按钮
 	hideTaskButtons(btn_remind);
 	// 催办
-	$(":button[name='" + btn_remind + "']").each(function() {
+	$(":button[name='" + btn_remind + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onRemind, this));
+		showTaskButton(this);
 	});
 	// 催办处理
 	function onRemind(e) {
@@ -1460,8 +1769,9 @@ $(function() {
 	// 如果任务不存在，则隐藏取消关注按钮
 	hideTaskButtons(btn_unfollow);
 	// 取消关注
-	$(":button[name='" + btn_unfollow + "']").each(function() {
+	$(":button[name='" + btn_unfollow + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onUnfollow, this));
+		showTaskButton(this);
 	});
 	// 取消关注处理
 	function onUnfollow(e) {
@@ -1482,8 +1792,9 @@ $(function() {
 	// 如果任务不存在，则隐藏移交按钮
 	hideTaskButtons(btn_hand_over);
 	// 移交
-	$(":button[name='" + btn_hand_over + "']").each(function() {
+	$(":button[name='" + btn_hand_over + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onHandOver, this));
+		showTaskButton(this);
 	});
 	// 移交处理
 	function onHandOver(e) {
@@ -1494,15 +1805,15 @@ $(function() {
 					var handOverUserIds = laReturn.id.split(";");
 					JDS.call({
 						service : handOverService,
-						data : [ [ bean.taskInstUuid ], handOverUserIds ],
+						data : [ bean, handOverUserIds ],
 						success : function(result) {
 							oAlert("移交成功!", function() {
-								hanlderSuccess(result);
+								handlerSuccess(result);
 							});
 						},
 						error : function(jqXHR) {
 							// 处理流程操作返回 的错误信息
-							hanlderError(jqXHR);
+							handlerError(jqXHR);
 						}
 					});
 				} else {
@@ -1517,45 +1828,90 @@ $(function() {
 	// 如果任务不存在，则隐藏跳转按钮
 	hideTaskButtons(btn_do_goto);
 	// 跳转
-	$(":button[name='" + btn_do_goto + "']").each(function() {
+	$(":button[name='" + btn_do_goto + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onDoGoto, this));
+		showTaskButton(this);
 	});
 	// 跳转处理
 	function onDoGoto(e) {
 		// doGotoService
-		JDS.call({
-			service : getToTasksdoGotoService,
-			data : [ bean.taskInstUuid ],
-			success : function(result) {
-				bean.gotoTask = true;
-				// 不需要签署意见
-				requiredSignOpinion = false;
-				showGotoTask(result.data, {
-					"submitButtonId" : btn_do_goto
-				});
-			},
-			error : function(jqXHR) {
-				// 处理流程操作返回 的错误信息
-				hanlderError(jqXHR);
-			}
-		});
+		var $btn = $(this);
+		var gotoTaskId = bean.gotoTaskId;
+		if (isBlank(gotoTaskId)) {
+			JDS.call({
+				service : getGotoTaskService,
+				data : [ bean.taskInstUuid ],
+				success : function(result) {
+					bean.gotoTask = true;
+					showGotoTaskDialog($btn, result.data);
+				},
+				error : function(jqXHR) {
+					// 处理流程操作返回 的错误信息
+					handlerError(jqXHR);
+				}
+			});
+		} else {
+			JDS.call({
+				service : gotoTaskService,
+				data : [ bean ],
+				success : function(result) {
+					oAlert("跳转成功!", function() {
+						handlerSuccess(result);
+					});
+				},
+				error : function(jqXHR) {
+					// 处理流程操作返回 的错误信息
+					handlerError(jqXHR, $btn);
+				}
+			});
+		}
 	}
 
-	function showGotoTask(data, submitButton) {
+	function showGotoTaskDialog($btn, data) {
 		var toTasks = data.toTasks;
 		bean.fromTaskId = data.fromTaskId;
 		if (toTasks != null) {
 			for ( var i = 0; i < toTasks.length; i++) {
 				var task = toTasks[i];
-				var radio = "<div><label class='radio inline'><input id='" + task.id
-						+ "' name='toTaskId' type='radio' value='" + task.id + "'>" + task.name
-						+ "</label></div>";
-				$("#dlg_select_task").append(radio);
+				var radio = "<div><label class='radio inline' style='margin-left: 20px;'><input id='" + task.id
+						+ "' name='toTaskId' type='radio' value='" + task.id + "'>" + task.name + "</label></div>";
+				$("#dlg_select_goto_task").append(radio);
 			}
 		}
-		showSelectTaskDialog({
-			title : "选择跳转环节"
-		}, submitButton);
+		// 初始化下一流程选择框
+		var options = {
+			title : "选择跳转环节",
+			autoOpen : true,
+			height : 300,
+			width : 350,
+			resizable : false,
+			modal : true,
+			buttons : {
+				"确定" : function(e) {
+					var $checkbox = $("input[name=toTaskId]:checked");
+					if ($checkbox.length == 0) {
+						bean.fromTaskId = null;
+						oAlert("请选择跳转环节!");
+						return;
+					}
+					var gotoTaskId = $checkbox.val();
+					bean.gotoTaskId = gotoTaskId;
+					e.stopPropagation();
+					$(this).oDialog("close");
+					// 重新触发跳转事件
+					$btn.trigger('click');
+				},
+				"取消" : function(e) {
+					bean.fromTaskId = null;
+					e.stopPropagation();
+					$(this).oDialog("close");
+				}
+			},
+			close : function() {
+				$("#dlg_select_goto_task").html("");
+			}
+		};
+		$("#dlg_select_goto_task").oDialog(options);
 	}
 	/** ******************************** 跳转结束 ********************************** */
 
@@ -1568,8 +1924,9 @@ $(function() {
 		showButtons(btn_suspend);
 	}
 	// 挂起
-	$(":button[name='" + btn_suspend + "']").each(function() {
+	$(":button[name='" + btn_suspend + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onSuspend, this));
+		showTaskButton(this);
 	});
 	// 挂起处理
 	function onSuspend(e) {
@@ -1587,20 +1944,9 @@ $(function() {
 			},
 			error : function(jqXHR) {
 				// 处理流程操作返回 的错误信息
-				hanlderError(jqXHR);
+				handlerError(jqXHR);
 			}
 		});
-	}
-	// 创建DIV元素
-	function createDiv(selector) {
-		var id = selector;
-		if (selector.indexOf("#") == 0) {
-			id = selector.substring(1);
-		}
-		// 放置
-		if ($(selector).length == 0) {
-			$("body").append("<div id='" + id + "' />");
-		}
 	}
 	/** ******************************** 挂起结束 ********************************** */
 
@@ -1613,8 +1959,9 @@ $(function() {
 		hideButtons(btn_resume);
 	}
 	// 恢复
-	$(":button[name='" + btn_resume + "']").each(function() {
+	$(":button[name='" + btn_resume + "']", ".wf_operate").each(function() {
 		$(this).click($.proxy(onResume, this));
+		showTaskButton(this);
 	});
 	// 恢复处理
 	function onResume(e) {
@@ -1632,7 +1979,7 @@ $(function() {
 			},
 			error : function(jqXHR) {
 				// 处理流程操作返回 的错误信息
-				hanlderError(jqXHR);
+				handlerError(jqXHR);
 			}
 		});
 	}
@@ -1640,6 +1987,35 @@ $(function() {
 
 	/** ******************************** 退件开始 ********************************** */
 	/** ******************************** 退件结束 ********************************** */
+
+	/** ******************************** 删除开始 ********************************** */
+	// 如果任务不存在，则隐藏删除按钮
+	hideTaskButtons(btn_delete);
+
+	// 挂起
+	$(":button[name='" + btn_delete + "']", ".wf_operate").each(function() {
+		$(this).click($.proxy(onDelete, this));
+		showTaskButton(this);
+	});
+	// 删除处理
+	function onDelete() {
+		var taskInstUuids = [];
+		taskInstUuids.push(bean.taskInstUuid);
+		JDS.call({
+			service : deleteService,
+			data : [ taskInstUuids ],
+			success : function(result) {
+				oAlert("删除成功!", function() {
+					window.close();
+				});
+			},
+			error : function(jqXHR) {
+				// 处理流程操作返回 的错误信息
+				handlerError(jqXHR);
+			}
+		});
+	}
+	/** ******************************** 删除结束 ********************************** */
 
 	/** ****************************** 公共方法开始 ******************************** */
 	// 任务不存在时隐藏名字为指定值的按钮
@@ -1649,6 +2025,12 @@ $(function() {
 			$(":button[name='" + name + "']").each(function() {
 				$(this).hide();
 			});
+		}
+	}
+	function showTaskButton(button) {
+		// 如果任务存在，则显示按钮
+		if (isNotBlank(bean.taskInstUuid)) {
+			$(button).show();
 		}
 	}
 	function hideButtons(name) {
@@ -1662,17 +2044,20 @@ $(function() {
 		});
 	}
 
-	// 获取动态表单标题
-	function getFormTitle() {
-		var formTitle = $(dytableSelector).dytable("getFieldForFormData", {
-			formuuid : bean.formUuid,
-			fieldMappingName : "WORKFLOW_TITLE"
-		});
-		return formTitle;
+	// 创建DIV元素
+	function createDiv(selector) {
+		var id = selector;
+		if (selector.indexOf("#") == 0) {
+			id = selector.substring(1);
+		}
+		// 放置
+		if ($(selector).length == 0) {
+			$("body").append("<div id='" + id + "' />");
+		}
 	}
 	/** ****************************** 公共方法结束 ******************************** */
 	// 显示操作按钮
-	$(".form_operate").show();
+	$(".wf_operate").show();
 
 	/** ****************************** 对外接口开始 ******************************** */
 	// Java扩展
@@ -1703,15 +2088,15 @@ $(function() {
 	};
 	// 添加按钮
 	WorkFlow.addButton = function(button) {
-		$(".form_operate").append(button);
+		$(".wf_operate").append(button);
 	};
 	// 隐藏按钮
 	WorkFlow.hideButton = function(buttonId) {
-		$("button[id='" + buttonId + "']", ".form_operate").hide();
+		$("button[id='" + buttonId + "']", ".wf_operate").hide();
 	};
 	// 显示按钮
 	WorkFlow.showButton = function(buttonId) {
-		$("button[id='" + buttonId + "']", ".form_operate").show();
+		$("button[id='" + buttonId + "']", ".wf_operate").show();
 	};
 	// 绑定工作流事件
 	WorkFlow.bind = function(option) {
@@ -1721,8 +2106,8 @@ $(function() {
 		if (functionName == "print") {
 			if ($("#" + btn_print).length == 0) {
 				var print = '<button type="button" id="' + btn_print + '">' + name + '</button>';
-				$(".form_operate").append(print);
-				var $button = $("#" + btn_print, ".form_operate");
+				$(".wf_operate").append(print);
+				var $button = $("#" + btn_print, ".wf_operate");
 				$button.click($.proxy(onPrint, $button));
 			} else {
 				$("#" + btn_print).show();
@@ -1737,11 +2122,11 @@ $(function() {
 			$button.click($.proxy(onSave, $button[0], true, callBack));
 		}
 		if (id != null && functionName == null) {
-			var $button = $("button[id='" + id + "']", ".form_operate");
+			var $button = $("button[id='" + id + "']", ".wf_operate");
 			if ($button.length == 0) {
 				var button = '<button type="button" id="' + id + '">' + name + '</button>';
-				$(".form_operate").append(button);
-				$button = $("button[id='" + id + "']", ".form_operate");
+				$(".wf_operate").append(button);
+				$button = $("button[id='" + id + "']", ".wf_operate");
 			}
 			var onClick = option.onClick;
 			if (onClick != null) {
@@ -1753,6 +2138,11 @@ $(function() {
 	// 设置套打模板
 	WorkFlow.setPrintTemplateId = function(templateId) {
 		$("input[name=printTemplateId]", $("#print_form")).val(templateId);
+	};
+	WorkFlow.print = function(templateId) {
+		$("input[name=printTemplateId]", $("#print_form")).val(templateId);
+
+		doPrint();
 	};
 	// 设置工作数据
 	WorkFlow.setWorkData = function(propName, propValue) {
@@ -1774,9 +2164,23 @@ $(function() {
 	WorkFlow.showOpinion = function() {
 		showOpinion();
 	};
+	// 是否需要签署意见
+	WorkFlow.setRequiredSignOpinion = function(required) {
+		requiredSignOpinion = required;
+	};
 	// 签署意见
 	WorkFlow.signOpinion = function(data) {
 		$("#mini_wf_opinion").workflowMiniOpinion("signOpinion", data);
+	};
+	// 错误处理
+	WorkFlow.handlerError = handlerError;
+	// 获取动态表单选择器
+	WorkFlow.getDyformSelector = function() {
+		return dytableSelector;
+	};
+	// 获取办理过程信息
+	WorkFlow.getWorkProcess = function() {
+		return workProcess;
 	};
 	/** ****************************** 对外接口结束 ******************************** */
 });

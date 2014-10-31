@@ -7,8 +7,8 @@
 <head>
 <%@ include file="/pt/common/taglibs.jsp"%>
 <%@ include file="/pt/common/meta.jsp"%>
+<%@ include file="/pt/dyform/dyform_css.jsp"%>
 <title>${bean.title}</title>
-<%@ include file="/pt/dytable/form_css.jsp"%>
 <link type="text/css" rel="stylesheet"
 	href="${ctx}/resources/chosen/chosen.min.css" />
 <link rel="stylesheet" type="text/css"
@@ -163,7 +163,7 @@
 			<input type="hidden" id="fromId" name="fromId" value="${bean.fromId}">
 			<input type="hidden" id="sendType" name="sendType" value="${bean.sendType}">
 			<!-- 动态表单 -->
-			<div id="dyform"></div>
+			<form   id="dyform" ></form>
 			
 			<!-- 收发情况 -->
 			<%-- <c:if test="${not empty bean.allUnit}"> --%>
@@ -226,7 +226,8 @@
 			</c:forEach>
 	
 			<!-- Project -->
-			<%@ include file="/pt/dytable/form_js.jsp"%>
+			<%@ include file="/pt/dyform/dyform_js.jsp"%>
+			 
 			<script type="text/javascript"
 				src="${ctx}/resources/chosen/chosen.jquery.min.js"></script>
 			<script type="text/javascript"

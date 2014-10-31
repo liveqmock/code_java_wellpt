@@ -5,18 +5,21 @@
  */
 package com.wellsoft.pt.dyform.dao;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
+import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Repository;
 
 import com.wellsoft.pt.core.dao.Page;
 import com.wellsoft.pt.core.dao.PropertyFilter;
 import com.wellsoft.pt.core.dao.hibernate.HibernateDao;
 import com.wellsoft.pt.dyform.entity.DyFormDefinition;
-import com.wellsoft.pt.dytable.entity.FormDefinition;
 
 /**
  * Description: 对应FormDefinition的Dao操作
@@ -45,11 +48,11 @@ public class DyFormDefinitionDao extends HibernateDao<DyFormDefinition, String> 
 		return (list.size() > 0 ? list.get(0) : null);
 	}
 
-	public List<FormDefinition> getShowTable() {
+	public List<DyFormDefinition> getShowTable() {
 		return this.find("select f from DyFormDefinition f where f.formDisplay = '1'");
 	}
 
-	public List<FormDefinition> getShowTable2() {
+	public List<DyFormDefinition> getShowTable2() {
 		return this.find("select f from DyFormDefinition f where f.formDisplay = '2'");
 	}
 
@@ -105,4 +108,18 @@ public class DyFormDefinitionDao extends HibernateDao<DyFormDefinition, String> 
 		System.out.println("--->");
 	}
 
+	public List<DyFormDefinition> getFormDefinitionsByTblName(String tblName) {
+		return this.find(Restrictions.eq("name", tblName));
+	}
+
+	public void dropFormTbl(final String tblName) {
+		Session session = this.getSessionFactory().getCurrentSession();
+		session.doWork(new Work() {
+			@Override
+			public void execute(Connection con) throws SQLException {
+				con.createStatement().execute("drop table " + tblName);
+			}
+		});
+
+	}
 }

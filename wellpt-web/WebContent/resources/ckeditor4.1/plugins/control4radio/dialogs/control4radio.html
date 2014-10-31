@@ -215,7 +215,7 @@ radioctl.initProperty = function(field){
 		 );
 	
 	if(field == null ||  (typeof field) == "undefined"){
-		field = new MainFormFieldClass();
+		field = new WRadioClass();
 		field.inputMode =  dyFormInputMode.radio;
 		field.valueCreateMethod = "1";
 		 
@@ -260,7 +260,7 @@ radioctl.exitDialog = function(){
 }
 
 radioctl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WRadioClass();
 	field.inputMode =  dyFormInputMode.radio;
 
 	field.optionDataSource=$("input[name='optionDataSource']:checked").val();

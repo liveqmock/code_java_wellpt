@@ -90,7 +90,8 @@ $(function() {
 				name : "uuid",
 				index : "uuid",
 				width : "180",
-				hidden : true,
+				key : true,
+				hidden : true
 			}, {
 				name : "code",
 				index : "code",
@@ -140,10 +141,8 @@ $(function() {
 				repeatitems : false
 			},// 行选择事件
 			onSelectRow : function(id) {
-				var rowData = $(this).getRowData(id);
-				getSystemTableById(rowData.uuid);
-	//			$("#main_secondary_table_relationship").jqGrid("clearGridData");
-	//			getViewById(rowData.uuid);
+//				var rowData = $(this).getRowData(id);
+				getSystemTableById(id);
 			},
 			loadComplete : function(data) {
 				$("#list").setSelection($("#list").getDataIDs()[0]);
@@ -229,7 +228,6 @@ $(function() {
 			success : function(data) {
 				if (data != null) {
 					var jsonobj=eval(data.data);
-//					alert("jsonobj:"+JSON.stringify(jsonobj));
 			        var length=jsonobj.length;
 			        for(var i=0;i<length;i++){
 			        	if(i!=length-1){
@@ -241,7 +239,6 @@ $(function() {
 				}
 			}
 		});
-		alert("关联属性:"+str);
 		return str;
     }
 
@@ -451,15 +448,20 @@ $(function() {
 			//系统属性表jqGrid
 			$("#" + childSystemTableListId).jqGrid({
 				datatype : "local",
-				colNames : [ "uuid", "列名", "中文名", "备注" ,"数据类型","列别名","数据字典","常量","组织选择框","所属类"],
+				colNames : [ "uuid", "列名", "字段名","中文名", "备注" ,"数据类型","列别名","是否同步","数据字典","常量","组织选择框","所属类"],
 				colModel : [ {
 					name : "uuid",
 					index : "uuid",
-					width : "70",
+					width : "20",
 					hidden : true
 				}, {
 					name : "attributeName",
 					index : "attributeName",
+					width : "70",
+					editable : true
+				}, {
+					name : "fieldName",
+					index : "fieldName",
 					width : "70",
 					editable : true
 				}, {
@@ -487,19 +489,28 @@ $(function() {
 					width : "70",
 					editable : true,
 				} , {
+					name : "isSynchronization",
+					index : "isSynchronization",
+					width : "70",
+					editable : true,
+					edittype : "checkbox",
+		        	editoptions : {
+		        		value:"true:false"
+		        	}
+				} , {
 					name : "dataDictionary",
 					index : "dataDictionary",
-					width : "70",
+					width : "40",
 					editable : true,
 				} , {
 					name : "constant",
 					index : "constant",
-					width : "50",
+					width : "40",
 					editable : true,
 				} , {
 					name : "isOrganizeSelectionBox",
 					index : "isOrganizeSelectionBox",
-					width : "70",
+					width : "40",
 					editable : true,
 					edittype : "checkbox",
 		        	editoptions : {
@@ -508,11 +519,12 @@ $(function() {
 				}, {
 					name : "entityName",
 					index : "entityName",
-					width : "70",
+					width : "40",
 					hidden : true
 				}],
 				sortable : false,
 				multiselect : true,
+				height : 500,
 				cellEdit : true,// 表示表格可编辑
 				cellsubmit : "clientArray", // 表示在本地进行修改
 				autowidth : true,

@@ -53,9 +53,16 @@ $(function() {
 		} ],// 行选择事件
 		onSelectRow : function(id) {
 			var rowData = $(this).getRowData(id);
-			$("#format_form").json2form(rowData);
-			$("#format_form").form2json(bean);
-			$("#btn_del").show();
+			JDS.call({
+				service : "flowFormatService.get",
+				data : id,
+				success : function(result) {
+					var data = result.data;
+					bean = data;
+					$("#format_form").json2form(data);
+					$("#btn_del").show();
+				}
+			})
 		}
 	}));
 

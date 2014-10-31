@@ -198,6 +198,10 @@ $(function() {
 		var deptNames = [];
 		var groupIds = [];
 		var groupNames = [];
+		var jobIds=[];
+		var jobNames=[];
+		var dutyIds=[];
+		var dutyNames=[];
 		var ids = returnValue.id.split(";");
 		var names = returnValue.name.split(";");
 		for ( var index = 0; index < ids.length; index++) {
@@ -211,6 +215,12 @@ $(function() {
 			} else if (type == "G") {
 				groupIds.push(ids[index]);
 				groupNames.push(names[index]);
+			}else if (type == "J") {
+				jobIds.push(ids[index]);
+				jobNames.push(names[index]);
+			}else if (type == "W") {
+				dutyIds.push(ids[index]);
+				dutyNames.push(names[index]);
 			}
 		}
 		var memberIds = userIds.join(";");
@@ -224,10 +234,28 @@ $(function() {
 			memberNames += deptNames.join(";");
 		}
 		if (groupIds.length != 0) {
-			memberIds += ";";
-			memberNames += ";";
+			if (deptIds.length != 0||userIds != 0) {
+				memberIds += ";";
+				memberNames += ";";
+			}
 			memberIds += groupIds.join(";");
 			memberNames += groupNames.join(";");
+		}	
+		if (jobIds.length != 0) {
+			if (deptIds.length != 0||userIds != 0||groupIds != 0) {
+				memberIds += ";";
+				memberNames += ";";
+			}
+			memberIds += jobIds.join(";");
+			memberNames += jobNames.join(";");
+		}	
+		if (dutyIds.length != 0) {
+			if (deptIds.length != 0||userIds != 0||groupIds != 0||jobIds != 0) {
+				memberIds += ";";
+				memberNames += ";";
+			}
+			memberIds += dutyIds.join(";");
+			memberNames += dutyNames.join(";");
 		}
 		$("#owner").val(memberIds);
 		$("#ownerName").val(memberNames);

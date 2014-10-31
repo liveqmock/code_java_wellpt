@@ -35,27 +35,28 @@
 	 * COMBOBOX CLASS DEFINITION ======================
 	 */
 	var ComboBox = function(element, options) {
-		this.init("wcomboBox", element, options);
+		this.$element = $(element);
+		this.options = $.extend({}, $.fn["wcomboBox"].defaults, options,
+				this.$element.data());
 	};
 
 	ComboBox.prototype = {
 		constructor : ComboBox,
-		init : function(type, element, options) {
-			this.type = type;
-			this.$element = $(element);
-			this.options = this.getOptions(options);
-			this.initparams(this.options);
-		},
-		//默认参数初始化
-		initparams:function(options){
+		initSelf:function(){
+			var options=this.options;
+			 this.$element.css("display", "none");
 			
-			 //设置字段属性.根据不同的控件类型区分。
-			 $.ControlUtil.setCtrAttr(this.$element,this.options);
-			 
-			 var opt = new Array();
+			this.$element.attr("id",this.$element.attr("name"));
+			this.$element.attr("optiondatasource",options.optiondatasource);	//radio,checkbox,select供选项来源 1.常量 2.字典
+			//设置文本的css样式
+			this.setTextInputCss();
+			var opt = new Array();
 			//根据数据初始化元素下拉框
 			if(options.optionDataSource==dyDataSourceType.dataConstant){
 				var selectobj = this.options.optionSet;
+				if(typeof selectobj =="object"){
+					selectobj = eval("(" + JSON.cStringify(selectobj) + ")");
+				}
 				for(attrbute in selectobj){
 					var i=0;
 					var s = '<option value=' + attrbute + '>'+selectobj[attrbute] + '</option>';
@@ -63,43 +64,51 @@
 					i++;
 				}
 			}else{
-				if(options.dictCode==""&&options.dictCode==undefined){
+				var selectobj = this.options.optionSet; 
+				if(typeof selectobj == "undefined"){
 					return;
 				}
-				var dictcodearray=options.dictCode.split(":");
-				JDS.call({
-		       	 service:"dataDictionaryService.getDataDictionariesByType",
-		       	 data:[dictcodearray[0]],
-		       	 async: false,
-					success:function(result){
-						var datas = result.data;
-						for(var i in datas){
-							var data=datas[i];
-							var s =  '<option value=' + data.code + '>' +data.name + '</option>';
-							opt.push(s);
-						}
-					},
-					error:function(jqXHR){
+				if(typeof selectobj == "string"){
+					if(   selectobj.length == 0){
+						return;
+					}else{
+						selectobj = eval("(" + selectobj + ")");
+					} 
+				}
+				 
+				var datas= selectobj;
+				
+					for(var i in datas){
+						var data=datas[i];
+						var s =  '<option value=' + data.code + '>' +data.name + '</option>';
+						opt.push(s);
 					}
-				});
 		  }	
-			
+		 
 		 this.$element.html('<option value="" ></option>'+opt.join(''));
-		 this.setValue(options.columnProperty.defaultValue);
+		 this.setValue(options.columnProperty.defaultValue); 
+		 this.$element.css("display", "");
+		 
 		 if(options.columnProperty.showType==dyshowType.showAsLabel){
 			 this.setDisplayAsLabel();
-		 }else if(options.columnProperty.showType==dyshowType.disabled){
+		 }else if(options.columnProperty.showType==dyshowType.disabled){ 
 			 this.setEnable(false);
 		 }else if(options.columnProperty.showType==dyshowType.hide){
 			 this.setVisible(false);
+		 }else{
+			
 		 }
+		 
+		 var _this = this;
+		 this.$element.change(function(){
+			 _this.setToRealDisplayColumn(); 
+		 });
+		 
+		 
+		 this.$element.css("padding-left", "10px");
+		  this.addMustMark();
+		 
 		},
-		getOptions : function(options) {
-			options = $.extend({}, $.fn[this.type].defaults, options,
-					this.$element.data());
-			return options;
-		},
-		
 		 
 		 getDisplayValue:function(){
 			 return this.$element.find("option:selected").text();
@@ -114,12 +123,10 @@
 			 if(this.options.isShowAsLabel==true){
 				 this.$element.next().html(this.getDisplayValue());
 			 }
+			 this.setToRealDisplayColumn();
 		 } ,
 		 
-		 //设置必输
-		 setRequired:function(isrequire){
-			 $.ControlUtil.setRequired(isrequire,this.options);
-		 } ,
+		 
 		 
 		 //设置可编辑
 		 setEditable:function(){
@@ -134,45 +141,22 @@
 			 this.options.readOnly=isreadonly;
 		 } ,
 		 
-		 //设置disabled属性
-		 setEnable:function(isenable){
-			 $.ControlUtil.setEnable(this.$element,isenable);
-			 this.options.disabled=!isenable;
-		 } ,
-		 
-		 //设置hide属性
-		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(this.$element,isvisible);
-			 this.options.isHide=!isvisible;
-		 } ,
 		 
 		 //显示为lablel
 		 setDisplayAsLabel:function(){
 			 //只显示为label.
 			var val=this.getDisplayValue();
 			this.$element.hide();
-			if(!val) {
-				elment.after("<span>"+val+"</span>");
-			}else {
-				if(val == "" || val == null) {
-					elment.after("<span></span>");
-				}else {
-					$.ControlUtil.setSpanStyle(this.$element,this.options.textAlign,this.options.fontSize,this.options.fontColor,this.options.fontWidth,this.options.fontHight,val);
-				}
-			}
+			$.ControlUtil.setSpanStyle(this.$element,this.options.commonProperty.textAlign,this.options.commonProperty.fontSize,this.options.commonProperty.fontColor,this.options.commonProperty.fontWidth,this.options.commonProperty.fontHight,val);
 			this.options.isShowAsLabel=true;
 		 } ,
 		 
-		 //显示为控件
-		 setDisplayAsCtl:function(){
-			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
-		 },
 		 
 		 setValueByMap:function(valuemap){
 			 var valueobj=eval("("+valuemap+")");
 			 for(attribute in valueobj){  
 					this.setValue(attribute);
-					this.setDisplayValue(valueobj[attribute]);
+					//this.setDisplayValue(valueobj[attribute]);
 				}
 			 if(this.options.isShowAsLabel==true){
 				 this.$element.next().html(this.getDisplayValue());
@@ -183,7 +167,7 @@
 		 setDisplayValue:function(value){
 			 this.$element.find("option[value='"+value+"']").attr("selected",true);
 		 } ,
-	       
+	      
 	    //get..........................................................//
 		
 		 //返回控件值
@@ -201,70 +185,7 @@
 			 return v;
 		 },
 		 
-		 /**
-		  * 返回是否可编辑(由readOnly和disabled判断)
-		  * @returns {Boolean}
-		  */
-		 isEditable:function(){
-			 if(this.options.readOnly&&this.options.disabled){
-				 return false;
-			 }else{
-				 return true;
-			 }
-		 },
-		 
-		 isReadOnly:function(){
-			 return this.options.readOnly;
-		 },
-		 
-		 isEnable:function(){
-			 return !this.options.disabled;
-		 },
-		 
-		 isVisible:function(){
-			 return  this.options.isHide;
-		 }, 
-		 
-		 isRequired:function(){
-			 return $.ControlUtil.isRequired(this.options);
-		 },
-		 
-		 isShowAsLabel:function(){
-			 return this.options.isShowAsLabel;
-		 },
-		 
-		 getAllOptions:function(){
-		    	 return this.options;
-		     } ,  
-		     
-		 getRule:function(){
-			 return $.ControlUtil.getCheckRules(this.options);
-		 } ,
-		 
-		 getMessage:function(){
-			 return $.ControlUtil.getCheckMsg(this.options);
-		 } ,
-		 
-		 
-	     /**
-	      * 获得控件名
-	      * @returns
-	      */
-	     getCtlName:function(){
-	    	 return this.$element.attr("name");
-	     },
-		 
-	     //bind函数，桥接
-	     bind:function(eventname,event){
-	    	this.$element.bind(eventname,event);
-	    	return this;
-	     },
-		 
-		 //unbind函数，桥接
-	     unbind:function(eventname){
-	    	this.$element.unbind(eventname);
-	    	return this;
-	     }
+		
 	    //一些其他method ---------------------
 	     
 	};
@@ -299,8 +220,13 @@
 					options = typeof option == 'object'
 							&& option;
 					if (!data) {
-						$this.data('wcomboBox', (data = new ComboBox(this,
-								options)));
+						 data = new ComboBox(this,options);
+						 var datacopy={};
+						 var data1=$.extend(datacopy,data);
+						 var extenddata=$.extend(data,$.wControlInterface);
+						 var data2=$.extend(extenddata,data1);
+						 data2.init();
+						 $this.data('wcomboBox',data2 );
 					}
 					if (typeof option == 'string') {
 						if (method == true && args != null) {

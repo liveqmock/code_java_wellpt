@@ -43,7 +43,11 @@ html,body {
 <body>
 	<div id="container">
 		<div class="pane ui-layout-center">
-			<div class="btn-group">
+			<div class="btn-group btn-group-top">
+				<div class="query-fields">
+					<input id="query_task" name="query_task" />
+					<button id="btn_query" type="button" class="btn">查询</button>
+				</div>
 				<button id="btn_todo_view" type="button" class="btn">查看</button>
 			</div>
 			<table id="list"></table>

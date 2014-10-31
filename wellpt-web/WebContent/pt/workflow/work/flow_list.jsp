@@ -41,7 +41,11 @@ html,body {
 <body>
 	<div id="container">
 		<div class="pane ui-layout-center">
-			<div class="btn-group">
+			<div class="btn-group btn-group-top">
+				<div class="query-fields">
+					<input id="query_flow" name="query_flow" />
+					<button id="btn_query" type="button" class="btn">查询</button>
+				</div>
 				<button id="btn_work_new" type="button" class="btn">新建工作</button>
 			</div>
 			<table id="list"></table>

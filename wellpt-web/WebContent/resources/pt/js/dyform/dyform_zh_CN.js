@@ -13,12 +13,23 @@ var dymsg = {
 		delSuccess:'删除成功',
 		fileUploadSuccess:'上传成功',
 		fileUploadFailure:'上传失败',
-		notAlone:'已存在该值，请确保唯一'
+		notAlone:'已存在该值，请确保唯一',
+		modelIdNull:"显示单据ID为空",
+		modelIdNotFound:"无法找到对应的显示单据",
+		preservedField:"该字段名为系统预留字段!",
+		displayNameNotEmpty:"显示名称不能为空!",
+		fieldNameNotEmpty:"字段编码不能为空",
+		blockexist:"该区域编码已存在",
+		tabexist:"页签已存在",
+		atLeastOnesubtbl:"至少要有一个子页签"
 };
 
 var dybtn = {
 		save:'保存',
 		add:'添加',
+		exp:"导出",
+		imp:"导入",
+		addSub:"添加子行",
 		del:'删除',
 		edit:'修改',
 		ok:'确定',
@@ -49,3 +60,7 @@ var dyYesOrNo = {
 	yes:"是",
 	no:"否"
 };
+var dyformCtlConfig = {
+	blockexist:"该区域编码已存在"
+};
+ 

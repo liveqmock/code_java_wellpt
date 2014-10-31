@@ -1,3 +1,4 @@
+<%@page import="com.wellsoft.pt.basicdata.ca.service.FJCAAppsService"%>
 <%@page import="com.wellsoft.pt.core.resource.Config"%>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <script type="text/javascript" src="${ctx}/resources/utils/json2.js"></script>
@@ -108,12 +109,14 @@
 
 <%
 	// 加入附件签名控件
-	String fjcaControlContextPath = request.getContextPath();
-	if("/".equals(fjcaControlContextPath)) {
-		fjcaControlContextPath = "";
+	if(FJCAAppsService.ENABLE.equals(Config.getValue(FJCAAppsService.KEY_ENABLE))) {
+		String fjcaControlContextPath = request.getContextPath();
+		if("/".equals(fjcaControlContextPath)) {
+			fjcaControlContextPath = "";
+		}
+		String fjcaWs = "<object id=\"fjcaWs\" name=\"SBFjCAEnAndSign\" classid=\"CLSID:506038C2-52A5-4EA5-8F7D-F39B10265709\" codebase=\"" + fjcaControlContextPath + "/resources/pt/js/security/SBFjCAEnAndSign.ocx\"></object>";
+		String fjcaControl = "<object id=\"fjcaControl\" classid=\"clsid:414C56EC-7370-48F1-9FB4-AF4A40526463\" codebase=\"" + fjcaControlContextPath + "/resources/pt/js/security/fjcaControl.ocx\" ></object>";
+		out.print(fjcaWs);
+		out.print(fjcaControl);
 	}
-	String fjcaWs = "<object id=\"fjcaWs\" name=\"SBFjCAEnAndSign\" classid=\"CLSID:506038C2-52A5-4EA5-8F7D-F39B10265709\" codebase=\"" + fjcaControlContextPath + "/resources/pt/js/security/SBFjCAEnAndSign.ocx\"></object>";
-	String fjcaControl = "<object id=\"fjcaControl\" classid=\"clsid:414C56EC-7370-48F1-9FB4-AF4A40526463\" codebase=\"" + fjcaControlContextPath + "/resources/pt/js/security/fjcaControl.ocx\" ></object>";
-	out.print(fjcaWs);
-	out.print(fjcaControl);
 %>

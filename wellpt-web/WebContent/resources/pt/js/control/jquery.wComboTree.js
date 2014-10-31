@@ -1,4 +1,3 @@
-;
 (function($) {
 	
 	var columnProperty={
@@ -35,26 +34,27 @@
 	 * COMBOTREE CLASS DEFINITION ======================
 	 */
 	var ComboTree = function(element, options) {
-		this.init("wcomboTree", element, options);
+		this.$element = $(element);
+		this.options = $.extend({}, $.fn["wcomboTree"].defaults, options,
+				this.$element.data());
 	};
 
 	
 	ComboTree.prototype = {
 		constructor : ComboTree,
-		init : function(type, element, options) {
-			this.type = type;
-			this.$element = $(element);
-			this.options = this.getOptions(options);
-			//参数初始化
-			this.initparams(this.options);
-		},
-		//默认参数初始化
-		initparams:function(options){
-			 //设置字段属性.根据不同的控件类型区分。
-			 $.ControlUtil.setCtrAttr(this.$element,this.options);
-			
-		
+	
+		initSelf:function(){
+			var options=this.options;
+			this.$element.attr("id",this.$element.attr("name"));
+			// this.$element.attr("data",options.data);	//树形下拉框调用的服务层的方法的请求参数
+			this.$element.attr("servicename",options.servicename);	//树形下拉框调用的服务层
+			// this.$element.attr("methodname",options.methodname);	 //树形下拉框调用的服务层的方法
+			this.$element.addClass("input-tier");//css in wellnewoa.css
+			 //设置文本的css样式
+			 this.setTextInputCss();
 			 
+			 //设置默认值
+			// this.setDefaultValue(this.options.columnProperty.defaultValue);
 			 var isMod = false;//(dataUid != '' ? true : false);
 			 var colEnName="";
 			 if(options.isinitTreeById){
@@ -82,12 +82,8 @@
 				}*/
 				var data3 = options.mutiSelect;
 				$(this.$element).after("<input type='hidden' id='_"+colEnName+"' name='_"+colEnName+"' value=''>");
-				var data1 = data.replace("|","");
-				if($('#data').val() == undefined) {
-					$(this.$element).after("<input type='hidden' id='"+data1+"'  value='"+data.replace("|",",")+"'>");
-				}else {
-					$(this.$element).after("<input type='hidden' id='"+data1+"'  value='"+data.replace("|",",")+"'>");
-				}
+				var data1 = data.replace(/\|+/g,"");
+				$(this.$element).after("<input type='hidden' id='"+data1+"'  value='"+data.replace(/\|+/g,",")+"'>");
 				var flag = true;
 				if(method[0] == 'getFormDataAsTree') {
 					 flag = false;
@@ -107,14 +103,15 @@
 				}
 
 				if(options.columnProperty.showType==dyshowType.showAsLabel){
-					 $.ControlUtil.setIsDisplayAsLabel(this.$element,options,true);
+					this.setDisplayAsLabel();
 				}else if(options.columnProperty.showType==dyshowType.disabled){
-					 $.ControlUtil.setEnable(this.$element,false);
+					this.setEnable(false);
 				 }else if(options.columnProperty.showType==dyshowType.hide){
-					 $.ControlUtil.setVisible(this.$element,false);
+					 this.setVisible(false);
 				 }else if(options.columnProperty.showType==dyshowType.readonly){
-					 $.ControlUtil.setReadOnly(this.$element,true);
+					 this.setReadOnly(true);
 				 }else {
+					 var _this = this;
 					var setting = {
 							async : {
 								otherParam : {
@@ -123,11 +120,18 @@
 									"data" : dataArrays
 								}
 							},
+							view : {
+								showLine : true
+							},
 							check : {//复选框的选择做成可配置项
 								enable:data3
 							},
+							src:"control",
 							callback : {
 								onClick:function (event, treeId, treeNode) {
+									if(_this.options.mutiSelect){//多选只能通过点击checkbox
+										return ;
+									}
 									var inputId = treeId.replace("_ztree","");
 									if(typeof(treeNode.data) == "object") {
 										$("#"+inputId).val(treeNode.name);
@@ -136,11 +140,23 @@
 										$("#"+inputId).val(treeNode.name);
 										$("#_"+inputId).val(treeNode.data);
 									}
+									
+									
+									_this.setToRealDisplayColumn();
+								 
+									
+								},
+								onCheck:function(event, treeId, treeNode){
+									if(!_this.options.mutiSelect){
+										return ;
+									}
+									_this.setToRealDisplayColumn();
 								}
 							}
 						};
 					//初始化树的值
 					$("#_"+colEnName).val(options.columnProperty.defaultValue);
+				 
 					this.$element.comboTree({
 						labelField : colEnName,
 						valueField : "_"+colEnName,
@@ -150,23 +166,21 @@
 						initService :options.initService,
 						initServiceParam : options.initServiceParam
 					});
+					
+				 
 					//$("#_"+colEnName).val(val);
 				}
 			//the end
 			//设置默认值
 			//this.setValue(options.columnProperty..defaultValue);	
-		},
-		getOptions : function(options) {
-			options = $.extend({}, $.fn[this.type].defaults, options,
-					this.$element.data());
-			return options;
+				  this.addMustMark();
+				
 		},
 		
 		 //设置显示值。
 		 setDisplayValue:function(value){
 				this.$element.val(value);	
 		 } ,
-		
 		 
 		 getDisplayValue:function(){
 			 return this.$element.val();
@@ -177,54 +191,23 @@
 	     
 		//设值
 		 setValue:function(value){
+			
 			 var valuename=this.getCtlName();
+			 
+			 
 			 if(this.options.isinitTreeById){
 				 valuename=this.$element.attr("id");
 			 }
-			 return $("#_"+valuename).val(value);
+		 
+			 $("#_"+valuename).val(value);
+			 
+			 this.setToRealDisplayColumn();
+			 
 		 } ,
 		 
-		 //设置必输
-		 setRequired:function(isrequire){
-			 $.ControlUtil.setRequired(isrequire,this.options);
-		 } ,
-		 
-		 //设置可编辑
-		 setEditable:function(){
-			 this.setReadOnly(false);
-			 this.setEnable(true);
-			 this.setDisplayAsCtl();
-		 } ,
-		 
-		 //只读，文本框不置灰，不可编辑
-		 setReadOnly:function(isreadonly){
-			 $.ControlUtil.setReadOnly(this.$element,isreadonly);
-			 this.options.readOnly=isreadonly;
-		 } ,
-		 
-		 //设置disabled属性
-		 setEnable:function(isenable){
-			 $.ControlUtil.setEnable(this.$element,isenable);
-			 this.options.disabled=!isenable;
-		 } ,
-		 
-		 //设置hide属性
-		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(this.$element,isvisible);
-			 this.options.isHide=!isvisible;
-		 } ,
-		 
-		 //显示为lablel
-		 setDisplayAsLabel:function(){
-			 $.ControlUtil.setIsDisplayAsLabel(this.$element,this.options,true);
-		 } ,
-		 
-		 //显示为控件
-		 setDisplayAsCtl:function(){
-			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
-		 },
 		 
 		 setValueByMap:function(valuemap){
+			 
 			 var valueobj=eval("("+valuemap+")");
 			 var valuearray=[];
 			 var displayvaluearray=[];
@@ -232,12 +215,17 @@
 				 valuearray.push(attribute);
 				 displayvaluearray.push(valueobj[attribute]);
 				}
-			 this.setValue((valuearray.toString()).replace(/\,/g, ";"));
-			 this.setDisplayValue((displayvaluearray.toString()).replace(/\,/g, ";"));
+			 
+
 			
+			
+			 this.setDisplayValue((displayvaluearray.toString()).replace(/\,/g, ";"));
+			 this.setValue((valuearray.toString()).replace(/\,/g, ";"));
+
 			 if(this.options.isShowAsLabel==true){
 				 this.$element.next().html(this.getDisplayValue());
 	    	  }
+			 //this.$element.comboTree("initValue", value);
 		 },
 	       
 	    //get..........................................................//
@@ -248,6 +236,7 @@
 			 if(this.options.isinitTreeById){
 				 valuename=this.$element.attr("id");
 			 }
+			 
 			 return $("#_"+valuename).val();
 		 },
 		 
@@ -256,8 +245,16 @@
 		 },
 
 		 getValueMap:function(){
+			  
 			 var v={};
+			 
 			 if(this.getValue()==""||this.getValue()==undefined){
+				 if(!this.options.mutiSelect  ){//单选,
+					var displayV = this.getDisplayValue();
+					if(typeof displayV != "undefined" && displayV.length > 0){
+						v[this.getDisplayValue()] = this.getDisplayValue();
+					} 
+				 }
 				 return v;
 			 }
 			 var values=this.getValue().split(';');
@@ -271,70 +268,7 @@
 			 return v;
 		 },
 		 
-		 /**
-		  * 返回是否可编辑(由readOnly和disabled判断)
-		  * @returns {Boolean}
-		  */
-		 isEditable:function(){
-			 if(this.options.readOnly&&this.options.disabled){
-				 return false;
-			 }else{
-				 return true;
-			 }
-		 },
-		 
-		 isReadOnly:function(){
-			 return this.options.readOnly;
-		 },
-		 
-		 isEnable:function(){
-			 return !this.options.disabled;
-		 },
-		 
-		 isVisible:function(){
-			 return  this.options.isHide;
-		 }, 
-		 
-		 isRequired:function(){
-			 return $.ControlUtil.isRequired(this.options);
-		 },
-		 
-		 isShowAsLabel:function(){
-			 return this.options.isShowAsLabel;
-		 },
-		 
-		 getAllOptions:function(){
-		    	 return this.options;
-		     } ,  
-		     
-		 getRule:function(){
-			 return $.ControlUtil.getCheckRules(this.options);
-		 } ,
-		 
-		 getMessage:function(){
-			 return $.ControlUtil.getCheckMsg(this.options);
-		 } ,
-		 
-	     /**
-	      * 获得控件名
-	      * @returns
-	      */
-	     getCtlName:function(){
-	    	 return this.$element.attr("name");
-	     },
-		 
-	     //bind函数，桥接
-	     bind:function(eventname,event){
-	    	this.$element.bind(eventname,event);
-	    	return this;
-	     },
-		 
-		 //unbind函数，桥接
-	     unbind:function(eventname){
-	    	this.$element.unbind(eventname);
-	    	return this;
-	     }
-	    //一些其他method ---------------------
+		
 	     
 	};
 	
@@ -368,8 +302,14 @@
 					options = typeof option == 'object'
 							&& option;
 					if (!data) {
-						$this.data('wcomboTree', (data = new ComboTree(this,
-								options)));
+						 data = new ComboTree(this,options);
+						 var datacopy={};
+						 var data1=$.extend(datacopy,data);
+						 var extenddata=$.extend(data,$.wControlInterface);
+						 var data2=$.extend(extenddata,data1);
+						 var data3=$.extend(data2,$.wTextCommonMethod);
+						 data3.init();
+						 $this.data('wcomboTree',data3 );
 					}
 					if (typeof option == 'string') {
 						if (method == true && args != null) {
@@ -400,6 +340,7 @@
 			treeWidth: 220,
 			treeHeight: 220,
 			mutiSelect:true,
+			realDisplay:{},
 			
 			//获得根据真实值获得初始值。新版需要解析value，将真实值解析为真实值和显示值，分别填充到对应元素上.
 			initService : "dataDictionaryService.getKeyValuePair",

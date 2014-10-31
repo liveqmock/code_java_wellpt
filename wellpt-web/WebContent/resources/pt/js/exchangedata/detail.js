@@ -133,32 +133,37 @@ $(function() {
 	$(":button[style='display: none']").each(function(i) {
 		$(this).remove();
 	});
-	// 初使化
-	JDS.call({
-		service : 'formDataService.getFormData',
-		data : [$("#formId").val(), $("#dataUuid").val(), null],
-		success : function(result) {
-			$("#dyform").dytable({
-				data : result.data,
-				isFile2swf:false,
-				setReadOnly:true,//是否设置所有字段只读，true表示设置,false表示不设置
-				supportDown:"1",//2表示防止下载 1表示支持下载 不设置表示默认支持下载
-			});
-			var typeid = $("#typeId").val();
-			if(typeid != "004140203SZ") {//非商事登记
-				$("#ZTMC").next().css("color","blue");
-				$("#ZTMC").next().css("cursor","pointer");
-				$("#ZTMC").next().click(function(){
-					var zch = $("#ZCH").val();
-					if(zch!=undefined && zch!=""){
-						window.open(ctx+"/exchangedata/client/toZTDJXX.aciton?zch="+zch);
-					}
-				});
+	
+	var formDatas = loadFormDefinitionData($("#formId").val(), $("#dataUuid").val());
+	if(typeof formDatas == "string"){
+		formDatas = (eval("(" + formDatas +  ")"));
+	}
+	$("#dyform").dyform(
+		{
+			definition:  formDatas.formDefinition ,
+			data:formDatas.formDatas,
+			displayAsFormModel:false,
+			success:function(){
+				console.log("表单解析完毕");
+			},
+			error:function(){
+				console.log("表单解析失败");
 			}
-		},
-		error : function(xhr, textStatus, errorThrown) {
-		}
-	});
+		} 
+	); 
+	$("#dyform").dyform("showAsLabel");
+//	var typeid = $("#typeId").val();
+//	if(typeid != "004140203SZ") {//非商事登记
+//		$("span[name='ZTMC']").css("color","blue");
+//		$("span[name='ZTMC']").css("cursor","pointer");
+//		$("span[name='ZTMC']").click(function(){
+//			var zch = $("input[name='ZCH']").val();
+//			if(zch!=undefined && zch!=""){
+//				window.open(ctx+"/exchangedata/client/toZTDJXX.aciton?zch="+zch);
+//			}
+//		});
+//	}
+	
 	adjustWidthToForm();
 	$(window).resize(function(e) {
 		// 调整自适应表单宽度
@@ -166,7 +171,7 @@ $(function() {
 	});
 	// 调整自适应表单宽度
 	function adjustWidthToForm() {
-		var div_body_width = $(window).width() * 0.76;
+		var div_body_width = $(window).width() * 0.95;
 		$(".form_header").css("width", div_body_width - 5);
 		$(".div_body").css("width", div_body_width);
 	}
@@ -412,7 +417,6 @@ $(function() {
 		var str = "";
 		var cancelUnits = $("#cancelUnits").val();
 		var unitArray = cancelUnits.split(";");
-		alert(unitArray);
 		for(var i=0;i<unitArray.length;i++){
 			str += "<div style='margin:5px;'><input style='margin: 0 5px 0 0;' class='iUnitId' name='iUnitId' type='checkbox' matterId='"+unitArray[i].split(":")[2]+"' value='"+unitArray[i].split(":")[0]+"'";
 			if(unitArray[i].split(":")[2]=="null"){
@@ -516,7 +520,6 @@ $(function() {
 	/** ******************************** 同意审核通过开始 ***************************** */
 	$("#" + btn_sc).click(function() {
 		if(checkCAKey()){
-		//alert($("#uuid").val());
 			JDS.call({
 				service: examineService, 
 				data: [$("#uuid").val(), 1,""], 
@@ -608,4 +611,8 @@ $(function() {
 		}
 	});
 	/** ******************************** 标记出证状态结束 ***************************** */
+	
+	//隐藏单据上的按钮
+	$("#relationDate").hide();
+	$("#openHisModule").hide();
 });

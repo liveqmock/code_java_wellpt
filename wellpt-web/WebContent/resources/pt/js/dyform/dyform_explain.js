@@ -1,23 +1,23 @@
 //加载全局国际化资源
-I18nLoader.load("/resources/pt/js/global");
+//I18nLoader.load("/resources/pt/js/global");
 //加载动态表单定义模块国际化资源
-I18nLoader.load("/resources/pt/js/dyform/dyform");
-
-
+//I18nLoader.load("/resources/pt/js/dyform/dyform");
+ 
 var cacheType={
 	formUuid:1,//主表的formuuid
 	options:2,//表单的选项参数
 	formDefinition:3,//主表、从表的定义
-	dataUuid:4//主表的datauuid
+	dataUuid:4,//主表的datauuid,
+	deletedFormDataOfSubform:"deletedFormDataOfSubform",//被删除的从表的数据uuid
+	formula:"formula"//运算公式
+	 
 };
 
 /**
  * 表单插件
  */
 $(function(){
-	
 	$.dyform = $.dyform || {};
-	
 	$.extend($.dyform,{
 		getAccessor : function(obj, expr) {
 			var ret,p,prm = [], i;
@@ -46,132 +46,72 @@ $(function(){
 				$.fn.extend(options);
 			}
 		},
-		/**
-		 * 根据表单定义Id从表单定义Json中获取从表定义
-		 */
-		getSubformDefinitionByFormUuid:function(formDefinition, formUuid){
-			var subforms = formDefinition.subforms;
-			var thisSubform = null;
-			for(var i in subforms){
-				var subform = subforms[i];
-				if(subform.formUuid == formUuid){
-					thisSubform = subform;
-					break;
-				}
-			}
-			return thisSubform;
-		},
-		/**
-		 * 根据
-		 * @param fieldDefinition
-		 */
-		getJqGridColModel:function(fieldDefinition){
-		 
-			var field = fieldDefinition;
-			var model = {};
-			/*if(fieldDefinition.name == "status"){
-				fieldDefinition.showType = dyshowType.showAsLabel; 
-			}*/
-			model.name = field.name;
-			model.index = field.name;
-			//model.width =  "50%";
-			//model.edittype = "text";
-			//model.editrules//检验规则 
-			model.edittype = "custom";
-			/*model.editoptions={
-				custom_element:function(value, options){
-					alert(12);
-					console.log(JSON.stringify(options));
-					console.log("值:" + value);
-					var el = document.createElement("input");
-		              el.type="text";
-		              el.value = value;
-		              return el;
-				},
-				custom_value:function(elem){
-					 return $(elem).val();
-				}
-			};*/
-			
-			var _this = this;
-		 
-			model.formatter = function(cellvalue, options, rowObject){
-				var parentElement =  document.createElement("span");
-				
-				var element = document.createElement("span");
-				var id = _this.getCellId(options.rowId, options.colModel.name);  
-				element.setAttribute("id", id);
-				parentElement.appendChild(element);
-				 
-				var body = document.getElementsByTagName("body").item(0);
-				 
-				body.appendChild(parentElement);
-				$("#" + id).html("<input name='" + id + "'/>");  
-				
-				var html = $("#" + id).parent().html();
-				
-				$("#" + id).parent().remove();
-				 
-				/*alert(3);
-				//_inputc62d36ba4cd00001d6fd961320607a50___test1
-				var obj = $("input[name='_input" + id + "']");
-				alert(obj.size() + "ttttttttt");
-				console.log(JSON.stringify(obj));
-				return;
-				 var data = obj.wdatePicker("getObject");
-				 alert(66);
-				alert(data);*/
-				 //alert(html);
-				return html;
-			};
-		
-			
-			return model;
-			
-		},
+
 		/**
 		 *置于jqgrid中，从表的各cell的id 
 		 **/
 		getCellId:function(rowId, fieldName){
-			var id = rowId + "___" + fieldName; 
-			return id;
+			return $.wSubFormMethod.getCellId(rowId, fieldName);
 		}
 		,
-		loadFormDefinition: function(formUuid){
-			return loadFormDefinition(formUuid);
-		},
-		setValue:function(control, cellValue){
+		setValue:function(control, cellValue, dataUuid){
+			if(!control){
+				return;
+			}
+			control.setDataUuid(dataUuid);
+			 
 			if(control.isValueMap()){
-				control.setValueByMap(cellValue); 
+				if(cellValue != null && cellValue.indexOf("{") == -1){
+				/*	var v = cellValue.split(";");
+					var v1 = {};
+					for(var i = 0; i < v.length; i++){
+						v1[v[i]] = null;
+					}*/
+					//control.setValueByMap(JSON.cStringify(v1)); 
+					control.setValue(cellValue); 
+				}else{
+					control.setValueByMap(cellValue); 
+				}
+			
 			}else{
 				control.setValue(cellValue); 
 			}
 		},
 		getValue:function(control){
+			if(control == null){
+				console.log("control is null");
+				return;
+			}
 			var value = "";
 			if(control.isValueMap() ){
 				//这些控件类型有显示值，需要将显示值及真实值一起保存至数据库中
-				value =   JSON.stringify(control.getValueMap());
+				var valueMap = control.getValueMap();
+				if(typeof valueMap == "string"){
+					value = valueMap;
+				}else{
+					value =   JSON.cStringify(control.getValueMap());
+				}
 			}else{
 				value = control.getValue();
 			}
 			return value;
 		},
-		/**
-		 * 在从表中的字段是不是控件字段
-		 * @param fieldName
-		 */
-		isControlFieldInSubform:function(fieldName){
-			if(fieldName == "seqNO" || fieldName == "cb" || fieldName == "id" || fieldName == "uuid"){
-				return false;
-			}else{
-				return true;
+		getDisplayValue : function(control) {
+			if (control == null) {
+				console.log("control is null");
+				return;
 			}
-		}
-		
-		
-		
-		 
+			var value = "";
+			if (control.isValueMap()) {
+				// 这些控件类型有显示值，需要将显示值及真实值一起保存至数据库中
+				value = control.getDisplayValue();
+			} else {
+				value = control.getValue();
+			}
+			return value;
+		},
+	    modelReg : /\${([^}]*)}/i,  //显示单据占位符
+	    formulaReg:/\${([^}]*)}/g //运算符中字段占位符
 	});
 	
 	
@@ -183,6 +123,9 @@ $(function(){
 		}else if(this[0].nodeName != "FORM"){
 			throw new Error("dataform container must be a form html element");
 		}
+		
+		this.attr("class", "dyform");
+		
 		
 		if(typeof options == "string"){//字段串类型 
 			var fn = $.dyform.getAccessor($.fn.dyform,options);
@@ -196,9 +139,14 @@ $(function(){
 			//this.dyform("parseFormDefinition", arguments);
 			
 		 
-			var fn = $.dyform.getAccessor($.fn.dyform,"parseForm");  
+			var fn = $.dyform.getAccessor($.fn.dyform, "parseForm");  
 			return fn.apply(this,arguments);
 		}
+		
+		
+		
+		
+		
 	};
 	
 	/**
@@ -210,215 +158,723 @@ $(function(){
 	 */
 	{
 		$ : function(selector){ 
-			 
 			return $(selector, this[0]);
 		},
-		parseForm : function(formDefinition, options){
+		addCAControlObject:function(){
+			if(this.isEnableSignature() && $.browser && $.browser.msie){
+				/*alert(1);
+				 var fjcaWs = "<object id=\"fjcaWs\" name=\"SBFjCAEnAndSign\" classid=\"CLSID:506038C2-52A5-4EA5-8F7D-F39B10265709\" codebase=\"" + ctx + "/resources/pt/js/security/SBFjCAEnAndSign.ocx\"></object>";
+				 var fjcaControl = "<object id=\"fjcaControl\" classid=\"clsid:414C56EC-7370-48F1-9FB4-AF4A40526463\" codebase=\"" + ctx + "/resources/pt/js/security/fjcaControl.ocx\" ></object>";
+				 this.append(fjcaWs);
+				 this.append(fjcaControl);*/
+			}
+		}
+		,
+		parseForm : function(options){ 
+			console.log("开始解析表单定义");
+			var time1 =( new Date()).getTime();
+			var formDefinition = options.definition;
+			
+			if(typeof formDefinition == "string"){//字段串类型 
+				formDefinition =  (eval("(" + formDefinition +  ")"));
+			}
+			 
+			var data = options.data;
 			var defaults = {
-					isFile2swf:true,
-					//enableSignature:true,//是否签名
-					readOnly:false,//是否设置所有字段只读，true表示设置,false表示不设置
-					supportDown:"2",//2表示防止下载 1表示支持下载 不设置表示默认支持下载
-					displayFormModel:false,//是否用单据展示
+					displayAsLabel:false,//是否以标签的形式展示
+					displayAsFormModel:true,//是否用单据展示,在displayAsLabel为true的前提下，
+											//该参数才有效,true时表示使用显示单据,false表示不使用显示单据，直接使用表单的模板
 					success:function(){ },
 					error:function(){ }
 			};
 			
 			
 			$.extend(defaults, options);
-		 
 			
 			//将当前容器的对应的表单定义相关数据缓存起来,当需要获取缓存中的数据时，就需要通过key去获取
 			//key是什么，需要到缓存$.dyform.cache代码去看,方便统一管理缓存 
 			this.cache.put.call(this, cacheType.formUuid, formDefinition.uuid);
+			$.extend(formDefinition, formDefinitionMethod);
 			this.cache.put.call(this, cacheType.formDefinition, formDefinition);
 			this.cache.put.call(this, cacheType.options, defaults);
 			
 			
-			console.log("开始解析表单定义");
 			
-			$(this).html(formDefinition.html);
+			this.addCAControlObject();
+			
+			this.validSignatureUSB();
+			
+			var  displayFormModelId = formDefinition.displayFormModelId;
+			 
+			 if(this.isDisplayAsModel()){//判断是否用显示单据  
+				var model = loadDisplayModelDefintionByModelId(displayFormModelId);
+				if(model == null || model == undefined){//无法找到对应的单据
+					defaults.error.call(this, dymsg.modelIdNotFound);
+					return;
+				}
+				$(this).html(model.html);
+				this.formatModel(formDefinition);//将单据信息格式化成表单解析的格式 
+			}else{ 
+				
+				//去掉占位符中的src属性
+				 var html = "<span id='_htmldyform_'>" + formDefinition.html + "</span>";
+				 var srcpattern = /src="\/resources[^\"]+ckeditor[^\"]+plugins[^\"]+images[^\"]+jpg\"/;
+				 var srcpattern2 = /src="resources[^\"]+ckeditor[^\"]+plugins[^\"]+images[^\"]+jpg\"/;
+				 html = html.replace(srcpattern, ""); 
+				 html = html.replace(srcpattern2, "");
+				 while(srcpattern.test(html) || srcpattern2.test(html) ){
+					 html = html.replace(srcpattern, ""); 
+					 html = html.replace(srcpattern2, "");
+				 }
+				 
+				 
+					
+					// console.log(html);
+					 /*	var $html = $(html);
+				$html.find(".value[src]").each(function(){
+					 
+					$(this).attr("src", "");
+					 
+				});*/
+				// alert($(html).html())
+				$(this).html($(html).html()); 
+				this.parseBlock(formDefinition);
+				//$(this).html(formDefinition.html);
+			}  
+			
 			$(".label").removeClass("label");
 			
-			this.parseMainForm(formDefinition);//解析主表
 			
 			
 			
+			var time1 =( new Date()).getTime();
 			
-			this.parseSubform(formDefinition);//解析从表
-			   
-		
+			
+			//含有formUuid属性的table即为从表,解析各从表
+			var formUuids = [];
+			this.$("table[formUuid]").each(function(){
+				var formUuid=$(this).attr('formUuid');
+				formUuids.push(formUuid);
+			});
+			
+			//var datas = loadFormDefinitionsAndDefaultFormData(formUuids, formDefinition.uuid);
+			
+			var formData = formDefinition["defaultFormData"]; 
 			 
+			var definitionObjs =  formDefinition["subformDefinitions"];
+			var definitionMap = {};
+			 
+			if(typeof definitionObjs != "undefined" && definitionObjs != null && definitionObjs.length > 0){
+				for(var i = 0; i < definitionObjs.length; i++){ 
+					var definitionObj = eval("(" + definitionObjs[i] + ")");
+					$.extend(definitionObj, formDefinitionMethod);
+					definitionMap[definitionObj.uuid] = definitionObj;
+				}
+			}
+			 
+			var time2 =( new Date()).getTime();
+			console.log("加载默认值及从表定义所用时间:" + (time2 - time1)/1000.0 + "s");
+			
+			
+			this.parseMainForm(formDefinition, formData);//解析主表
+			
+			this.parseSubform(formDefinition, definitionMap);//解析从表
+			
+			var time2 = ( new Date()).getTime();
+			console.log("表单解析所花时间:" + (time2 - time1)/1000.0 + "s"); 
+		 
+			this.fillFormData(data, function(){ });
+			var time3 = ( new Date()).getTime();
+			console.log("表单填充数据所花时间:" + (time3 - time2)/1000.0 + "s");
+			var timex =( new Date()).getTime();
+		 	if(this.isDisplayAsLabel()  ){ //显示为标签 
+				this.showAsLabel();
+			} 
+		 	var timey =( new Date()).getTime();
+		 	console.log("显示为标签所用时间:" + (timey - timex)/1000.0 + "s");
+			 
+			var _this = this;
+			 
+			$(window).resize(function(){
+				var formUuid =  _this.getFormUuid(); 
+				var formDefinition =  _this.cache.get.call(_this, cacheType.formDefinition, formUuid);
+				 
+				var subforms = formDefinition.subforms;
+				for(var i in subforms){
+					var subform = subforms[i];
+						var subformctl=$.ControlManager.getSubFormControl(subform.formUuid);
+						//subformctl.setGridWidth(formWidth);
+						if(subformctl)
+						subformctl.resetGridWidth(); 
+				}
+			});
+			var timex = new Date();
 			defaults.success.apply(this);
+			var timey = new Date();
+			console.log("回调所花时间:" + (timey - timex)/1000.0 + "s");
+			try{
+				if(typeof this[formDefinition.outerId] == "function"){
+					 this[formDefinition.outerId]();//初始化扩展函数,在dyform_custom.js文件中
+				}
+			}catch(e){
+				console.log(e);
+			}
+			var timez = new Date();
+			
+			console.log("自定义js所花时间:" + (timez - timey)/1000.0 + "s");
+			
+			 
+			console.log("表单共花时间:" + (timez - time1)/1000.0 + "s");
+			
+			if(this.isCreate()){
+				this.addRowEmptyDatasByDefaultRowCount();//给从表添加默认行
+			}
+			if(this.formParseComplete){
+				this.formParseComplete();
+			}
+		},
+		//获取可选参数
+		getOptional:function(){
+			var  options =  this.cache.get.call(this, cacheType.options);
+			return options.optional;
 		},
 		
-		/**
-		 * 为从表添加行数据
-		 * @param formUuid
-		 * @param data 数据格式：{name1:value1,name2: value2…} name为在colModel中指定的名称
-		 */
-		//initializeControlFromRemoteFlag:false, 
-		addRowData: function(formUuid, data){ 
+		//是否新建
+		isCreate:function(){
+			if(this.getOptional() && this.getOptional().isFirst){
+				return true;
+			}else{
+				return false;
+			}
+		},
+		
+		formatModel:function(formDefinition){
+			$(".model_field[name]").each(function(){
+					var name = $(this).attr("name");
+					if(name == undefined && $.trim(name).length == 0){
+						return true;
+					}
+					
+					var fieldDefinition = formDefinition.fields[name];
+					if(typeof fieldDefinition == "undefined"){
+						return true;//continue;
+					}
+					
+					fieldDefinition.showType = dyshowType.showAsLabel;//显示为标签
+					//将占位符转换成表单解析的格式
+					var titleHtml = $(this).html();
+					titleHtml = titleHtml.replace($.dyform.modelReg, "<img class='value' name='" + name + "'/>");
+					$(this).html(titleHtml);
+			});
 			
-			if(typeof data["id"] == "undefined"){//调用方没有生成行id,这里也为dataUuid
-				data["id"] = this.createUuid();  
-			}
- 	
-			this.$("#" + formUuid).jqGrid('addRowData',data["id"],data,"first");//jqgrid的行ID与Id值一样
+			var _this = this;
+			//含有formUuid属性的table即为从表,解析各从表
+			this.$("table[formUuid]").each(function(){
+				$.ControlManager.createSubFormControl($(this),_this,formDefinition);
+			});
 			
-			this.updateSeqNoOfSubform(formUuid);//更新从表的序号
-			 
+			$(".model_subform[name]").each(function(){
+				var name = $(this).attr("name");
+				if(name == undefined && $.trim(name).length == 0){
+					return true;
+				}
+				var subDefinitions  = formDefinition.subforms;
+				if(typeof subDefinitions == "undefined" || subDefinitions.length == 0){
+					return true;//continue;
+				}
+				var formUuid = undefined; 
+				for(var i in subDefinitions){
+					var subDefinition = subDefinitions[i];
+					if(subDefinition.outerId == name){
+						formUuid = subDefinition.formUuid;
+						break;
+					}
+				}
+				if(!formUuid){
+					return true;
+				}
+				
+				
+				//fieldDefinition.showType = dyshowType.showAsLabel;//显示为标签
+				//将占位符转换成表单解析的格式
+				var titleHtml = $(this).html();
+				titleHtml = titleHtml.replace($.dyform.modelReg, "<table formUuid='" + formUuid + "'></table>");
+				$(this).html(titleHtml);
+		});
 		},
-		/**
-		 * 更新从表的行数据
-		 * @param formUuid
-		 * @param data
-		 */
-		updateRowData: function(formUuid, data){
-			var rowId = data["id"] ;
-			if(typeof rowId == "undefined"){
-				throw new Error("id is not defined");
+		
+		
+		isDisplayAsModel:function(){
+			var  displayFormModelId = this.getFormDefinition(this.getFormUuid()).displayFormModelId; 
+			var  options =  this.cache.get.call(this, cacheType.options);
+			if(options.displayAsFormModel == true && options.displayAsLabel == true 
+					&& displayFormModelId != undefined && $.trim(displayFormModelId).length > 0){
+				return true;
+			}else{
+				return false;
 			}
-			console.log("更新的目标数据:" + JSON.stringify(data));
-			for(var i in data){
-				var fieldName = i;
-				if(!$.dyform.isControlFieldInSubform(fieldName)) continue;
-				var controlId = $.dyform.getCellId(rowId, fieldName);
-				
-				var control = $.ControlManager.getControl(controlId); 
-				
-				$.dyform.setValue(control, data[fieldName]);
-				
-			}
-			 
-			 
+			// return options.displayAsFormModel == true;
 		},
-		/**
-		 * 删除从表的某行数据
-		 * @param formUuid
-		 * @param data 数据格式：{name1:value1,name2: value2…} name为在colModel中指定的名称
-		 */
-		delRowData: function(formUuid, rowId){
-			this.$("#" + formUuid).jqGrid('delRowData',rowId);  
-			this.updateSeqNoOfSubform(formUuid);//更新从表的序号
+		
+		isDisplayAsLabel:function(){
+			var  options =  this.cache.get.call(this, cacheType.options);
+			return  options.displayAsLabel ;
+			// return options.displayAsFormModel == true;
 		},
+		
 		/**
 		 * 给主表设置Uuid
 		 * @param dataUuid
 		 */
-		setDataUuid4Mainform:function(dataUuid){ 
+		setDataUuid:function(dataUuid){ 
 			 this.cache.put.call(this, cacheType.dataUuid, dataUuid); 
 		},
 		/**
-		 * 给主表设置Uuid
+		 * 获取主表Uuid
 		 * @param dataUuid
 		 */
-		getDataUuid4Mainform:function(){ 
+		getDataUuid:function(){ 
 			 return this.cache.get.call(this, cacheType.dataUuid);
 		},
-		
 		/**
-		 * 收集表单数据
+		 * 获取主表的定义id
+		 */
+		getFormUuid:function(formId){
+			if(formId){//从表
+				var formDefinitions = this.getFormDefinition();//所有的表单定义
+				for(var i in formDefinitions){
+					if(formDefinitions[i].outerId == formId){
+						return i;
+					}
+				}
+			}else{//主表
+				return this.cache.get.call(this, cacheType.formUuid);
+			}
+			
+		},
+		/**
+		 * 获取主表的定义id 
+		 */
+		getFormId : function(formUuid) {
+			if (formUuid) {// 从表
+				var formDefinitions = this.getFormDefinition();// 所有的表单定义
+				for ( var i in formDefinitions) {
+					if (formDefinitions[i].uuid == formUuid) {
+						return formDefinitions[i].outerId;
+					}
+				}
+			} else {// 主表
+				return this.getFormId(this.getFormUuid());// 迭代获取FormId
+			}
+		},		
+		getFormDefinition:function(formUuid){
+			var formDefinition = this.cache.get.call(this,cacheType.formDefinition, formUuid);
+			return formDefinition;
+		},
+		
+		getMainformValueKeySetMap : function() {
+			var keyMap = {};
+			var fields = this.getFormDefinition(this.getFormUuid()).fields;
+			for(var field in fields){
+				// radio表单元素 valuemap,树形下拉框valuemap,checkbox表单元素valuemap,下拉单选框valuemap
+				var inputMode= fields[field].inputMode;
+				if(inputMode == dyFormInputMode.treeSelect || inputMode == dyFormInputMode.radio 
+						|| inputMode == dyFormInputMode.checkbox || inputMode == dyFormInputMode.selectMutilFase ){
+					var optionSet = fields[field].optionSet;
+					if (typeof optionSet == "undefined" || optionSet == null || optionSet.length == 0) {
+						console.log("field["+field+"] optionSet undefined");
+						continue;
+					}
+					var obj = {};
+					for ( var key in optionSet) {
+						var value = optionSet[key];// 键值对换
+						obj[value] = key;
+					}
+					keyMap[field] = obj;
+				};
+			};
+			return keyMap;
+		},
+		
+		getMainformValueFormatSetMap : function() {
+			var keyMap = {};
+			var fields = this.getFormDefinition(this.getFormUuid()).fields;
+			for(var field in fields){
+				var inputMode= fields[field].inputMode;
+				if(inputMode == dyFormInputMode.date){
+					var fmt = fields[field].contentFormat;
+					if (typeof fmt == "undefined" || fmt == null) {
+						console.log("field["+field+"] contentFormat undefined");
+						continue;
+					}
+					var format='';
+					if(fmt==dyDateFmt.yearMonthDate){
+						format='yyyy-MM-dd';
+					}else if(fmt==dyDateFmt.dateTimeHour){
+						format='yyyy-MM-dd HH';
+					}else if(fmt==dyDateFmt.dateTimeMin){
+						format='yyyy-MM-dd HH:mm';
+					}else if(fmt==dyDateFmt.dateTimeSec){
+						format='yyyy-MM-dd HH:mm:ss';
+					}else if(fmt==dyDateFmt.timeHour){
+						format='HH';
+					}else if(fmt==dyDateFmt.timeMin){
+						format='HH:mm';
+					}else if(fmt==dyDateFmt.timeSec){
+						format='HH:mm:ss';
+					}else if(fmt==dyDateFmt.yearMonthDateCn){
+						format='yyyy年MM月dd日';
+					}else if(fmt==dyDateFmt.yearCn){
+						format='yyyy年';
+					}else if(fmt==dyDateFmt.yearMonthCn){
+						format='yyyy年MM月';
+					}else if(fmt==dyDateFmt.monthDateCn){
+						format='MM月dd日';
+					}else if(fmt==dyDateFmt.year){
+						format='yyyy';
+					}
+					keyMap[field] = format;
+				};
+			};
+			return keyMap;
+		},
+		/**
+		 * 收集表单数据,包括控件数据、签名、被删除的行数据、正文上传
 		 * @param formUuid
 		 */
 		collectFormData:function(){
-			var formData = {};
-			var mainformData = {};
-			var subformData = {};
-			var formUuid =  this.cache.get.call(this, cacheType.formUuid);
-			console.log("为formUuid[" + formUuid + "]收集数据");
-			var formDefinition =  this.cache.get.call(this, cacheType.formDefinition, formUuid);
+			console.log("开始收集数据-----" + new Date());
+			var time1 = ( new Date()).getTime(); 
 			
-			//收集从表数据
-			var subforms = formDefinition.subforms;
-			for(var i in subforms){
-				var subform = subforms[i];
-				subformData[subform.formUuid] = this.collectSubformData(subform.formUuid);
+			var formData = {}; 
+			var deletedFormDatas = this.getDeletedRowIds();
+			var formDatas =  this.getFormDatas();
+			
+			if(this.isEnableSignature()){//创建签名
+				var signature = this.createSignature(formData);
+				formData.signature = signature; 
 			}
-			formData.subformData = subformData;  
 			
-			//收集主表数据
-			mainformData[formUuid] = this.collectMainformData(formUuid);
-			 formData.mainformData = mainformData;
+			formData["formDatas"] = formDatas;
+			formData["deletedFormDatas"] = deletedFormDatas;
+			formData["formUuid"] = this.getFormUuid();
+			var time2 = ( new Date()).getTime();
+			console.log("表单收集所花时间:" + (time2 - time1)/1000.0 + "s");		
+			console.log("收集结束-----" + new Date());
 			return formData;
 		},
+		/**
+		 * 收集表单显示数据,包括控件数据、签名、被删除的行数据、正文上传
+		 * 
+		 * @param formUuid
+		 */
+		collectFormDisplayData : function() {
+			console.log("开始收集数据-----" + new Date());
+			var time1 = (new Date()).getTime();
+
+			var formData = {};
+			var deletedFormDatas = this.getDeletedRowIds();
+			var formDatas = this.getFormDisplayDatas();
+
+			if (this.isEnableSignature()) {// 创建签名
+				var signature = this.createSignature(formData);
+				formData.signature = signature;
+			}
+
+			formData["formDatas"] = formDatas;
+			formData["deletedFormDatas"] = deletedFormDatas;
+			formData["formUuid"] = this.getFormUuid();
+			var time2 = (new Date()).getTime();
+			console.log("表单收集所花时间:" + (time2 - time1) / 1000.0 + "s");
+			console.log("收集结束-----" + new Date());
+			return formData;
+		},		
 		
+		/**
+		 * 需要签名返回true
+		 */
+		isEnableSignature: function(){
+			var formUuidOfMainform = this.getFormUuid();
+			var formDefinitionOfMainform = this.getFormDefinition(formUuidOfMainform);
+			var enableSignature = formDefinitionOfMainform.enableSignature;
+			 
+			if( enableSignature == signature.enable){
+				return true;
+			}else{
+				return false;
+			}
+		},
+		
+		createSignature:function(signedData){ 
+			var jsonString = JSON.cStringify(signedData); 
+			var signature = {};
+			$.ajax({
+				url : ctx + "/dyformdata/getDigestValue",
+				cache : false,
+				async : false,//同步完成
+				type : "POST",
+				data :  jsonString,
+				dataType : "json",
+				contentType:'application/json',
+				success : function(result) { 
+					var dataSignature = result.data;  
+					var b = fjcaWs.OpenFJCAUSBKey();
+					if(!b){ 
+						signature.status = -1;
+						signature.remark = "lose to open FJCAUSBKey";  
+					}else{
+						fjcaWs.ReadCertFromKey();
+						var cert = fjcaWs.GetCertData();
+						fjcaWs.SignDataWithKey(dataSignature.digestValue);
+						var signData = fjcaWs.GetSignData();
+						fjcaWs.CloseUSBKey();
+						signature.signedData = jsonString;
+						signature.digestValue = dataSignature.digestValue;
+						signature.certificate = cert;
+						signature.signatureValue = signData;
+						signature.status = 1;
+						signature.digestAlgorithm = dataSignature.digestAlgorithm; 
+					} 
+				}, 
+				 error:function(jqXHR){
+						// 数字签名失败
+					 
+					 console.log("lose to get digestValue");
+						var faultData = JSON.parse(jqXHR.responseText);
+						signature.status = -1;
+						signature.remark = faultData.msg; 
+				 } 
+			});
+			return signature;
+		},
 		
 		/**
 		 * 验证表单数据
 		 * @param formUuid
 		 */
-		validateForm: function(){
-			var ruleObj = {rules:{}, messages:{}};
-			var formUuid =  this.cache.get.call(this, cacheType.formUuid);
-			 
-			//获取主表的验证规则
-			var mainformRuleObj = this.validateMainform( formUuid);
-			$.extend(ruleObj.rules, mainformRuleObj.rules);
-			$.extend(ruleObj.messages, mainformRuleObj.messages); 
-			
-			//获取从表的验证规则
-			var subformRuleObj =  this.validateSubform(formUuid);
-		 
-			$.extend(ruleObj.rules, subformRuleObj.rules);
-			$.extend(ruleObj.messages, subformRuleObj.messages); 
-			
-			
-			
-			//设置自定义样式
-			//validate初始化方式一
-			//$.extend(ruleObj, Theme.validationRules);
-			//var validator = this.validate(ruleObj);
-			 
-			//validate初始化方式二///////////////用方式一会出现一种情况:当验证完一次，然后从表再增加一行，这时新的一行不会被验证
-			var validator = this.validate(Theme.validationRules ); 
-			validator.settings.rules = ruleObj.rules;
-			validator.settings.messages = ruleObj.messages;
-			
-			var valid = validator.form() ;
-			
-			return valid;
+		validateForm: function(){ 
+			if(!this.validSignatureUSB()){
+				return false;
+			}
+			var formUuid =  this.getFormUuid();
+			var dataUuid = this.getDataUuid();//先从缓存中获取
+			var valid1 = this.validateMainform( formUuid);
+			var valid2 =  this.validateSubform(formUuid);
+			return valid1 && valid2;
 			 
 		},
+		/**
+		 * 校验签名key
+		 */
+		validSignatureUSB:function(){  
+			if(this.isEnableSignature()){
+				if(Browser.isIE()){ 
+				}else{
+					oAlert("当前浏览器无法对表单数据进行签名，请使用IE浏览器编辑表单!");
+				}
+				return checkCAKey();
+			}
+			return true;
+		},
+		
+		
+		
 		
 		/**
-		 * 填充数据
+		 * 填充数据,数据key为formUuid
 		 * @param formDatas
 		 * @param callback
 		 */
 		fillFormData:function(formDatas, callback){
-			var formUuid =  this.cache.get.call(this, cacheType.formUuid);//获取当前表单的定义uuid 
+			 
+			var formUuid =  this.getFormUuid();//获取当前表单的定义uuid 
+			var time1 =( new Date()).getTime();
+			
 			for(var i in formDatas){
 				var formData = formDatas[i]; 
 				if(formUuid == i){//填充主表
 					this.fillFormDataOfMainform(formData[0]);
-				}else{//填充从表
-					this.fillFormDataOfSubform(i, formData);
 				}
 			}
 			
+			var time2 =( new Date()).getTime();
+			console.log("填充主表数据所用时间:" + (time2 - time1)/1000.0 + "s");
+			var time3 =( new Date()).getTime();
+			for(var i in formDatas){
+				var formData = formDatas[i]; 
+				if(formUuid == i){
+				}else{//填充从表
+					var subformctl=$.ControlManager.getSubFormControl(i);
+					if(!subformctl ){ 
+						continue;
+					}
+					
+					subformctl.setMainformDataUuid(this.getDataUuid());
+					console.log(JSON.cStringify(formData));
+					subformctl.fillFormData(formData);
+				}
+			}
+			
+			var time4 =( new Date()).getTime();
+			console.log("填充从表数据所用时间:" + (time4 - time3)/1000.0 + "s");
 			if(callback){
 				callback.apply(this);
 			}
 		},
+
 		/**
-		 * 为从表填数据
-		 * @param formData
+		 * 填充数据,数据key为formUuid,值为显示值
+		 * @param formDatas
+		 * @param formUuid 数据的定义uuid,没有的话就主表id(应为excel表空间不能有formId)
+		 * @param callback
 		 */
-		fillFormDataOfSubform: function(formUuid, formDatas){
-			for(var i =0; i < formDatas.length;  i++){
-				var formData = formDatas[i];
-				formData["id"] = formData.uuid;
-				this.addRowData( formUuid, formData); 
+		fillFormDisplayData : function(formDatas,formUuid, callback) {
+			//var formUuid = mainFormUuid;
+			if(typeof formUuid == "undefined" || formUuid == null ){
+				formUuid = this.getFormUuid();// 获取当前表单的定义uuid
+			};
+			var time1 = (new Date()).getTime();
+			for ( var fi in formDatas) {
+				if (formUuid != fi) {continue;}
+				var cacheVK = this.getMainformValueKeySetMap();
+				var cacheVF = this.getMainformValueFormatSetMap();
+				// 主表值键转换
+				var formData = formDatas[fi];
+				var mainFormData = formData[0];
+				for(var key in mainFormData){
+					if(typeof cacheVF[key] != "undefined" && cacheVF[key] != ""){//日期格式处理
+						var disValue = mainFormData[key];
+						var fmt = cacheVF[key];
+						try{
+							var dateVar = new Date(Date.parse(disValue.replace(/-/g, "/")));
+							if(!isNaN(dateVar.getTime())){// 有效日期
+								mainFormData[key] = dateVar.format(fmt);
+							}
+						}catch(e){
+							console.log(e);
+						}
+						continue;//日期控件
+					}
+					var optionSet = cacheVK[key];
+					if(typeof optionSet == "undefined" || optionSet == null){// 不再需要isValueMap判断了
+						continue;
+					}
+					var disValue = mainFormData[key];
+					var value = optionSet[disValue];
+					if(typeof value == "undefined" || value == null){
+						continue;
+					}
+					mainFormData[key] = value;
+				}
+				cacheVK = null;
 			}
+
+			var time2 = (new Date()).getTime();
+			console.log("主表(值->键)解析所用时间:" + (time2 - time1) / 1000.0 + "s");
+			var time3 = (new Date()).getTime();
+			for ( var di in formDatas) {
+				if (formUuid == di) {
+				} else {// 填充从表
+					var formData = formDatas[di];//从表数据
+					if(formData.length <= 0){
+						continue;
+					}
+					var subformctl = $.ControlManager.getSubFormControl(di);
+					if (typeof subformctl == "undefined" || subformctl == null) {
+						continue;
+					}
+					var cacheVK = undefined;// 从表级缓存
+					var cacheVF = undefined;// 从表级缓存
+					for(var fi =0; fi < formData.length;  fi++){
+						var subFormData = formData[fi];
+						if(typeof cacheVK == "undefined" || cacheVK == null){// 缓存从表VK定义
+							cacheVK = subformctl.getSubformValueKeySetMap();
+						}
+						if(typeof cacheVF == "undefined" || cacheVF == null){// 缓存从表VF定义
+							cacheVF = subformctl.getSubformValueFormatSetMap();
+						}
+						for(var key in subFormData){
+							if(typeof cacheVF[key] != "undefined" && cacheVF[key] != ""){//日期格式处理
+								var disValue = subFormData[key];
+								var fmt = cacheVF[key];
+								try{
+									var dateVar = new Date(Date.parse(disValue.replace(/-/g, "/")));
+									if(!isNaN(dateVar.getTime())){
+										subFormData[key] = dateVar.format(fmt);
+									}
+								}catch(e){
+									console.log(e);
+								}
+								continue;//日期控件
+							}
+							var optionSet = cacheVK[key];
+							if(typeof optionSet == "undefined" || optionSet == null){//没有控件缓存则isValueMap为false
+								continue;
+							}
+							var disValue = subFormData[key];
+							var value = optionSet[disValue];
+							if(typeof value == "undefined" || value == null){
+								continue;
+							}
+							subFormData[key] = value;
+						}
+					}
+					cacheVK = null;
+					cacheVF = null;
+				}
+			}
+			
+			var time4 = (new Date()).getTime();
+			console.log("从表主表(值->键)解析所用时间:" + (time4 - time3) / 1000.0 + "s");
+			this.fillFormData(formDatas,callback);
+		},			
+		/**
+		 * 填充数据,数据key为formID
+		 * @param formDatas
+		 * @param callback
+		 */
+		fillFormDatas:function(formDatas, callback){ 
+			var formDatasKeyUuid = {}; 
+			for(var i in formDatas){ 
+				var formData = formDatas[i];
+				var uuid = this.getFormUuid(i);  
+				formDatasKeyUuid[uuid] = formData;
+			}
+			 this.fillFormData(formDatasKeyUuid, callback);
 		},
-		
+		/**
+		 * 填充数据,数据key为formID,value为显示值
+		 * 
+		 * @param formDatas
+		 * @param mainFormId为主表数据ID
+		 * @param callback
+		 */
+		fillFormDisplayDatas : function(formDatas, mainFormId, callback) {
+			if(typeof mainFormId == "undefined" || mainFormId == null){
+				mainFormId = this.getFormId();// 获取主表ID,不是UUID
+			}
+			var formDatasKeyUuid = {};
+			for ( var i in formDatas) {
+				if(typeof i == "undefined" || i == null){
+					continue;
+				}
+				var formData = formDatas[i];
+				var uuid = "";
+				if(mainFormId == i){
+					uuid = this.getFormUuid();//主表formUuid为当前表单Uuid
+				}else{
+					uuid = this.getFormUuid(i);
+				}
+				formDatasKeyUuid[uuid] = formData;
+			}
+			this.fillFormDisplayData(formDatasKeyUuid, callback);
+		},		
 		/**
 		 * 为主表填充数据
 		 * @param formData
 		 */
-		fillFormDataOfMainform: function(formData){ 
-			 this.setDataUuid4Mainform(formData.uuid);//将dataUuid缓存  
+		fillFormDataOfMainform: function(formData){  
+			 this.setDataUuid(formData.uuid);//将dataUuid缓存   
 			 var _this = this;
 			 this.$(".value[name]").each(function(){
 				var fieldName = $(this).attr("name");  
@@ -426,8 +882,185 @@ $(function(){
 				if(typeof value == "undefined"){
 					return true;
 				}
-				_this.setFieldValue(fieldName, value); 
+				_this.setFieldValueByFieldName(fieldName, value); 
 			}); 
+		}, 
+		
+	
+		createUuid:function(){
+			return  new UUID().id.toLowerCase(); 
+		},
+		/**
+		 * 整个表单设置为只读
+		 */
+		setReadOnly:function(){
+			 this.$(".value[name]").each(function(){
+				var fieldName = $(this).attr("name");
+				var control = $.ControlManager.getCtl(fieldName);
+				if(typeof control == "undefined" || control == null){
+					return true; //continue;
+				}
+				control.setReadOnly(true);
+			}); 
+			this.$("table[formUuid]").each(function(){
+				var subformctl=$.ControlManager.getSubFormControl($(this).attr("formUuid")); 
+				subformctl.setReadOnly();
+			});
+			this.invoke("afterSetReadOnly");
+		}, 
+		/**
+		 * 设置上传文本文件时同时生成swf副本
+		 */
+		setTextFile2SWF:function(enable){
+			var formUuidOfMainform = this.getFormUuid();
+			var formDefinitionOfMainform = this.getFormDefinition(formUuidOfMainform);
+			this.$(".value[name]").each(function(){
+				var fieldName = $(this).attr("name");
+				var control = $.ControlManager.getCtl(fieldName);
+				if(typeof control == "undefined" || control == null){
+					return true; //continue;
+				}
+				 
+				if(formDefinitionOfMainform.isInputModeAsAttach(fieldName)){
+					control.setTextFile2SWF(enable);
+				}
+			});
+			
+			this.$("table[formUuid]").each(function(){
+				var subformctl=$.ControlManager.getSubFormControl($(this).attr("formUuid")); 
+				subformctl.setTextFile2SWF();
+			});
+		},
+		setEditable:function(){ 
+			 this.$(".value[name]").each(function(){
+				var fieldName = $(this).attr("name");  
+				var control = $.ControlManager.getCtl(fieldName);
+				if(typeof control == "undefined" || control == null){
+					return true; //continue;
+				}
+				control.setEditable();
+			}); 
+			
+			this.$("table[formUuid]").each(function(){
+				var subformctl=$.ControlManager.getSubFormControl($(this).attr("formUuid"));
+				subformctl.setEditable();
+			});
+			this.invoke("afterSetEditable");
+		},
+		
+		showAsLabel:function(){
+			var _this = this;
+			 this.$(".value[name]").each(function(){
+				var fieldName = $(this).attr("name");  
+				var control = _this.getControl(fieldName);
+				if(typeof control == "undefined" || control == null){
+					return true; //continue;
+				}
+				control.setDisplayAsLabel();
+			}); 
+			this.$("table[formUuid]").each(function(){ 
+				var subformctl=_this.getSubformControl($(this).attr("formUuid"));
+				subformctl.setDisplayAsLabel();
+			});
+			
+			this.invoke("afterShowAsLabel");
+		},
+		/**
+		 * 处理异常
+		 */
+		handleException:function(exceptionData){
+			
+		},
+		enableSignature:function(enable){
+			var _this = this;
+			var formUuidOfMainform = this.getFormUuid();
+			var formDefinitionOfMainform = this.getFormDefinition(formUuidOfMainform);
+			
+			if(enable){
+				formDefinitionOfMainform.enableSignature  = signature.enable
+			}else{
+				formDefinitionOfMainform.enableSignature  = signature.disable
+			}
+			 
+			this.$(".value[name]").each(function(){
+				var fieldName = $(this).attr("name");
+				var control = _this.getControl(fieldName);
+				if(typeof control == "undefined" || control == null){
+					return true; //continue;
+				}
+				 
+				if(formDefinitionOfMainform.isInputModeAsAttach(fieldName)){
+					control.enableSignature(enable);
+				}
+			});
+			
+			this.$("table[formUuid]").each(function(){  
+				var subformctl=_this.getSubformControl($(this).attr("formUuid"));
+				subformctl.enableSignature(enable);
+			});
+		}
+		
+		 
+	});
+	
+	/**
+	 * 设置字段属性值接口
+	 */
+	$.dyform.extend({
+		getFieldNameByApplyTo:function(applyTo, formUuid){
+			if((typeof applyTo == "object") && (typeof applyTo["fieldMappingName"]) != "undefined"){
+				applyTo = applyTo["fieldMappingName"];//这里为了兼容旧系统
+			}
+			
+			if(typeof formUuid == "undefined" || formUuid == null){
+				formUuid == this.getFormUuid();
+			}
+		 
+			var formDefinition = this.getFormDefinition(formUuid);
+			 
+			var applyTo2FieldName = formDefinition["applyTo2FieldName"];
+			if (typeof applyTo2FieldName == "undefined") {
+			 
+				applyTo2FieldName = {};
+				var fields = formDefinition["fields"];
+			 
+				for (var fieldName in fields) {
+					var field = fields[fieldName];
+					var applyTotmp = field.applyTo; 
+					 
+					applyTo2FieldName[fieldName] =  fieldName;
+					if (typeof applyTotmp != "undefined" && applyTotmp.length > 0) {
+						var tos = applyTotmp.split(";");
+						for (var i = 0; i < tos.length;  i++) {
+							var to = tos[i];
+							applyTo2FieldName[to] = fieldName;
+						}
+					}
+				}
+				formDefinition["applyTo2FieldName"] = applyTo2FieldName;
+			}
+			var fieldName = applyTo2FieldName[applyTo];
+		    if(typeof fieldName == "undefined" ){
+		    	console.log("cann't get the fieldName for mappingName[" + JSON.cStringify(applyTo) + "][formID:" + formDefinition.outerId + "]");
+		    	//throw new Error("cann't get the fieldName for mappingName[" + applyTo + "][formID:" + formDefinition.outerId + "]");
+		    }
+			return fieldName ;
+		},
+		
+		setFieldValue:function(mappingName, data, dataUuid){
+			
+			var formUuid = this.getFormUuidByRowId(dataUuid);
+		 
+			var fieldName = this.getFieldNameByApplyTo(mappingName, formUuid);
+			if(!fieldName){
+				return ;
+			}
+			if(data == null || !data.value ){
+				this.setFieldValueByFieldName(fieldName, data, dataUuid); 
+			}else{
+				this.setFieldValueByFieldName(fieldName, data.value, dataUuid); 
+			}
+			
 		},
 		
 		/**
@@ -436,334 +1069,639 @@ $(function(){
 		 * @param data 各字段是的值
 		 * 	格式根据不同的inputMode也会不一样，与getFieldValue一致
 		 */
-		setFieldValue:function(fieldName, data){
 		 
-			var control = $.ControlManager.getControl(fieldName); 
-			if(typeof control == "undefined" || control == null){
+		setFieldValueByFieldName:function(fieldName, data, dataUuid){
+			
+			//var time1 = (new Date()).getTime();
+			 
+			var control = this.getControl(fieldName, dataUuid);
+			if(!control){
+				//throw new Error("cann't find field[" + fieldName + "]");
+				console.log("cann't find field[" + fieldName + "]");
 				return;
 			}
-			$.dyform.setValue(control, data);
-			/*if(control.isValueMap()){
-				control.setValueByMap(data);
-			}else{
-				control.setValue(data);
-			}*/
-			
+			$.dyform.setValue(control, data, this.getDataUuid());
+			//var time2 = (new Date()).getTime();
+			//console.log("set value for control [" + fieldName + "]"+ (time2 - time1 )/1000.0 + "s" );
 		},
+		
 		/**
 		 * 获取主表某字段的值
 		 * @param fieldName
-		 */
-		getFieldValue:function(fieldName){
+		 */ 
+		getFieldValueByFieldName:function(fieldName, dataUuid){
+			var control = this.getControl(fieldName, dataUuid);
+			if(control == null){
+				console.log("control cann't find ,fieldName=" + fieldName + "dataUuid=" + dataUuid);
+				return;
+			}
+			return $.dyform.getValue(control);
+		},
+		
+		
+		 /**
+		 * 获取主表某字段的值
+		 * @param fieldName
+		 */ 
+		getFieldValue:function(mappingName, dataUuid){
+			var formUuid = this.getFormUuidByRowId(dataUuid);
+			var fieldName = this.getFieldNameByApplyTo(mappingName, formUuid);
+			if(typeof fieldName == "undefined"){
+				return null;
+			}
+			return this.getFieldValueByFieldName(fieldName, dataUuid);
+		},
+		
+		setFieldReadOnlyByFieldName:function(fieldName, dataUuid){
+		 
+			var control = this.getControl(fieldName, dataUuid);
 			
+			control.setReadOnly(true);
+		},
+		
+		setFieldReadOnly:function(mappingName, dataUuid){
+			var formUuid = this.getFormUuidByRowId(dataUuid);
+			var fieldName = this.getFieldNameByApplyTo(mappingName, formUuid);
+			this.setFieldReadOnlyByFieldName(fieldName, dataUuid);
+		},
+		
+		
+		setFieldEditableByFieldName:function(fieldName, dataUuid){
+			var control = this.getControl(fieldName, dataUuid); 
+			control.setEditable(true);
+		},
+		
+		setFieldEditable:function(mappingName, dataUuid){
+			var formUuid = this.getFormUuidByRowId(dataUuid);
+			var fieldName = this.getFieldNameByApplyTo(mappingName, formUuid);
+			this.setFieldEditableByFieldName(fieldName, dataUuid);
+		},
+		
+		
+		setFieldAsLabelByFieldName:function(fieldName, dataUuid){
+			var control = this.getControl(fieldName, dataUuid); 
+			control.setDisplayAsLabel(true);
+		},
+		
+		setFieldAsLabel:function(mappingName, dataUuid){
+			var formUuid = this.getFormUuidByRowId(dataUuid);
+			var fieldName = this.getFieldNameByApplyTo(mappingName, formUuid);
+			this.setFieldAsLabelByFieldName(fieldName, dataUuid);
+		},
+		
+		setFieldAsHiddenByFieldName:function(fieldName, dataUuid){
+			var control = this.getControl(fieldName, dataUuid); 
+			control.setVisible(false); 
+		},
+		
+		setFieldAsHide:function(mappingName, dataUuid){
+		 
+			var formUuid = this.getFormUuidByRowId(dataUuid);
+			var fieldName = this.getFieldNameByApplyTo(mappingName, formUuid);
+			this.setFieldAsHiddenByFieldName(fieldName, dataUuid);
+		},
+		
+		setFieldAsShowByFieldName:function(fieldName, dataUuid){
+			var control = this.getControl(fieldName, dataUuid); 
+			control.setVisible(true);
+		},
+		
+		setFieldAsShow:function(mappingName, dataUuid){
+			var formUuid = this.getFormUuidByRowId(dataUuid);
+			var fieldName = this.getFieldNameByApplyTo(mappingName, formUuid);
+			this.setFieldAsShowByFieldName(fieldName, dataUuid);
+		},
+		getControl:function(fieldName, dataUuidOfSubform){
+			 
+			var controlId = fieldName;
+			if(typeof dataUuidOfSubform != "undefined" && dataUuidOfSubform != this.getDataUuid()){
+				controlId = $.dyform.getCellId(dataUuidOfSubform, fieldName);
+			}
+			return  $.ControlManager.getCtl(controlId);
+		} ,
+		//控件不存在 返回false,否则 true
+		isControl:function(fieldName, dataUuidOfSubform){
+			 
+			return this.getControl(fieldName, dataUuidOfSubform) == null? false: true;
+		} ,
+		autoWidth:function(){
+			$(window).trigger("resize")
+		},
+		
+		/**
+		 * 绑定事件至控件中
+		 * @param option
+		*/
+		bind2Control: function(option){ 
+			var defaults = {
+				type:"click",
+				mappingName:null,
+				dataUuid: this.getDataUuid(),
+				callback:function(){}
+			};
+			
+			$.extend(defaults, option);
+			
+			var formUuid = this.getFormUuidByRowId(defaults.dataUuid); 
+			 
+		 
+			var fieldName = this.getFieldNameByApplyTo(defaults.mappingName, formUuid);
+			 
+			var control = this.getControl(fieldName, defaults.dataUuid);
+			if(!control){
+				console.log("bind2Control cann't find control :" + JSON.cStringify(option) );
+				return;
+			}
+			control.bind(defaults.type, defaults.callback);
+		}, 
+		   //bind函数，桥接
+	    bind2Dyform:function(eventname,event){ 
+	    	var options = this.cache.get.call(this,cacheType.options);
+	    	var events = options.events;
+	    	if(typeof events == "undefined"){
+	    		options.events = {};
+	    		events = options.events ;
+	    	}
+	    	events[eventname] = event;
+	    },
+		 invoke:function(method){
+			 var options = this.cache.get.call(this,cacheType.options);
+		    	var events = options.events;
+			 if(events && events[method]){
+				 events[method].apply(this,$.makeArray(arguments).slice(1));
+			 }
+		 },
+	   
+	});
+	/**
+	 * 从表对外接口
+	 * */
+	$.dyform.extend({
+		getSubformControl: function(formUuidOfSubform){
+			var control = $.ControlManager.getSubFormControl(formUuidOfSubform); 
+			return control;
+		},
+		/**
+		 * 隐藏从表
+		 * @param formUuid
+		 */
+		hideSubFormByFormUuid:function(formUuid){
+			 
+			var subformctl= this.getSubformControl(formUuid);
+			 
+			subformctl.hide();
+			 
+		},
+		
+		/**
+		 * 隐藏从表
+		 * @param formId
+		 */
+		hideSubForm:function(formId){ 
+			 
+			var formUuid = this.getFormUuid(formId);
+			 
+			this.hideSubFormByFormUuid(formUuid);
+		},
+		/**
+		 * 显示从表
+		 * @param formUuid
+		 */
+		showSubFormByFormUuid:function(formUuid){ 
+			var subformctl= this.getSubformControl(formUuid);
+			subformctl.show();
+		},
+		
+		/**
+		 * 显示从表
+		 * @param formId
+		 */
+		showSubForm:function(formId){ 
+			var formUuid = this.getFormUuid(formId);
+			this.showSubFormByFormUuid(formUuid);
+		},
+		addRowDataByFormUuid:function(formUuid, data){
+			var subformCtl = this.getSubformControl (formUuid); 
+			subformCtl.addRowData(data);
+		},
+		
+		addRowData:function(formId, data){
+			var formUuid = this.getFormUuid(formId);
+			return this.addRowDataByFormUuid(formUuid, data);
+		},
+		
+		updateRowDataByFormUuid:function(formUuid, data){
+			var subformCtl = this.getSubformControl (formUuid);
+			subformCtl.updateRowData(data);
+		},
+		
+		updateRowData:function(formId, data){
+			var formUuid = this.getFormUuid(formId); 
+			this.updateRowDataByFormUuid(formUuid, data);
+		},
+		
+		
+		deleteRowDataByFormUuid:function(formUuid, rowId){
+			var subformCtl = this.getSubformControl (formUuid);
+			subformCtl.delRowData(rowId);
+		},
+		
+		deleteRowData:function(formId, rowId){
+			var formUuid = this.getFormUuid(formId);
+			this.deleteRowDataByFormUuid(formUuid, rowId);
+		},
+		
+		getRowDataByFormUuid:function(formUuid, rowId){
+			var subformCtl = this.getSubformControl (formUuid);
+			return subformCtl.getRowData(rowId);
+		},
+		
+		getRowData:function(formId, rowId){
+			var formUuid = this.getFormUuid(formId);
+			return this.getRowDataByFormUuid(formUuid, rowId);
+		},
+		/*获取选中的行*/
+		getSelectedRowDataByFormUuid:function(formUuid){
+			var subformCtl = this.getSubformControl (formUuid);
+			if(typeof subformCtl.selectedRowId == "undefined"){
+				return [];
+			}
+			return subformCtl.getRowData(subformCtl.selectedRowId);
+		},
+		/*获取选中的行*/
+		getSelectedRowData:function(formId){
+			var formUuid = this.getFormUuid(formId);
+			return this.getSelectedRowDataByFormUuid(formUuid);
+		},
+		
+		collectSubformDataByFormUuid:function(formUuid){
+			var subformCtl = this.getSubformControl (formUuid);
+			return subformCtl.collectSubformData();
+		},
+		collectSubformDisplayDataByFormUuid: function(formUuid) {
+			var subformCtl = this.getSubformControl(formUuid);
+			return subformCtl.collectSubformDisplayData();
+		},		 
+		group:function(formId){
+			var formUuid = this.getFormUuid(formId);
+			var subformCtl = this.getSubformControl (formUuid);
+			subformCtl.group();
+		},
+		
+		/**
+		 * 获取从表的所有行数据
+		 * @param formInfo {id:""}
+		 */
+		getAllRowData:function(formInfo){
+			return this.collectSubformData(formInfo.id);
+		},
+		
+		/**
+		 * 设置从表整列只读
+		 * @param formId
+		 * @param mappingName
+		 */
+		setColumnReadOnly: function(formId, mappingName){ 
+			this.setColumnAsLabel(formId, mappingName);
+			
+		},
+		/**
+		 *  
+		 * 设置整个从表只读 
+		 * @param formUuid
+		 */
+		setSubformReadOnlyByFormUuid:function(formUuid){
+			var subformCtl = this.getSubformControl (formUuid); 
+			subformCtl.setReadOnly();
+		},
+		
+		/**
+		 * 设置整个从表只读
+		 * @param formId
+		 */
+		setSubformReadOnly:function(formId){ 
+			var formUuid = this.getFormUuid(formId);
+			this.setSubformReadOnlyByFormUuid(formUuid); 
+		},
+		
+		/**
+		 *  
+		 * 设置整个从表只读 
+		 * @param formUuid
+		 */
+		setSubformLabelByFormUuid:function(formUuid){
+			var subformCtl = this.getSubformControl (formUuid); 
+			subformCtl.setDisplayAsLabel();
+		},
+		
+		
+		/**
+		 * 设置整个从表只读
+		 * @param formId
+		 */
+		setSubformLabel:function(formId){ 
+			var formUuid = this.getFormUuid(formId);
+			this.setSubformLabelByFormUuid(formUuid); 
+		},
+		
+		/**
+		 * 设置从表整列为标签
+		 * @param formId
+		 * @param mappingName
+		 */
+		setColumnAsLabel: function(formId, mappingName){
+			var formUuid = this.getFormUuid(formId);
+			var fieldName = this.getFieldNameByApplyTo(mappingName, formUuid);
+			var subformCtl = this.getSubformControl (formUuid); 
+			 
+			subformCtl.setColumnAsLabel(fieldName);
+		},
+		
+		/**
+		 * 设置从表整列可编辑
+		 * @param formId
+		 * @param mappingName
+		 */
+		setColumnEditable:function(formId, mappingName){
+			var formUuid = this.getFormUuid(formId);
+			var fieldName = this.getFieldNameByApplyTo(mappingName, formUuid);
+			var subformCtl = this.getSubformControl (formUuid);
+			subformCtl.setColumnEditable(fieldName);
+		},
+		
+		/**
+		 * 
+		 * @param formId
+		 * @param mappingName
+		 * @param controlable 不传该参数或者为null默认为true,true:在从表中光标移出移出时没控件的标签/控件的切换效果,false:反之，有切换效果
+		 */
+		setColumnCtl:function(formId, mappingName, controlable){
+			var formUuid = this.getFormUuid(formId);
+			var fieldName = this.getFieldNameByApplyTo(mappingName, formUuid);
+			var subformCtl = this.getSubformControl (formUuid);
+			subformCtl.setColumnCtl(fieldName, controlable);
+		},
+		
+		/**
+		 * 隐藏列(根据字段名)
+		 * @param formId
+		 * @param mappingName
+		 */
+		hideColumnByFieldName:function(formId, fieldName){
+			var formUuid = this.getFormUuid(formId); 
+			var subformctl = this.getSubformControl(formUuid);
+			subformctl.hideColumn(fieldName);
+			subformctl.resetGridWidth();
+		},
+		
+		/**
+		 * 隐藏列
+		 * @param formId
+		 * @param mappingName
+		 */
+		hideColumn:function(formId, mappingName){
+			//var formUuid = this.getFormUuid(formId);
+			var fieldName = this.getFieldNameByApplyTo(mappingName, formUuid);
+			//this.getSubformControl(formUuid).hideColumn(fieldName);
+			this.hideColumnByFieldName(formId, fieldName);
+			
+		},
+		
+		/**
+		 * 显示列
+		 * @param formId
+		 * @param mappingName
+		 */
+		showColumn:function(formId, mappingName){
+			var formUuid = this.getFormUuid(formId);
+		 
+			var fieldName = this.getFieldNameByApplyTo(mappingName, formUuid);
+			 
+			var subformctl = this.getSubformControl(formUuid);
+			subformctl.showColumn(fieldName); 
+			subformctl.resetGridWidth();
+		},
+		
+
+		/**
+		 * 通过从表的行ID获取对应的从表formUuid
+		 * @param rowId
+		 * @returns
+		 */
+		getFormUuidByRowId:function(rowId){ 
+			if(typeof rowId == "undefined" || rowId == null){
+				return this.getFormUuid();
+			}
+			var formDatas = this.getFormDatas();  
+			for(var i in formDatas){
+				var records = formDatas[i];
+				for(var index = 0; index < records.length; index ++){ 
+					if(records[index]["uuid"] == rowId){
+						return i;
+					}
+				}
+			}
+			return null;
+		},
+		getRowIds:function(formUuid){
+			var rowIds = [];
+			var formDatas = this.collectSubformDataByFormUuid(formUuid);
+			for(var index = 0; index < formDatas.length; index ++){ 
+				var record = formDatas[index];
+				rowIds.push(record["uuid"]);
+			}
+			 return rowIds;
+		},
+		/*addCustomBtn:function(options){
+			var formUuid = this.getFormUuid(options.formId);
+			var subformCtl = this.getSubformControl(formUuid);
+			subformCtl.addCustomBtn(options); 
+			///this.addCustomBtnByFormUuid(formUuid, options);
+		}*/
+		
+		/*addCustomBtnByFormUuid:function(options){
+			var subformCtl = this.getSubformControl(options.formUuid);
+			subformCtl.addCustomBtn(options); 
+		}*/
+	
+		/**
+		 * 隐藏从表的操作按钮
+		 */
+		hideOperateBtn:function(formId){
+			var formUuid = this.getFormUuid(formId); 
+			this.hideOperateBtnByFormUuid(formUuid);
+		},
+		hideOperateBtnByFormUuid:function(formUuid){
+			var subformctl = this.getSubformControl(formUuid); 
+			subformctl.hideOperateBtn();
+		},
+		
+		/**
+		 * 显示从表的操作按钮
+		 */
+		showOperateBtn:function(formId){
+			var formUuid = this.getFormUuid(formId); 
+			this.showOperateBtnByFormUuid(formUuid);
+		},
+		
+		/**
+		 * 显示从表的操作按钮
+		 */
+		showOperateBtnByFormUuid:function(formUuid){
+			var subformctl = this.getSubformControl(formUuid); 
+			subformctl.showOperateBtn();
+		},
+		/***
+		 * 根据默认行数添加从表空行
+		 */
+		addRowEmptyDataByDefaultRowCount:function(formId){
+			var formUuid = this.getFormUuid(formId);
+			var subformctl = this.getSubformControl(formUuid);
+			if(typeof subformctl== "undefined"){
+				return;
+			}
+			var subformconfig = subformctl.options.formDefinition.subforms[formUuid];
+			if(typeof subformconfig.defaultRowCount == "undefined" || subformconfig.defaultRowCount == 0){
+				return;
+			}else{
+				var count = parseInt(subformconfig.defaultRowCount, 10);
+				for(var index = 0; index < count; index ++){
+					var id = this.createUuid();
+					this.addRowDataByFormUuid(formUuid, {id:id, uuid:id});
+				}
+			}
+			
+		},
+		/**
+		 * 给所有的从表添加默认空行
+		 */
+		addRowEmptyDatasByDefaultRowCount:function(){
+			var formUuid =  this.getFormUuid(); 
+			var formDefinition =  this.cache.get.call(this, cacheType.formDefinition, formUuid);
+			var subforms = formDefinition.subforms;
+			for(var i in subforms){
+				var subform = subforms[i];
+				this.addRowEmptyDataByDefaultRowCount(subform.outerId);
+			} 
 		}
 		 
+		
 	});
 	
+	
+	
+	
 	$.dyform.extend({
-		parseMainForm : function(formDefinition){ 
-			var formData = this.loadDefaultFormData(formDefinition.uuid); 
+		/**
+		 * 解析区块
+		 */
+		parseBlock:function(formDefinition){
+			var blocks = formDefinition.blocks;
+			if(typeof blocks == "undefined"){
+				return;
+			}
+			
+			for(var i in blocks){
+				var block = blocks[i];
+				var hide = block["hide"];
+				if(typeof hide == "undefined"){//没有hide属性，不处理
+					continue;
+				}
+				if(hide == true){
+					this.$("td[blockCode='" + i + "']").parent().parent().hide();
+				}else{
+					this.$("td[blockCode='" + i + "']").parent().parent().show();
+				}
+				
+			}
+			
+		},
+		/**
+		 * 主表解析
+		 * @param formDefinition
+		 */
+		parseMainForm : function(formDefinition, formData){
+			var _this = this;
 			this.$(".value[name]").each(function(){
+				 
 				var name = $(this).attr("name");
-				var fieldDefinition = formDefinition.fields[name];
-				fieldDefinition.formUuid = formDefinition.uuid;
+				 
+				var fieldDefinition = formDefinition.fields[name];  
+				
+			
 				if(typeof fieldDefinition == "undefined"){
 					return true;//continue;
 				}
-				$(this).before("<input name='" + name + "'/>");
-				$(this).hide();
-				//$(this).html("<input name='" + name + "'/>"); 
-				
-				$.ControlManager.createControl(fieldDefinition);
-				var control = $.ControlManager.getControl(fieldDefinition.name);
-				var value = formData[name];
-				if(typeof value != "undefined" && value != null){
-					$.dyform.setValue(control, value);
-				/*	if(control.isValueMap()){
-						//var control = 	$.ControlManager.getControl(name).setValue;
-						control.setValueByMap(value);
-					}else{
-						control.setValue(value);
-					}*/
-				}
-				
 			
-				 
-				//$.ControlManager.getControl("fieldName").getValue();
 				
-				$(".label").removeClass("label"); 
+				
+				
+				$.ControlManager.createCtl($(this), fieldDefinition, formDefinition);
+				
+				
+				//var control = $.ControlManager.getControl(fieldDefinition.name);
+				var control = $.ControlManager.getCtl(fieldDefinition.name); 
+				//return true;
+				if(typeof formData != "undefined"){
+					var value = formData[name];
+					if(typeof value != "undefined" && value != null){
+						$.dyform.setValue(control, value, null);
+					}
+				}
+				
+				control.setPos(dyControlPos.mainForm);
+				
+				
+			 $(".label").removeClass("label"); 
 			});
+			
+			  //自定义JS
+		    if(formDefinition.customJs && $.trim(formDefinition.customJs).length > 0){
+		    	try{
+		    		eval( formDefinition.customJs );
+		    	}catch(e){
+		    		console.error(e);
+		    	}
+		    }
+			 
 		},
-		parseSubform: function(formDefinition){
+		
+		/**
+		 * 从表解析
+		 * @param formDefinition
+		 */
+		parseSubform: function(formDefinition, definitions){
 			var _this = this;
-			//含有formUuid属性的table即为从表,解析各从表
+			
 			this.$("table[formUuid]").each(function(){
-				
-				var formUuid = $(this).attr("formUuid");
-				 
-				//获取从表定义
-				var subform = formDefinition.subforms[formUuid];
-				if(subform == null){//在定义中找不到该表单 
-					$(this).remove();//找不到定义就直接删除
-					return true;
-				}
-				
-				
-				
-				$(this).attr("id", formUuid);//从表的table 的id属性值为formuuid
-				var subFormDefinition = $.dyform.loadFormDefinition(formUuid);//加载从表对应的那张表的完整定义
-				
-				//缓存从表的完整定义
-				_this.cache.put.call(_this, cacheType.formDefinition, subFormDefinition);
-				
-				if(subFormDefinition == null){
-					$(this).remove();//找不到定义就直接删除
-					return true;
-				}
-				
-				/*
-				 *从表以jqGrid来展示
-				 */
-				
-				//从表的标题
-				var jqGridCaption = subform.displayName;
-				
-				//收集从表列信息
-				var jqGridColNames = [];//从表列标题 
-				var jqGridColModels = [];//各列的配置信息
-				
-				//行ID,dataUuid
-				jqGridColNames.push("id");
-				jqGridColModels.push({name:'id',index:'id',hidden:true});
-				
-				//序号
-				jqGridColNames.push("序号");
-				/*if(subform.hideSeqNO){//将序号隐藏
-					jqGridColModels.push({name:'seqNO',index:'seqNO',width:'25px', align:"center", sortable:false, hidden:true});
-				}else{//展示序号,默认为不
-					jqGridColModels.push({name:'seqNO',index:'seqNO',width:'25px', align:"center", sortable:false});
-				}*/
-				jqGridColModels.push({name:'seqNO',index:'seqNO',width:'25px', align:"center", sortable:false});
-				 
-				
-				var fields = subform.fields;
-				for(var i in fields){
-					var field = fields[i];
-					jqGridColNames.push(field.displayName);
-					var model =  $.dyform.getJqGridColModel(subFormDefinition.fields[field.name]); 
-					model.editable = field.editable;//可编辑与否 
-					model.sortable = field.order;//是否支持点击排序
-					model.hidden = field.hidden;//是否隐藏 
-					jqGridColModels.push(model); 
-				}
-				
-				 
-				 
-				 var options =  _this.cache.get.call(_this,cacheType.options);
-				 if(options.readOnly ){//只读
-					 //TODO here set every field control to readonly 
-				 } else{//非只读
-					 if(subform.hideButtons == dySubFormHideButtons.show){//显示操作按钮，及其事件
-						 //对从表的数据进行编辑时，有两种展示方式，一种是直接在jqgrid对表单数据进行编辑,一种是弹出到新窗口再对数据进行编辑
-						 var subBtnId = "operateBtn" +   formUuid;//操作按钮的id
-						 var btnAddId = "btn_add_" + formUuid; 
-						 var btnEditId = "btn_edit_" + formUuid; 
-						 var btnDelId = "btn_del_" +  formUuid; 
-						 var btnAddElem = '<button  id="' + btnAddId +   '"   >' + dybtn.add  +'</input>' ;
-						 var btnEditElem =  '<button  id="' + btnEditId +   '"   >' + dybtn.edit  +'</input>' ;
-						 var btnDelElem = '<button id="' + btnDelId +   '" >' + dybtn.del  +'</button>' ;
-						 var strbtn1 = '<span id="'+subBtnId+'">';
-						 var strbtn2 = '</span>';
-						 var strSpace =  '&nbsp;&nbsp;&nbsp;&nbsp;';
-						 if(subform.editMode == dySubFormEdittype.newWin){//在新窗口编辑
-							  //而对于在窗口中编辑表单数据的需要“编辑“的按钮
-							 jqGridCaption += strbtn1 + strSpace + btnAddElem + strSpace + btnEditElem  + strSpace +btnDelElem + strbtn2;
-							 
-							 _this.$("#" + btnAddId).live("click", function(){//定义操作事件--添加行 
-								 try{
-									 
-									 _this.editSubformRowDataInDialog( subform, {});
-								 }catch(e){
-									 alert(e);
-								 }
-								 return false;
-							 });
-							 _this.$("#" + btnEditId).live("click", function(){//定义操作事件--添加行 
-								 try{
-										var ids = _this.$("#" + subform.formUuid).jqGrid('getGridParam','selarrrow');
-										if(ids.length != 1){  
-											oAlert(dymsg.selectRecordModErr);
-											return false;
-										}
-									var rowData = _this.collectSubformDataOfConcreteRow(formUuid, ids[0]);
-									 
-									 _this.editSubformRowDataInDialog( subform, rowData);
-								 }catch(e){
-									 alert(e);
-								 }
-								 return false;
-							 });
-							 
-						 }else{//直接在jqgrid编辑
-							//对于直接在jqgrid对表单数据进行编辑的方式，不需要“编辑“的按钮,直接在jqgrid中编辑即可
-							 jqGridCaption += strbtn1 + strSpace + btnAddElem + strSpace + btnDelElem + strbtn2; 
-							 
-							 _this.$("#" + btnAddId).live("click", function(){//定义操作事件--添加行 
-								 try{
-									 _this.addSubformRowDataInJqGrid(formUuid);
-								 }catch(e){
-									 alert(e);
-								 }
-								 return false;
-							 });
-							  
-						 }
-						  
-						 _this.$("#" + btnDelId).live("click", function(){//定义操作事件--删除行 
-							 try{
-								 _this.deleteSubformRowDataEvent(formUuid);
-							 }catch(e){
-								 alert(e);
-							 }
-							 
-							 return false;
-						 });
-						
-					 }
+				var formUuid=$(this).attr('formUuid');
+				var subformDefinition =  null;
+				 if(typeof definitions == "undefined" ||  typeof definitions[formUuid] == "undefined"){
+					 subformDefinition = loadFormDefinition(formUuid);
+				 }else{
+					 subformDefinition =  definitions[formUuid];
 				 }
 				 
-				//展示jqGrid
-				 $(this).jqGrid({
-					beforeEditCell:function(){},
-					datatype:'local',
-					data:[],
-			        autowidth: true,  
-					colNames:jqGridColNames,
-					colModel:jqGridColModels,
-					scrollOffset : 0,
-					multiselect:true, 
-					//cellEdit:true,
-					cellsubmit:'clientArray',
-					shrinkToFit:true,
-					scrollOffset : 0,
-					height : 'auto',
-					grouping:true,
-				   	groupingView : {
-				   		//groupField : [],//groupArray,
-				   		//groupColumnShow : [false]
-				   	},
-				   	afterEditCell:function(){},
-				   	loadComplete:function(){},
-				   	caption:"<span class='collapsesubform' id='openDiv'></span>" +  jqGridCaption,
-				   	gridComplete:function(){
-				   		console.log("subform load gridComplete  ");
-				   	},
-				   	afterInsertRow:function( rowId, rowdata, rowelem){
-				   		 
-					   	var colModels = $(this).jqGrid('getGridParam','colModel'); 
-					   	for(var j = 0 ; j < colModels.length; j ++){
-							var model = colModels[j];
-							var fieldName = model.name;
-							if(!$.dyform.isControlFieldInSubform(fieldName) ){
-								continue;
-							}
-							
-							var id = $.dyform.getCellId(rowId, fieldName);
-						 
-							var fieldDefinitionCopy = {};
-							var fieldDefinition = subFormDefinition.fields[fieldName]; 
-							$.extend(fieldDefinitionCopy, fieldDefinition); 
-							fieldDefinitionCopy.name = id;
-							
-							var cellValue = rowdata[fieldName];
-							fieldDefinitionCopy.formUuid = subFormDefinition.uuid;
-							$.ControlManager.createControl(fieldDefinitionCopy); 
-						 
-							var control = $.ControlManager.getControl(id);
-							
-							$.dyform.setValue(control, cellValue);
-							
-							control.setDisplayAsLabel();
-							(function(control){
-								control.bind("blur", function(){  
-									//control.setDisplayAsCtl();
-									
-									control.setDisplayAsLabel(); 
-								});
-							})(control);
-							
-							/*if(subform.editMode == dySubFormEdittype.newWin){//在新窗口编辑，所以在jqgrid里面直接展示文本即可
-								control.setDisplayAsLabel();
-							} */
-					   	}
-					    
-					  	//alert (	_this.$("#" + rowId ).css("background", null));
-				   	},
-				   	onCellSelect:function(rowId, iCol,  cellcontent, e){ 
-				   		if((options.readOnly ) //调用者要求只读
-				   				|| subform.editMode == dySubFormEdittype.newWin//编辑直接在窗口中
-				   				|| subform.hideButtons != dySubFormHideButtons.show//在定义中配置了不让编辑
-				   		){
-				   			return;
-				   		}
-				   		var colModels = $(this).jqGrid('getGridParam','colModel'); 
-				   		var colModel = colModels[iCol];
-				   		var fieldName = colModel.name;
-				   		if(!$.dyform.isControlFieldInSubform(fieldName) ){
-							return;
-						}
-				   		
-				   		var id = $.dyform.getCellId(rowId, fieldName);
-				   		var control = $.ControlManager.getControl(id);
-				   		
-				   		if(control == undefined){
-				   			return;
-				   		}
-				   		var name = control.getCtlName();
-				   		
-				   		control.setEditable();
-				   		
-				   		
-				   		//如果去掉下面的代码，第一次点击后，在光标移开之后没办法再还原为label状态
-				   		var dom = _this.$("input[name='" + name + "']")[0];
-				  /* 	 _this.$("input[name='" + name + "']").blur(function(){
-				   		 alert("blur");
-				   	 });*/
-				   		dom.focus();
-				   		var hadBeenFocused = dom.getAttribute("focus"); 
-				   		if(typeof hadBeenFocused == "undefined" || hadBeenFocused == null){
-				   			dom.setAttribute("focus", true); 
-				   			dom.blur();
-				   			dom.focus();
-				   		}
-				   		
-				   		 
-				   	}
-				 
-				});
+				if(typeof subformDefinition == "undefined" || subformDefinition == null){
+					return true;
+				}
+				$.ControlManager.createSubFormControl($(this),_this,formDefinition, subformDefinition);
 				
-				 
-				 _this.$(".ui-jqgrid-titlebar-close").hide();//将jqgrid默认的collapse/expand按钮隐藏掉
-				
-				 _this.$(".collapsesubform").unbind("click");
-				 _this.$(".collapsesubform").bind("click", function(){//设置自定义的collapse/expand按钮
-					var $siblings = $(this).parent().parent().siblings();
-					var id = $(this).attr("id");
-					if(id == "openDiv"){
-						$siblings.hide();
-						 $(this).attr("id", "notOpenDiv");
-						 $(this).next("span").hide();//隐藏操作按钮
-					}else{
-						$siblings.show(); 
-						 $(this).next("span").show();//展示操作按钮
-						 $(this).attr("id", "openDiv");
-					}
-				});
+				//自定义JS
+			    if(subformDefinition.customJs && $.trim(subformDefinition.customJs).length > 0){
+			    	try{
+			    		eval( subformDefinition.customJs );
+			    	}catch(e){
+			    		console.error(e);
+			    	}
+			    }
 			});
+			 
+			
+			
+			
+			//$.ControlManager.createSubFormControl($(this),_this,formDefinition);
 		},
-		
-		
-		
 		/**
 		 * 缓存在这里集中管理,数据从这里保存和获取,统一入口和出口
 		 */
@@ -773,8 +1711,7 @@ $(function(){
 					case cacheType.formUuid://表单定义的uuid
 						$(this).data("formUuid", data);
 						break;
-					case cacheType.options://表单的一些设置
-					 
+					case cacheType.options://表单的一些设置 
 						$(this).data("options", data);
 						break;
 					case cacheType.formDefinition:
@@ -787,6 +1724,9 @@ $(function(){
 						break;
 					case cacheType.dataUuid:
 						$(this).data("dataUuid", data);
+						break;
+						//运算公式缓存处理
+					case cacheType.formula:
 						break;
 					default:
 						throw new Error("unknown cacheType when put data into cache"); 
@@ -808,20 +1748,28 @@ $(function(){
 						
 						//这里需要知道欲获取哪个表单的定义，所以需要通过key将表单定义的uuid传进来
 						if(typeof key == "undefined" || key == null){
-							throw new Error("parameter[key] should be passed");
-						}
-						
-						var formDefinitions = $(this).data("formDefinition");
-						if(typeof formDefinitions == "undefined" || formDefinitions == null){
-							throw new Error("there is no form definition in the cache");
-						}
+							//throw new Error("parameter[key] should be passed");
 						 
-						data = formDefinitions[key];
+							data = $(this).data("formDefinition");
+						}else{
+							var formDefinitions = $(this).data("formDefinition");
+							if(typeof formDefinitions == "undefined" || formDefinitions == null){
+								throw new Error("there is no form definition in the cache");
+							}
+							
+							data = formDefinitions[key];
+						}
 						
 						break;
 					 case cacheType.dataUuid:
 						data = $(this).data("dataUuid");
 						break;
+					 case cacheType.formula:
+							data = $(this).data(cacheType.formula);
+							if(typeof data == "undefined" || data == null){
+								data = {};
+							}
+							break;
 					default:
 						throw new Error("unknown cachetype when get data from cache");
 						 
@@ -830,367 +1778,96 @@ $(function(){
 			}
 		},
 		validateMainform:function(formUuid){
-			var formDefinition = this.cache.get.call(this, cacheType.formDefinition, formUuid);//从缓存中取得定义
-			var rulesObj = {rules:{}, messages:{}};
-			var _this = this;
+			 var valid = true;
 			this.$(".value[name]").each(function(){
 				var fieldName = $(this).attr("name");
-				var control = $.ControlManager.getControl(fieldName);
+				var control = $.ControlManager.getCtl(fieldName);
 				if(typeof control == "undefined" || control == null){
 					return true;
 				}
-				
-				var rule = control.getRule();
-				var message =  control.getMessage();
-				if(rule == null || message == null){
-					return true;
-				}
-				
-				var ruleObj =  eval("(" + rule +")");
-				var messageObj = eval("(" + message +")");
-				console.log("开始设置验证规则");
-				_this.setCustomValidateRule(ruleObj, messageObj, formUuid, _this.getDataUuid4Mainform(), fieldName, formDefinition.name, control);
-				console.log("设置验证规则完毕");
-				
-				var ctlName = control.getCtlName();
-				rulesObj.rules[ctlName] = ruleObj;
-				rulesObj.messages[ctlName] = messageObj;
-				
-				
+				var v = control.validate();
+				valid = valid &&  v;
 			});
-			return rulesObj;
+			return valid;
 		},
-		validateSubform:function(formUuid){ 
-			var rulesObj = {rules:{}, messages:{}};
+		
+		validateSubform:function(formUuid){
+			//var rulesObj = {rules:{}, messages:{}};
 			var formDefinition = this.cache.get.call(this,cacheType.formDefinition, formUuid);
+			var valid = true;
 			var subforms = formDefinition.subforms;
 			for(var i in subforms){//遍历各从表
-				var subform = subforms[i];
-				var subformUuid = subform.formUuid;
-				var formDefinition = this.cache.get.call(this, cacheType.formDefinition, subformUuid);
-				var datas  = this.$("#" + subformUuid).jqGrid("getRowData");
-				var colModels = this.$("#" + subformUuid).jqGrid('getGridParam','colModel');
-				for(var j = 0; j < datas.length; j++){//遍历从表的各行
-					var data = datas[j];
-					var rowId = data["id"];
-					for(var k = 0 ; k < colModels.length; k ++){
-						var model = colModels[k];
-						var fieldName = model.name;
-						if(!$.dyform.isControlFieldInSubform(fieldName)){//不获取序号
-							continue;
-						}
-						
-						
-						var cellId = $.dyform.getCellId(rowId, fieldName);
-						  
-						 
-						var control = $.ControlManager.getControl(cellId);
-						//control.setEditable();
-						var rule = control.getRule();
-						var message =  control.getMessage();
-						if(rule == null || message == null){
-							continue;
-						}
-						
-						var ruleObj =  eval("(" + rule +")");
-						var messageObj = eval("(" + message +")");
-						
-						this.setCustomValidateRule(ruleObj, messageObj,subformUuid, rowId, fieldName, formDefinition.name, control);
-						
-						var ctlName = control.getCtlName();
-						rulesObj.rules[ctlName] =  ruleObj;
-						rulesObj.messages[ctlName] = messageObj;
-						
-						
-						
-					} 
-				}  
+				 try{
+					var subformcontrol=$.ControlManager.getSubFormControl(subforms[i].formUuid);
+					if(!subformcontrol){
+						continue;
+					}
+					var v = subformcontrol.validate(); 
+					valid = valid &&  v ; 
+				 }catch(e){
+						console.log(e);
+				 }
 			}
-			return rulesObj;
-		},
-		/**
-		 * 获取从表的数据
-		 * @param formUuid 从表定义Uuid
-		 */
-		collectSubformData:function(formUuid){
-			var subformDatas = [];
-			
-			//var formDefinition =  this.cache.get.call(this,cacheType.formDefinition, formUuid);
-			var datas  = this.$("#" + formUuid).jqGrid("getRowData");
-			 
-			for(var i = 0; i < datas.length; i ++){
-				var subformData = {}; 
-				var data = datas[i];
-				
-				var rowId = data["id"]; 
-				subformData = this.collectSubformDataOfConcreteRow(formUuid, rowId);
-				
-				subformDatas.push(subformData);
-			}
-			 
-			return subformDatas;  
+			return valid;
 		},
 		
-		collectSubformDataOfConcreteRow:function(formUuid, rowId){
-			var subformData = {};  
-			subformData["uuid"] = rowId;
-			var colModels = this.$("#" + formUuid).jqGrid('getGridParam','colModel');
-			var formDefinition =  this.cache.get.call(this,cacheType.formDefinition, formUuid);
-			for(var j = 0 ; j < colModels.length; j ++){
-				var model = colModels[j];
-				var fieldName = model.name;
-				if(!$.dyform.isControlFieldInSubform(fieldName)){ 
-					continue;
-				}
-				 
-				var cellId = $.dyform.getCellId(rowId, fieldName);
-				 
-				var control = $.ControlManager.getControl(cellId);
-				
-				var field = formDefinition.fields[fieldName];
-				if(typeof field == "undefined"){
-					console.log( " unknown fieldName[" + fieldName + "]");
-					continue;
-				}
-				
-				/*if(control.isValueMap() ){
-					//这些控件类型有显示值，需要将显示值及真实值一起保存至数据库中
-					value =   JSON.stringify(control.getValueMap());
-				}else{
-					value = control.getValue();
-				}*/
-				subformData[fieldName] = $.dyform.getValue(control);
-			}
-			return subformData;
-		},
-		
+		 
 		/**
 		 * 获取主表数据
 		 * @param formUuid
 		 */
 		collectMainformData: function(formUuid){
 			var formData = {};
-			this.$(".value[name]").each(function(){//遍历所有的占位符
-				var fieldName = $(this).attr("name");
-				var control = $.ControlManager.getControl(fieldName);
+			this.$(".value[name][pos!='" + dyControlPos.subForm + "']").each(function(){//遍历主表的占位符
+				var fieldName = $(this).attr("name"); 
+				var control = $.ControlManager.getCtl(fieldName);
 				if(typeof control == "undefined" || control == null){
 					return true;
 				}
-				 
-			 
-				/*var value = null;
-				
-				if(control.isValueMap() ){
-					//这些控件类型有显示值，需要将显示值及真实值一起保存至数据库中
-					value = JSON.stringify(control.getValueMap());
-				}else{
-					value = control.getValue();
-				}
-				*/
-				formData[fieldName] = $.dyform.getValue(control);; 
+				formData[fieldName] = $.dyform.getValue(control);
 			});
 			
-			var dataUuid = this.getDataUuid4Mainform();//先从缓存中获取
+			var dataUuid = this.getDataUuid();//先从缓存中获取
 			if(typeof dataUuid == "undefined"){
 				dataUuid = this.createUuid();
-				this.setDataUuid4Mainform(dataUuid);
+				this.setDataUuid(dataUuid);
 			}
 			formData["uuid" ] = dataUuid;//主表的uuid
 			
 			return formData;
 		},
-		editSubformRowDataInDialog:function(subform, data){
-			//点击添加按钮，然后在新窗口中编辑数据，点击确定之后在jqgrid中为从表添加一行
-			//同时再将数据填充至该行中
-			var formUuid = subform.formUuid;
-			var formDefinition = this.cache.get.call(this, cacheType.formDefinition, formUuid);
-			var colModels = this.$("#" + formUuid).jqGrid('getGridParam','colModel');
-			var isAdd = false;
-			var uuid = data["uuid"] ;
-			console.log(JSON.stringify(data));
-			if(typeof data == "undefined" || data == null || typeof uuid == "undefined"){
-				isAdd = true;
-				//添加行
-				uuid = this.createUuid();
-				data["id"] = uuid;
-				var formData = this.loadDefaultFormData(formUuid);
-				for(var j = 0 ; j < colModels.length; j ++){
-					var model = colModels[j];
-					var fieldName = model.name;
-					var value = formData[fieldName];
-					if(typeof value != "undefined" && value != null){
-						data[fieldName] = formData[fieldName];
-					}
-				}
-			}else{ 
-				data["id"] = uuid;
+
+		/**
+		 * 获取主表显示数据
+		 * 
+		 * @param formUuid
+		 */
+		collectMainformDisplayData : function(formUuid) {
+			var formData = {};
+			this.$(".value[name][pos!='" + dyControlPos.subForm + "']")
+					.each(
+							function() {// 遍历主表的占位符
+								var fieldName = $(this).attr("name");
+								var control = $.ControlManager
+										.getCtl(fieldName);
+								if (typeof control == "undefined"
+										|| control == null) {
+									return true;
+								}
+								formData[fieldName] = $.dyform
+										.getDisplayValue(control);
+							});
+
+			var dataUuid = this.getDataUuid();// 先从缓存中获取
+			if (typeof dataUuid == "undefined") {
+				dataUuid = this.createUuid();
+				this.setDataUuid(dataUuid);
 			}
-			
-			
-			//定义窗口内容 
-			this.find("#dialog" + uuid).remove();
-			this.append("<div id='dialog" + uuid + "' title=" +  subform.displayName+ "("+dybtn.add+")></div>"); 
-			
-			//this.$("#" + uuid);
-			var html ="<div class='dyform'>";
-			html += "<table></table>";
-			this.$("#dialog" + uuid).append(html);
-			
-			var fields = subform.fields; 
-			var controlInfo = {};
-			for(var j = 0 ; j < colModels.length; j ++){
-				var model = colModels[j]; 
-				var fieldName = model.name;
-				if(!$.dyform.isControlFieldInSubform(fieldName)){
-					continue;
-				}
-				var field = fields[fieldName];
-				var displayName = field.displayName;
-				var controlId = $.dyform.getCellId(uuid + "_", fieldName);
-			 
-				var h = "";
-				h += "<tr><td >";
-				h += displayName;
-				h += "</td>";
-				h += "<td>";
-				h += "<span id='" + controlId +"'><input class='value' name='" + controlId +  "'/></span>";
-				h += "</td></tr>";
-				this.$("#dialog" + uuid + " .dyform").find("table").append(h);
-				
-				var fieldDefinition = formDefinition.fields[fieldName];
-				var fieldDefinitionCopy = {}; 
-				$.extend(fieldDefinitionCopy, fieldDefinition); 
-				fieldDefinitionCopy.name = controlId;
-			 
-				 $.ControlManager.createControl(fieldDefinitionCopy);
-				 var control =  $.ControlManager.getControl(controlId);
-				 controlInfo[fieldName] = control;
-				 var value = data[fieldName];
-				  
-				 if(typeof value == "undefined"){
-					 continue;
-				 } 
-				 
-				 $.dyform.setValue(control, value); 
-			}
-			
-			var _this = this;
-			 var buttons = {};
-			buttons[dybtn.save] = function(){
-				for(var j = 0 ; j < colModels.length; j ++){
-					var model = colModels[j]; 
-					var fieldName = model.name;
-					if(!$.dyform.isControlFieldInSubform(fieldName)){
-						continue;
-					}  
-				 
-					 data[fieldName] =  $.dyform.getValue(controlInfo[fieldName]); 
-					 console.log(fieldName + "=" + data[fieldName]);
-				}
-				if(isAdd){
-					_this.addRowData( formUuid, data);
-				}else{ 
-					_this.updateRowData( formUuid, data); 
-				}
-				$(this).dialog("close"); 
-				_this.$("#dialog" + uuid).remove();
-			};
-			
-			buttons[dybtn.cancel] = function(){
-				$(this).dialog("close");
-				_this.$("#dialog" + uuid).remove();
-			};
-			
-			//显示窗口
-			this.$("#dialog" + uuid ).dialog( {
-						buttons:buttons, 
-						height: 300,
-						width: 700,
-						modal: true 
-			});
-			 
-			
-			
-			//this.addRowData( formUuid, data);
-			
-		}, 
-		/*editSubformRowDataInDialog:function(formUuid,subform){
-			//点击添加按钮，然后在新窗口中编辑数据，点击确定之后在jqgrid中为从表添加一行
-			//同时再将数据填充至该行中
-			var colModels = this.$("#" + formUuid).jqGrid('getGridParam','colModel');
-			var uuid = this.createUuid();
-			var data = {};
-			data["id"] = uuid;
-			var formData = this.loadDefaultFormData(formUuid);
-			for(var j = 0 ; j < colModels.length; j ++){
-				var model = colModels[j];
-				var fieldName = model.name;
-				var value = formData[fieldName];
-				if(typeof value != "undefined" && value != null){
-					data[fieldName] = formData[fieldName];
-				} 
-			}
-			
-			this.find("#" + uuid).remove();
-			this.append("<div id='" + uuid + "' title=" +  subform.displayName+ "("+dybtn.edit+")></div>"); 
-			
-			
-			//this.addRowData( formUuid, data);
-			
-		}, */
-		addSubformRowDataInJqGrid:function(formUuid){ //点击添加从表行数据的按钮事件 
-			var colModels = this.$("#" + formUuid).jqGrid('getGridParam','colModel');
-			var uuid = this.createUuid();
-			var data = {};
-			data["id"] = uuid;
-			var formData = this.loadDefaultFormData(formUuid);
-			for(var j = 0 ; j < colModels.length; j ++){
-				var model = colModels[j];
-				var fieldName = model.name;
-				var value = formData[fieldName];
-				if(typeof value != "undefined" && value != null){
-					data[fieldName] = formData[fieldName];
-				} 
-			}
-			this.addRowData( formUuid, data);
-			
-		}, 
-		deleteSubformRowDataEvent:function(formUuid){//点击删除从表行数据的按钮事件 
-			var _this = this;
-			var $dg = this.$('#' + formUuid);
-			var ids = $dg.jqGrid('getGridParam','selarrrow');
-			if(ids.length > 0){
-				$.jBox.confirm(dymsg.delConfirm,dymsg.tipTitle,function (v,h,f){
-					if(v){
-						for(var i=(ids.length-1);i>=0;i--){ 
-							_this.delRowData( formUuid, ids[i]);
-						}
-					}
-				},{buttons:{'是':true,'否':false}});
-			}else{
-				$.jBox.info(dymsg.selectRecordDel,dymsg.tipTitle);
-			}
-		},
-		updateSeqNoOfSubform:function(formUuid){
-			var data  = this.$("#" + formUuid).jqGrid("getRowData");
-			var count = this.$("#" + formUuid).jqGrid("getGridParam", "reccount");
-			count ++;
-			for(var i = 0; i < data.length; i++){
-				count --;
-				var rowData = data[i];
-				//rowData["seqNO"];
-				var id = rowData["id"]; 
-				/*if(count%2 != 1 ){
-					this.$("#" + id).css("background", "#f7f7f7");
-				}*/
-				this.$("#" + formUuid).jqGrid("setCell", id, "seqNO", count );
-			}
-		},
-		createUuid:function(){
-			return  new UUID().id.toLowerCase(); 
-		},
+			formData["uuid"] = dataUuid;// 主表的uuid
+
+			return formData;
+		},		
 		loadDefaultFormData: function(formUuid){ 
-			 
 			var formData = {};
 			var url = ctx + "/dyformdata/getDefaultFormData";
 			$.ajax({
@@ -1198,7 +1875,7 @@ $(function(){
 				cache : false,
 				async : false,//同步完成
 				type : "POST",
-				data : {formUuid: formUuid} ,
+				data : {"formUuid": formUuid} ,
 				dataType : "json",
 				success:function (result){
 					if(result.success == "true" || result.success == true){ 
@@ -1208,60 +1885,121 @@ $(function(){
 		  		   }
 				},
 				error:function(data){
-					 
+					 console.log(JSON.cStringify(data));
 				}
 			});
 			return formData;
 		},
+		
 		/**
-		 * 设定自定义的校验规则
-		 * @param ruleObj
-		 * @param messageObj
-		 * @param rowId
-		 * @param fieldName
-		 * @param control
-		 */
-		setCustomValidateRule:function(ruleObj, messageObj, formUuid, dataUuid, fieldName, tblName, control){
-			console.log("2"); 
-			var newRuleObj = {};
-			var newMessageObj = {};
-			for(var i in ruleObj){
-				//var ruleItem =  ruleObj[i];
-				if(i == "unique"){//唯一性验证  
-					 
-					newRuleObj["isUnique"] = {
-							url : ctx + "/dyformdata/validate/exists",
-	    					type : "POST",
-	    					async: false,
-	    					formUuid: formUuid,
-	    					$form : this,
-	    					data : {
-		    					uuid:  dataUuid,
-		    					tblName : tblName,//表单名称
-		    					fieldName : fieldName, 
-		    					fieldValue :  function(){
-		    					 /*
-		    						if(control.isValueMap()){
-		    							value = JSON.stringify(control.getValueMap());
-		    						}else{
-		    							value = control.getValue();
-		    						}*/
-		    						return  $.dyform.getValue(control);;
-		    					}
-	    					}
-					};
-					newMessageObj["isUnique"] = messageObj[i];
-					
-					delete ruleObj[i];//删除unique
+		 * 收集表单各控件的数据
+		 * */
+		getFormDatas:function(){
+			var formDatas = {};
+			var formUuid =  this.getFormUuid();
+			//console.log("为formUuid[" + formUuid + "]收集数据");
+			var formDefinition =  this.cache.get.call(this, cacheType.formDefinition, formUuid);
+			
+			//收集从表数据
+		 
+			var subforms = formDefinition.subforms;
+			for(var i in subforms){
+				var subform = subforms[i];
+				try{
+					var subformctl=$.ControlManager.getSubFormControl(subform.formUuid);
+					if(!subformctl)continue;
+					formDatas[subform.formUuid] = subformctl.collectSubformData(); 
+				}catch(e){
+					console.log(e);
 				}
 			}
-			$.extend(ruleObj, newRuleObj);
-			$.extend(messageObj, newMessageObj);
+			//formData.subformData = subformData;
+			//收集主表数据
+			 
+			formDatas[formUuid] = [];
+			formDatas[formUuid].push(this.collectMainformData(formUuid));
+			return formDatas;
+		},
+		
+		/**
+		 * 收集表单各控件的显示数据
+		 */
+		getFormDisplayDatas : function() {
+			var formDatas = {};
+			var formUuid = this.getFormUuid();
+			// console.log("为formUuid[" + formUuid + "]收集数据");
+			var formDefinition = this.cache.get.call(this,
+					cacheType.formDefinition, formUuid);
+
+			// 收集从表数据
+
+			var subforms = formDefinition.subforms;
+			for ( var i in subforms) {
+				var subform = subforms[i];
+				try {
+					var subformctl = $.ControlManager
+							.getSubFormControl(subform.formUuid);
+					if (!subformctl)
+						continue;
+					formDatas[subform.formUuid] = subformctl
+							.collectSubformDisplayData();
+				} catch (e) {
+					console.log(e);
+				}
+			}
+			// formData.subformData = subformData;
+			// 收集主表数据
+
+			formDatas[formUuid] = [];
+			formDatas[formUuid]
+					.push(this.collectMainformDisplayData(formUuid));
+			return formDatas;
+		},		
+		/**
+		 * 收集被删除的行数据
+		 */
+		getDeletedRowIds:function(){
+			var formUuid =  this.getFormUuid(); 
+			var formDefinition =  this.cache.get.call(this, cacheType.formDefinition, formUuid);
+			var deletedFormDatas = {};
+			 
+			var subforms = formDefinition.subforms;
+			for(var i in subforms){
+				var subform = subforms[i];
+				try{
+					var subformctl =  this.getSubformControl(subform.formUuid);
+					if(!subformctl){
+						continue;
+					}
+					deletedFormDatas[subform.formUuid]=subformctl.getDeleteRows();
+				}catch(e){
+					console.log(e);
+				}
+			}
+			return deletedFormDatas;
+		},
+		
+		/**
+		 * 获取从表的所有行数据
+		 * @param formId
+		 * @returns
+		 */
+		collectSubformData:function(formId){
+			var formUuid = this.getFormUuid(formId);
+			return this.collectSubformDataByFormUuid(formUuid);
+		},
+		/**
+		 * 获取从表的所有行显示数据
+		 * 
+		 * @param formId
+		 * @returns
+		 */
+		collectSubformDisplayData : function(formId) {
+			var formUuid = this.getFormUuid(formId);
+			return this.collectSubformDisplayDataByFormUuid(formUuid);
 		}
-	});
-	
-	
-	
-	
-});
+	}); 
+}); 
+
+
  

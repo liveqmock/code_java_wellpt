@@ -75,7 +75,7 @@ var viewdisplayctl = {};
 
 viewdisplayctl.initProperty = function(field){
 	if(field == null ||  (typeof field) == "undefined"){
-		field = new MainFormFieldClass();
+		field = new WViewDisplayClass();
 		field.dbDataType = dyFormInputType.viewdisplay;
 		field.valueCreateMethod = "1";
 	}
@@ -103,7 +103,7 @@ viewdisplayctl.initProperty = function(field){
 		height: 220
 	});
 	
-	
+	$("#relationDataText").addClass("input-tier");
 	$("#relationDataText").val(field.relationDataText);
 	$("#relationDataValue").val(field.relationDataValue);
 	$("#relationDataSql").val(field.relationDataSql);
@@ -117,7 +117,7 @@ viewdisplayctl.exitDialog = function(){
 }
 
 viewdisplayctl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WViewDisplayClass();
 	//控件公共属性收集
 	var checkpass=$.ControlConfigUtil.collectFormCtlComProperty(field);
 	if(!checkpass){

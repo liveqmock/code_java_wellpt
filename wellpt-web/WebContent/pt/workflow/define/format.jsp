@@ -56,7 +56,7 @@
 							</tr>
 							<tr>
 								<td class="align-top"><label>格式内容</label></td>
-								<td><textarea id="value" name="value" class="full-width" /></textarea></td>
+								<td><textarea id="value" name="value" class="full-width" rows="20" /></textarea></td>
 								<td></td>
 							</tr>
 							<tr>

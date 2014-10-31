@@ -5,12 +5,14 @@
  */
 package com.wellsoft.pt.dyform.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.wellsoft.pt.common.component.jqgrid.JqGridQueryInfo;
 import com.wellsoft.pt.common.component.tree.TreeNode;
 import com.wellsoft.pt.core.support.QueryData;
 import com.wellsoft.pt.core.support.QueryInfo;
+import com.wellsoft.pt.core.support.QueryItem;
 import com.wellsoft.pt.dyform.entity.DyFormDefinition;
 import com.wellsoft.pt.dytable.bean.TreeNodeBean;
 
@@ -39,6 +41,15 @@ public interface DyFormDefinitionService {
 	DyFormDefinition findDyFormDefinitionByFormUuid(String formUuid);
 
 	/**
+	 * 
+	 * 
+	 * @param s
+	 * @param s1
+	 * @return
+	 */
+	public QueryItem getFormKeyValuePair(String moduleId, String s1);
+
+	/**
 	 *通过tblId获取数据表单表的定义
 	 * @param formUuid
 	 * @return
@@ -52,10 +63,13 @@ public interface DyFormDefinitionService {
 	 */
 	List<DyFormDefinition> findDyFormDefinitionByTblName(String tblName);
 
+	public List<DyFormDefinition> findDyFormDefinitionsByOuterId(String outerId);
 	/**
 	 * 保存表单数据表定义信息并生成表单数据表
 	 * 
 	 * @param formDefinition 定义信息
+	 * @param deletedFieldsJSONObj 
+	 * @throws SQLException 
 	 */
 	void createFormDefinitionAndFormTable(DyFormDefinition formDefinition);
 
@@ -105,4 +119,47 @@ public interface DyFormDefinitionService {
 	 * @return
 	 */
 	public List<TreeNode> getFieldByFormUuid(String s, String formUuid);
+
+	/**
+	 * 根据表名，获取对应的所有版本的定义
+	 * @param tblName 
+	 * 
+	 * @return
+	 */
+	List<DyFormDefinition> getFormDefinitionsByTblName(String tblName);
+
+	void updateFormDefinitionAndFormTable(DyFormDefinition formDefinition, List<String> deletedFieldNames);
+
+	/**
+	 * 获取所有表单最高版本的定义列表
+	 * 
+	 * @return
+	 */
+	List<DyFormDefinition> getMaxVersionList();
+
+	/**
+	 * 获取所有的表单定义
+	 * 
+	 * @return
+	 */
+	public List<DyFormDefinition> getAllFormDefintions();
+
+	/**
+	 * 根据指定的表名，获取其对应的最高版本的定义
+	 * 
+	 * @param tableName
+	 */
+	DyFormDefinition getFormDefinitionOfMaxVersionByTblName(String tableName);
+
+	DyFormDefinition getFormDefinition(String tblName, String version);
+
+	/**
+	 * 删除表单定义及表单表结构
+	 * 
+	 * @param formUuid
+	 * @return
+	 */
+	void dropForm(String formUuid);
+
+	List<DyFormDefinition> getFormDefinitionByModelId(String modelId);
 }

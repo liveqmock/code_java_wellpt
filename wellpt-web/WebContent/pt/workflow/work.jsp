@@ -6,6 +6,7 @@
 <title>WELLFLOW 2.0</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="${ctx}/resources/jquery/jquery.js"></script>
+<script type="text/javascript" src="${ctx}/resources/utils/json2.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/global.js"></script>
 <link href="${ctx}/pt/workflow/css/Flow.css" type="text/css" rel="stylesheet">
 <script src="${ctx}/pt/workflow/js/jquery.workflow.js"></script>

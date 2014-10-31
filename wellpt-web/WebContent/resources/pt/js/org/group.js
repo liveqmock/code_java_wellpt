@@ -13,12 +13,14 @@ $(function() {
 		"name" : null,
 		"rangeIds" : null,
 		"roles" : [],
-		"uuid" : null
+		"uuid" : null,
+		"privileges" : [],
+		"category":null
 	};
 
 	$("#list").jqGrid($.extend($.common.jqGrid.settings, {
-		url : ctx + '/common/jqgrid/query?queryType=group',
-		colNames : [ "id", "uuid", "名称", "编号", "备注" ],
+		url : ctx + '/org/group/list/tree',
+		colNames : [ "id", "uuid", "名称", "编号","分类", "备注" ],
 		colModel : [ {
 			name : "id",
 			index : "id",
@@ -39,9 +41,13 @@ $(function() {
 			index : "code",
 			width : "100"
 		}, {
+			name : "category",
+			index : "category",
+			width : "100"
+		}, {
 			name : "remark",
 			index : "remark",
-			width : "300"
+			width : "200"
 		} ],// 行选择事件
 		onSelectRow : function(id) {
 			var rowData = $(this).getRowData(id);
@@ -64,6 +70,12 @@ $(function() {
 
 				// 设置角色树
 				loadRoleTree(bean.uuid);
+				
+				//加载权限树 20140805+ by zky
+				//loadPrivilegeTree(bean.uuid);
+				
+				// 加载部门权限树+ by zky
+				//loadGroupPrivilegeTree(bean.uuid);
 
 				var active = $(".tabs").tabs("option", "active");
 				if (active == 2) {
@@ -72,6 +84,87 @@ $(function() {
 			}
 		});
 	}
+	
+	/**-----------初始化权限树开始 ------------------------------------------**/
+	var privilegesetting = {
+			check : {
+				enable : true
+			},
+			callback : {
+				onCheck : setSelectedPrivilege
+			}
+		};
+	
+	// 设置已选中的角色和权限到多选下拉框
+	function setSelectedPrivilege(e, treeId, treeNode) {
+		var zTree = $.fn.zTree.getZTreeObj("privilege_tree");
+		var checkNodes = zTree.getCheckedNodes(true);
+		// 清空
+		$("#selected_privilege").html("");
+		$.each(checkNodes, function(index) {
+			var id = this.id;
+			var name = this.name;
+			var option = "<option value='" + id + "'>" + name + "</option>";
+			$("#selected_privilege").append(option);
+		});
+	}
+	
+	// 加载角色权限树，自动选择已选角色权限
+	function loadPrivilegeTree(uuid) {
+		var role = {};
+		role.uuid = uuid;
+		JDS.call({
+			service : "groupService.getPrivilegeTree",
+			data : [ uuid ],
+			success : function(result) {
+				var zTree = $.fn.zTree.init($("#privilege_tree"), privilegesetting, result.data);
+				var nodes = zTree.getNodes();
+				// 默认展开第一个节点
+				if (nodes.length > 0) {
+					var node = nodes[0];
+					zTree.expandNode(node, true, false, false, true);
+					// 设置已选中的权限到多选下拉框
+					setSelectedPrivilege();
+				}
+			}
+		});
+	}
+	
+	// 收集权限树
+	function privilegeToObject(bean) {
+		var zTree = $.fn.zTree.getZTreeObj("privilege_tree");
+		if (zTree != null) {
+			var checkNodes = zTree.getCheckedNodes(true);
+			bean["privileges"] = [];
+			$.each(checkNodes, function(index) {
+				var privilege = {};
+				privilege.uuid = this.id;
+				bean["privileges"].push(privilege);
+			});
+		}
+	}
+	
+	// 加载部门权限树
+	function loadGroupPrivilegeTree(uuid) {
+		JDS.call({
+			service : "groupService.getGroupPrivilegeTree",
+			data : uuid,
+			success : function(result) {
+				var zTree = $.fn.zTree
+						.init($("#group_privilege_tree"), {},
+								result.data);
+				var nodes = zTree.getNodes();
+				// 默认展开第一个节点
+				if (nodes.length > 0) {
+					var node = nodes[0];
+					zTree.expandNode(node, true, false, false, true);
+				}
+			}
+		});
+	}
+	
+	/**----------------- 初始化权限树结束 --------------------------------------------**/
+	
 
 	// JQuery UI按钮
 	$("input[type=submit], a, button", $(".btn-group")).button();
@@ -182,6 +275,20 @@ $(function() {
 		if (tree != null) {
 			tree.destroy();
 		}
+		
+		/*//清空权限树
+		$("#selected_privilege").html("");
+		var prtree = $.fn.zTree.getZTreeObj("privilege_tree");
+		if (prtree != null) {
+			prtree.checkAllNodes(false);
+		}
+		
+		//清空权限树
+		var prtree1 = $.fn.zTree.getZTreeObj("group_privilege_tree");
+		if (prtree1 != null) {
+			prtree1.destroy();
+		}*/
+		
 	}
 
 	// 保存群组信息
@@ -190,6 +297,8 @@ $(function() {
 		$("#group_form").form2json(bean);
 		// 收集角色树
 		rolesToObject(bean);
+		//收集权限树
+		//privilegeToObject(bean);
 		JDS.call({
 			service : "groupService.saveBean",
 			data : [ bean ],
@@ -265,6 +374,10 @@ $(function() {
 		var deptNames = [];
 		var groupIds = [];
 		var groupNames = [];
+		var jobIds = [];
+		var jobNames = [];
+		var dutyIds = [];
+		var dutyNames = [];
 		var ids = returnValue.id.split(";");
 		var names = returnValue.name.split(";");
 		for ( var index = 0; index < ids.length; index++) {
@@ -278,6 +391,12 @@ $(function() {
 			} else if (type == "G") {
 				groupIds.push(ids[index]);
 				groupNames.push(names[index]);
+			}else if (type == "J") {
+				jobIds.push(ids[index]);
+				jobNames.push(names[index]);
+			}else if (type == "W") {
+				dutyIds.push(ids[index]);
+				dutyNames.push(names[index]);
 			}
 		}
 		var memberIds = userIds.join(";");
@@ -291,10 +410,28 @@ $(function() {
 			memberNames += deptNames.join(";");
 		}
 		if (groupIds.length != 0) {
-			memberIds += ";";
-			memberNames += ";";
+			if (deptIds.length != 0||userIds != 0) {
+					memberIds += ";";
+					memberNames += ";";
+				}
 			memberIds += groupIds.join(";");
 			memberNames += groupNames.join(";");
+		}
+		if (jobIds.length != 0) {
+			if (deptIds.length != 0||userIds != 0||groupIds != 0) {
+				memberIds += ";";
+				memberNames += ";";
+			}
+			memberIds += jobIds.join(";");
+			memberNames += jobNames.join(";");
+		}
+		if (dutyIds.length != 0) {
+			if (deptIds.length != 0||userIds != 0||groupIds != 0||jobIds != 0) {
+				memberIds += ";";
+				memberNames += ";";
+			}
+			memberIds += dutyIds.join(";");
+			memberNames += dutyNames.join(";");
 		}
 		$("#memberIds").val(memberIds);
 		$("#memberNames").val(memberNames);
@@ -319,7 +456,7 @@ $(function() {
 		var postData = {
 			"queryPrefix" : "query",
 			"queryOr" : true,
-			"query_LIKES_name_OR_code_OR_remark" : queryValue
+			"query_LIKES_name_OR_code_OR_remark_OR_category_OR_userName" : queryValue
 		};
 		$("#list").jqGrid("setGridParam", {
 			postData : null
@@ -333,3 +470,4 @@ $(function() {
 	// 页面布局
 	Layout.layout();
 });
+

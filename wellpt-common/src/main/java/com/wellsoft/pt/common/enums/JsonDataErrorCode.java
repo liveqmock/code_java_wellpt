@@ -58,5 +58,16 @@ public enum JsonDataErrorCode {
 	/**参数异常,//added by hunt, 处理检查表单数据唯一性验证时添加的**/
 	ParameterException,
 	/**表单定义格式错误**/
-	FormDefinitionFomatException
+	FormDefinitionFomatException,
+
+	/** 表单定义更新失败 */
+	FormDefinitionUpdateException,
+	/** 表单定义保存失败 */
+	FormDefinitionSaveException,
+
+	/**表单数据检验错误*/
+	FormDataValidateException,
+
+	/**显示单据正被表单使用*/
+	FormModelBeUsedException
 }

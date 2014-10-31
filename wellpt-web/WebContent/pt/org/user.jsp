@@ -54,10 +54,14 @@
 						<li><a href="#tabs-2">工作信息</a></li>
 						<li><a href="#tabs-3">角色信息</a></li>
 						<li><a href="#tabs-4">角色树</a></li>
+						<!-- <li><a href="#tabs-5">权限信息</a></li> -->
+						<!-- <li><a href="#tabs-6">权限树</a></li> -->
 						<li id="li-imp" style="display: none"><a href="#tabs-5">导入用户</a></li>
 					</ul>
 					<input type="hidden" id="uuid" name="uuid" /> <input type="hidden"
 						id="id" name="id" />
+						<input type="hidden"
+						id="externalId" name="externalId" />
 					<div id="tabs-1">
 						<table>
 							<tr>
@@ -75,6 +79,12 @@
 							<tr>
 								<td><label for="userName">姓名</label></td>
 								<td><input id="userName" name="userName" type="text"
+									class="full-width" /></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><label for="englishName">英文名</label></td>
+								<td><input id="englishName" name="englishName" type="text"
 									class="full-width" /></td>
 								<td></td>
 							</tr>
@@ -149,18 +159,32 @@
 									name="employeeNumber" class="full-width" /></td>
 								<td></td>
 							</tr>
-							<tr>
-								<td style="width: 65px;"><label for="departmentName">所属部门</label></td>
-								<td><input type="text" id="departmentName"
-									name="departmentName" class="full-width" /></td>
-								<td><input type="hidden" id="departmentId"
-									name="departmentId" /></td>
-							</tr>
-							<tr>
+					
+				<!-- 			<tr>
 								<td><label for="jobName">岗位</label></td>
 								<td><input type="text" id="jobName" name="jobName"
 									class="full-width" /></td>
-								<td><input type="hidden" id="jobCode" name="jobCode" /></td>
+								<td><input type="hidden" id="jobCode" name="jobCode" />
+								<input type="hidden" id="jobId" name="jobId" /></td>
+							</tr> -->
+								<tr>
+								<td><label for="majorJobName">职位</label></td>
+								<td><input type="text" id="majorJobName" name="majorJobName"
+									class="full-width" /></td>
+								<td><input type="hidden" id="majorJobId" name="majorJobId" /></td>
+							</tr>
+							<tr>
+								<td><label for="otherJobNames">其他职位</label></td>
+								<td><input type="text" id="otherJobNames" name="otherJobNames"
+									class="full-width" /></td>
+								<td><input type="hidden" id="otherJobIds" name="otherJobIds" /></td>
+							</tr>
+							<tr>
+								<td style="width: 65px;"><label for="departmentName">所属部门</label></td>
+								<td><input type="text" id="departmentName"
+									name="departmentName" class="full-width" readonly="true"/></td>
+								<td><input type="hidden" id="departmentId"
+									name="departmentId" /></td>
 							</tr>
 							<tr>
 								<td><label for="leaderNames">上级领导</label></td>
@@ -181,8 +205,14 @@
 								<td><input type="hidden" id="groupIds" name="groupIds" /></td>
 							</tr>
 							<tr>
-								<td><label for="mobilePhone">手机</label></td>
+								<td><label for="mobilePhone">手机(主)</label></td>
 								<td><input type="text" id="mobilePhone" name="mobilePhone"
+									class="full-width" /></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><label for="otherMobilePhone">手机(其他)</label></td>
+								<td><input type="text" id="otherMobilePhone" name="otherMobilePhone"
 									class="full-width" /></td>
 								<td></td>
 							</tr>
@@ -194,7 +224,7 @@
 								<td></td>
 							</tr>
 							<tr>
-								<td><label for="officePhone">办公电话</label></td>
+								<td><label for="officePhone">办公电话/分机</label></td>
 								<td><input type="text" id="officePhone" name="officePhone"
 									class="full-width" /></td>
 								<td></td>
@@ -205,11 +235,62 @@
 									class="full-width" /></td>
 								<td></td>
 							</tr>
-							<tr>
+			<!-- 				<tr>
 								<td><label for="idNumber">身份证号</label></td>
 								<td><input type="text" id="idNumber" name="idNumber"
 									class="full-width" /></td>
 								<td></td>
+							</tr> -->
+							<tr>
+								<td><label for="homePhone">家庭电话</label></td>
+								<td><input type="text" id="homePhone" name="homePhone"
+									class="full-width" /></td>
+								<td></td>
+							</tr>
+				<!-- 			<tr>
+								<td><label for="email">电子邮件()</label></td>
+								<td><input type="text" id="email" name="email"
+									class="full-width" /></td>
+								<td></td>
+							</tr> -->
+							<tr>
+								<td><label for="mainEmail">电子邮件(主)</label></td>
+								<td><input type="text" id="mainEmail" name="mainEmail"
+									class="full-width" /></td>
+								<td></td>
+							</tr>
+								<tr>
+								<td><label for="otherEmail">电子邮件(其他)</label></td>
+								<td><input type="text" id="otherEmail" name="otherEmail"
+									class="full-width" /></td>
+								<td></td>
+							</tr>
+								<!-- 	<tr>
+								<td><label for="personnelArea">人事范围</label></td>
+								<td><input type="text" id="personnelArea" name="personnelArea"
+									class="full-width" /></td>
+								<td></td>
+								</tr> -->
+								<tr>
+								<td><label>公司主体</label></td>
+								<td>
+									<select id="principalCompany" name="principalCompany" type="text" class="full-width">
+								    <option value =""></option>
+									<option value ="1000">绿色照明</option>
+									<option value ="2000">厦门光电</option>
+									<option value ="3000">立达信照明</option>
+									<option value ="4000">电光源</option>
+									<option value ="4600">绿天光电</option>
+									<option value ="5000">海德信</option>
+									<option value ="6000">四川鼎吉</option>
+									<option value ="6500">四川联恺</option>
+									<option value ="7000">赢科</option>
+									<option value ="G001">厦门德之信</option>
+									<option value ="G002">立达信科技</option>
+									</select>
+									</td>
+								<td></td>
+								
 							</tr>
 						</table>
 					</div>
@@ -234,6 +315,31 @@
 							</ul>
 						</div>
 					</div>
+					
+					<div id="tabs-5" style="display: none">
+						<div style="float: left">
+							<ul id="privilege_tree" class="ztree">
+							</ul>
+						</div>
+						<div style="width: 200px; margin-left: 100px; float: left">
+							<div>
+								<label>已选权限</label>
+							</div>
+							<select id="selected_privilege" multiple="multiple"
+								style="height: 200px; width: 200px;">
+							</select>
+						</div>
+						<div style="clear: both;"></div>
+					</div>
+					
+					<div id="tabs-6" style="display: none">
+						<div>
+							<ul id="user_privilege_tree" class="ztree">
+							</ul>
+						</div>
+					</div>
+					
+					
 				</div>
 				<div class="btn-group btn-group-bottom">
 					<privilege:button authority="B001001002" id="btn_save" class="btn">保存</privilege:button>
@@ -253,7 +359,7 @@
 					<td>
 						<div>
 							<input type="file" name="upload" id="uploadfile" /> <input
-								type="hidden" name="ruleId" id="ruleId" value="org_user_001" />
+								type="hidden" name="ruleId" id="ruleId" value="org_department_001;org_duty_001;org_job_001;org_user_001;org_user_job_001;org_employee_001;org_employee_job_001;" />
 						</div>
 					</td>
 				</tr>

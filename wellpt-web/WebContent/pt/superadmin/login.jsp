@@ -259,14 +259,12 @@ function shoucang(sTitle,sURL)
 </script>
 <div class="login">
 <div class="header">
-<!-- 旧版oa	<h1><a href="#">威尔软件</a></h1> -->
+<!-- 	<h1><a href="#">威尔软件</a></h1> -->
 <!--     <h2>统一业务应用与开发云平台</h2> -->
-<h1 style="width: 230px;background:url('${ctx}/resources/pt/img/zzffzx-logo4.png') no-repeat 0 1px;height: 60px;cursor: auto;" >&nbsp;</h1>
-<h2  style="width: 268px; border-bottom: 1px solid #FFFFFF;
-    border-left: medium none;
-    margin-left: -185px;font-size: 18px;margin-top: 17px;">
-    <div style="text-align: left;letter-spacing: 15px;">厦门市审批服务云</div>
-     <div style="text-align: left;font-size:14px;">厦门市行政审批（商事登记）信息管理平台</div>
+<h1 style="width: 230px;background:url('${ctx}/resources/pt/img/zzffzx-logo4.png') no-repeat 0 1px;height: 60px;cursor: auto;margin: 20px 100px 0;" >&nbsp;</h1>
+<h2  style="width: 312px;border-left: medium none;margin-left: -270px;font-size: 18px;margin-top: 28px;">
+<!--     <div style="text-align: left;letter-spacing: 15px;">厦门市审批服务云</div> -->
+     <div style="text-align: left;font-size: 24px;">厦门市行政审批信息管理平台</div>
     </h2>
 </div>
 <div class="content_home">

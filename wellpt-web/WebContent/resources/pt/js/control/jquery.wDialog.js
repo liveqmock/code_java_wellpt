@@ -34,29 +34,44 @@
 	 * DIALOG CLASS DEFINITION ======================
 	 */
 	var Dialog = function(element, options) {
-		this.init("wdialog", element, options);
+		this.$element = $(element);
+		this.options = $.extend({}, $.fn["wdialog"].defaults, options,
+				this.$element.data());
 	};
 
 	Dialog.prototype = {
 		constructor : Dialog,
-		init : function(type, element, options) {
-			this.type = type;
-			this.$element = $(element);
-			this.options = this.getOptions(options);
-			//参数初始化
-			this.initparams(this.options);
-		},
-		//默认参数初始化
-		initparams:function(options){
-			 //设置字段属性.根据不同的控件类型区分。
-			 $.ControlUtil.setCtrAttr(this.$element,this.options);
-			//根据show类型展示
-			 $.ControlUtil.dispalyByShowType(this.$element,this.options);
+		initSelf:function(){
+			var elment=this.$element;
+			var options=this.options;
+			 elment.attr("id",elment.attr("name"));
+			 elment.attr("relationdatatwosql",options.relationdatatwosql);	//关联数据类型
+			 elment.attr("relationdatatext",options.relationdatatext);	//关联数据源显示值
+			 elment.attr("relationdatavalue",options.relationdatavalue);	//关联数据源隐藏值
+			 elment.attr("relationdatasql",options.relationdatasql);	//关联数据约束条件
+			 elment.attr("relationdatashowmethod",options.relationdatashowmethod);	//关联数据的展示方式
+			 elment.attr("relationdatashowtype",options.relationdatashowtype);	//关联数据显示方式
+			 elment.attr("relationDataDefiantion",options.relationDataDefiantion);	//关联数据显示方式
+			 elment.addClass("input-search");//css in wellnewoa.css
+			
+			 //根据show类型展示
+			 this.dispalyByShowType();
+			 //设置文本的css样式
+			 this.setTextInputCss();
+			 //设置默认值
+			 this.setDefaultValue(this.options.columnProperty.defaultValue);
+			 var issubformdialog=false;
+			 if(this.getCtlName().indexOf('____'+this.options.columnProperty.columnName)>0){
+				 issubformdialog=true;
+			 }else if(this.getCtlName().indexOf('___'+this.options.columnProperty.columnName)>0){
+				 issubformdialog=false;
+			 }
 			 
 			 var _relationDataDefiantion=this.options.relationDataDefiantion;
 			 var _relationDataValueTwo=this.options.relationDataValueTwo;
 			 var _relationDataTwoSql=this.options.relationDataTwoSql;
 			 var tempArray = _relationDataDefiantion.split("|");
+			 var _this=this;
 			 this.$element.unbind("click");
 			    this.$element.click(function(){
 					var paramsId = $(this).attr("id");
@@ -85,198 +100,86 @@
 					if(_relationDataTwoSql!=undefined&&_relationDataTwoSql!=""){
 						path += "&"+_relationDataTwoSql;
 					}
-				/*	for(var jt=0;jt<parmArray.length;jt++){
-						if(eval('formData.'+parmArray[jt])!=undefined&&eval('formData.'+parmArray[jt])!=""&&eval('formData.'+parmArray[jt])!="undefined"){
-							path = path.replace("${"+parmArray[jt]+"}",eval('formData.'+parmArray[jt])) ;
-						}
-					}*/
+				 
+					var title = "选择" + _this.options.columnProperty.displayName ;
 					if(path.indexOf("${")>-1){
 						var json = new Object(); 
 						json.content = "没有相应条件的数据";
-				        json.title = "相关数据源";
+				        json.title = title;
 				        json.height= 600;
 				        json.width= 800;
 				        showdialog(json);
 					}else{
 						$.ajax({
 							async:false,
+							cache:false,
 							url : ctx + path,
 							success : function(data) {
 								var json = new Object(); 
 								json.content = "<div class='dnrw' style='width:99%;'>" +data+"</div>";
-						        json.title = "相关数据源";
+						        json.title = title;
 						        json.height= 600;
 						        json.width= 800;
 						        showDialog(json);
-						        //var afterDialogSelect = dytable.afterDialogSelect;
-						        var afterDialogSelect =null;
+						        
 						        $(".dataTr").unbind("dblclick");
 						        $(".dataTr").live("dblclick",function(){
 						        	var paramsObj = new Object();
-						        	var valStr = $(this).attr("jsonstr").replace("{","").replace("}","").split(",");
-						        	for(var ai1=0;ai1<valStr.length;ai1++){
-										for(var j=0;j<tempArray.length;j++){
+						        	//alert($(this).attr("jsonstr"));
+						        	var jsonstr = $(this).attr("jsonstr");
+						        	var jsonObj = eval("(" + urldecode(jsonstr) + ")");
+						        	for(var ai1 in jsonObj){
+										for(var j=0;j<tempArray.length;j++){ 
+										   if(tempArray[j].length == 0){
+											   alert("请配置弹出框的映射字段");
+											   break;
+										   }
 											var tempObj = JSON.parse(tempArray[j]);
-											if(tempObj.sqlField.replace("_","").toUpperCase()==valStr[ai1].split("=")[0].toUpperCase().replace(" ","")){
-												if(tempObj.formField == "expand_field"){
-													var expandValue = "";
-													expandValue = paramsId + ":" + valStr[ai1].split("=")[1]
-													if($("#"+tempObj.formField).val() != null && $("#"+tempObj.formField).val() != "") {
-														var oldValue = $("#"+tempObj.formField).val();
-														$("#"+tempObj.formField).val(oldValue+","+expandValue);
-														paramsObj[tempObj.formField] =  oldValue+","+expandValue;
-													}else {
-														$("#"+tempObj.formField).val(expandValue);
-														paramsObj[tempObj.formField] =  expandValue;
+											if(tempObj.sqlField.replace("_","").toUpperCase() == ai1.toUpperCase().replace(" ","")){
+												var control={};
+												if(_this.getPos()==dyControlPos.subForm){
+													var datauuid=_this.getDataUuid();
+													if(issubformdialog){
+														control = $.ControlManager.getControl(datauuid+'____'+tempObj.formField);
+														paramsObj[datauuid+'____'+tempObj.formField] =  jsonObj[ai1] ;
+													}else{
+														control = $.ControlManager.getControl(datauuid+'___'+tempObj.formField);
+														paramsObj[datauuid+'___'+tempObj.formField] =  jsonObj[ai1] ;
 													}
+													control.setValue(jsonObj[ai1]);
 												}else{
-													$("#"+tempObj.formField).val(valStr[ai1].split("=")[1]);
-													paramsObj[tempObj.formField] =  valStr[ai1].split("=")[1];
+													control = $.ControlManager.getControl(tempObj.formField);
+												    if(control==undefined){
+												    	$("#"+tempObj.formField).val(jsonObj[ai1]);
+												    }else{
+												    	if(typeof control == "undefined" || typeof control.setValue == "undefined"){
+															continue;
+														}
+														 
+														control.setValue(jsonObj[ai1]);
+													 
+														paramsObj[tempObj.formField] = jsonObj[ai1];
+												    }
+													
 												}
-												
 											}
 										}
 						        	}
+						        	
 						        	$("#dialogModule").dialog( "close" );
-						        	if(afterDialogSelect){
-						        		afterDialogSelect.call(this, paramsId, paramsObj);
+						        	if(_this.options.afterDialogSelect){ 
+						        		_this.options.afterDialogSelect.call(this, paramsId, paramsObj, jsonObj);
 									}
 								});
 							}
 						});
 					}
 				});
-				
+			    this.addMustMark();
 		},
-		getOptions : function(options) {
-			options = $.extend({}, $.fn[this.type].defaults, options,
-					this.$element.data());
-			return options;
-		},
-				
-		//set............................................................//
-	     
-		//设值
-		 setValue:function(value){
-			 $.ControlUtil.setValue(this.$element,this.options,value);
-		 } ,
-		 
-		 //设置必输
-		 setRequired:function(isrequire){
-			 $.ControlUtil.setRequired(isrequire,this.options);
-		 } ,
-		 
-		 //设置可编辑
-		 setEditable:function(){
-			 this.setReadOnly(false);
-			 this.setEnable(true);
-			 this.setDisplayAsCtl();
-		 } ,
-		 
-		 //只读，文本框不置灰，不可编辑
-		 setReadOnly:function(isreadonly){
-			 $.ControlUtil.setReadOnly(this.$element,isreadonly);
-			 this.options.readOnly=isreadonly;
-		 } ,
-		 
-		 //设置disabled属性
-		 setEnable:function(isenable){
-			 $.ControlUtil.setEnable(this.$element,isenable);
-			 this.options.disabled=!isenable;
-		 } ,
-		 
-		 //设置hide属性
-		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(this.$element,isvisible);
-			 this.options.isHide=!isvisible;
-		 } ,
-		 
-		 //显示为lablel
-		 setDisplayAsLabel:function(){
-			 $.ControlUtil.setIsDisplayAsLabel(this.$element,this.options,true);
-		 } ,
-		 
-		 //显示为控件
-		 setDisplayAsCtl:function(){
-			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
-		 },
-		 
-	       
-	    //get..........................................................//
-		
-		 //返回控件值
-		 getValue:function(){
-			 return this.$element.val();
-		 },
-
-		 isValueMap:function(){
-			 return false;
-		 },
-		 /**
-		  * 返回是否可编辑(由readOnly和disabled判断)
-		  * @returns {Boolean}
-		  */
-		 isEditable:function(){
-			 if(this.options.readOnly&&this.options.disabled){
-				 return false;
-			 }else{
-				 return true;
-			 }
-		 },
-		 
-		 isReadOnly:function(){
-			 return this.options.readOnly;
-		 },
-		 
-		 isEnable:function(){
-			 return !this.options.disabled;
-		 },
-		 
-		 isVisible:function(){
-			 return  this.options.isHide;
-		 }, 
-		 
-		 isRequired:function(){
-			 return $.ControlUtil.isRequired(this.options);
-		 },
-		 
-		 isShowAsLabel:function(){
-			 return this.options.isShowAsLabel;
-		 },
-		 
-		 getAllOptions:function(){
-		    	 return this.options;
-		     } ,  
-		     
-		 getRule:function(){
-			 return $.ControlUtil.getCheckRules(this.options);
-		 } ,
-		 
-		 getMessage:function(){
-			 return $.ControlUtil.getCheckMsg(this.options);
-		 } ,
-		 
-	     /**
-	      * 获得控件名
-	      * @returns
-	      */
-	     getCtlName:function(){
-	    	 return this.$element.attr("name");
-	     },
-		 
-	     //bind函数，桥接
-	     bind:function(eventname,event){
-	    	this.$element.bind(eventname,event);
-	    	return this;
-	     },
-		 
-		 //unbind函数，桥接
-	     unbind:function(eventname){
-	    	this.$element.unbind(eventname);
-	    	return this;
-	     }
-	    //一些其他method ---------------------
-	     
+		bind:function(event, callback){
+			this.options[event] = callback;
+		}
 	};
 	
 	/*
@@ -309,8 +212,14 @@
 					options = typeof option == 'object'
 							&& option;
 					if (!data) {
-						$this.data('wdialog', (data = new Dialog(this,
-								options)));
+						 data = new Dialog(this,options);
+						 var datacopy={};
+						 var data1=$.extend(datacopy,data);
+						 var extenddata=$.extend(data,$.wControlInterface);
+						 var data2=$.extend(extenddata,data1);
+						 var data3=$.extend(data2,$.wTextCommonMethod);
+						 data3.init();
+						 $this.data('wdialog',data3 );
 					}
 					if (typeof option == 'string') {
 						if (method == true && args != null) {
@@ -339,7 +248,8 @@
 			relationDataTwoSql: "", 	
 			relationDataDefiantion:"", 	
 			relationDataShowMethod: "", 	
-			relationDataShowType: ""
+			relationDataShowType: "",
+			afterDialogSelect: function(){}
 	};
 	
 })(jQuery);

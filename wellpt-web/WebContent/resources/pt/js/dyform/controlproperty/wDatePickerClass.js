@@ -1,5 +1,4 @@
-var  WDatePickerClass = function(){  
-	
+var  WDatePickerClass = function(){
 	this.contentFormat = "0"; 
 	this.toJSON = toJSON;
    };

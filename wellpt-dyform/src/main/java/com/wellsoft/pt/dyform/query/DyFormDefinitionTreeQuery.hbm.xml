@@ -15,25 +15,25 @@
 		<if isNotBlank(name) || isNotBlank(displayName) || isNotBlank(version) || isNotBlank(moduleName) || isNotBlank(moduleId) || isNotBlank(outerId) || isNotBlank(code)>
 			and (1 = 2
 				<if isNotBlank(name)>
-					or form_def.name like '%' || :name || '%'
+					or lower(form_def.name) like '%' || lower(:name) || '%'
 				</if>
 				<if isNotBlank(displayName)>
-					or form_def.displayName like '%' || :displayName || '%'
+					or lower(form_def.displayName) like '%' || lower(:displayName) || '%'
 				</if>
 				<if isNotBlank(version)>
-					or form_def.version = :version
+					or lower(form_def.version) = lower(:version)
 				</if>
 				<if isNotBlank(moduleName)>
-					or form_def.moduleName like '%' || :moduleName || '%'
+					or lower(form_def.moduleName) like '%' || lower(:moduleName) || '%'
 				</if>
 				<if isNotBlank(moduleId)>
-					or form_def.moduleId like '%' || :moduleId || '%'
+					or lower(form_def.moduleId) like '%' || lower(:moduleId) || '%'
 				</if>
 				<if isNotBlank(outerId)>
-					or form_def.outerId like '%' || :outerId || '%'
+					or lower(form_def.outerId) like '%' || lower(:outerId) || '%'
 				</if>
 				<if isNotBlank(code)>
-					or form_def.code like '%' || :code || '%'
+					or lower(form_def.code) like '%' || lower(:code) || '%'
 				</if>
 			)
 		</if>

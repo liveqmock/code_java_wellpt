@@ -29,7 +29,15 @@ $(function() {
 			var certType = "personal";// 个人证书
 			if (idNumber == null || $.trim(idNumber) == "") {
 				idNumber = fjcaControl.GetCertExtensionInfoById(cert, "1.2.156.10260.4.1.3");
+				if (idNumber == null || $.trim(idNumber) == "") {
+					idNumber = fjcaControl.GetCertExtensionInfoById(cert, "1.2.156.10260.4.1.4");
+				}
 				certType = "enterprise";// 企业证书
+				if (idNumber != null && $.trim(idNumber) != "") {
+					if (idNumber.indexOf("-") != -1) {
+						idNumber = idNumber.replace(/-/, "");
+					}
+				}
 			}
 			document.getElementById("idNumber").value = idNumber;
 			document.getElementById("certType").value = certType;

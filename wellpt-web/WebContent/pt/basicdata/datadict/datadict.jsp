@@ -33,6 +33,10 @@
 								type="hidden" id="id" name="id" /> <input type="hidden"
 								id="parentUuid" name="parentUuid" /> <input type="hidden"
 								id="parentName" name="parentName" />
+								<input type="hidden"
+								id="sourceUuid" name="sourceUuid" />
+								<input type="hidden"
+								id="sourceType" name="sourceType" />
 							<table>
 								<tr>
 									<td style="width: 65px;"><label>名称</label></td>
@@ -77,17 +81,17 @@
 					</div>
 					<div class="btn-group btn-group-bottom">
 						<button id="btn_save" type="button" class="btn">保存</button>
-						<button id="btn_del" type="button" class="btn">删除</button>
+						<button id="btn_del" type="button" class="btn" style="display: none;" disabled="disabled">删除</button>
 					</div>
 				</form>
 			</div>
 		</div>
 		<div class="ui-layout-west">
-			<div>
-				<div class="btn-group btn-group-top">
-					<button id="btn_add" type="button" class="btn">新增</button>
-					<button id="btn_delAll" type="button" class="btn">删除</button>
-				</div>
+			<div class="btn-group btn-group-top" style="margin-top: 0px;position: fixed;background-color: #fff;min-width: 200px;">
+				<button id="btn_add" type="button" class="btn">新增</button>
+				<button id="btn_delAll" type="button" class="btn">删除</button>
+			</div>
+			<div style="margin-top: 30px;">
 				<ul id="datadict_tree" class="ztree"></ul>
 			</div>
 		</div>

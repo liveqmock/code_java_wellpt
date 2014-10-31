@@ -41,13 +41,10 @@
 					</ul>
 					<input type="hidden" id="uuid" name="uuid" />
 					<form:hidden path="id" />
-					<form:hidden path="jdbcDatabaseName" />
-					<form:hidden path="jdbcUsername" />
-					<form:hidden path="jdbcPassword" />
 					<div id="tabs-1">
 						<table>
 							<tr>
-								<td style="width: 65px;"><label>名称</label></td>
+								<td style="width: 85px;"><label>名称</label></td>
 								<td><input id="name" name="name" type="text"
 									class="full-width" /></td>
 								<td></td>
@@ -90,6 +87,24 @@
 									<input id="createDatabase_0" name="createDatabase" type="radio"
 									value="false" checked="checked" /><label
 									for="createDatabase_0">不创建</label></td>
+							</tr>
+							<tr>
+								<td><label>数据库</label></td>
+								<td><input id="jdbcDatabaseName" name="jdbcDatabaseName"
+									type="text" class="full-width" /></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><label>数据库用户名</label></td>
+								<td><input id="jdbcUsername" name="jdbcUsername"
+									type="text" class="full-width" /></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><label>数据库密码</label></td>
+								<td><input id="jdbcPassword" name="jdbcPassword"
+									type="password" class="full-width" /></td>
+								<td></td>
 							</tr>
 							<tr>
 								<td class="align-top"><label>备注</label></td>

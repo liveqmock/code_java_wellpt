@@ -190,6 +190,7 @@ $(function(){
 			multiple,// 多文件为true, 单文件为false 
 			dbFiles
 	){
+		
 		if(($containerElement == undefined || $containerElement == null || $containerElement == "")){
 			throw new Error("请设置正确的控件容器");
 		}
@@ -237,7 +238,7 @@ $(function(){
 		}
 		 
 		var _this = this;
-		window.setTimeout(function(){//延迟否则下面的第一条语句无效
+		//window.setTimeout(function(){//延迟否则下面的第一条语句无效
 			_this.$fileContainer = $("#" + fileListId);
 		 
 			
@@ -261,14 +262,12 @@ $(function(){
 				}
 			 
 			}
-			
-			
-			
+			 
 			if(!_this.readOnly){
 				_this.defineUploadEvent();//定义上传事件 
 			}
 			
-		}, 10);
+		//}, 10);
 		 
 		
 		 
@@ -362,9 +361,11 @@ $(function(){
 	 * @param certificate
 	 * @param isNew 如果为true,表示该文件还没与文件夹产生关系,false则反之
 	 */
-	
 	WellFileUpload.prototype.addFile = function( filename,fileID , contentType,  digestValue , digestAlgorithm,certificate, isNew/*新增的文件为true, 否则为false*/){
-	 
+		if(typeof isNew == "undefined"){
+			isNew = false;
+		}
+		
 		var _this = this;
 		 
 		 if(this.signature && isNew){ //更新文件签名 
@@ -377,7 +378,9 @@ $(function(){
 		 }
 		 
 		 
+	 
 		 if(isNew && WellFileUpload.file2swf){
+			  
 			var ok =  WellFileUpload.createReplicaOfSWF(fileID);//
 			if(!ok){
 				oAlert("副本生成失败,请重试");
@@ -487,25 +490,30 @@ $(function(){
 	 * @param isAppend 如果为true, 表示不清空原来夹下的文件，在原来的夹下面继续append参数files里面的文件到文件夹下，如果为false则表示将原来夹下面的文件清空，再把参数files里面的文件添加到文件夹下
 	 */
 	WellFileUpload.prototype.addFiles = function(files, isAppend){
-		if(files == undefined || !(files instanceof Array) || files.length == 0){//files中没有元素，无需再进一步处理
-			return;
-		}
+		//console.log(JSON.stringify(files));
+		var _this=this;
+		//window.setTimeout(function(){//跟初始化时保持秒数一致.
+			if(files == undefined || !(files instanceof Array) || files.length == 0){//files中没有元素，无需再进一步处理
+				return;
+			}
+			
+			
+			if(isAppend == false){//清空文件夹即该控件下面的文件
+				_this.files.length = 0;
+			}
+			
+			for(var i in files){
+				var file = files[i];
+				_this.addFile(file.fileName, 
+							file.fileID, 
+							file.contentType,
+							file.digestValue , 
+							file.digestAlgorithm, 
+							file.certificate,  
+							file.isNew);
+			}
+	//	}, 10);
 		
-		
-		if(isAppend == false){//清空文件夹即该控件下面的文件
-			this.files.length = 0;
-		}
-		
-		for(var i in files){
-			var file = files[i];
-			this.addFile(file.fileName, 
-						file.fileID, 
-						file.contentType,
-						file.digestValue , 
-						file.digestAlgorithm, 
-						file.certificate,  
-						file.isNew);
-		}
 	};
 	
 	
@@ -515,8 +523,8 @@ $(function(){
 	*验证签名USB
 	*/
 	WellFileUpload.prototype.validSignatureUSB = function(){
-		var enableSignUploadFile = false;
-		try {
+		//var enableSignUploadFile = false;
+		/*try {
 			enableSignUploadFile = fjcaWs.OpenFJCAUSBKey();
 		} catch (e) {
 			try {
@@ -536,8 +544,10 @@ $(function(){
 			
 		} else{
 			fjcaWs.CloseUSBKey();
-		}	
-		return enableSignUploadFile;
+		}	*/
+		
+		
+		return checkCAKey();
 	};
 	
 	 

@@ -23,6 +23,9 @@
 			<div>
 				<div class="btn-group  btn-group-top">
 					<div class="query-fields">
+						<div style="float: left;margin-top: 3px;width: 85px;">
+							<select id="select_query" name="select_query" onchange="selectQuery(this)" style="width:100%;"></select>
+						</div>
 						<input id="query_keyWord"/>
 						<button id="btn_query" type="button" class="btn">查询</button>
 					</div>
@@ -63,6 +66,13 @@
 								<tr>
 									<td>样式主题</td>
 									<td><select id="cssContent" name="cssContent" style="width:100%;"></select></td>
+								</tr>
+								<tr>
+									<td>分类</td>
+									<td>
+										<input type="text" id="sysName" name="sysName" style="width:100%;"/>
+										<input type="hidden" id="sysCode" name="sysCode" />
+									</td>
 								</tr>
 								<tr>
 									<td style="width: 65px;">标题</td>
@@ -123,6 +133,8 @@
 		src="${ctx}/resources/form/jquery.form.js"></script>
 	<script type="text/javascript"
 		src="${ctx}/resources/ztree/js/jquery.ztree.js"></script>
+	<script type="text/javascript"
+		src="${ctx}/resources/pt/js/common/jquery.comboTree.js"></script>
 	<script type="text/javascript" src="${ctx}/resources/pt/js/global.js"></script>
 	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/org/unit/jquery.unit.js "></script>

@@ -183,7 +183,7 @@
 			$.ajax({
 				type : "POST",
 				url : ctx+"/psi/new_type",
-				data:"libId=GOOD_MANAGE ",
+				data:"libId=GOOD_MANAGE",
 				dataType : "text",
 				success : function (data) {
 					var url = ctx+"/psi/open?formUuid="+data+"&status=1";
@@ -197,7 +197,7 @@
 			$.ajax({
 				type : "POST",
 				url : ctx+"/psi/new_name",
-				data:"libId=GOOD_MANAGE ",
+				data:"libId=GOOD_MANAGE",
 				dataType : "text",
 				success : function (data) {
 					var url = ctx+"/psi/open?formUuid="+data+"&status=2";
@@ -208,6 +208,7 @@
 		 
 		//删除(支持批量删除)
 		$("#delete").die().live("click",function() {
+			alert($("#currentId").val());
 			oConfirm("确定要删除吗？",function(){
 				JDS.call({
 	    			service : "stockService.deleteObjects",

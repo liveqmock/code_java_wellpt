@@ -30,15 +30,14 @@ a.belonging-unit:hover {
 }
 </style>
 <div>
-	<div id="matters_accordion" style="width: 220px; float: left;">
+	<div id="matters_accordion" style="width: 380px; float: left;">
 		<h3>串联</h3>
 		<div>
 			<ul>
-				<c:forEach items="${unitMap}" var="entry" varStatus="indexStatus">
-					<c:set var="belongingUnit" value="${entry.key}" />
+				<c:forEach items="${belongingUnits}" var="belongingUnit"
+					varStatus="indexStatus">
 					<li><a name="${belongingUnit.id}" class="belonging-unit"><c:out
 								value="${belongingUnit.name}" /></a></li>
-					<%-- 				<c:out value="${entry.value}" /> --%>
 				</c:forEach>
 			</ul>
 		</div>
@@ -47,8 +46,7 @@ a.belonging-unit:hover {
 			<ul>
 				<c:forEach items="${parallelMattersMap}" var="entry">
 					<c:set var="matters" value="${entry.key}" />
-					<li><a name="${matters.belongingUnitId}"
-						mattersUuid="${matters.uuid}"
+					<li><a name="${matters.uuid}" mattersUuid="${matters.uuid}"
 						class="belonging-unit parallel-matters"><c:out
 								value="${matters.name}" /></a></li>
 				</c:forEach>
@@ -56,7 +54,7 @@ a.belonging-unit:hover {
 		</div>
 	</div>
 
-	<div class="viewContent" style="width: 300px; float: left;">
+	<div class="viewContent" style="width: 350px; float: left;">
 		<!-- 串联事项 -->
 		<c:forEach items="${unitMap}" var="entry" varStatus="indexStatus">
 			<c:set var="belongingUnit" value="${entry.key}" />
@@ -97,8 +95,7 @@ a.belonging-unit:hover {
 	<c:forEach items="${parallelMattersMap}" var="entry">
 		<c:set var="matters" value="${entry.key}" />
 		<c:set var="parallelMatters" value="${entry.value}" />
-		<div class="con unit_${matters.belongingUnitId}"
-			style="display: none;">
+		<div class="con unit_${matters.uuid}" style="display: none;">
 			<div class="gl_con_r">
 				<div class="gl_con2">
 					<div class="gl_con2_l">

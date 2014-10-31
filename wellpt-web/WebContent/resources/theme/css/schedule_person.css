@@ -2,7 +2,6 @@
     background: url("../images/v1_panel.png") repeat-x scroll 0 -10px transparent;
     height: 3px;
     margin-top: -3px;
-    width: 918px;
 }
 .schedule_leader_list2 .view_foot ,.schedule_group_list2 .view_foot {
     background: url("../images/v1_panel.png") repeat-x scroll 0 -10px transparent;
@@ -162,6 +161,9 @@
 .schedule_person_list .scheduletd .scheduletd_div{
 	padding: 1px;
 	height: 80px;
+	width:100%;
+	overflow:hidden;
+	font-size: 12px;
 }
 .schedule_person_list .scheduletd .scheduletd_div:hover{
 	padding: 0px;
@@ -169,6 +171,10 @@
 	border: 1px solid #93D4FC;
     border-collapse: separate;
     box-shadow: 0 0 4px #60CAFF;
+    height:auto;
+    width:14.8%;
+    min-height:80px;
+    position:absolute
 }
 .schedule_person_list .td_content_left{
 	padding-left: 5px; 
@@ -193,7 +199,8 @@
 }
 .schedule_person_list .inmonth .as_day {
 	color: #000000;
-	font-size: 18px;
+	font-size: 12px;
+	font-weight: bold;
 }
 .schedule_person_list .inmonth_0_css .as_day {
 	color: #969696;
@@ -230,7 +237,7 @@
 }
 /*********************个人日程-按日******************************************/
 .schedule_person_list2{
-	width:916px;
+	width:100%;
 	height:580px;
 	background: none repeat scroll 0 0 #F7F7F7;
     color: #434343;
@@ -244,7 +251,7 @@
 .schedule_person_list2 table{
 	border-collapse: collapse;
 	border: none;
-	 width: 100%;
+	width: 100%;
 }
 .schedule_person_list2 table td{
 	border: none;
@@ -252,23 +259,17 @@
 .schedule_person_list2 .schedule2_left{
 	display: block;
     float: left;
-    width: 260px;
+    width: 30%;
 }
 .schedule_person_list2 .schedule2_right{
 	display: block;
     float: left;
     height: 530px;
     overflow-y: auto;
-    width: 650px;
+    width: 70%;
 }
 .schedule_person_list2 .schedule2_left_table {
     width: 100%;
-}
-.schedule_person_list2 #toolbar{
-	background: url("../images/v1_icon.png") repeat-x scroll 0 -53px transparent;
-	height: 40px;
-    width: auto;
-    position:relative;
 }
 .schedule_person_list2 .s_prev_day{
 	background: url("../images/v1_icon.png") no-repeat scroll -62px 0 transparent;
@@ -309,7 +310,7 @@
     border: medium none;
     cursor: pointer;
     height: 23px;
-    margin: 10px 0 0;
+    margin: 4px 0 0;
     padding: 0;
     width: 50px;
     color: #0E589B;
@@ -321,7 +322,7 @@
 	height: 23px;
 	width: 50px;
 	border: none;
-	margin: 10px 10px 0 0;
+	margin: 4px 0 0;
     padding: 0;
     font-size: 12px;
     cursor:pointer;
@@ -414,6 +415,9 @@
 .schedule_person_list2 .schedule2_left_table_content2_h2_table .today_td .color_2{
     color: #fff;
 }
+.schedule_person_list2 .schedule2_left_table_content2_h2_table .today_td .holiday{
+	color: #ff4800;	
+}
 .schedule_person_list2 .schedule2_left_table_content2_h2_table_title td{
 	border: medium none;
     height: 30px;
@@ -430,8 +434,10 @@
     display: block;
     position: relative;
     padding:6px 7px;
-    width: 15px;
 	border: 1px solid #fff;
+}
+.schedule_person_list2 .holiday{
+	color: #ff4800;
 }
 .schedule_person_list2 .color_2 span {
     cursor: context-menu;
@@ -495,9 +501,9 @@
 	cursor: context-menu;
 }
 .visi {
-    height: 40px;
+    height: 26px;
     padding-left: 10px;
-    padding-top: 10px;
+    padding-top: 6px;
 }
 /*********************领导日程-按领导******************************************/
 .schedule_leader_list{
@@ -1327,7 +1333,7 @@
     text-align: center;
 }
 /****添加群组****/
-#test_con3 {
+/* #test_con3 {
     margin-left: 25px;
     width: 94%;
     margin-top: 5px;
@@ -1345,10 +1351,11 @@
 }
 #test_con3 table input[type="text"] {
     background: none repeat scroll 0 0 #FFFFFF;
-    margin: 5px;
+    margin: 3px;
     padding: 5px;
-    width: 90%;
-}
+    width: 85%;
+    float: left;
+} */
 /************弹出层*********************/
 
 .add_schedule_table {
@@ -1359,9 +1366,8 @@
 	height: 40px;
 }
 .add_schedule_table_tr input[type="text"]{
-	padding:5px; 
+	padding:4px; 
 	margin: 5px;
-	width: auto;
 	background: #fff;
 	width: 90%;
 }
@@ -1405,11 +1411,24 @@
     width: 11px;
 }
 .add_schedule_table_tr #startDate,
-.add_schedule_table_tr #startTime,
 .add_schedule_table_tr #endDate,
-.add_schedule_table_tr #endTime{
+.add_schedule_table_tr #tipDate{
 	margin: 5px 1px;
-    width: 100px;
+    width: 78px;
+}
+.add_schedule_table_tr #startTime,
+.add_schedule_table_tr #endTime,
+.add_schedule_table_tr #tipTime{
+	margin: 5px 1px;
+    width: 52px;
+}
+
+.add_schedule_table_tr #scheduleName{
+	width:70%;
+}
+.add_schedule_table_tr #scheTag{
+	width:80px;
+	float: left;
 }
 .add_schedule_table_tr input[type="checkbox"]{
 	margin: -2px 5px 0;
@@ -1421,16 +1440,21 @@
 }
 .add_schedule_table_tr select{
 	padding:5px; 
-	margin: 8px;
+	margin: 5px;
 	width: 90%;
 }
 
+.add_schedule_table_tr #content{
+	margin:5px;
+	padding:4px;
+	width: 90%;
+}
 .td_align_left #repeat {
-    width: 190px;
+    width: 90px;
 }
 .add_schedule_table_tr #tip{
-	margin: 8px;
-    width: 190px;
+	margin: 5px;
+    width: 90px;
 }
 .tixing td {
     display: block;
@@ -1438,10 +1462,7 @@
     width: 33%;
 }
 .td_align_left #tipTime {
-    margin: 6px;
-}
-#dtipDate #tipDate {
-    margin: 6px;
+    margin: 5px 1px;
 }
 .add_schedule_table_odd{
 	background: none repeat scroll 0 0 #F7F7F7;
@@ -1455,10 +1476,8 @@
     border: 1px solid #fff; 
 }
 .addschedulediv{
-	margin-left: 25px;
-    margin-top: 5px;
-    width: 815px;
-}
+	font-size: 12px;
+} 
 .add_schedule_table_tr .td_align_left .trkaishi,
 .add_schedule_table_tr .td_align_left .trjieshu,
 .add_schedule_table_tr .td_align_left .datatimeset{
@@ -1467,9 +1486,6 @@
 }
 .add_schedule_table_tr .td_align_left .trkaishi {
     margin-left: 4px;
-}
-.add_schedule_table_tr .td_align_left .datatimeset {
-    padding-top: 10px;
 }
 .add_schedule_table_tr .trkaishi_data,
 .add_schedule_table_tr .trkaishi_time,
@@ -1480,4 +1496,250 @@
 }
 .add_schedule_table_tr .datetimeto {
     padding-top: 10px;
+}
+
+/************日历组*********************/
+.schedule_person_list table{
+	border-collapse: collapse;
+	border: medium none;
+	width: 100%;
+}
+.schedule_person_list #toolbar{
+	background: url("../images/v1_icon.png") repeat-x scroll 0 -53px transparent;
+	height: 40px;
+    width: auto;
+    position:relative;
+}
+.schedule_person_list .content{
+	height: 537px;
+}
+
+.schedule_person_list .content .content_group_list {
+    height: 25px;
+    margin: 0 auto;
+    padding-top: 5px;
+    padding-left: 20px;
+}
+
+.schedule_person_list .content .content_group_list .content_group_item {
+    float: left;
+    padding-right: 50px;
+    position: relative;
+}
+.schedule_person_list .content .content_group_list .activity .group_name{
+	color: #ff7200;
+	background-position: -86px -190px;
+}
+.schedule_person_list .group_name {
+    color: #6D6D6D;
+    text-decoration: none;
+    float: left;
+    font-size: 16px;
+    background: url("../images/v1_icon.png") no-repeat scroll -86px -210px transparent;
+    padding-left: 17px;
+}
+.schedule_person_list .content .content_group_list .content_group_item .editgroup{
+	background: url("../images/v1_icon2.png") no-repeat scroll 0 -72px transparent;
+    display: none;
+    float: left;
+    height: 15px;
+    margin-left: 5px;
+    margin-top: 5px;
+    position: absolute;
+    right: 30px;
+    width: 15px;
+}
+.schedule_person_list .content .content_group_list .content_group_item .delgroup{
+	background: url("../images/v1_icon2.png") no-repeat scroll -312px 0 transparent;
+    display: none;
+    float: left;
+    height: 15px;
+    margin-left: 5px;
+    margin-top: 5px;
+    position: absolute;
+    right: 10px;
+    width: 15px;
+}
+.schedule_person_list #toolbar td{
+	width: auto;
+}
+.schedule_person_list .addgroup{
+	background: url("../images/v1_icon.png") no-repeat scroll 0 -165px transparent;
+    color: #0F599C;
+    display: block;
+    float: right;
+    font-size: 12px;
+    height: 22px;
+    padding: 0 5px;
+    text-align: center;
+    text-decoration: none;
+    margin-right: 12px;
+    border: 1px solid #DEE1E2;
+}
+.schedule_person_list .addgroup:hover{
+	color:#ff7200;
+}
+.schedule_person_list .group_name:hover {
+	color:#ff7200;
+	background-position: -86px -190px;
+}
+
+
+.schedule_person_list2 #toolbar{
+	background: #18b3e1;
+	height: 38px;
+    width: auto;
+    position:relative;
+    border-bottom:1px solid #ddd;
+}
+.schedule_person_list2 .content{
+	height: 537px;
+}
+
+.schedule_person_list2 .content .content_group_list {
+    height: 25px;
+    margin: 0 auto;
+    padding-top: 5px;
+    padding-left: 20px;
+}
+
+.schedule_person_list2 .content .content_group_list .content_group_item {
+    float: left;
+    padding-right: 50px;
+    position: relative;
+}
+.schedule_person_list2 .content .content_group_list .activity .group_name{
+	color: #ff7200;
+	background-position: -86px -190px;
+}
+.schedule_person_list2 .group_name {
+    color: #6D6D6D;
+    text-decoration: none;
+    float: left;
+    font-size: 16px;
+    background: url("../images/v1_icon.png") no-repeat scroll -86px -210px transparent;
+    padding-left: 17px;
+}
+.schedule_person_list2 .content .content_group_list .content_group_item .editgroup{
+	background: url("../images/v1_icon2.png") no-repeat scroll 0 -72px transparent;
+    display: none;
+    float: left;
+    height: 15px;
+    margin-left: 5px;
+    margin-top: 5px;
+    position: absolute;
+    right: 30px;
+    width: 15px;
+}
+.schedule_person_list2 .content .content_group_list .content_group_item .delgroup{
+	background: url("../images/v1_icon2.png") no-repeat scroll -312px 0 transparent;
+    display: none;
+    float: left;
+    height: 15px;
+    margin-left: 5px;
+    margin-top: 5px;
+    position: absolute;
+    right: 10px;
+    width: 15px;
+}
+
+.schedule_person_list2 .addgroup{
+	background: url("../images/v1_icon.png") no-repeat scroll 0 -165px transparent;
+    color: #0F599C;
+    display: block;
+    float: right;
+    font-size: 12px;
+    height: 22px;
+    padding: 0 5px;
+    text-align: center;
+    text-decoration: none;
+    margin-right: 12px;
+    border: 1px solid #DEE1E2;
+}
+.schedule_person_list2 .addgroup:hover{
+	color:#ff7200;
+}
+.schedule_person_list2 .group_name:hover {
+	color:#ff7200;
+	background-position: -86px -190px;
+}
+
+/************日历组*********************/
+
+.second_menu_item {
+    float: left;
+    padding-right: 50px;
+    position: relative;
+}
+ .activity .second_menu_label{
+	color: #ff7200;
+}
+.second_menu_label {
+    color: #6D6D6D;
+    text-decoration: none;
+    float: left;
+    font-size: 16px;
+    padding-left: 3px;
+}
+
+.second_menu_label:hover {
+	color:#ff7200;
+	background-position: -86px -190px;
+}
+
+.second_menu_item {
+    float: left;
+    padding-right: 50px;
+    position: relative;
+}
+
+ .activity .second_menu_label{
+	color: #ff7200;
+	background-position: -86px -190px;
+}
+.second_menu_label {
+    color: #6D6D6D;
+    text-decoration: none;
+    float: left;
+    font-size: 16px;
+    background: url("../images/v1_icon.png") no-repeat scroll -86px -210px transparent;
+    padding-left: 17px;
+}
+.second_menu_edit{
+	background: url("../images/v1_icon2.png") no-repeat scroll 0 -72px transparent;
+    display: none;
+    float: left;
+    height: 15px;
+    margin-left: 5px;
+    margin-top: 5px;
+    position: absolute;
+    right: 30px;
+    width: 15px;
+}
+.second_menu_del{
+	background: url("../images/v1_icon2.png") no-repeat scroll -312px 0 transparent;
+    display: none;
+    float: left;
+    height: 15px;
+    margin-left: 5px;
+    margin-top: 5px;
+    position: absolute;
+    right: 10px;
+    width: 15px;
+}
+.schedule_person_list .addTag{
+	background: url("../images/v1_icon.png") no-repeat scroll 0 -165px transparent;
+    color: #0F599C;
+    display: block;
+    float: left;
+    font-size: 12px;
+    height: 22px;
+    padding: 0 5px;
+    text-align: center;
+    text-decoration: none;
+    margin: 3px;
+    border: 1px solid #DEE1E2;
+}
+.schedule_person_list .addTag:hover{
+	color:#ff7200;
 }

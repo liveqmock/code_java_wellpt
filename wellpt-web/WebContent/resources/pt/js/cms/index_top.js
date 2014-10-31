@@ -1,4 +1,4 @@
-$(function() {
+	
 	$(".handle").unbind("click");
 	$(".handle").click(function(){
 		if($(this).next().css("display")=='none'){
@@ -12,7 +12,7 @@ $(function() {
 		$(this).show();
 	}); 
 	$(".slide-con").unbind("mouseout");
-	$(".slide-con").mouseout(function(){
+	$(".slide-con").bind("mouseleave",function(){
 		$(this).hide();
 	}); 
 	$(".password_modif").unbind("click");
@@ -51,8 +51,9 @@ $(function() {
 			getUserMsg();
 		}
 	}
-	
-	
+	$("#op_username").click(function(){
+		getUserMsg();
+	});
 	$("#op_userSet").click(function(){
 		getUserMsg();
 	});
@@ -70,7 +71,7 @@ $(function() {
 							var json = new Object(); 
 					        json.content = userSetStr;
 					        json.title = "用户设置";
-					        json.height= 525;
+					        json.height= 575;
 					        json.width= 585;
 					        var buttons = new Object(); 
 					        buttons.保存 = userSet;
@@ -88,15 +89,18 @@ $(function() {
 							$("#dialogModule #fax").val(result.data.fax);
 							$("#dialogModule #idNumber").val(result.data.idNumber);
 							//$("#dialogModule #photoUuid").val(result.data.photoUuid);	
-							$("#dialogModule #contactName").val(result.data.contactName);
-							$("#dialogModule #email").val(result.data.email);
-							
+							//$("#dialogModule #contactName").val(result.data.contactName);
+							$("#dialogModule #boUser").val(result.data.boUser);
+							$("#dialogModule #boPwd").val(result.data.boPwd);
+							$("#dialogModule #mainEmail").val(result.data.mainEmail);
+							$("#dialogModule #otherEmail").val(result.data.otherEmail);
+							$("#dialogModule #otherMobilePhone").val(result.data.otherMobilePhone);
 							$("#dialogModule input[name='sex']").each(function(){
 								if (result.data.sex == $(this).val()) {
 									$(this).attr("checked","checked");
 								} 
 							});	
-							$(".user-profile-settings").html("");
+//							$(".user-profile-settings").html("");
 							getDataDictionariesByType(result.data.trace);
 						}
 					}else{
@@ -105,7 +109,6 @@ $(function() {
 				}
 		});	        
 	}
-});
 
 function getDataDictionariesByType(trace) {
 	$.ajax({
@@ -144,19 +147,28 @@ function findChecked(_trace) {
 }
 
 function btnUpload() {
-$("#upload_share_form").ajaxSubmit({
-    success: function (data, status) {
-    	$("#dialogModule #photoUuid").val(data);
-		$("#dialogModule #user_photo").attr("src",
-			ctx + "/org/user/view/photo/" + data);
-		$("#dialogModule #user_photo").show();
-    },
-    url : ctx + "/org/user/upload/photo",
-    data: $('#upload_share_form').formSerialize(),
-    type: 'POST',
-    dataType: 'text',
-    beforeSubmit: function () {
-    }
-});
+	if($("#dialogModule #upload").val()!=""){
+		$.ajaxFileUpload({
+								url : ctx + "/org/user/upload/photo",// 链接到服务器的地址
+								secureuri : false,
+								fileElementId : 'upload',// 文件选择框的ID属性
+								isDialogModule : true,
+								dataType : 'text', // 服务器返回的数据格式
+								success : function(data, status) {
+									$("#dialogModule #photoUuid").val(data);
+									$("#dialogModule #user_photo").attr("src",ctx + "/org/user/view/photo/" + data);
+									$("#dialogModule #user_photo").show();
+								},
+								error : function(data, status, e) {
+									oAlert("上传失败");
+								}
+							});
+	
+	
+	
+		
+	}else{
+		oAlert("未选择图片");
+	}
 }	
 	

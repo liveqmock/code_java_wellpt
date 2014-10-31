@@ -26,6 +26,7 @@
 					var index = process[j].index;
 					var isFirst = process[j].isFirst;
 					var childNum = process[j].childNum;
+//					alert("childNum "+maxDept);
 					var data3 = process[j].data;
 					var content = "";
 					if(data3==undefined){
@@ -42,7 +43,11 @@
 							var padding = (itemHeight*(childNum-1))/2;
 							if(tempJ==1){
 								html += '<div class="ssdjb_column_row indexFirst rowFirst row'+(j+1)+'" style="padding:'+padding+'px 0;width:100%;height:'+itemHeight+'px;">';
-								html += '<div class="rowFirstDiv" style="height:'+(padding+itemHeight/2)+'px;width:40%;"></div>';
+								if(maxDept>1){
+									html += '<div class="rowFirstDiv" style="height:'+(padding+itemHeight/2)+'px;width:40%;"></div>';
+								}else{
+									html += '<div class="rowFirstDiv2" style="height:'+(padding+itemHeight/2)+'px;width:40%;"></div>';
+								}
 							}else if(tempJ==process.length){
 								html += '<div class="ssdjb_column_row indexFirst rowlast row'+(j+1)+'" style="padding:'+padding+'px 0;width:100%;height:'+itemHeight+'px;">';
 								html += '<div class="rowLastDiv" style="height:'+(padding+itemHeight/2)+'px;width:100%;"></div>';

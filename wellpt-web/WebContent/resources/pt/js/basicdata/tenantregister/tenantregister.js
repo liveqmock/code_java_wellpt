@@ -120,8 +120,7 @@ $(function() {
 		JDS.call({
 			service : "tenantManagerService.get",
 			data : tenant.uuid,
-			success : function(result) {
-				alert(11);
+			success : function(result) { 
 				bean = result.data;
 				$("#btn_del").show();
 				$("#btn_check_connecton_status").show();

@@ -76,7 +76,7 @@ $(function() {
 	
 	// 调整自适应表单宽度
 	function db_adjustWidthToForm() {
-		var div_body_width = $(window).width() * 0.76;
+		var div_body_width = $(window).width() * 0.95;
 		$(".form_header").css("width", div_body_width - 5);
 		$(".div_body").css("width", div_body_width);
 

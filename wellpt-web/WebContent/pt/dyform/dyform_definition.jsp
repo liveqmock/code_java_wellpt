@@ -73,7 +73,7 @@ html,body {
 		src="${ctx}/resources/layout/jquery.layout.js"></script>
 	<script type="text/javascript" src="${ctx}/resources/pt/js/global.js"></script>
 	<script type="text/javascript"
-		src="${ctx}/resources/pt/js/dytable/dyform_constant.js"></script>
+		src="${ctx}/resources/pt/js/dyform/common/dyform_constant.js"></script>
 	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/system_admin.js"></script>
 	<script type="text/javascript"

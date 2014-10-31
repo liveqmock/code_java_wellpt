@@ -329,9 +329,7 @@ $(function() {
 																}
 
 																if (isNew == "true") {// 用户新增的文件
-																	console
-																			.log("删除文件11s "
-																					+ fileID);
+																	 
 																	$
 																			.ajax({
 																				type : "post",

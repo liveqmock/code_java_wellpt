@@ -221,7 +221,7 @@ var textctl = {};
 
 textctl.initProperty = function(field){
 	if(field == null ||  (typeof field) == "undefined"){
-		field = new MainFormFieldClass();
+		field = new WTextInputClass();
 		field.dbDataType = dyFormInputType.text;
 		field.valueCreateMethod = dyFormInputValue.userImport;
 	}else{
@@ -260,7 +260,7 @@ textctl.exitDialog = function(){
 }
 
 textctl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WTextInputClass();
 
 	//控件公共属性收集
 	var checkpass=$.ControlConfigUtil.collectFormCtlComProperty(field);

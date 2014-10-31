@@ -32,6 +32,10 @@
 							<table>
 								<tr>
 									<td style="width: 65px;">名称</td>
+									<td><input class="full-width" id="showTitle" name="showTitle" type="text" /></td>
+								</tr>
+								<tr>
+									<td style="width: 65px;">显示标题</td>
 									<td><input class="full-width" id="title" name="title" type="text" /></td>
 								</tr>
 								<tr>
@@ -41,6 +45,18 @@
 								<tr>
 									<td>编号</td>
 									<td><input class="full-width" id="ecode" name="ecode" type="text" /></td>
+								</tr>
+								<tr>
+									<td>分类<input type="hidden" id="cateName" name="cateName" />
+									</td>
+									<td><select id="cateUuid" name="cateUuid" style="width:100%;"></select>
+									</td>
+								</tr>
+								<tr>
+									<td>权限资源</td>
+									<td><input class="full-width" id="resources_btncode" name="resources_btncode" type="text" />
+										<input class="full-width" id="resources" name="resources" type="hidden" />
+									</td>
 								</tr>
 								<tr>
 									<td>图标</td>
@@ -74,10 +90,10 @@
 								<tr>
 									<td>目标类型</td>
 									<td>
-										<input class="openType" name="openType" type="radio" value="pageUrl"/>页面
-										<input class="openType" name="openType" type="radio" value="moduleId"/>页面元素
-										<input class="openType" name="openType" type="radio" value="inputUrl"/>url
-										<input class="openType" name="openType" type="radio" value="jsContent"/>自定义js
+										<input class="openType" name="openType" type="radio" value="pageUrl"/><span>页面</span>
+										<input class="openType" name="openType" type="radio" value="moduleId"/><span>页面元素</span>
+										<input class="openType" name="openType" type="radio" value="inputUrl"/><span>url</span>
+										<input class="openType" name="openType" type="radio" value="jsContent"/><span>自定义js</span>
 <!-- 										<select class="full-width" id="openType" name="openType" > -->
 <!-- 											<option value="pageUrl">页面</option> -->
 <!-- 											<option value="moduleId">页面元素</option> -->
@@ -100,7 +116,38 @@
 								</tr>
 								<tr style="display: none;">
 									<td>页面</td>
-									<td><select class="full-width" id="pageUrl" name="pageUrl"></select></td>
+									<td><select onchange="change(this.value)" class="full-width" id="pageUrl" name="pageUrl"></select></td>
+								</tr>
+								<tr style="display: none;">
+									<td></td>
+									<td>
+										<div>
+										指定页面窗口
+										<select id="appointWindow" name="appointWindow" style="width:20%;"></select>
+										-->指定对应的页面元素
+										<input id="appointPageElement" name="appointPageElement" type="text" style="width:20%;" />
+										<input id="appointPageElementId" name="appointPageElementId" type="hidden" />
+											<input class="addAppointWindow" type="button" value="添加" style="width:10%;"/>
+										</div>
+										<div class="definitionDiv" style="margin-bottom: 5px;">
+											<table class="definitiontrtable">
+												<tr class="definitiontitle" style="background:#F7F7F7;">
+													<td>指定窗口</td>
+													<td>对应页面元素</td>
+													<td style="display: none;">指定窗口的ID</td>
+													<td style="display: none;">对应页面元素的ID</td>
+													<td>操作</td>
+												</tr>
+											</table>	
+										</div>
+									</td>
+								</tr>
+								<tr style="display: none;">
+									<td>指定导航</td>
+									<td>
+										<input class="full-width" id="appointCategoryName" name="appointCategoryName" type="text"/>
+										<input class="full-width" id="appointCategoryId" name="appointCategoryId" type="hidden"/>
+									</td>
 								</tr>
 								<tr style="display: none;">
 									<td>js</td>
@@ -120,16 +167,16 @@
 			</div>
 		</div>
 		<div class="pane ui-layout-west">
-			<div class="btn-group  btn-group-top">
+			<div class="btn-group  btn-group-top" style="margin-top: 0px;position: fixed;background-color: #fff;min-width: 200px;">
 				<button id="btn_add" type="button" class="btn">新增</button>
 				<button id="btn_del" type="button" class="btn">删除</button>
 			</div>
-			<div>
+			<div style="margin-top: 30px;">
 				<ul id="datadict_tree" class="ztree"></ul>
 			</div>
 		</div>
 	
-
+<div id="dlg_choose_button"></div>
 	<div id="addButton" title="按钮设置" style="display:none">
 		<table>
 			<tr>
@@ -169,6 +216,8 @@
 		src="${ctx}/resources/pt/js/common/jquery.comboTree.js"></script>
 	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/system_admin.js"></script>
+	<script type="text/javascript"
+		src="${ctx}/resources/pt/js/common/jquery.popupTreeWindow.js"></script>
 	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/cms/cmscategory.js"></script>
 </body>

@@ -87,9 +87,22 @@ $(function(){
      
     // 匹配integer
     jQuery.validator.addMethod("isInteger", function(value, element) {       
-         return this.optional(element) || (/^[-\+]?\d+$/.test(value) && parseInt(value)>=0);       
+    	  console.log(value);
+         return this.optional(element) || (/^[-\+]?\d+$/.test(value)  );       
     }, "匹配integer");  
      
+    // 匹配负integer
+    jQuery.validator.addMethod("isNegative", function(value, element) {       
+    	  console.log(value);
+         return this.optional(element) || (/^[-\+]?\d+$/.test(value) && parseInt(value)< 0);       
+    }, "匹配integer");
+    
+    // 匹配正integer
+    jQuery.validator.addMethod("isPositive", function(value, element) {       
+    	  console.log(value);
+         return this.optional(element) || (/^[-\+]?\d+$/.test(value) && parseInt(value)>=0);       
+    }, "匹配integer");
+    
     
    jQuery.validator.addMethod("isURL", function(value, element) {  
     	var parse_url = "[a-zA-z]+://[^s]*";

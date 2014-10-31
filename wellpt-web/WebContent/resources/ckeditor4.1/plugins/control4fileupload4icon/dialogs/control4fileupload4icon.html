@@ -69,25 +69,21 @@ var fileupload4iconctl = {};
 		field = formDefinition.fields[fieldName];//表单中从表的信息 
 	}
 	this.initProperty(field);
+	
 };
 
 fileupload4iconctl.initProperty = function(field){
 	if(field == null ||  (typeof field) == "undefined"){
-		field = new MainFormFieldClass();
+		field = new WFileUpload4IconClass();
 		field.valueCreateMethod = "1";
-		field.fileUploadConfig = '{allowUpload:true,allowDownload:true,allowDelete:true,mutiselect:true}';
 	}else{
 	}
 	//公共属性
 	$.ControlConfigUtil.ctlPropertyComInitSet(field);
 	//私有属性设置
-	var fileUploadConfig={};
-	if(field.fileUploadConfig!=''&&field.fileUploadConfig!=undefined){
-		 fileUploadConfig=eval('('+field.fileUploadConfig+')');
-		
-		 var allowUpload=fileUploadConfig.allowUpload;
-		 var allowDownload=fileUploadConfig.allowDownload;
-		 var allowDelete=fileUploadConfig.allowDelete;
+		 var allowUpload=field.allowUpload;
+		 var allowDownload=field.allowDownload;
+		 var allowDelete=field.allowDelete;
 		 if(allowUpload){
 			 $("input[name='oppower'][value='1']").attr("checked",true);
 		 };
@@ -97,7 +93,6 @@ fileupload4iconctl.initProperty = function(field){
 		 if(allowDelete){
 			 $("input[name='oppower'][value='3']").attr("checked",true);
 		 };
-	};
 }
 
 
@@ -106,7 +101,7 @@ fileupload4iconctl.exitDialog = function(){
 }
 
 fileupload4iconctl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WFileUpload4IconClass();
 
 	//控件公共属性收集
 	var checkpass=$.ControlConfigUtil.collectFormCtlComProperty(field);
@@ -116,36 +111,28 @@ fileupload4iconctl.collectFormAndFillCkeditor = function(){
 	//特殊属性收集
 	field.inputMode =  dyFormInputMode.accessory1;
 	field.fieldCheckRules.push({value:field.contentFormat, label:$("#contentFormat").find("option:selected").text()});
-	 var fileUploadConfig={
-			  allowUpload:true,
-		      allowDownload:true,
-		      allowDelete:true,
-		      mutiselect:true
-	 };
 		$("input[name='oppower']:checked").each(function(){
 			if(this.checked){
 				if($(this).val()=='1'){
-					fileUploadConfig.allowUpload=true;
+					field.allowUpload=true;
 				}else if($(this).val()=='2'){
-					fileUploadConfig.allowDownload=true;
+					field.allowDownload=true;
 				}else if($(this).val()=='3'){
-					fileUploadConfig.allowDelete=true;
+					field.allowDelete=true;
 				}
 			}
 		});
 		
 		$("input[name='oppower']:not(:checked)").each(function(){
 				if($(this).val()=='1'){
-					fileUploadConfig.allowUpload=false;
+					field.allowUpload=false;
 				}else if($(this).val()=='2'){
-					fileUploadConfig.allowDownload=false;
+					field.allowDownload=false;
 				}else if($(this).val()=='3'){
-					fileUploadConfig.allowDelete=false;
+					field.allowDelete=false;
 				}
 		});
 		
-		
-		field.fileUploadConfig=JSON.stringify(fileUploadConfig);
 	
 	var ctlHtml = "<img  class='value' name='" + field.name + "' title='" + field.displayName +"' src='" + this.editor.imageOfFileUpload4Iconctl + "'/>";
 	$(this.editor.fieldClazzElement).attr("class", "field");

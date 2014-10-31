@@ -5,6 +5,7 @@
 <head>
 <%@ include file="/pt/common/taglibs.jsp"%>
 <%@ include file="/pt/common/meta.jsp"%>
+
 <title id="title"></title>
 <script type="text/javascript"
 	src="${ctx}/resources/jquery/jquery.js"></script>
@@ -17,6 +18,10 @@
 	src="${ctx}/resources/pt/js/dyform/common/dyform_constant.js"></script>
 <script type="text/javascript"
 	src="${ctx}/resources/validate/js/jquery.validate.js"></script>
+<!-- 表单自定义验证方法 -->
+<script type="text/javascript"
+		src="${ctx}/resources/pt/js/dyform/validate/additional-methods.js"></script>
+		
 <link rel="stylesheet" type="text/css"
 	href="${ctx}/resources/jqueryui/css/base/jquery-ui.css" />
 <link rel="stylesheet" type="text/css"
@@ -38,10 +43,14 @@
 	type="text/javascript"></script>
 <script src="${ctx}/resources/jBox/i18n/jquery.jBox-zh-CN.js"
 	type="text/javascript"></script>
-<link href="${ctx}/resources/jBox/Skins/Blue/jbox.css" rel="stylesheet"
-	type="text/css" />
+ 
+ <%@ include file="/pt/dyform/dyform_js.jsp"%> 
+<%@ include file="/pt/dyform/dyform_ctljs.jsp"%>
+<%@ include file="/pt/dyform/dyform_preservedjs.jsp"%>
+
+
 <!-- Bootstrap -->
-<link rel="stylesheet"
+	 <link rel="stylesheet"
 	href="${ctx}/resources/bootstrap/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css"
 	href="${ctx}/resources/pt/css/custom-admin-style.css" />
@@ -52,10 +61,11 @@
  
 	
 	
-	 
+
+	
+	
 <link rel="stylesheet" type="text/css" media="screen"
-	href="${ctx}/resources/pt/css/dyform.css" />
-	<%@ include file="/pt/dyform/dyform_ctljs.jsp"%>
+	href="${ctx}/resources/pt/css/dyform/dyform.css" />
 
 <style type="text/css">
 body,table,input,select {
@@ -96,6 +106,7 @@ body,table,input,select {
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#tab1" data-toggle="tab">基本属性</a></li>
 				<li><a href="#tab2" data-toggle="tab">表单设计</a></li>
+				<li><a href="#tab3" data-toggle="tab">自定义JS</a></li>
 				<li><a href="#tab4" data-toggle="tab">帮助</a></li>
 			</ul>
 			<div class="tab-content">
@@ -208,27 +219,7 @@ body,table,input,select {
 						<div class="post-sign">
 							<div class="post-detail">
 					<table>
-					<tr class="title">
-						<td class="Label" colspan="4">上传本地html模版</td>
-					</tr>
-					<tr class="odd">
-						<td class="Label">选择模板</td>
-						<td><input type="file" name="uploadFile"
-									id="uploadFile" style="float: none"/> <a class="easyui-linkbutton"
-									iconCls="icon-ok" href="javascript:void(0)" id="uploadBtn"
-									data-options="plain:true">上传</a></td>
-						
-					</tr>
-					<tr>
-					<td class="Label">样例模板</td>
-						<td><a style="cursor: pointer;" id="downTemp">下载</a></td>
-					</tr>
-					<tr class="title">
-						<td class="Label" colspan="4">Web编辑</td>
-					</tr>
-					<tr>
-						
-					</tr>
+					 
 					</table>
 					<fieldset id="fs3" >
 						<legend></legend>
@@ -238,10 +229,13 @@ body,table,input,select {
 						</div>
 					</div>
 				</div>
-				<div class="tab-pane" id="tab3">
+				<!-- <div class="tab-pane" id="tab3">
 					<fieldset id="fs2" display: none;>
 						<div id="moduleDiv" style="width: 500px;" title="表单预览"></div>
 					</fieldset>
+				</div> -->
+				<div class="tab-pane" id="tab3" style="height:700px;padding-left: 20px;padding-right: 20px;">
+					<textarea  id="customJs" style="width: 100%;height: 80%;"></textarea>
 				</div>
 				<div class="tab-pane" id="tab4" style="height:250px;">
 					<div style="margin-left: 50px;">&nbsp;&nbsp;本地表单模版编辑使用说明：<br>
@@ -274,18 +268,12 @@ body,table,input,select {
 	</div>
 	<!-- <textarea rows="10" cols="60" id="showJSON"></textarea> -->
 	
-	<script type="text/javascript" src="${ctx}/resources/pt/js/global.js"></script>
-	<script type="text/javascript"
-		src="${ctx}/resources/pt/js/common/jquery.comboTree.js"></script>
-	<script type="text/javascript"
-		src="${ctx}/resources/ckeditor4.1/ckeditor.js"></script>
-	<script type="text/javascript"
-		src="${ctx}/resources/pt/js/common/jquery.alerts.js"></script>
-	<script type="text/javascript"
-		src="${ctx}/resources/pt/js/dyform/common/FormClass.js"></script>
+	 
 	
-	<script type="text/javascript"
-		src="${ctx}/resources/pt/js/dyform/common/function.js"></script>
+	 
+ 	
+		
+		 
 	
  
 	<script type="text/javascript"
@@ -293,7 +281,7 @@ body,table,input,select {
 	
 	<script type="text/javascript">
 	function autoWith(){
-		var div_body_width = $(window).width() * 0.76;
+		var div_body_width = $(window).width() * 0.95;
 		$(".form_header").css("width", div_body_width-5);
 	 	$(".div_body").css("width", div_body_width);
 		
@@ -410,10 +398,13 @@ body,table,input,select {
 					var setting5 = {
 							async : {
 								otherParam : {
-									"serviceName" : "formDefinitionService",
-									"methodName" : "getShowTableModels",
-									"data":1
+									"serviceName" : "dyFormDisplayModelService",
+									"methodName" : "getModels",
+									"data":[]//$("#showTableModelId").val()
 								}
+							},
+							check : {
+								enable : true
 							},
 							callback : {
 								onClick:treeNodeOnClick5,
@@ -428,31 +419,32 @@ body,table,input,select {
 						});
 			
 				function treeNodeOnClick5(event, treeId, treeNode) {
-					$("#showTableModel").val(treeNode.name);
-					$("#showTableModelId").val(treeNode.id);
+					//$("#showTableModel").val(treeNode.name);
+					//$("#showTableModelId").val(treeNode.id);
+					//$("#showTableModel").comboTree("hide");
 				}
 				
 				function treeNodeOnCheck5(event, treeId, treeNode) {
+				    
 					// 设置值
 					var zTree = $.fn.zTree.getZTreeObj(treeId);
 					var checkNodes = zTree.getCheckedNodes(true);
 					var path = "";
 					var value = "";
-					for ( var index = 0; index < checkNodes.length; index++) {
-						var checkNode = checkNodes[index];
-							if (path == "") {
+					for ( var index = 0; index < checkNodes.length; index++) {//设置为单选
+						var checkNode = checkNodes[index]; 
+							if(treeNode.id != checkNode.id){ 
+								zTree.checkNode(checkNode, false);
+							}else{ 
 								path = getAbsolutePath(checkNode);
-							} else {
-								path = path + ";" + getAbsolutePath(checkNode);
-							}
-							if (value == "") {
 								value = checkNode.id;
-							} else {
-								value = value + ";" + checkNode.id;
 							}
+						 
+							 
 					}
 					$("#showTableModel").val(path);
-					$("#showTableModelId").val(value);
+					$("#showTableModelId").val(value); 
+				
 				}
 				
 				// 获取树结点的绝对路径

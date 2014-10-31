@@ -45,14 +45,16 @@
 				<tr>
 				<td class="Label">关联数据选择</td>
 				<td class="value"><input id="relationDataDefiantion" type="text" style="display: none;" name="relationDataDefiantion">
-				<div>添加映射关系：<select id="sqlField" name="sqlField" style="width: 20%;"></select>
-				(数据库字段)-- <select id="formField" name="formField" style="width: 20%;">
-				<option value="_inputd">d</option>
-				<option value="_inputf">f</option>
-				</select>
-				(字段名称) <input id="searchCheck" type="checkbox" value="yes">查 
-				<button class="addRelationField">添加</button>	
-				</div></td>
+					<table  >
+					   <tr>
+					     <td rowspan=2 style="width: 35%;text-align:left">添加映射关系：<select id="sqlField" name="sqlField" style="width: 90%;"></select></td>
+					     <td>(数据库字段)-- <select id="formField" name="formField" style="width: 30%;"></select>(字段名称) <input id="searchCheck" type="checkbox" value="yes">查 
+				<button class="addRelationField">添加</td>
+					   </tr>
+					   <tr><td>(用户自定义)--<input type="text" id="userDefinedField" name="userDefinedField" style="width: 35%;">(字段名称)&nbsp;&nbsp;&nbsp;<button class="addRelationUserField">添加</td>
+							</select>		</td></tr>
+					 </table>
+				</td>
 			</tr> 
 			
 			<tr>
@@ -206,7 +208,7 @@ var dialogctl = {};
 
 dialogctl.initProperty = function(field){
 	if(field == null ||  (typeof field) == "undefined"){
-		field = new MainFormFieldClass();
+		field = new WDialogClass();
 		field.dbDataType = dyFormInputType.dialog;
 		field.valueCreateMethod = "1";
 	}else{
@@ -238,7 +240,7 @@ dialogctl.initProperty = function(field){
 	$("#relationDataTextTwo").val(field.relationDataTextTwo);
 	$("#relationDataValueTwo").val(field.relationDataValueTwo);
 	$("#relationDataTwoSql").val(field.relationDataTwoSql);
-	
+	$("#relationDataTextTwo").addClass("input-tier");
 	//绑定初始的数据列
 	if(field.relationDataTextTwo!="" && field.relationDataTextTwo!=undefined){
 		sqlOption2(field.relationDataValueTwo);
@@ -286,6 +288,23 @@ dialogctl.initProperty = function(field){
 		$(".definitiontrtable").append(relationDataDefiantion);
 	});
 	
+	$(".addRelationUserField").click(function(){
+		var sqlFieldText = $("#sqlField option:selected").text();
+		var sqlFieldValue = $("#sqlField option:selected").val();
+		var formFieldText = $("#userDefinedField").val();
+		var formFieldValue = $("#userDefinedField").val();
+		var relationDataDefiantion = '<tr class="definitioncontentiteam">';
+		relationDataDefiantion += '<td>'+sqlFieldText+'</td>';
+		relationDataDefiantion += '<td>'+sqlFieldValue+'</td>';
+		relationDataDefiantion += '<td>'+formFieldText+'</td>';
+		relationDataDefiantion += '<td  style="display: none;">'+formFieldValue+'</td>';
+		relationDataDefiantion += '<td>'+"no"+'</td>';
+		relationDataDefiantion += '<td><button class="delField">删除</button></td>';
+		relationDataDefiantion += '</tr>';
+		$(".definitiontrtable").append(relationDataDefiantion);
+	});
+	
+	
 	$(".subDelField").live("click",function(){
 		$(this).parent().parent().remove();
 	});
@@ -310,7 +329,7 @@ dialogctl.exitDialog = function(){
 }
 
 dialogctl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WDialogClass();
 
 	//控件公共属性收集
 	var checkpass=$.ControlConfigUtil.collectFormCtlComProperty(field);
@@ -346,8 +365,8 @@ dialogctl.collectFormAndFillCkeditor = function(){
 	}else{
 		this.editor.insertElement( element );
 	}
-	formDefinition.fields[field.name] = field; 
-	
+	//formDefinition.fields[field.name] = field; 
+	formDefinition.addField(field.name, field);
 	return true;
 }
 

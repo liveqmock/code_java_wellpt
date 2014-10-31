@@ -65,7 +65,8 @@ jQuery.extend({
         //增加文本参数的支持  
         if (data) {  
             for (var i in data) {  
-                $('<input type="hidden" name="' + i + '" value="' + data[i] + '" />').appendTo(form);  
+                //$('<input type="hidden" name="' + i + '" value="' + data[i] + '" />').appendTo(form);  
+                $('<input type="hidden" name="' + i + '" value=\'' + data[i] + '\' />').appendTo(form); // + Comment 增强JSON格式的兼容性
             }  
         }  
           
@@ -80,7 +81,10 @@ jQuery.extend({
     ajaxFileUpload: function(s) {
         // TODO introduce global settings, allowing the client to modify them for all requests, not only timeout  
         s = jQuery.extend({}, jQuery.ajaxSettings, s);
-        var id = s.fileElementId;        
+        var id = s.fileElementId;
+        if(s.isDialogModule != 'undefined' && s.isDialogModule){
+        	s['fileElementId'] = 'dialogModule #'+s.fileElementId;
+        }
   var form = jQuery.createUploadForm(id, s.fileElementId,s.data);
   var io = jQuery.createUploadIframe(id, s.secureuri);
   var frameId = 'jUploadFrame' + id;
@@ -241,7 +245,7 @@ jQuery.extend({
         // Get the JavaScript object, ifJSON is used.
         if( type == "json" )
         {
-         eval( "data = " + data );
+         eval( "data = \'" + data + "\'");
         }
             
         // evaluate scripts within html
@@ -251,5 +255,17 @@ jQuery.extend({
         }
             
         return data;
+    },
+    
+    handleError: function( s, xhr, status, e ){
+    	// If a local callback was specified, fire it
+    			if ( s.error ) {
+    				s.error.call( s.context || s, xhr, status, e );
+    			}
+
+    			// Fire the global callback
+    			if ( s.global ) {
+    				(s.context ? jQuery(s.context) : jQuery.event).trigger( "ajaxError", [xhr, s, e] );
+    			}
     }
 });

@@ -3569,10 +3569,10 @@ function openFolder(fname,uuid,status){
 						formDate();
 						if(title=="附件夹"){
 							$("#"+window.dnrwId+ " .jspVerticalBar").remove();
-							jsmod("#"+window.dnrwId + " .body_middle");
+							jsmod("#"+window.dnrwId + " .body_middle",true);
 							
 						}else{
-							jsmod("#"+window.dnrwId + " .tab-content");
+							jsmod("#"+window.dnrwId + " .tab-content",true);
 						}
 						pageLock("hide");
 					}

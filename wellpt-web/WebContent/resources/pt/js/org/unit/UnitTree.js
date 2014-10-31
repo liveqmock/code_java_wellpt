@@ -108,6 +108,34 @@ function getRootPath(){
     var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
     return(projectName);
 }
+function getXmlDom(jsonpxml) {
+	var xmldom=null;
+	if(window.ActiveXObject){
+		 xmldom = createDocument();
+		 xmldom.loadXML(jsonpxml);
+	}else{
+		 var domParser = new DOMParser();
+		  xmldom = domParser.parseFromString(jsonpxml,'application/xml');
+	}
+	return xmldom;
+}
+
+function createDocument() {
+    if (typeof arguments.callee.activeXString != "string") {
+        var versions = ["MSXML2.DOMDocument.6.0", "MSXML2.DOMDocument.3.0", "MSXML2.DOMDocument"],
+            i, len;
+        for (i = 0, len = versions.length; i < len; i++) {
+            try {
+                var xmldom = new ActiveXObject(versions[i]);
+                arguments.callee.activeXString = versions[i];
+                break;
+            } catch (ex) {
+                //跳过
+            }
+        }
+    }
+    return new ActiveXObject(arguments.callee.activeXString);
+}
 function UnitOnloadEvent(){
 	goForm = document.forms[0];
 	goUnitTree.initArg = window.dialogArguments;
@@ -123,6 +151,10 @@ function UnitOnloadEvent(){
 		goUnitTree.initArg["Type"]="MyUnit";
 		goUnitTree.initArg["LoginStatus"]=false;
 		goUnitTree.initArg["Exclude"]=null;
+		goUnitTree.initArg["email"]=null;
+		goUnitTree.initArg["employeeNumber"]=null;
+		goUnitTree.initArg["loginName"]=null;
+		goUnitTree.initArg["FilterCondition"]=null;
 	}
 	goUnitTree.LTree = $("#ID_LTree");
 	goUnitTree.MTree = $("#ID_MTree");
@@ -150,6 +182,11 @@ function UnitOnloadEvent(){
 			if(goUnitTree.initArg["ID"][j]==null || goUnitTree.initArg["ID"][j]=="") continue;
 			var laID = goUnitTree.initArg["ID"][j].split(";");
 			var laName=goUnitTree.initArg["Name"][j].split(";");
+			
+			var laEmail = goUnitTree.initArg["email"][j].split(";");
+			var laEmployeeNumber = goUnitTree.initArg["employeeNumber"][j].split(";");
+			var laLoginName=goUnitTree.initArg["loginName"][j].split(";");
+		
 			for(var i=0;i<laID.length;i++){
 				var loUnit = $(goUnitTree.xmlDOM.createElement("unit"));
 				loUnit.setAttribute("type","-1");
@@ -157,6 +194,18 @@ function UnitOnloadEvent(){
 				loUnit.setAttribute("isLeaf","1");
 				loUnit.setAttribute("name",laName[i]);
 				loUnit.setAttribute("id",laID[i]);
+				
+				if(laEmail[i]!=null){
+					loUnit.setAttribute("email",laEmail[i]);
+				}
+				if(laEmployeeNumber[i]!=null){
+					loUnit.setAttribute("employeeNumber",laEmployeeNumber[i]);
+				}
+				
+				if(laLoginName[i]!=null){
+					loUnit.setAttribute("loginName",laLoginName[i]);
+				}
+				
 				$(laNode[j]).appendChild(loUnit);
 			}
 			var lsName = $(laNode[j]).getAttribute("name");
@@ -166,6 +215,20 @@ function UnitOnloadEvent(){
 	}else if(goUnitTree.initArg["ID"]!=null && goUnitTree.initArg["ID"]!=""){
 		var laID = goUnitTree.initArg["ID"].split(";");
 		var laName=goUnitTree.initArg["Name"].split(";");
+		
+		var laEmail=null;
+		var laEmployeeNumber=null;
+		var laLoginName=null;
+		if(goUnitTree.initArg["email"]!=null){
+			 laEmail=goUnitTree.initArg["email"].split(";");
+		}
+		if(goUnitTree.initArg["employeeNumber"]!=null){
+			 laEmployeeNumber = goUnitTree.initArg["employeeNumber"].split(";");
+		}
+		if(goUnitTree.initArg["loginName"]!=null){
+			laLoginName = goUnitTree.initArg["loginName"].split(";");
+		}
+		
 		for(var i=0;i<laID.length;i++){
 			var loUnit = $(goUnitTree.xmlDOM.createElement("unit"));
 			loUnit.setAttribute("type","-1");
@@ -173,6 +236,17 @@ function UnitOnloadEvent(){
 			loUnit.setAttribute("isLeaf","1");
 			loUnit.setAttribute("name",laName[i]);
 			loUnit.setAttribute("id",laID[i]);
+			
+			if(laEmail!=null){
+				loUnit.setAttribute("email",laEmail[i]);
+			}
+			if(laEmployeeNumber!=null){
+				loUnit.setAttribute("employeeNumber",laEmployeeNumber[i]);
+			}
+			if(laLoginName!=null){
+				loUnit.setAttribute("loginName",laLoginName[i]);
+			}
+			
 			goUnitTree.xmlObject["RTree"].appendChild(loUnit);
 			liCount++;
 		}
@@ -186,16 +260,23 @@ function UnitOnloadEvent(){
 }
 function sSetUnitType(psType, goUnitTree){
 	var lsUnitType = psType;
+	var _this=this;
 	$.ajax({
 		url : ctx + "/org/unit/tree/type/xml",
 		type : "GET",
-		dataType : "xml",
+		jsonp: "jsonpCallback",//服务端用于接收callback调用的function名的参数
+        dataType:'jsonp',   
+		//dataType : "xml",
 		cache : false,
 		async : false,
 		error : function(data) {
 		},
 		success : function(data) {
-			var laNode = $(data).selectNodes("types/type");
+			
+		 //modify by zky 改为jsonp格式传递
+    	 var xmldoc = _this.getXmlDom(data.xml);
+			
+			var laNode = $(xmldoc).selectNodes("types/type");
 			var liIndex = -1;
 			if (laNode!=null){
 				for(var i=0;i<laNode.length;i++){
@@ -232,6 +313,9 @@ function sSetUnitType(psType, goUnitTree){
 			}
 			lsUnitType = (goForm.UnitType.selectedIndex>=0)?goForm.UnitType.options[goForm.UnitType.selectedIndex].value:"";
 			goUnitTree.curType = lsUnitType;
+		
+			//从unit.htm移过来.
+			$("#UnitType").chosen({disable_search_threshold: 10});
 		}
 	});
 }
@@ -276,11 +360,13 @@ function UnitTypeChangeEvent(psUnitType){
 }
 function bCreateTree(psType,pbExpandAll){
 	var loNode = null;
+	var _this=this;
 	if(pbExpandAll){
 		loNode = goUnitTree.xmlObject[psType+"_ALL"];
 	}else{
 		loNode = goUnitTree.xmlObject[psType+"_ALL"];
-		if(loNode==null) loNode = goUnitTree.xmlObject[psType];
+		//if(loNode==null) loNode = goUnitTree.xmlObject[psType];
+		loNode=null;
 	}
 	if(loNode==null){
 		var url = ctx + "/org/unit/tree/unit/xml" + "?login="+(goUnitTree.initArg["LoginStatus"]?"1":"0")+"&all="+(pbExpandAll?"2":"1");
@@ -292,15 +378,23 @@ function bCreateTree(psType,pbExpandAll){
 		}
 		$.ajax({
 				url : url,
-				type : "POST",
+				type : "GET",
 				//url : "./MyUnit.xml",
 				//type : "GET",
-				data : {optionType: psType},
-				dataType : "xml",
+				data : {optionType: psType,filterCondition:goUnitTree.initArg["FilterCondition"]},
+				//dataType : "xml",
+				
+				jsonp: "jsonpCallback",//服务端用于接收callback调用的function名的参数
+		        dataType:'jsonp',   
+		        
 				error : function(data) {
 				},
-				success: function(data){					
-					loNode = $(data).selectSingleNode("units");
+				success: function(data){			
+					
+					 //modify by zky 改为jsonp格式传递
+					 var xmldoc = _this.getXmlDom(data.xml);
+					
+					loNode = $(xmldoc).selectSingleNode("units");
 					if(loNode==null){ 
 						loNode = $(goUnitTree.xmlDOM).selectSingleNode("units");//goUnitTree.xmlDOM.createElement("units");
 					}
@@ -366,6 +460,12 @@ function sGetNodeHTML(poParent,piIndent,piTreeType,pbExpand, showLeafName){
 		var lsType = loNode.getAttribute("type");
 		var lsSex = loNode.getAttribute("sex");
 		var lsLabel = loNode.getAttribute("name");
+		
+		//增加email和员工编号
+		var lsEmail=loNode.getAttribute("email");
+		var lsEmployeenumber=loNode.getAttribute("employeeNumber");
+		var lsLoginName=loNode.getAttribute("loginName");
+		
 		// 显示根名称
 		if(showLeafName) {
 			if(lsLabel.lastIndexOf("/") != -1) {
@@ -388,7 +488,10 @@ function sGetNodeHTML(poParent,piIndent,piTreeType,pbExpand, showLeafName){
 			lbCheckbox = false;
 		}else if(lsType=="4" && (goUnitTree.initArg["SelectType"] & 16)!=16){
 			lbCheckbox = false;
+		}else if(lsType=="6" && (goUnitTree.initArg["SelectType"] & 32)!=32){
+			lbCheckbox = false;
 		}
+		
 		var lbShowNodeImg = (piTreeType==1 || piTreeType==3 && goUnitTree.initArg["Target"]!=null)?true:false;
 		var lbChecked = loNode.getAttribute("checked")=="1"?true:false;
 		if ((piTreeType==1 || piTreeType==2) && goUnitTree.xmlObject["RTree"].children().length>0){
@@ -428,7 +531,16 @@ function sGetNodeHTML(poParent,piIndent,piTreeType,pbExpand, showLeafName){
 			}
 		}*/
 		if (lbCheckbox)
-			loBuf.append("<input type=\"checkbox\" name=\"-checkbox\" class=\"UT-checkbox\" TreeType=\"").append(""+piTreeType).append("\" UnitType=\"").append(lsType).append("\" path=\"").append(lsPath).append("\" value=\"").append(lsID).append("\"").append((lbChecked?" checked":"")).append((lbSelect?"":" NotSelect=\"1\"")).append(" onclick=\"selectCheckBox(this);\" ondblclick=\"dblSelectCheckBox(this);\"></input>");
+			loBuf.append("<input type=\"checkbox\" name=\"-checkbox\" class=\"UT-checkbox\" TreeType=\"").append(""+piTreeType)
+			.append("\" UnitType=\"").append(lsType)
+			.append("\" path=\"").append(lsPath)
+			.append("\" value=\"").append(lsID)
+			.append("\" email=\"").append(lsEmail)
+			.append("\" employeeNumber=\"").append(lsEmployeenumber)
+			.append("\" loginName=\"").append(lsLoginName)
+			.append("\"").append((lbChecked?" checked":""))
+			.append((lbSelect?"":" NotSelect=\"1\""))
+			.append(" onclick=\"selectCheckBox(this);\" ondblclick=\"dblSelectCheckBox(this);\"></input>");
 		else
 			loBuf.append("&nbsp;");
 		if(lsSex!=null && lsSex!="")
@@ -461,6 +573,7 @@ function oGetObjectByName(poObj,psName){
 // noSetSrc 不设置图片，默认设置图片
 function toggle(poObj, noSetSrc){
 	var loCont = oGetObjectByName(poObj,"-cont");
+	var _this=this;
 	if ($(poObj).attr("isOpen")=="1"){
 		$(poObj).attr("isOpen", "0");
 		if(!noSetSrc){
@@ -490,15 +603,23 @@ function toggle(poObj, noSetSrc){
 				}
 				$.ajax({
 						url : url,
-						type : "POST",
+						type : "GET",
 						//url : "./MyUnit2.xml",
 						//type : "GET",
 						data : {optionType: goUnitTree.curType, id:loDiv.attr("id")},
-						dataType : "xml",
+						//dataType : "xml",
+						
+						jsonp: "jsonpCallback",//服务端用于接收callback调用的function名的参数
+				        dataType:'jsonp',   
+						
 						error : function(data) {
 						},
 						success: function(data){
-							var loNode = $(data).selectSingleNode("/units/unit[@id='"+loDiv.attr("id")+"']");
+							
+							 //modify by zky 改为jsonp格式传递
+							var xmldoc = _this.getXmlDom(data.xml);
+							
+							var loNode = $(xmldoc).selectSingleNode("/units/unit[@id='"+loDiv.attr("id")+"']");
 							if (loNode==null) return;
 							var loParent = goUnitTree.xmlObject[goUnitTree.curType].selectSingleNode("//unit[@uid='"+loDiv.attr("uid")+"']");
 							if (loParent==null) return;
@@ -583,6 +704,7 @@ function MTreeCurPage(pbNext){
 	goUnitTree.MTree.html(sGetNodeHTML($(goUnitTree.xmlObject["MTree"].children().get(liIndex)),-1,2));
 }
 function bSetMTree(psID){
+	var _this=this;
 	for(var i=goForm.MSurname.options.length-1;i>0; i--) goForm.MSurname.options[i]=null;
 	ID_MMemberCount.innerText = "0";
 	goUnitTree.MTree.html("&nbsp;");
@@ -594,17 +716,24 @@ function bSetMTree(psID){
 	}
 	$.ajax({
 		url : url,
-		type : "POST",
+		type : "GET",
 		//url : "./Leaf.xml",
 		//type : "GET",
 		data : {optionType: goUnitTree.curType, id:psID},
-		dataType : "xml",
+		
+		jsonp: "jsonpCallback",//服务端用于接收callback调用的function名的参数
+        dataType:'jsonp',   
+		
+		//dataType : "xml",
 		cache : false,
 		async : false,
 		error : function(data) {
 		},
 		success : function(data) {
-			loNode = $(data).selectSingleNode("units");
+			 //modify by zky 改为jsonp格式传递
+			var xmldoc = _this.getXmlDom(data.xml);
+			
+			loNode = $(xmldoc).selectSingleNode("units");
 		}
 	});
 //	var xmlhttp = oGetXmlHttpRequest();
@@ -673,6 +802,10 @@ function AddUnit(poObj,poParent){
 	loUnit.setAttribute("type",$(poObj).attr("UnitType"));
 	loUnit.setAttribute("path",$(poObj).attr("path"));
 	loUnit.setAttribute("isLeaf","1");
+	loUnit.setAttribute("email",$(poObj).attr("email"));
+	loUnit.setAttribute("employeeNumber",$(poObj).attr("employeeNumber"));
+	loUnit.setAttribute("loginName",$(poObj).attr("loginName"));
+	
 	var lsName = $(poObj).attr("path");
 	if($(poObj).attr("UnitType")=="1"){
 		if(goUnitTree.initArg["NameType"].charAt(0)=="1"){
@@ -1003,32 +1136,59 @@ function OKClick(){
 	if (laNode.length==0){
 		laReturn["name"] = "";
 		laReturn["id"] = "";
+		laReturn["email"] = "";
+		laReturn["employeeNumber"] = "";
+		laReturn["loginName"] = "";
 	}else if($(laNode[0]).getAttribute("type")=="0"){
 		laReturn["name"] = new Array();
 		laReturn["id"] = new Array();
+		laReturn["email"] = new Array();
+		laReturn["employeeNumber"] = new Array();
+		laReturn["loginName"]=new Array();
 		for(var i=0;i<laNode.length;i++){
 			var laName = new Array();
 			var laID = new Array();
+			var laEmail = new Array();
+			var laEmployeeNumber = new Array();
+			var laLoginName=new Array();
 			for(var j=0;j<$(laNode[i]).children().length;j++){
 				laName.push($(laNode[i]).children(j).getAttribute("name"));
 				laID.push($(laNode[i]).children(j).getAttribute("id"));
+				laEmail.push($(laNode[i]).children(j).getAttribute("email"));
+				laEmployeeNumber.push($(laNode[i]).children(j).getAttribute("employeeNumber"));
+				laLoginName.push($(laNode[i]).children(j).getAttribute("loginName"));
 			}
 			laReturn["name"].push(laName.join(";"));
 			laReturn["id"].push(laID.join(";"));
+			laReturn["email"].push(laEmail.join(";"));
+			laReturn["employeeNumber"].push(laEmployeeNumber.join(";"));
+			laReturn["loginName"].push(laLoginName.join(";"));
 		}
 	}else{
 		var laName = new Array();
 		var laID = new Array();
+		var laEmail = new Array();
+		var laEmployeeNumber = new Array();
+		var laLoginName=new Array();
 		for(var i=0;i<laNode.length;i++){
 			laName.push($(laNode[i]).getAttribute("name"));
 			laID.push($(laNode[i]).getAttribute("id"));
+			laEmail.push($(laNode[i]).getAttribute("email"));
+			laEmployeeNumber.push($(laNode[i]).getAttribute("employeeNumber"));
+			laLoginName.push($(laNode[i]).getAttribute("loginName"));
 		}
 		laReturn["name"] = laName.join(";");
 		laReturn["id"] = laID.join(";");
+		laReturn["email"] = laEmail.join(";");
+		laReturn["employeeNumber"] = laEmployeeNumber.join(";");
+		laReturn["loginName"] = laLoginName.join(";");
 	}
 	goUnitTree.returnValue = {};
 	goUnitTree.returnValue.id = laReturn["id"];
 	goUnitTree.returnValue.name = laReturn["name"];
+	goUnitTree.returnValue.email = laReturn["email"];
+	goUnitTree.returnValue.employeeNumber = laReturn["employeeNumber"];
+	goUnitTree.returnValue.loginName = laReturn["loginName"];
 	//$.dialog.data("unitReVal", laReturn);
 	//$.dialog.close();
 	//window.returnValue = laReturn;
@@ -1036,17 +1196,25 @@ function OKClick(){
 }
 function bSearch(){
 	var psType = goUnitTree.curType;
+	var _this=this;
 	var pbExpandAll = false;
-	var keyWord = $("#KeyWords").val();
+	var keyWord = encodeURIComponent($("#KeyWords").val());
 	$.ajax({
 		url : ctx + "/org/unit/tree/search/xml" + "?login="+(goUnitTree.initArg["LoginStatus"]?"1":"0")+"&all=1",
-		type : "POST",
+		type : "GET",
 		data : {optionType: psType, searchValue: keyWord},
-		dataType : "xml",
+		//dataType : "xml",
+		jsonp: "jsonpCallback",//服务端用于接收callback调用的function名的参数
+        dataType:'jsonp',   
 		error : function(data) {
 		},
 		success: function(data){
-			var loNode = $(data).selectSingleNode("units");
+			
+			 //modify by zky 改为jsonp格式传递
+			var xmldoc = _this.getXmlDom(data.xml);
+			
+			
+			var loNode = $(xmldoc).selectSingleNode("units");
 			if(loNode==null){ 
 				loNode = $(goUnitTree.xmlDOM).selectSingleNode("units");//goUnitTree.xmlDOM.createElement("units");
 			}

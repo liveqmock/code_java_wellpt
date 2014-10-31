@@ -34,35 +34,48 @@
 	 * Ckeditor CLASS DEFINITION ======================
 	 */
 	var Ckeditor = function(element, options) {
-		this.init("wckeditor", element, options);
+		this.$element = $(element);
+		this.options = $.extend({}, $.fn["wckeditor"].defaults, options,
+				this.$element.data());
 	};
 
 	
 	Ckeditor.prototype = {
 		constructor : Ckeditor,
-		init : function(type, element, options) {
-			this.type = type;
-			this.$element = $(element);
-			this.options = this.getOptions(options);
-			this.initparams(this.options);
-		},
 		//默认参数初始化
-		initparams:function(options){
-
-			//设置字段属性.根据不同的控件类型区分。
-			$.ControlUtil.setCtrAttr(this.$element,this.options);
+		initSelf:function(){
 		    var name=this.$element.attr("id");
 			//清除编辑器
 			var instance = CKEDITOR.instances[name];
 			if (instance) { 
 				CKEDITOR.remove(instance);
 			}
+			options=this.options;
+			var width = this.options.commonProperty.ctlWidth;
+			if($.trim(width).length > 0){
+				if(width.indexOf("px") == -1 && width.indexOf("%") == -1 ){
+					width = width + "px";
+				}
+			}else{
+				width = "100%";
+			}
+			
+			var height = this.options.commonProperty.ctlHight;
+			if($.trim(height).length > 0){
+				if(height.indexOf("px") == -1 && height.indexOf("%") == -1 ){
+					height = width + "px";
+				}
+			}else{
+				height = "100%";
+			}
+			
+			
 			 //初始化编辑器
 				var editor = CKEDITOR.replace( name, {  
 					allowedContent:true,
 					enterMode: CKEDITOR.ENTER_P,
-					height: '100px', 
-					width: '500px' ,
+					height: height,
+					width: width,
 					//工具栏
 					toolbar: [ 
 					          ['Bold','Italic','Underline'], ['Cut','Copy','Paste'], 
@@ -84,20 +97,19 @@
 					        }
 					    }
 				 });
-			 
+			//	alert(this.$element.css());
+			//editor.applyStyle();
+			//设置文本的css样式
+			this.setTextInputCss();
 			//设置默认值
-			this.setValue(options.columnProperty.defaultValue);
-		},
-		getOptions : function(options) {
-			options = $.extend({}, $.fn[this.type].defaults, options,
-					this.$element.data());
-			return options;
+            this.setDefaultValue(this.options.columnProperty.defaultValue);
+            this.addMustMark();
 		},
 		
 		getCkText : function() {
-			var name=this.$element.attr("id");
-			var oEditor=CKEDITOR.instances[name];
-			return oEditor.document.getBody().getText();
+			var name=this.$element.attr("id"); 
+			var oEditor=CKEDITOR.instances[name]; 
+			return oEditor.getData();
 		},
 		getCkHtml : function() {
 			var name=this.$element.attr("id");
@@ -122,40 +134,35 @@
 			 $.ControlUtil.setRequired(isrequire,this.options);
 		 } ,
 		 
-		 //设置可编辑
-		 setEditable:function(){
-			 this.setReadOnly(false);
-			 this.setEnable(true);
-			 this.setDisplayAsCtl();
-		 } ,
-		 
-		 //只读，文本框不置灰，不可编辑
-		 setReadOnly:function(isreadonly){
-			 $.ControlUtil.setReadOnly(this.$element,isreadonly);
-			 this.options.readOnly=isreadonly;
-		 } ,
-		 
-		 //设置disabled属性
-		 setEnable:function(isenable){
-			 $.ControlUtil.setEnable(this.$element,isenable);
-			 this.options.disabled=!isenable;
-		 } ,
-		 
-		 //设置hide属性
-		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(this.$element,isvisible);
-			 this.options.isHide=!isvisible;
-		 } ,
-		 
 		 //显示为lablel
 		 setDisplayAsLabel:function(){
-			 $.ControlUtil.setIsDisplayAsLabel(this.$element,this.options,true);
-			 this.$element.next().next().hide();
+			 $.ControlUtil.setDisplayAsLabel(this.$element,this.options,false,this);
+			   
+			 this.hideDiv();
+			  
 		 } ,
+		 
+		 hideDiv:function(){
+			 var _this = this;
+			 if(_this.$element.siblings("div[role='application']").size() == 0 //ie外的浏览器
+					 && 
+					 _this.$element.siblings("span[role='application']").size() == 0//ie
+					 ){//由于ckeditor是异步的，所在这里需要等待
+				  
+				 window.setTimeout(function(){
+					 _this.hideDiv();
+				 }, 10);
+			 }else{
+				 _this.$element.siblings("span[role='application']").hide();
+				 _this.$element.siblings("div[role='application']").hide(); 
+			 }
+			 
+		 },
 		 
 		 //显示为控件
 		 setDisplayAsCtl:function(){
 			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
+			 this.$element.hide();
 			 this.$element.next().show();
 		 },
 	       
@@ -166,74 +173,7 @@
 			 return this.getCkText();
 		 },
 		 
-		 isValueMap:function(){
-			 return false;
-		 },
 
-		 /**
-		  * 返回是否可编辑(由readOnly和disabled判断)
-		  * @returns {Boolean}
-		  */
-		 isEditable:function(){
-			 if(this.options.readOnly&&this.options.disabled){
-				 return false;
-			 }else{
-				 return true;
-			 };
-		 },
-		 
-		 isReadOnly:function(){
-			 return this.options.readOnly;
-		 },
-		 
-		 isEnable:function(){
-			 return !this.options.disabled;
-		 },
-		 
-		 isVisible:function(){
-			 return  this.options.isHide;
-		 }, 
-		 
-		 isRequired:function(){
-			 return $.ControlUtil.isRequired(this.options);
-		 },
-		 
-		 isShowAsLabel:function(){
-			 return this.options.isShowAsLabel;
-		 },
-		 
-		 getAllOptions:function(){
-		    	 return this.options;
-		     } ,  
-		     
-		 getRule:function(){
-			 return $.ControlUtil.getCheckRules(this.options);
-		 } ,
-		 
-		 getMessage:function(){
-			 return $.ControlUtil.getCheckMsg(this.options);
-		 } ,
-		 
-	     //bind函数，桥接
-	     bind:function(eventname,event){
-	    	this.$element.bind(eventname,event);
-	    	return this;
-	     },
-		 
-		 //unbind函数，桥接
-	     unbind:function(eventname){
-	    	this.$element.unbind(eventname);
-	    	return this;
-	     },
-	     
-	     /**
-	      * 获得控件名
-	      * @returns
-	      */
-	     getCtlName:function(){
-	    	 return this.$element.attr("name");
-	     },
-	     
 	    //一些其他method ---------------------
 	     getwckeditorInstance:function(){
 	    	 return CKEDITOR.instances[options.colenname];
@@ -272,8 +212,14 @@
 					options = typeof option == 'object'
 							&& option;
 					if (!data) {
-						$this.data('wckeditor', (data = new Ckeditor(this,
-								options)));
+						 data = new Ckeditor(this,options);
+						 var datacopy={};
+						 var data1=$.extend(datacopy,data);
+						 var extenddata=$.extend(data,$.wControlInterface);
+						 var data2=$.extend(extenddata,data1);
+						 var data3=$.extend(data2,$.wTextCommonMethod);
+						 data3.init();
+						 $this.data('wckeditor',data3 );
 					}
 					
 					if (typeof option == 'string') {

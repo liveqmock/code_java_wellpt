@@ -40,7 +40,7 @@ public class HibernateDaoAspect implements Ordered {
 	 * 
 	 * @param entity
 	 */
-	@Before("execution(* com.wellsoft.pt.core.dao.hibernate.SimpleHibernateDao.save(..)) && args(entity)")
+	@Before("(execution(* com.wellsoft.pt.core.dao.hibernate.SimpleHibernateDao.save(..)) || execution(* com.wellsoft.pt.core.dao.UniversalDao.save(..))) && args(entity)")
 	public void beforeSaveModel(JoinPoint jp, BaseEntity entity) {
 		if (StringUtils.isBlank(entity.getUuid())) {
 			Calendar calendar = Calendar.getInstance();
@@ -70,7 +70,7 @@ public class HibernateDaoAspect implements Ordered {
 	 * 
 	 * @param entity
 	 */
-	@Before("execution(* com.wellsoft.pt.core.dao.hibernate.SimpleHibernateDao.saveAll(..)) && args(entities)")
+	@Before("(execution(* com.wellsoft.pt.core.dao.hibernate.SimpleHibernateDao.saveAll(..)) || execution(* com.wellsoft.pt.core.dao.UniversalDao.saveAll(..))) && args(entities)")
 	public void beforeSaveAllModels(JoinPoint jp, Collection<? extends BaseEntity> entities) {
 		for (BaseEntity entity : entities) {
 			if (StringUtils.isBlank(entity.getUuid())) {

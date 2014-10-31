@@ -25,15 +25,17 @@
 			fontColor:null,//字段的颜色
 			ctlWidth:null,//宽度
 			ctlHight:null,//高度
-			textAlign:null,//对齐方式
-			
+			textAlign:null,//对齐方式 
 	};
 	
 	/*
 	 * NUMBERINPUT CLASS DEFINITION ======================
 	 */
 	var NumberInput = function(element, options) {
-		this.init("wnumberInput", element, options);
+		this.$element = $(element);
+		this.options = $.extend({}, $.fn["wnumberInput"].defaults, options,
+				this.$element.data());
+		this.htmlelement=element;
 	};
 
 	var MAX_INT_VALUE = new Number(2147483647);
@@ -57,29 +59,95 @@
 
 	NumberInput.prototype = {
 		constructor : NumberInput,
-		init : function(type, element, options) {
-			this.type = type;
-			this.$element = $(element);
-			this.htmlelement=element;
-			this.options = this.getOptions(options);
+		
+		initSelf:function(){
+			this.$element.attr("decimal",this.options.decimal);	//小数位
+			this.$element.attr("negative",this.options.negative);	//是否允许负数
+			this.$element.attr("id",this.$element.attr("name")); 
 			this.$element.keydown($.proxy(this._preCheckInput, this));
 			this.$element.keyup($.proxy(this._postCheckInput, this));
-	
-			 //设置字段属性.根据不同的控件类型区分。
-			 $.ControlUtil.setCtrAttr(this.$element,this.options);
+			var operator = this.options.operator;
+			if(operator){
+				var _this = this;
+				var dbDataType = this.options.dbDataType;
+				if(operator.plus){ 
+					this.$element.before("<span class='plus' style='cursor:pointer' inputMode='" + this.$element.attr("inputMode") + "'>+&nbsp;</span>");
+					this.$element.prev().click(function(){
+						var val = _this.$element.val();
+						if($.trim(val).length == 0){
+							val = 0;
+							//return;
+						}
+						if(dbDataType != dyFormDataType["float"]){
+							_this.$element.val(parseInt(val) + operator.plusUnit);
+						}else{
+							_this.$element.val(parseFloat(val) + operator.plusUnit);
+						}
+						
+					});
+				}
+				if(operator.minus){
+					this.$element.after("<span class='minus' style='cursor:pointer' inputMode='" + this.$element.attr("inputMode") + "'>&nbsp;-</span>");
+					this.$element.next().click(function(){
+						var val = _this.$element.val();
+						if($.trim(val).length == 0){
+							//return;
+							val = 0;
+						}
+						if(dbDataType != dyFormDataType["float"]){
+							_this.$element.val(parseInt(val) - operator.minusUnit);
+						}else{
+							_this.$element.val(parseFloat(val) - operator.minusUnit);
+						}
+						
+					});
+				}
+			}
+			
+			
 			//根据show类型展示
-			 $.ControlUtil.dispalyByShowType(this.$element,this.options);
+			 this.dispalyByShowType();
+			 //设置文本的css样式
+			 this.setTextInputCss();
 			 //设置默认值
-			this.setValue(options.defaultValue);
+			 this.setDefaultValue(this.options.columnProperty.defaultValue);
+			  this.addMustMark();
+			  
 		},
-		getOptions : function(options) {
-			options = $.extend({}, $.fn[this.type].defaults, options,
-					this.$element.data());
-			return options;
+			
+		//显示为lablel
+		 setDisplayAsLabel:function(){
+			 $.ControlUtil.setDisplayAsLabel(this.$element,this.options,false,this);
+			 this.hideOperator();
+		 } ,
+		hideOperator:function(){
+			//alert(1);
+			 var operator = this.options.operator;
+			 if(operator){ 
+					if(operator.plus){
+						this.$element.prev(".plus").hide();
+					}
+					if(operator.minus){
+						//console.log(this.$element.siblings(".minus").size());
+						this.$element.siblings(".minus").hide();
+					}
+				}
+		},
+		showOperator:function(){
+			 var operator = this.options.operator;
+			 if(operator){ 
+					if(operator.plus){ 
+						this.$element.prev(".plus").show();
+					}
+					if(operator.minus){
+						//this.$element.next(".minus").show();
+						this.$element.siblings(".minus").show();
+					}
+				}
 		},
 		_preCheckInput : function(event) {
 			this.oldValue = this.$element.val();
-//			alert(JSON.stringify(event.keyCode));
+//			alert(JSON.cStringify(event.keyCode));
 			// Allow: backspace, delete, tab and escape
 			if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9
 					|| event.keyCode == 27 ||
@@ -95,18 +163,18 @@
 			//	return true;
 			//}
 			// "." 190
-			if (event.keyCode == 190 && this.options.columnProperty.dbDataType == "15") {
-				return true;
+			if (this.oldValue.indexOf(".")>0&&(event.keyCode == 190||event.keyCode == 110) && this.options.columnProperty.dbDataType == "15") {
+				return false;
 			}
 			//火狐的"-"号是173的code?
-			if (!(event.keyCode >= 48 && event.keyCode <= 57) && !(event.keyCode >= 95 && event.keyCode <= 105)&&!((event.keyCode == 189||event.keyCode == 173)&& this.options.negative == true)) {
+			if (!(event.keyCode >= 48 && event.keyCode <= 57) && !(event.keyCode >= 95 && event.keyCode <= 105)&&!((event.keyCode == 190||event.keyCode == 173||event.keyCode == 110)&& this.options.negative == true)) {
 				return false;
 			}
 			//如果是小数，则根据decimal设置输入小数位
 			if (this.options.columnProperty.dbDataType == "15") {
 				var value=this.oldValue;
 				var decimal=this.options.decimal;
-					 if (event.keyCode >= 48 && event.keyCode <= 57) {
+					 if ((event.keyCode >= 48 && event.keyCode <= 57)||(event.keyCode >= 95 && event.keyCode <= 105)||(event.keyCode == 190||event.keyCode == 110)) {
 				            var cursorpos = getCurPosition(this.htmlelement);
 				            var selText = getSelectedText(this.htmlelement);
 				            var dotPos = value.indexOf(".");
@@ -155,128 +223,7 @@
 			}
 		},
 		
-		//set............................................................//
 	     
-		//设值
-		 setValue:function(value){
-			 $.ControlUtil.setValue(this.$element,this.options,value);
-		 } ,
-		 
-		 //设置必输
-		 setRequired:function(isrequire){
-			 $.ControlUtil.setRequired(isrequire,this.options);
-		 } ,
-		 
-		 //设置可编辑
-		 setEditable:function(){
-			 this.setReadOnly(false);
-			 this.setEnable(true);
-			 this.setDisplayAsCtl();
-		 } ,
-		 
-		 //只读，文本框不置灰，不可编辑
-		 setReadOnly:function(isreadonly){
-			 $.ControlUtil.setReadOnly(this.$element,isreadonly);
-			 this.options.readOnly=isreadonly;
-		 } ,
-		 
-		 //设置disabled属性
-		 setEnable:function(isenable){
-			 $.ControlUtil.setEnable(this.$element,isenable);
-			 this.options.disabled=!isenable;
-		 } ,
-		 
-		 //设置hide属性
-		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible(this.$element,isvisible);
-			 this.options.isHide=!isvisible;
-		 } ,
-		 
-		 //显示为lablel
-		 setDisplayAsLabel:function(){
-			 $.ControlUtil.setIsDisplayAsLabel(this.$element,this.options,true);
-		 } ,
-		 
-		 //显示为控件
-		 setDisplayAsCtl:function(){
-			 $.ControlUtil.setDisplayAsCtl(this.$element,this.options);
-		 },
-		 
-	       
-	    //get..........................................................//
-		
-		 //返回控件值
-		 getValue:function(){
-			 return this.$element.val();
-		 },
-
-		 isValueMap:function(){
-			 return false;
-		 },
-		 /**
-		  * 返回是否可编辑(由readOnly和disabled判断)
-		  * @returns {Boolean}
-		  */
-		 isEditable:function(){
-			 if(this.options.readOnly&&this.options.disabled){
-				 return false;
-			 }else{
-				 return true;
-			 }
-		 },
-		 
-		 isReadOnly:function(){
-			 return this.options.readOnly;
-		 },
-		 
-		 isEnable:function(){
-			 return !this.options.disabled;
-		 },
-		 
-		 isVisible:function(){
-			 return  this.options.isHide;
-		 }, 
-		 
-		 isRequired:function(){
-			 return $.ControlUtil.isRequired(this.options);
-		 },
-		 
-		 isShowAsLabel:function(){
-			 return this.options.isShowAsLabel;
-		 },
-		 
-		 getAllOptions:function(){
-		    	 return this.options;
-		     } ,  
-		     
-		 getRule:function(){
-			 return $.ControlUtil.getCheckRules(this.options);
-		 } ,
-		 
-		 getMessage:function(){
-			 return $.ControlUtil.getCheckMsg(this.options);
-		 } ,
-		 
-	     /**
-	      * 获得控件名
-	      * @returns
-	      */
-	     getCtlName:function(){
-	    	 return this.$element.attr("name");
-	     },
-		 
-	     //bind函数，桥接
-	     bind:function(eventname,event){
-	    	this.$element.bind(eventname,event);
-	    	return this;
-	     },
-		 
-		 //unbind函数，桥接
-	     unbind:function(eventname){
-	    	this.$element.unbind(eventname);
-	    	return this;
-	     }
-	    //一些其他method ---------------------
 	     
 	};
 		
@@ -330,8 +277,14 @@
 					var $this = $(this), data = $this.data('wnumberInput'), options = typeof option == 'object'
 							&& option;
 					if (!data) {
-						$this.data('wnumberInput', (data = new NumberInput(this,
-								options)));
+						 data = new NumberInput(this,options);
+						 var datacopy={};
+						 var data1=$.extend(datacopy,data);
+						 var extenddata=$.extend(data,$.wControlInterface);
+						 var data2=$.extend(extenddata,data1);
+						 var data3=$.extend(data2,$.wTextCommonMethod);
+						 data3.init();
+						 $this.data('wnumberInput',data3 );
 					}
 					if (typeof option == 'string') {
 						data[option]();

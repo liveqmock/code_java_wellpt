@@ -41,6 +41,8 @@
 						<li><a href="#tabs-1">基本信息</a></li>
 						<li><a href="#tabs-2">角色信息</a></li>
 						<li><a href="#tabs-3">角色树</a></li>
+	<!-- 					<li><a href="#tabs-4">权限信息</a></li>
+						<li><a href="#tabs-5">权限树</a></li> -->
 					</ul>
 					<div id="tabs-1">
 						<input type="hidden" id="uuid" name="uuid" /> <input
@@ -73,6 +75,12 @@
 								<td></td>
 							</tr>
 							<tr>
+								<td><label>分类</label></td>
+								<td><input id=category name="category" type="text"
+									class="full-width" /></td>
+								<td></td>
+							</tr>
+							<tr>
 								<td class="align-top"><label>备注</label></td>
 								<td><textarea id="remark" name="remark" class="full-width"></textarea></td>
 								<td></td>
@@ -100,6 +108,30 @@
 							</ul>
 						</div>
 					</div>
+					
+					<div id="tabs-4" style="display: none">
+						<div style="float: left">
+							<ul id="privilege_tree" class="ztree">
+							</ul>
+						</div>
+						<div style="width: 200px; margin-left: 100px; float: left">
+							<div>
+								<label>已选权限</label>
+							</div>
+							<select id="selected_privilege" multiple="multiple"
+								style="height: 200px; width: 250px;">
+							</select>
+						</div>
+						<div style="clear: both;"></div>
+					</div>
+					
+					<div id="tabs-5" style="display: none">
+						<div>
+							<ul id="group_privilege_tree" class="ztree">
+							</ul>
+						</div>
+					</div>
+					
 				</div>
 			</form>
 			<div class="btn-group btn-group-bottom">

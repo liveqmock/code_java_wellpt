@@ -14,7 +14,7 @@
 <link rel="stylesheet"
 	href="${ctx}/resources/ztree/css/zTreeStyle/zTreeStyle.css"
 	type="text/css" />
-	<input type="hidden" id='formUuid' value='7a617713-4de9-48d4-a2d2-68df0acafc79'>
+	<input type="hidden" id='formUuid' value='8f3c0a89-2dc6-45f6-9718-27297772b1a2'>
 	<input type="hidden" id='dataUuid' value='${dataUuid}'>
 	<input type="hidden" id='flag' value='1'>
 	<input type="hidden" id='drId' value="20136315910846">
@@ -35,6 +35,18 @@
 	// 加载动态表单定义模块国际化资源
 	I18nLoader.load("/resources/pt/js/dytable/dytable");
 </script>
+<!-------------------- 我是上传控件开始 ------------------------->
+<script type="text/javascript"
+	src="${ctx}/resources/pt/js/fileupload/well.fileupload.constant.js"></script>
+	
+<script type="text/javascript"
+	src="${ctx}/resources/pt/js/fileupload/well.fileupload.js"></script>
+	
+<script type="text/javascript"
+	src="${ctx}/resources/pt/js/fileupload/well.fileupload4Icon.js"></script>
+	
+ 
+<!-------------------- 我是上传控件结束 ------------------------->	
 <script type="text/javascript"
 	src="${ctx}/resources/jqgrid/js/jquery.jqGrid.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/global.js"></script>
@@ -59,7 +71,6 @@
 <script type="text/javascript"
 	src="${ctx}/resources/pt/js/calendar/calendar_timeEmploy.js"></script>
 <script type="text/javascript" src="${ctx}/resources/pt/js/basicdata/dyview/dyview_explain.js"></script>
-	
 <script type="text/javascript"
 	src="${ctx}/resources/pt/js/psi/stock_deploy.js"></script>
 	</div>

@@ -7,7 +7,7 @@
 }
 
 .project_process {
-    margin: 20px 0 0 70px;
+    margin: 20px 0 0 30px;
 }
 
 .project_process_child{
@@ -26,7 +26,7 @@
 
 .project_process_matter_before{
 	float: left;
-	width: 300px;
+	width: 450px;
 	margin-left: 15px;
 }
 
@@ -34,38 +34,70 @@
     clear: both;
     position: relative;
 }
-
+.project_process_matter_before_child.frist{
+	background:url("../../images/project_process/beforC1.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+.project_process_matter_before_child{
+	background:url("../../images/project_process/beforC2.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+.project_process_matter_before_child.last{
+	background:none;
+}
 .project_process_matter_before_child_line {
-	background: url("../../images/project_process/arrow_middle.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	background-attachment:scroll;
+	background-color:rgba(0, 0, 0, 0);
+	background-image:url("../../images/project_process/arrow_middle.png");
+	background-position:0 0;
+	background-repeat:no-repeat;
     float: left;
     height: 2px;
-    width: 175px;
+    width: 250px;
     height: 60px;
 }
 
 .project_process_stage_line_top{
-	background: url("../../images/project_process/vArrow_top.png") repeat-y scroll 0 0 rgba(0, 0, 0, 0);
+	background-attachment:scroll;
+	background-color:rgba(0, 0, 0, 0);
+	background-image:url("../../images/project_process/vArrow_top.png");
+	background-position:0 0;
+	background-repeat:repeat-y;
 	height: 42px;
 	margin: auto;
 	width: 43px;
 }
 .project_process_stage_line_bottom{
-	background: url("../../images/project_process/vArrow_bottom.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	background-attachment:scroll;
+	background-color:rgba(0, 0, 0, 0);
+	background-image:url("../../images/project_process/vArrow_bottom.png");
+	background-position:0 0;
+	background-repeat:no-repeat;
 	height: 42px;
 	margin: auto;
 	width: 43px;
 }
 
 .project_process_matter_before_child_line.frist {
-	background: url("../../images/project_process/arrow_frist.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	background-attachment:scroll;
+	background-color:rgba(0, 0, 0, 0);
+	background-image:url("../../images/project_process/arrow_frist.png");
+	background-position:0 0;
+	background-repeat:no-repeat;
 }
 
 .project_process_matter_before_child_line.last {
-	background: url("../../images/project_process/arrow_last.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	background-attachment:scroll;
+	background-color:rgba(0, 0, 0, 0);
+	background-image:url("../../images/project_process/arrow_last.png");
+	background-position:0 0;
+	background-repeat:no-repeat;
 }
 
 .project_process_matter_before_child_line.one {
-	background: url("../../images/project_process/arrow_one.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	background-attachment:scroll;
+	background-color:rgba(0, 0, 0, 0);
+	background-image:url("../../images/project_process/arrow_one.png");
+	background-position:0 0;
+	background-repeat:no-repeat;
 }
 
 .project_process_matter_before_child_name{
@@ -75,6 +107,7 @@
 	position: absolute;
 	right: 0;
 	z-index: 2;
+	padding: 0 5px;
 }
 
 .project_process_matter_after{
@@ -91,25 +124,68 @@
 }
 
 .project_process_matter_after_child_line {
-	background: url("../../images/project_process/arrow1_middle.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	background-attachment:scroll;
+	background-color:rgba(0, 0, 0, 0);
+	background-image:url("../../images/project_process/arrow1_middle.png");
+	background-position:0 0;
+	background-repeat:no-repeat;
     position: absolute;
-    width: 320px;
-    left: -320px;
+    width: 470px;
+    left: -470px;
+    top: -25px;
 }
 .project_process_matter_after_child_line.last {
-	background: url("../../images/project_process/arrow1_last.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	background-attachment:scroll;
+	background-color:rgba(0, 0, 0, 0);
+	background-image: url("../../images/project_process/arrow1_last.png");
+	background-position:0 0;
+	background-repeat:no-repeat;
 }
 .project_process_matter_after_child_line.only{
-	background: url("../../images/project_process/arrow1_middle_only.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	background-attachment:scroll;
+	background-color:rgba(0, 0, 0, 0);
+	background-image: url("../../images/project_process/arrow1_middle_only.png");
+	background-position:0 0;
+	background-repeat:no-repeat;
 }
 .project_process_matter_after_child_line.last.frist{
-	background: url("../../images/project_process/arrow1_middle_only2.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	background-attachment:scroll;
+	background-color:rgba(0, 0, 0, 0);
+	background-image: url("../../images/project_process/arrow1_middle_only2.png");
+	background-position:0 0;
+	background-repeat:no-repeat;
+}
+.project_process_matter_after_child_line.last.frist.bAYa{
+	background-attachment:scroll;
+	background-color:rgba(0, 0, 0, 0);
+	background-image: url("../../images/project_process/arrow1_middle.png");
+	background-position:0 0;
+	background-repeat:no-repeat;
 }
 .itemName {
     display: block;
+    font-size: 14px;
+    overflow: hidden;
     text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     width: 100%;
-	font-size: 14px;
+    word-break: keep-all;
+    height: 100%;
+    line-height: 25px;
+}
+.itemName.index1 {
+	line-height: 50px;
+}
+.matterName {
+	color: #888888;
+    font-size: 12px;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    word-break: keep-all;
 }
 .project_description{
 	border-top: 2px solid;
@@ -118,7 +194,7 @@
     padding-top: 10px 
 }
 .project_description_content{
-	width: 250px;
+	width: 360px;
 	float: right;
 }
 .project_description_content_text {

@@ -3,13 +3,13 @@
 <ConnectionMap>
 <Connection name="well_pt_oracle" class="com.fr.data.impl.JDBCDatabaseConnection">
 <DatabaseAttr/>
-<JDBCDatabaseAttr url="jdbc:oracle:thin:@10.24.36.249:1521:ORCL" driver="oracle.jdbc.driver.OracleDriver" user="XZSP_TEST21" password="___004b00140059005f003b0081006e00440047007c003b" encryptPassword="true">
+<JDBCDatabaseAttr url="jdbc:oracle:thin:@10.24.36.250:1521:ORCL" driver="oracle.jdbc.driver.OracleDriver" user="XZSP_31" password="___004b00140059005f003b00e6001a" encryptPassword="true">
 <DBCPAttr/>
 </JDBCDatabaseAttr>
 </Connection>
 <Connection name="common_lib" class="com.fr.data.impl.JDBCDatabaseConnection">
 <DatabaseAttr/>
-<JDBCDatabaseAttr url="jdbc:oracle:thin:@10.24.36.249:1521:ORCL" driver="oracle.jdbc.driver.OracleDriver" user="WELL_PT_TEST21" password="___0044000b00460043003b0085007f00480047000b0059005b005600e4" encryptPassword="true">
+<JDBCDatabaseAttr url="jdbc:oracle:thin:@10.24.36.250:1521:ORCL" driver="oracle.jdbc.driver.OracleDriver" user="WELL_PT_31" password="___0044000b00460043003b0085007f00480020007f" encryptPassword="true">
 <DBCPAttr/>
 </JDBCDatabaseAttr>
 </Connection>

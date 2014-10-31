@@ -17,7 +17,9 @@ $(function() {
 		"remark" : null,
 		"typeId" : null,
 		"typeId1" : null,
-		"subjectDN" : null
+		"webServiceUrl" : null,
+		"subjectDN" : null,
+		"isCallBack" : null
 	};
 	
 	

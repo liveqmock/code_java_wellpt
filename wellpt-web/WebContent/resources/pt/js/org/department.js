@@ -20,7 +20,13 @@ $(function() {
 		"branchedLeaderNames" : null,
 		"branchedLeaderIds" : null,
 		"managerNames" : null,
-		"managerIds" : null
+		"managerIds" : null,
+		"privileges" : [],
+		"functionName":null,
+		"functionId":null,
+		"departmentlevel":null,
+		"externalId":null,
+		"functionNames" : null
 	};
 
 	$("#list").jqGrid({
@@ -100,10 +106,94 @@ $(function() {
 				
 				// 加载部门角色嵌套树
 				loadUserRoleNestedRoleTree(bean.uuid);
+				
+				//加载权限树 20140805+ by zky
+				//loadPrivilegeTree(bean.uuid);
+				
+				// 加载部门权限树+ by zky
+				//loadUserPrivilegeTree(bean.uuid);
 			}
 		});
 	}
-
+	/**-----------初始化权限树开始 ------------------------------------------**/
+	var privilegesetting = {
+			check : {
+				enable : true
+			},
+			callback : {
+				onCheck : setSelectedPrivilege
+			}
+		};
+	
+	// 设置已选中的角色和权限到多选下拉框
+	function setSelectedPrivilege(e, treeId, treeNode) {
+		var zTree = $.fn.zTree.getZTreeObj("privilege_tree");
+		var checkNodes = zTree.getCheckedNodes(true);
+		// 清空
+		$("#selected_privilege").html("");
+		$.each(checkNodes, function(index) {
+			var id = this.id;
+			var name = this.name;
+			var option = "<option value='" + id + "'>" + name + "</option>";
+			$("#selected_privilege").append(option);
+		});
+	}
+	
+	// 加载角色权限树，自动选择已选角色权限
+	function loadPrivilegeTree(uuid) {
+		var role = {};
+		role.uuid = uuid;
+		JDS.call({
+			service : "departmentService.getPrivilegeTree",
+			data : [ uuid ],
+			success : function(result) {
+				var zTree = $.fn.zTree.init($("#privilege_tree"), privilegesetting, result.data);
+				var nodes = zTree.getNodes();
+				// 默认展开第一个节点
+				if (nodes.length > 0) {
+					var node = nodes[0];
+					zTree.expandNode(node, true, false, false, true);
+					// 设置已选中的权限到多选下拉框
+					setSelectedPrivilege();
+				}
+			}
+		});
+	}
+	
+	// 收集权限树
+	function privilegeToObject(bean) {
+		var zTree = $.fn.zTree.getZTreeObj("privilege_tree");
+		if (zTree != null) {
+			var checkNodes = zTree.getCheckedNodes(true);
+			bean["privileges"] = [];
+			$.each(checkNodes, function(index) {
+				var privilege = {};
+				privilege.uuid = this.id;
+				bean["privileges"].push(privilege);
+			});
+		}
+	}
+	
+	// 加载部门权限树
+	function loadUserPrivilegeTree(uuid) {
+		JDS.call({
+			service : "departmentService.getDepartmentPrivilegeTree",
+			data : uuid,
+			success : function(result) {
+				var zTree = $.fn.zTree
+						.init($("#department_privilege_tree"), {},
+								result.data);
+				var nodes = zTree.getNodes();
+				// 默认展开第一个节点
+				if (nodes.length > 0) {
+					var node = nodes[0];
+					zTree.expandNode(node, true, false, false, true);
+				}
+			}
+		});
+	}
+	
+	/**----------------- 初始化权限树结束 --------------------------------------------**/
 	// JQuery UI按钮
 	$("input[type=submit], a, button", $(".btn-group")).button();
 	// JQuery UI页签
@@ -180,6 +270,45 @@ $(function() {
 			}
 		});
 	}
+	
+	//--------------初始化职能树---------------------------------
+	var otherParam={"serviceName" : "dataDictionaryService",
+			"methodName" : "getAsTreeAsyncForUuid",
+			"data":"FUNCTION_TYPE"};
+	//初始化职能树
+	initDataDictTree(otherParam,"functionNames", "functionUuids", true);
+	
+	//--------------初始化职能树---------------------------------
+	function initDataDictTree(otherParam,nameField,IdField,mutiselect){
+		var setting = {
+				async : {
+					otherParam : otherParam
+				},
+				view : {
+					showLine : true
+				},
+				check : {//复选框的选择做成可配置项
+					enable:mutiselect
+				},
+				callback : {
+					onClick:function (event, treeId, treeNode) {
+						var inputId = treeId.replace("_ztree","");
+							$("#"+inputId).val(treeNode.name);
+							$("#"+IdField).val(treeNode.id);
+					}
+				}
+			};
+	
+		$("#"+nameField).comboTree({
+			labelField : nameField,
+			valueField : IdField,
+			width: 200,
+			height: 150,
+			treeSetting : setting
+		});
+	}
+	//--------------初始化职能树结束---------------------------------
+	
 
 	// 新增部门信息
 	$("#btn_add").click(function() {
@@ -193,6 +322,8 @@ $(function() {
 		$("#dept_form").form2json(bean);
 		// 收集角色树
 		rolesToObject(bean);
+		//收集权限树
+		//privilegeToObject(bean);
 		JDS.call({
 			service : "departmentService.saveBean",
 			data : bean,
@@ -238,7 +369,9 @@ $(function() {
 			title : "选择部门",
 			labelField : "parentName",
 			valueField : "parentId",
-			type : "Dept"
+			type : "Dept",
+			multiple:false,
+			showType : false
 		});
 		return false;
 	});
@@ -248,7 +381,7 @@ $(function() {
 			title : "选择人员",
 			labelField : "principalLeaderNames",
 			valueField : "principalLeaderIds",
-			selectType : 4
+			selectType : 36
 		});
 		return false;
 	});

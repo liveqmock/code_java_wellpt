@@ -96,7 +96,8 @@
 					fieldName: this.options.initValues.fieldName,
 					page:this.options.initValues.currentPage,
 					rows:10,
-					value:this.options.initValues.value
+					defaultCondition:this.options.initValues.defaultCondition,
+					value:this.options.initValues.value,
 				},
 				mtype:"POST",
 				datatype:'json',

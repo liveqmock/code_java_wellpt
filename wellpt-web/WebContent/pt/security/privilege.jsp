@@ -58,6 +58,12 @@
 								<td></td>
 							</tr>
 							<tr>
+								<td><label for="categoryName">分类</label></td>
+								<td><input id="categoryName" name="categoryName" type="text"
+									class="full-width" /></td>
+								<td><input type="hidden" id="categoryUuid" name="categoryUuid" /></td>
+							</tr>
+							<tr>
 								<td class="align-top"><label>备注</label></td>
 								<td><textarea id="remark" name="remark" class="full-width"></textarea></td>
 								<td></td>
@@ -73,7 +79,7 @@
 				</div>
 				<div class="btn-group btn-group-bottom">
 					<button id="btn_save" type="button" class="btn">保存</button>
-					<button id="btn_del" type="button" class="btn">删除</button>
+					<!-- <button id="btn_del" type="button" class="btn">删除</button> -->
 				</div>
 			</form>
 		</div>
@@ -98,5 +104,6 @@
 		src="${ctx}/resources/pt/js/system_admin.js"></script>
 	<script type="text/javascript"
 		src="${ctx}/resources/pt/js/security/privilege.js"></script>
+		<script type="text/javascript" src="${ctx}/resources/pt/js/common/jquery.comboTree.js"></script>
 </body>
 </html>

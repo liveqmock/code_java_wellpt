@@ -172,6 +172,9 @@
 
 
 var datectl = {};
+datectl.$ = function(selector){ 
+	return $(selector, $( "#dateAttrCfgDiv")[0]);
+},
 
 /**
  * 初始化属性窗口
@@ -193,7 +196,7 @@ var datectl = {};
 datectl.initProperty = function(field){
 
 	if(field == null ||  (typeof field) == "undefined"){
-		field = new MainFormFieldClass();
+		field = new WDatePickerClass();
 		field.dbDataType = dyFormInputType.date;
 		field.valueCreateMethod = dyFormInputValue.userImport;
 	}else{
@@ -215,7 +218,7 @@ datectl.exitDialog = function(){
 }
 
 datectl.collectFormAndFillCkeditor = function(){ 
-	var field = new MainFormFieldClass();
+	var field = new WDatePickerClass();
 	field.inputMode =  dyFormInputMode.date;
 	field.dbDataType=dyFormInputType.date;  
 	//控件公共属性收集

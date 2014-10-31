@@ -4,7 +4,9 @@ $(function() {
 		"ipAddress1" : null,
 		"ipAddress2" : null,
 		"applyTo" : null,
-		"validPeriod" : null
+		"validPeriod" : null,
+		"domainAddress1" : null,
+		"domainAddress2" : null,
 	};
 
 	var beans = [];
@@ -12,6 +14,7 @@ $(function() {
 	var login_verify_code_selector = "#login_verify_code_list";
 	var ip_login_limit_selector = "#ip_login_limit_list";
 	var ip_sms_verify_selector = "#ip_sms_verify_list";
+	var domain_login_limit_selector = "#domain_login_limit_list";
 
 	// JQuery UI按钮
 	$("input[type=submit], a, button", $(".btn-group")).button();
@@ -118,7 +121,7 @@ $(function() {
 									$.unit.open({
 										initNames : value,
 										initIDs : rowData.userIds,
-										selectType : 4,
+										selectType : 6,
 										afterSelect : function(retVal) {
 											$(cell_selector).val(retVal.name);
 											$(ip_login_limit_selector)
@@ -198,7 +201,7 @@ $(function() {
 									$.unit.open({
 										initNames : value,
 										initIDs : rowData.userIds,
-										selectType : 4,
+										selectType : 6,
 										afterSelect : function(retVal) {
 											$(cell_selector).val(retVal.name);
 											$(ip_sms_verify_selector).saveCell(
@@ -224,6 +227,88 @@ $(function() {
 					}
 				}
 			});
+	
+	
+	// 用户登录的域设置
+	$(domain_login_limit_selector).jqGrid(
+			{
+				datatype : "local",
+				colNames : [ "uuid", "applyTo", "userIds", "用户",
+						"允许登录的域", "禁止登录的域" ],
+				colModel : [ {
+					name : "uuid",
+					index : "uuid",
+					width : "180",
+					hidden : true
+				}, {
+					name : "applyTo",
+					index : "applyTo",
+					width : "180",
+					hidden : true
+				}, {
+					name : "userIds",
+					index : "userIds",
+					width : "180",
+					hidden : true
+				}, {
+					name : "usernames",
+					index : "usernames",
+					width : "180",
+					editable : true
+				}, {
+					name : "domainAddress1",
+					index : "domainAddress1",
+					width : "180",
+					editable : true
+				}, {
+					name : "domainAddress2",
+					index : "domainAddress2",
+					width : "180",
+					editable : true
+				} ],
+				sortable : false,
+				multiselect : true,
+				cellEdit : true,// 表示表格可编辑
+				cellsubmit : "clientArray", // 表示在本地进行修改
+				autowidth : true,
+				height : "auto",
+				afterEditCell : function(rowid, cellname, value, iRow, iCol) {
+					var rowData = $(domain_login_limit_selector).getRowData(rowid);
+					var cell_selector = "#" + iRow + "_" + cellname;
+					if (cellname == "usernames") {
+						$(cell_selector, domain_login_limit_selector).one(
+								'focus',
+								function() {
+									$.unit.open({
+										initNames : value,
+										initIDs : rowData.userIds,
+										selectType : 6,
+										afterSelect : function(retVal) {
+											$(cell_selector).val(retVal.name);
+											$(domain_login_limit_selector)
+													.saveCell(iRow, iCol);
+											$(domain_login_limit_selector)
+													.setCell(rowid, "userIds",
+															retVal.id);
+										},
+										close : function(e) {
+											$(domain_login_limit_selector)
+													.saveCell(iRow, iCol);
+										}
+									});
+								});
+					} else {
+						// Modify event handler to save on blur.
+						$(cell_selector, domain_login_limit_selector).one(
+								'blur',
+								function() {
+									$(domain_login_limit_selector).saveCell(iRow,
+											iCol);
+								});
+					}
+				}
+			});
+	
 
 	// 用户登录时需要图形码校验的IP设置
 	$("#btn_login_verify_code_add").click(function() {
@@ -320,6 +405,37 @@ $(function() {
 					$("#sms_valid_period").hide();
 				}
 			});
+	
+	
+	// 用户登录的域设置
+	$("#btn_domain_login_limit_add").click(function() {
+		var newDate = new Date().getTime();
+		var mydata = {
+			uuid : null,
+			applyTo : "4",
+			rowStatus : "added"
+		};
+		$(domain_login_limit_selector).jqGrid("addRowData", newDate, mydata);
+	});
+	$("#btn_domain_login_limit_del").click(
+			function() {
+				var rowids = $(domain_login_limit_selector).jqGrid('getGridParam',
+						'selarrrow');
+				if (rowids.length == 0) {
+					alert("请选择记录!");
+					return;
+				}
+				for ( var i = (rowids.length - 1); i >= 0; i--) {
+					var rowData = $(domain_login_limit_selector).getRowData(
+							rowids[i]);
+					if (rowData.uuid != null && $.trim(rowData.uuid) != "") {
+						rowData.rowStatus = "deleted";
+						beans.push(rowData);
+					}
+					$(domain_login_limit_selector).jqGrid('delRowData', rowids[i]);
+				}
+			});
+	
 
 	// 允许登录本系统的用户
 	$("#usernames").click(function() {
@@ -327,7 +443,7 @@ $(function() {
 			labelField : "usernames",
 			valueField : "userIds",
 			title : "选择用户",
-			selectType : 4
+			selectType : 6
 		});
 	});
 
@@ -356,6 +472,14 @@ $(function() {
 			var bean = changes3[i];
 			bean.rowStatus = "edited";
 			bean.validPeriod = validPeriod;
+			beans.push(bean);
+		}
+		
+		
+		var changes4 = $(domain_login_limit_selector).getChangedCells('all');
+		for ( var i = 0; i < changes4.length; i++) {
+			var bean = changes4[i];
+			bean.rowStatus = "edited";
 			beans.push(bean);
 		}
 
@@ -414,6 +538,9 @@ $(function() {
 							} else if (this.applyTo === "2") {
 								$(ip_login_limit_selector).jqGrid("addRowData",
 										this.uuid, this);
+							}else if (this.applyTo === "4") {
+								$(domain_login_limit_selector).jqGrid("addRowData",
+										this.uuid, this);
 							} else if (this.applyTo === "3") {
 								$(ip_sms_verify_selector).jqGrid("addRowData",
 										this.uuid, this);
@@ -444,6 +571,10 @@ $(function() {
 		// 3、手机短信二次验证的IP设置
 		var $smsList = $(ip_sms_verify_selector);
 		$smsList.jqGrid("clearGridData");
+		
+		// 4、用户登录的域设置
+		var $domainlimitList = $(domain_login_limit_selector);
+		$domainlimitList.jqGrid("clearGridData");
 	}
 	$(window).resize(function(e) {
 		var width = $(window).width();

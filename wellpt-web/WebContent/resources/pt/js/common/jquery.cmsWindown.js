@@ -26,19 +26,15 @@
 //	}
 //});
 function returnWindow(){
-	
+	if(window.opener == null){
+		window.location.href = ctx;
+	}
 	var para = window.location.search;
 	var moduleid = "";
 	var wid = "";
 	var para = readSearch();
-	$.each(para,function(n,value) {   
-           if(n == "uuid" || n == "treeName" || n =="viewName") {
-        	   
-           }else {
-        	   para.mid = n;
-        	   para.moduleid = value;
-           }
-         }); 
+	moduleid = para.moduleid;
+	wid = para.wid;
 //	var paraArray = para.replace("?","").split("&");
 //	for(var i=0;i<paraArray.length;i++){
 //		if(paraArray[i].indexOf("moduleid")>-1){
@@ -61,7 +57,7 @@ function returnWindow(){
 					if(class_=="active"){
 					}else{
 						$(this).html(result);
-						window.opener.jsmod(".dnrw .tab-content");
+						window.opener.jsmod(".dnrw .tab-content",true);
 					}
 				});
 			}
@@ -94,7 +90,7 @@ function refreshWindow(element){
 				element.parents(".viewContent").parent().html(result);
 			}
 			pageLock("hide");
-			jsmod(".dnrw .tab-content");
+			jsmod(".dnrw .tab-content",true);
 		}
 	});
 }

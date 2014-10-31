@@ -33,7 +33,15 @@ $(function(){
 			"customButtonFields":[],
 			"buttons":[],
 			"pageFields":null,
-			
+			"buttonPlace":null,
+			"specialField":null,
+			"specialFieldMethod":null,
+			"requestParamName":null,
+			"requestParamId":null,
+			"responseParamName":null,
+			"responseParamId":null,
+			"dataModuleName":null,
+			"dataModuleId":null
 	};
 	
 	var pagebean = {
@@ -62,6 +70,99 @@ $(function(){
 			"exactKeySelectCols":[],
 			"selectShow":null
 	};
+	//特殊列值计算的点击事件
+	
+	$("#specialField").die().live("click",function() {
+		if($("#specialField").prop("checked") == false){
+			$(".specialFieldTemp").css("display","none");
+			$("#specialFieldMethod").empty();
+			$("#requestParamName").empty();
+			$("#responseParamName").empty();
+		}else if($("#specialField").prop("checked") == true) {
+			$(".specialFieldTemp").css("display","");
+			var tableType = $("#dataScope").val();
+ 			if(tableType == "1") {//动态表单字段
+ 				var setting = {
+ 						async : {
+ 							otherParam : {
+ 								"serviceName" : "formDefinitionService",
+ 								"methodName" : "getFieldByFormUuid",
+ 								"data" : bean["formuuid"]
+ 							}
+ 						},
+ 					};
+ 				$("#requestParamName").comboTree({
+ 					labelField: "requestParamName",
+ 					valueField: "requestParamId",
+ 					treeSetting : setting,
+ 					width: 220,
+ 					height: 220
+ 				});
+ 				
+ 				$("#responseParamName").comboTree({
+ 					labelField: "responseParamName",
+ 					valueField: "responseParamId",
+ 					treeSetting : setting,
+ 					width: 220,
+ 					height: 220
+ 				});
+ 				
+ 			}else if(tableType == "2") {//实体类字段
+ 				var setting2 = {
+ 						async : {
+ 							otherParam : {
+ 								"serviceName" : "systemTableAttributeService",
+ 								"methodName" : "getAttributesTreeNodeByrelationship",
+ 								"data" : bean["formuuid"]
+ 							}
+ 						},
+ 					};
+ 				$("#requestParamName").comboTree({
+ 					labelField: "requestParamName",
+ 					valueField: "requestParamId",
+ 					treeSetting : setting2,
+ 					width: 220,
+ 					height: 220
+ 				});
+ 				
+ 				$("#responseParamName").comboTree({
+ 					labelField: "responseParamName",
+ 					valueField: "responseParamId",
+ 					treeSetting : setting2,
+ 					width: 220,
+ 					height: 220
+ 				});
+ 				
+ 			}else if(tableType == "3") {
+ 				var setting3 = {
+ 						async : {
+ 							otherParam : {
+ 								"serviceName" : "getViewDataService",
+ 								"methodName" : "getViewColumnsTree",
+ 								"data" : bean["formuuid"]
+ 							}
+ 						},
+ 					};
+ 				
+ 				$("#requestParamName").comboTree({
+ 					labelField: "requestParamName",
+ 					valueField: "requestParamId",
+ 					treeSetting : setting3,
+ 					width: 220,
+ 					height: 220
+ 				});
+ 				
+ 				$("#responseParamName").comboTree({
+ 					labelField: "responseParamName",
+ 					valueField: "responseParamId",
+ 					treeSetting : setting3,
+ 					width: 220,
+ 					height: 220
+ 				});
+ 			}
+		}
+	});
+	
 	/**
 	 * 视图的样式设置
 	 */
@@ -99,7 +200,7 @@ $(function(){
  				}
  			});
  			for (var i=0;i<Data.length;i++) {
- 				var option = $("<option>").text(Data[i].descname).val(Data[i].fieldName);
+ 				var option = $("<option>").text(Data[i].displayName).val(Data[i].name);
  				$this.append(option);
  			}
 			}else if(tableType == "2") {
@@ -205,6 +306,38 @@ $(function(){
 		width: 220,
 		height: 220
 	});
+	
+	var dataModuleSetting = {
+			async : {
+				otherParam : {
+					"serviceName" : "getViewDataService",
+					"methodName" : "getAllExcelExportRules",
+				}
+			},
+			check : {
+				enable : false
+			},
+			callback : {
+				onClick: treeNodeOnClickForDataModule,
+			}
+			
+	};
+	
+	$("#dataModuleName").comboTree({
+		labelField: "dataModuleName",
+		valueField: "dataModuleId",
+		treeSetting : dataModuleSetting,
+		width: 220,
+		height: 150
+	});
+	
+	function treeNodeOnClickForDataModule(event, treeId, treeNode) { 
+		bean["dataModuleId"] = treeNode.id;
+		bean["dataModuleName"] = treeNode.name;
+		$("#dataModuleName").val(treeNode.name);
+		$("#dataModuleId").val(treeNode.id);
+	}
+	
 	
 	var setting2 = {
 			async : {
@@ -340,7 +473,7 @@ $(function(){
 			url:ctx + '/common/jqgrid/query?queryType=viewDefinition',
 			mtype:"POST",
 			datatype:"json",
-			colNames:["uuid","视图名称","编号","视图的数据源","来自的表","表名","表uuid"],
+			colNames:["uuid","视图名称","编号","视图的数据源","来自的表","表名","表uuid","所属模块id","所属模块"],
 			colModel:[{
 				name:"uuid",
 				index:"uuid",
@@ -382,6 +515,16 @@ $(function(){
 				index:"formuuid",
 				hidden:true,
 			},
+			{
+				name:"cateUuid",
+				index:"cateUuid",
+				hidden:true,
+			},
+			{
+				name:"cateName",
+				index:"cateName",
+				hidden:true,
+			},
 			],
 			rowNum : 20,
 			rownumbers : true,
@@ -415,11 +558,12 @@ $(function(){
 	));
 	$.ajax({
 		type : "POST",
-		url : ctx +"/cms/module/getModuleData",
+		url : ctx +"/basicdata/dyview/getModuleData",
 		contentType : "application/json",
 		dataType : "json",
 		success : function(result) {
 			$("#cateUuid").html(result.data);
+			$("#select_query").html("<option value=''>-请选择-</option>"+result.data);
 		}
 	});
 	//根据视图的id获取视图的信息
@@ -428,6 +572,93 @@ $(function(){
 			service:"viewDefinitionService.getBeanById",
 			data:[id],
 			success:function(result) {
+				//设置视图的特殊列值计算
+				if($("#specialField").prop("checked") == false){
+					$(".specialFieldTemp").css("display","none");
+				}else if($("#specialField").prop("checked") == true) {
+					$(".specialFieldTemp").css("display","");
+					var tableType = $("#dataScope").val();
+		 			if(tableType == "1") {//动态表单字段
+		 				var setting = {
+		 						async : {
+		 							otherParam : {
+		 								"serviceName" : "formDefinitionService",
+		 								"methodName" : "getFieldByFormUuid",
+		 								"data" : bean["formuuid"]
+		 							}
+		 						},
+		 					};
+		 				$("#requestParamName").comboTree({
+		 					labelField: "requestParamName",
+		 					valueField: "requestParamId",
+		 					treeSetting : setting,
+		 					width: 220,
+		 					height: 220
+		 				});
+		 				
+		 				$("#responseParamName").comboTree({
+		 					labelField: "responseParamName",
+		 					valueField: "responseParamId",
+		 					treeSetting : setting,
+		 					width: 220,
+		 					height: 220
+		 				});
+		 				
+		 			}else if(tableType == "2") {//实体类字段
+		 				var setting2 = {
+		 						async : {
+		 							otherParam : {
+		 								"serviceName" : "systemTableAttributeService",
+		 								"methodName" : "getAttributesTreeNodeByrelationship",
+		 								"data" : bean["formuuid"]
+		 							}
+		 						},
+		 					};
+		 				$("#requestParamName").comboTree({
+		 					labelField: "requestParamName",
+		 					valueField: "requestParamId",
+		 					treeSetting : setting2,
+		 					width: 220,
+		 					height: 220
+		 				});
+		 				
+		 				$("#responseParamName").comboTree({
+		 					labelField: "responseParamName",
+		 					valueField: "responseParamId",
+		 					treeSetting : setting2,
+		 					width: 220,
+		 					height: 220
+		 				});
+		 				
+		 			}else if(tableType == "3") {
+		 				var setting3 = {
+		 						async : {
+		 							otherParam : {
+		 								"serviceName" : "getViewDataService",
+		 								"methodName" : "getViewColumnsTree",
+		 								"data" : bean["formuuid"]
+		 							}
+		 						},
+		 					};
+		 				
+		 				$("#requestParamName").comboTree({
+		 					labelField: "requestParamName",
+		 					valueField: "requestParamId",
+		 					treeSetting : setting3,
+		 					width: 220,
+		 					height: 220
+		 				});
+		 				
+		 				$("#responseParamName").comboTree({
+		 					labelField: "responseParamName",
+		 					valueField: "responseParamId",
+		 					treeSetting : setting3,
+		 					width: 220,
+		 					height: 220
+		 				});
+		 			}
+				}
+				
 				bean = result.data;
 				//绑定按时间搜索的选项
 				var searchFieldOption = "";
@@ -435,20 +666,26 @@ $(function(){
 				for(var ii=0;ii<columnDefinitionsField.length;ii++){
 					if(columnDefinitionsField[ii].columnDataType=="DATE"){
 //						searchFieldOption += "<option value='"+columnDefinitionsField[ii].fieldName+"'>"+columnDefinitionsField[ii].titleName+"</option>";
-						searchFieldOption += columnDefinitionsField[ii].titleName + ":" + columnDefinitionsField[ii].fieldName+";";
+						if(columnDefinitionsField[ii].otherName != "" && columnDefinitionsField[ii].otherName != null) {
+							searchFieldOption += columnDefinitionsField[ii].otherName + ":" + columnDefinitionsField[ii].fieldName+";";
+						}else {
+							searchFieldOption += columnDefinitionsField[ii].titleName + ":" + columnDefinitionsField[ii].fieldName+";";
+						}
 					}
 				}
 //				$("#searchField").html(searchFieldOption);
 				
 				showDelButton();
-				for(var i=0;i<bean["selectDefinitions"].conditionType.length;i++) {
-					var b = {"name":bean["selectDefinitions"].conditionType[i].name,"value":bean["selectDefinitions"].conditionType[i].conditionValue};
-						var rowid =bean["selectDefinitions"].conditionType[i].uuid;
-						if (cache[rowid] == null){
-							cache[rowid] = b;
-						}else {
-							cache[rowid] = b;
-						}
+				if(JSON.stringify(bean["selectDefinitions"]) != "null") {
+					for(var i=0;i<bean["selectDefinitions"].conditionType.length;i++) {
+						var b = {"name":bean["selectDefinitions"].conditionType[i].name,"value":bean["selectDefinitions"].conditionType[i].conditionValue};
+							var rowid =bean["selectDefinitions"].conditionType[i].uuid;
+							if (cache[rowid] == null){
+								cache[rowid] = b;
+							}else {
+								cache[rowid] = b;
+							}
+					}
 				}
 				$("#column_form").clearForm(true);
 				//设置JSP页面的分页定义
@@ -555,10 +792,6 @@ $(function(){
 						colNames:["uuid","显示名称","来源字段"],
 						colModel:[ 
 								    {
-										name:"keyName",
-										index:"keyName",
-										width:"100",
-										editable : true
 									},
 								{
 									name:"uuid",
@@ -635,7 +868,7 @@ $(function(){
 				toColumnList(bean);
 				
 				$("#column_list").jqGrid('setGridParam',{ 
-					colNames:['显示标题','标题','列类型','列数据类型','列所属的类','列别名','视图列排序','对应的表字段名','列值','列值的类型','列宽','是否解析html','默认排序','列是否隐藏','允许点击排序','显示行'],
+					colNames:['显示标题','标题','列类型','列数据类型','列所属的类','列别名','视图列排序','对应的表字段名','列值','列值的类型','列宽','是否解析html','默认排序','列是否隐藏','允许点击排序','显示行','列权限'],
 					colModel:[
 						      {	  
 					           },
@@ -744,8 +977,20 @@ $(function(){
 										value:"1:第一行;2:第二行"
 									},
 					           },
+					           {
+					        	   name:'fieldPermission',
+					        	   index:'fieldPermission',
+					        	   width:"50",
+					        	   editable : true,
+					        	   edittype : "checkbox",
+					   			   editoptions : {
+					   				value : "true:false"
+					   			   },
+					   			   formatter : "checkbox"
+					           }
 					         ],
 				}).trigger("reloadGrid"); //重新载入
+				
 				//设置视图的查询条件的列表
 				toSelectList(bean);
 				//设置样式
@@ -755,7 +1000,6 @@ $(function(){
 				if(bean["customButtons"] !=null) {
 					$("#column_form").json2form(selectbean);
 				}
-				
 				$("#searchField").val(searchFieldOption);
 			}
 		});
@@ -793,6 +1037,7 @@ $(function(){
 			var place1 = false;
 			var place2 = false;
 			var place3 = false;
+			var place4 = false;
     		for(var i=0;i<place.length;i++){
 				if("头部"==place[i]){
 					place1 = true;
@@ -802,6 +1047,9 @@ $(function(){
 				}
 				if("第二行"==place[i]){
 					place3 = true;
+				}
+				if("头尾部"==place[i]) {
+					place4 = true;
 				}
 			}
     		if(place1){
@@ -818,6 +1066,11 @@ $(function(){
 				buttonContent += "<input class='button_place' type='checkbox' checked="+true+" value='第二行'>第二行";
 			}else{
 				buttonContent += "<input class='button_place' type='checkbox'  value='第二行'>第二行";
+			}
+			if(place4){
+				buttonContent += "<input class='button_place' type='checkbox' checked="+true+" value='头尾部'>头尾部";
+			}else{
+				buttonContent += "<input class='button_place' type='checkbox'  value='头尾部'>头尾部";
 			}
 		    buttonContent += "</td>";
 		    buttonContent += "<td>";
@@ -855,7 +1108,7 @@ $(function(){
 				initValues : this_.next().val(),
 				treeSetting : selectSubFlowSetting,
 				afterSelect : function(retVal) {
-					this_.next().val(retVal["value"]);
+					this_.parent().find(".button_code").val(retVal["value"]);
 					this_.val(retVal["path"]);
 				},
 				afterCancel : function() {
@@ -894,7 +1147,8 @@ $(function(){
 	    buttonContent += "<td>";
 		buttonContent += "<input class='button_place' type='checkbox' value='头部'>头部 ";
 		buttonContent += "<input class='button_place' type='checkbox' value='第一行'>第一行 ";
-		buttonContent += "<input class='button_place' type='checkbox'  value='第二行'>第二行";
+		buttonContent += "<input class='button_place' type='checkbox'  value='第二行'>第二行 ";
+		buttonContent += "<input class='button_place' type='checkbox'  value='头尾部'>头尾部";
 	    buttonContent += "</td>";
 	   
 	    buttonContent += "<td>";
@@ -988,22 +1242,27 @@ $(function(){
 	function toSelectList(bean) {
 		var $selectCond = $("#selectCond");
 		$selectCond.jqGrid("clearGridData");
-		var selects = bean["selectDefinitions"].conditionType;
-		for( var index=0; index<selects.length;index++) {
-			$selectCond.jqGrid("addRowData",selects[index].uuid, selects[index]);
-		}
+		if(JSON.stringify(bean["selectDefinitions"]) != "null") {
 		
+			var selects = bean["selectDefinitions"].conditionType;
+		
+			for( var index=0; index<selects.length;index++) {
+				$selectCond.jqGrid("addRowData",selects[index].uuid, selects[index]);
+			}
+		}
 		var $selectKey = $("#selectKey");
 		$selectKey.jqGrid("clearGridData");
-		var selectKeys = bean["selectDefinitions"].exactKeySelectCols;
-		for( var index=0; index<selectKeys.length;index++) {
-			$selectKey.jqGrid("addRowData",selectKeys[index].uuid, selectKeys[index]);
+		if(JSON.stringify(bean["selectDefinitions"]) != "null") {
+			var selectKeys = bean["selectDefinitions"].exactKeySelectCols;
+			for( var index=0; index<selectKeys.length;index++) {
+				$selectKey.jqGrid("addRowData",selectKeys[index].uuid, selectKeys[index]);
+			}
 		}
 	}
 	
 	$("#column_list").jqGrid({
 		datatype : "local",
-		colNames:['显示标题','标题','列类型','列数据类型','列所属的类','列别名','视图列排序','对应的表字段名','列值','列值的类型','列宽','是否解析html','默认排序','列是否隐藏','允许点击排序','显示行'],
+		colNames:['显示标题','标题','列类型','列数据类型','列所属的类','列别名','视图列排序','对应的表字段名','列值','列值的类型','列宽','是否解析html','默认排序','列是否隐藏','允许点击排序','显示行','列权限'],
 		colModel:[
 					{   name:'otherName',
 						   index:'otherName',
@@ -1110,6 +1369,17 @@ $(function(){
 							value:"1:第一行;2:第二行"
 						},
 		           },
+		           {
+		        	   name:'fieldPermission',
+		        	   index:'fieldPermission',
+		        	   width:"50",
+		        	   editable : true,
+		        	   edittype : "checkbox",
+		   			   editoptions : {
+		   				value : "true:false"
+		   			   },
+		   			   formatter : "checkbox"
+		           }
 		         ],
 		         autoScroll: true,
 		         scrollOffset : 0,
@@ -1177,7 +1447,7 @@ $(function(){
 			        	 				}
 			        	 			});
 			        	 			for (var i=0;i<Data.length;i++) {
-			        	 				var option = $("<option>").text(Data[i].descname).val(Data[i].fieldName);
+			        	 				var option = $("<option>").text(Data[i].displayName).val(Data[i].name);
 			        	 				columnValue.append(option);
 			        	 			}
 		        	 			}else if(tableType == "2") {
@@ -1380,24 +1650,28 @@ $(function(){
 	
 	//表调用的回调函数
 	function treeNodeOnClick(event, treeId, treeNode) {
+		//将后台传回的json串转化为对象
 		var tableType = $("#dataScope").val();
 		if(tableType == "1") {
-			$("#tableDefinitionText").val(treeNode.data.descname);
-			$("#tableDefinitionName").val(treeNode.data.name);
-			$("#formuuid").val(treeNode.data.uuid);
-			var formuuid = treeNode.data.uuid;
-			var FORMUUID = treeNode.data.uuid;
-			bean["formuuid"] = treeNode.data.uuid;
+			var df = eval("(" + treeNode.data + ")");
+			$("#tableDefinitionText").val(df.displayName);
+			$("#tableDefinitionName").val(df.name);
+			$("#formuuid").val(df.uuid);
+			var formuuid = df.uuid;
+			var FORMUUID = df.uuid;
+			bean["formuuid"] = df.uuid;
 			JDS.call({
 				service:"getViewDataService.getFieldByForm",
 				data:[formuuid],
 				success:function(result) {
 					data = result.data;
-					//alert("data " + JSON.stringify(data));
 					$("#column_list").jqGrid("clearGridData");
 					for(var i=0;i<data.length;i++) {
-						$("#column_list").addRowData(i,{"titleName":data[i].descname,"fieldName":data[i].fieldName},"first");
+						$("#column_list").addRowData(i,{"titleName":data[i].displayName,"fieldName":data[i].name},"first");
 					}
+				},
+				error:function(msg){
+					alert(JSON.stringify(msg));
 				}
 			});
 			$("#tableDefinitionText").comboTree("hide");	
@@ -1538,7 +1812,7 @@ $(function(){
 //					alert("data " + JSON.stringify(data));
 					$("#column_list").jqGrid("clearGridData");
 					$("#column_list").jqGrid('setGridParam',{ 
-						colNames:['显示标题','标题','列类型','列数据类型','列所属的类','列别名','视图列排序','对应的表字段名','列值','列值的类型','列宽','是否解析html','默认排序','列是否隐藏','允许点击排序','显示行'],
+						colNames:['显示标题','标题','列类型','列数据类型','列所属的类','列别名','视图列排序','对应的表字段名','列值','列值的类型','列宽','是否解析html','默认排序','列是否隐藏','允许点击排序','显示行','列权限'],
 						colModel:[
 							      {	  
 						           },
@@ -1647,6 +1921,17 @@ $(function(){
 											value:"1:第一行;2:第二行"
 										},
 						           },
+						           {
+						        	   name:'fieldPermission',
+						        	   index:'fieldPermission',
+						        	   width:"50",
+						        	   editable : true,
+						        	   edittype : "checkbox",
+						   			   editoptions : {
+						   				value : "true:false"
+						   			   },
+						   			   formatter : "checkbox"
+						           }
 						         ],
 					}).trigger("reloadGrid"); //重新载入
 					for(var i=0;i<data.length;i++) {
@@ -1958,17 +2243,18 @@ $(function(){
 					$('#selectCond').saveCell(iRow, iCol);
 				}
 			});
-		}
+		} else 
 		if(cellname == "conditionValue") {
 			var tableType = $("#dataScope").val();
 			$("#" + cellId).val(getLabelByValue(rowid));
 			var appointColumnType = $('#selectCond').getCell(rowid, "appointColumnType");
 			$("#"+ cellId).click(function() {
-				
+				var defaultCondition = $("#defaultCondition").val();
 			  if(tableType == "1") {
 				if(condScope == "列数据" && "2" != appointColumnType) {
+					
 					$("#" + cellId).popupWindow({
-							initValues : {tableType:tableType,formUuid:uuid,fieldName:fieldName,currentPage:1,value:value,label:getLabelByValue(rowid)},
+							initValues : {tableType:tableType,formUuid:uuid,fieldName:fieldName,currentPage:1,value:value,label:getLabelByValue(rowid),defaultCondition:defaultCondition},
 							autoOpen : true,
 							afterCancel : function() {
 								$('#selectCond').saveCell(iRow, iCol);
@@ -2116,7 +2402,7 @@ $(function(){
 			}else if(tableType == "3") {
 				 if(condScope == "列数据" && "DATE" != appointColumnType) {
 						$("#" + cellId).popupWindow({
-								initValues : {tableType:tableType,formUuid:uuid,fieldName:fieldName,currentPage:1,value:value,label:getLabelByValue(rowid)},
+								initValues : {tableType:tableType,formUuid:uuid,fieldName:fieldName,currentPage:1,value:value,label:getLabelByValue(rowid),defaultCondition:defaultCondition},
 								autoOpen : true,
 								afterCancel : function() {
 									$('#selectCond').saveCell(iRow, iCol);
@@ -2189,10 +2475,18 @@ $(function(){
 					}
 			}	
 			});
-			return;
 		}
 		// Modify event handler to save on blur.
 		$("#" + cellId, "#selectCond").one('blur', function() {
+			if(cellId.indexOf("conditionValue") >0) {
+				var name = $("#" + cellId).val();
+				var b = {"name":name,"conditionValue":value};
+				if (cache[rowid] == null){
+					cache[rowid] = b;
+				}else {
+					cache[rowid] = b;
+				}
+			}
 			$('#selectCond').saveCell(iRow, iCol);
 		});
 	}
@@ -2384,9 +2678,9 @@ $(function(){
 				        var length=jsonobj.length;
 				        for(var i=0;i<length;i++){
 				            if(i!=length-1){
-				            	 str+=jsonobj[i].descname+":"+jsonobj[i].descname+";";
+				            	 str+=jsonobj[i].displayName+":"+jsonobj[i].displayName+";";
 				            }else{
-				              	 str+=jsonobj[i].descname+":"+jsonobj[i].descname;
+				              	 str+=jsonobj[i].displayName+":"+jsonobj[i].displayName;
 				            }
 				         }   
 					}
@@ -2752,42 +3046,54 @@ $(function(){
 	});
 	$("#btn_query").click(function() {
 		var queryValue = $("#query_keyWord").val();
-		var queryInt = 0;
-		if(queryValue.indexOf("动")>-1||queryValue.indexOf("态")>-1||queryValue.indexOf("表")>-1||queryValue.indexOf("单")>-1){
-			queryInt = 1;
-		}else if(queryValue.indexOf("实")>-1||queryValue.indexOf("体")>-1||queryValue.indexOf("类")>-1||queryValue.indexOf("表")>-1){
-			queryInt = 2;
-		}else if(queryValue.indexOf("模")>-1||queryValue.indexOf("块")>-1||queryValue.indexOf("数")>-1||queryValue.indexOf("据")>-1){
-			queryInt = 3;
+		var queryValue2 = $("#select_query option:selected").text();
+		if(queryValue2=='-请选择-'){
+			queryValue2 = '';
 		}
+//		var queryInt = 0;
+//		if(queryValue.indexOf("动")>-1||queryValue.indexOf("态")>-1||queryValue.indexOf("表")>-1||queryValue.indexOf("单")>-1){
+//			queryInt = 1;
+//		}else if(queryValue.indexOf("实")>-1||queryValue.indexOf("体")>-1||queryValue.indexOf("类")>-1||queryValue.indexOf("表")>-1){
+//			queryInt = 2;
+//		}else if(queryValue.indexOf("模")>-1||queryValue.indexOf("块")>-1||queryValue.indexOf("数")>-1||queryValue.indexOf("据")>-1){
+//			queryInt = 3;
+//		}
 		$("#list").jqGrid("setGridParam", {
 			postData : {
 				"queryPrefix" : "query",
-				"queryOr" : true,
+				"queryOr" : false,
 				"query_LIKES_viewName_OR_code_OR_tableDefinitionText" : queryValue,
-				"query_EQI_dataScope" : queryInt,
+//				"query_EQI_dataScope" : queryInt,
+				"query_LIKES_cateName" : queryValue2,
 			},
 			page : 1
 		}).trigger("reloadGrid");
+		
+		$("#column_list").jqGrid("setGridParam", {postData:{}}).trigger("reloadGrid");
 	});
 	$("#query_keyWord").keypress(function(event) {
 		var code = event.keyCode;
 	    if (code == 13) {
 	    	var queryValue = $("#query_keyWord").val();
-			var queryInt = 0;
-			if(queryValue.indexOf("动")>-1||queryValue.indexOf("态")>-1||queryValue.indexOf("表")>-1||queryValue.indexOf("单")>-1){
-				queryInt = 1;
-			}else if(queryValue.indexOf("实")>-1||queryValue.indexOf("体")>-1||queryValue.indexOf("类")>-1||queryValue.indexOf("表")>-1){
-				queryInt = 2;
-			}else if(queryValue.indexOf("模")>-1||queryValue.indexOf("块")>-1||queryValue.indexOf("数")>-1||queryValue.indexOf("据")>-1){
-				queryInt = 3;
+	    	var queryValue2 = $("#select_query option:selected").text();
+	    	if(queryValue2=='-请选择-'){
+				queryValue2 = '';
 			}
+//			var queryInt = 0;
+//			if(queryValue.indexOf("动")>-1||queryValue.indexOf("态")>-1||queryValue.indexOf("表")>-1||queryValue.indexOf("单")>-1){
+//				queryInt = 1;
+//			}else if(queryValue.indexOf("实")>-1||queryValue.indexOf("体")>-1||queryValue.indexOf("类")>-1||queryValue.indexOf("表")>-1){
+//				queryInt = 2;
+//			}else if(queryValue.indexOf("模")>-1||queryValue.indexOf("块")>-1||queryValue.indexOf("数")>-1||queryValue.indexOf("据")>-1){
+//				queryInt = 3;
+//			}
 			$("#list").jqGrid("setGridParam", {
 				postData : {
 					"queryPrefix" : "query",
-					"queryOr" : true,
+					"queryOr" : false,
 					"query_LIKES_viewName_OR_code_OR_tableDefinitionText" : queryValue,
-					"query_EQI_dataScope" : queryInt,
+//					"query_EQI_dataScope" : queryInt,
+					"query_LIKES_cateName" : queryValue2,
 				},
 				page : 1
 			}).trigger("reloadGrid");
@@ -2818,3 +3124,33 @@ $(function(){
 	});
 
 });
+$('#subcolor').live("click",function(){
+	if($(".colors").css("display")=="block"){
+		$(".colors").css("display","none");
+	}else if($(".colors").css("display")=="none"){
+		$(".colors").css("display","block");
+	}
+	
+});
+
+function selColor(color){
+	 $("#scolor").val(color);
+     $("#subject").css("color",color);
+     $("#fontcolor").css("background-color",color);
+     $("#fontColor").val(color);
+}
+
+function selectQuery(element) {
+	var text = $("#" +element.id + " option:selected").text();
+	if(text=='-请选择-'){
+		text = '';
+	}
+	$("#list").jqGrid("setGridParam", {
+		postData : {
+			"queryPrefix" : "query",
+			"queryOr" : false,
+			"query_LIKES_cateName" : text,
+		},
+		page : 1
+	}).trigger("reloadGrid");
+}

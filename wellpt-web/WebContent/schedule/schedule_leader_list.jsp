@@ -80,7 +80,7 @@
 			<c:if test="${addCss!='yes'}"><img src="${ctx}/resources/schedule/img/star-on.png"  /></c:if>
 			<c:if test="${one.displayStartDate==now}">
 			
-			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${one.tipMethod}','${one.isComplete}','${week1.sdate}','${one.uuid}','${one.scheduleName}','${one.address}','${one.dstartDate}','${one.startTime}','${one.dendDate}','${one.endTime}','${one.isView}','${one.status}','${one.leaderNames}','${one.leaderIds}','${one.pleases}','${one.pleaseIds}','${one.views}','${one.viewIds}','${one.color}','${one.tip}','${one.tipDate}','${one.tipTime}','${one.repeat}','${one.startTime2}','${one.endTime2}','${one.tipTime2}','${one.creators}','${one.creatorIds}');">
+			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${one.status}','1','','','${one.tipMethod}','${one.isComplete}','${week1.sdate}','${one.uuid}','${one.scheduleName}','${one.address}','${one.dstartDate}','${one.startTime}','${one.dendDate}','${one.endTime}','${one.isView}','${one.status}','${one.leaderNames}','${one.leaderIds}','${one.pleases}','${one.pleaseIds}','${one.views}','${one.viewIds}','${one.color}','${one.tip}','${one.tipDate}','${one.tipTime}','${one.repeat}','${one.startTime2}','${one.endTime2}','${one.tipTime2}','${one.creators}','${one.creatorIds}','${one.isLeaderView}','${one.inviteeNames}','${one.inviteeIds}','${one.acceptIds }','${one.acceptNames }','${one.refuseIds}','${one.refuseNames}','${one.tag.uuid}');">
 			<font color="${one.color}">
 			
 			<c:if test="${one.isComplete=='1'}">
@@ -96,7 +96,7 @@
 			</font></a></font><br/>
 			</c:if>
 			<c:if test="${one.displayStartDate!=now}">
-			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${one.tipMethod}','${one.isComplete}','${week1.sdate}','${one.uuid}','${one.scheduleName}','${one.address}','${one.dstartDate}','${one.startTime}','${one.dendDate}','${one.endTime}','${one.isView}','${one.status}','${one.leaderNames}','${one.leaderIds}','${one.pleases}','${one.pleaseIds}','${one.views}','${one.viewIds}','${one.color}','${one.tip}','${one.tipDate}','${one.tipTime}','${one.repeat}','${one.startTime2}','${one.endTime2}','${one.tipTime2}','${one.creators}','${one.creatorIds}');">
+			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${one.status}','1','','','${one.tipMethod}','${one.isComplete}','${week1.sdate}','${one.uuid}','${one.scheduleName}','${one.address}','${one.dstartDate}','${one.startTime}','${one.dendDate}','${one.endTime}','${one.isView}','${one.status}','${one.leaderNames}','${one.leaderIds}','${one.pleases}','${one.pleaseIds}','${one.views}','${one.viewIds}','${one.color}','${one.tip}','${one.tipDate}','${one.tipTime}','${one.repeat}','${one.startTime2}','${one.endTime2}','${one.tipTime2}','${one.creators}','${one.creatorIds}','${one.creatorIds}','${one.isLeaderView}','${one.inviteeNames}','${one.inviteeIds}','${one.acceptIds }','${one.acceptNames }','${one.refuseIds}','${one.refuseNames}','${one.tag.uuid}');">
 			<font color="${one.color}">
 			<c:if test="${one.isComplete=='1'}">
 			<strike><c:if test="${one.startTime=='' or one.startTime==null}"><spring:message code="schedule.info.allDay" /> </c:if><c:if test="${one.startTime!='' and one.startTime!=null}"><c:out value="${one.startTime}"/>:<c:out value="${one.startTime2}"/> </c:if>
@@ -111,7 +111,7 @@
 			
 			</c:if>
 			</c:forEach>
-			<div id="${row2.userNo}one" style="display: none;"><font size="1"><a class="addschedule_css" href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week1.sdate}','${ldate}','${mtype}','${now}');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
+			<div id="${row2.userNo}one" style="display: none;"><font size="1"><a class="addschedule_css" href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week1.sdate}','${ldate}','${mtype}','${now}','','','');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
 			</div>
 			</td>
 			<td class="tr_content_td" onmouseover="showorno('${row2.userNo}','two','1');" onmouseout="showorno('${row2.userNo}','two','2');"> 
@@ -120,7 +120,7 @@
 			<c:if test="${addCss=='yes'}"><img src="${ctx}/resources/theme/images/v1_rc_l_icon.png"  /></c:if>
 			<c:if test="${addCss!='yes'}"><img src="${ctx}/resources/schedule/img/star-on.png"  /></c:if>
 			<c:if test="${two.displayStartDate==now}">
-			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${two.tipMethod}','${two.isComplete}','${week2.sdate}','${two.uuid}','${two.scheduleName}','${two.address}','${two.dstartDate}','${two.startTime}','${two.dendDate}','${two.endTime}','${two.isView}','${two.status}','${two.leaderNames}','${two.leaderIds}','${two.pleases}','${two.pleaseIds}','${two.views}','${two.viewIds}','${two.color}','${two.tip}','${two.tipDate}','${two.tipTime}','${two.repeat}','${two.startTime2}','${two.endTime2}','${two.tipTime2}','${two.creators}','${two.creatorIds}');">
+			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${two.status}','1','','','${two.tipMethod}','${two.isComplete}','${week2.sdate}','${two.uuid}','${two.scheduleName}','${two.address}','${two.dstartDate}','${two.startTime}','${two.dendDate}','${two.endTime}','${two.isView}','${two.status}','${two.leaderNames}','${two.leaderIds}','${two.pleases}','${two.pleaseIds}','${two.views}','${two.viewIds}','${two.color}','${two.tip}','${two.tipDate}','${two.tipTime}','${two.repeat}','${two.startTime2}','${two.endTime2}','${two.tipTime2}','${two.creators}','${two.creatorIds}','${two.isLeaderView}','${two.inviteeNames}','${two.inviteeIds}','${two.acceptIds }','${two.acceptNames }','${two.refuseIds}','${two.refuseNames}','${two.tag.uuid}');">
 			<font color="${two.color}">
 			<c:if test="${two.isComplete=='1'}">
 			<strike><c:if test="${two.startTime=='' or two.startTime==null}"><spring:message code="schedule.info.allDay" /></c:if><c:if test="${two.startTime!='' and two.startTime!=null}"><c:out value="${two.startTime}"/>:<c:out value="${two.startTime2}"/> </c:if>
@@ -135,7 +135,7 @@
 			</font></a></font><br/>
 			</c:if>
 			<c:if test="${two.displayStartDate!=now}">
-			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${two.tipMethod}','${two.isComplete}','${week2.sdate}','${two.uuid}','${two.scheduleName}','${two.address}','${two.dstartDate}','${two.startTime}','${two.dendDate}','${two.endTime}','${two.isView}','${two.status}','${two.leaderNames}','${two.leaderIds}','${two.pleases}','${two.pleaseIds}','${two.views}','${two.viewIds}','${two.color}','${two.tip}','${two.tipDate}','${two.tipTime}','${two.repeat}','${two.startTime2}','${two.endTime2}','${two.tipTime2}','${two.creators}','${two.creatorIds}');">
+			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${two.status}','1','','','${two.tipMethod}','${two.isComplete}','${week2.sdate}','${two.uuid}','${two.scheduleName}','${two.address}','${two.dstartDate}','${two.startTime}','${two.dendDate}','${two.endTime}','${two.isView}','${two.status}','${two.leaderNames}','${two.leaderIds}','${two.pleases}','${two.pleaseIds}','${two.views}','${two.viewIds}','${two.color}','${two.tip}','${two.tipDate}','${two.tipTime}','${two.repeat}','${two.startTime2}','${two.endTime2}','${two.tipTime2}','${two.creators}','${two.creatorIds}','${two.isLeaderView}','${two.inviteeNames}','${two.inviteeIds}','${two.acceptIds }','${two.acceptNames }','${two.refuseIds}','${two.refuseNames}','${two.tag.uuid}');">
 			<font color="${two.color}">
 			<c:if test="${two.isComplete=='1'}">
 			<strike><c:if test="${two.startTime=='' or two.startTime==null}"><spring:message code="schedule.info.allDay" /> </c:if><c:if test="${two.startTime!='' and two.startTime!=null}"><c:out value="${two.startTime}"/>:<c:out value="${two.startTime2}"/> </c:if>
@@ -149,7 +149,7 @@
 			 </font></a><br/>
 			 </c:if>
 			</c:forEach>
-			<div id="${row2.userNo}two" style="display: none;"><font size="1"><a class="addschedule_css"  href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week2.sdate}','${ldate}','${mtype}','${now}');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
+			<div id="${row2.userNo}two" style="display: none;"><font size="1"><a class="addschedule_css"  href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week2.sdate}','${ldate}','${mtype}','${now}','','','');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
 			</div>
 			</td>
 			<td  class="tr_content_td" onmouseover="showorno('${row2.userNo}','three','1');" onmouseout="showorno('${row2.userNo}','three','2');"> 
@@ -158,7 +158,7 @@
 			<c:if test="${addCss=='yes'}"><img src="${ctx}/resources/theme/images/v1_rc_l_icon.png"  /></c:if>
 			<c:if test="${addCss!='yes'}"><img src="${ctx}/resources/schedule/img/star-on.png"  /></c:if>
 			<c:if test="${three.displayStartDate==now}">
-			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${three.tipMethod}','${three.isComplete}','${week3.sdate}','${three.uuid}','${three.scheduleName}','${three.address}','${three.dstartDate}','${three.startTime}','${three.dendDate}','${three.endTime}','${three.isView}','${three.status}','${three.leaderNames}','${three.leaderIds}','${three.pleases}','${three.pleaseIds}','${three.views}','${three.viewIds}','${three.color}','${three.tip}','${three.tipDate}','${three.tipTime}','${three.repeat}','${three.startTime2}','${three.endTime2}','${three.tipTime2}','${three.creators}','${three.creatorIds}');">
+			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${three.status}','1','','','${three.tipMethod}','${three.isComplete}','${week3.sdate}','${three.uuid}','${three.scheduleName}','${three.address}','${three.dstartDate}','${three.startTime}','${three.dendDate}','${three.endTime}','${three.isView}','${three.status}','${three.leaderNames}','${three.leaderIds}','${three.pleases}','${three.pleaseIds}','${three.views}','${three.viewIds}','${three.color}','${three.tip}','${three.tipDate}','${three.tipTime}','${three.repeat}','${three.startTime2}','${three.endTime2}','${three.tipTime2}','${three.creators}','${three.creatorIds}','${three.isLeaderView}','${three.inviteeNames}','${three.inviteeIds}','${three.acceptIds }','${three.acceptNames }','${three.refuseIds}','${three.refuseNames}','${three.tag.uuid}');">
 			<font color="${three.color}">
 			<c:if test="${three.isComplete=='1'}">
 			<strike><c:if test="${three.startTime=='' or three.startTime==null}"><spring:message code="schedule.info.allDay" /> </c:if><c:if test="${three.startTime!='' and three.startTime!=null}"><c:out value="${three.startTime}"/>:<c:out value="${three.startTime2}"/> </c:if>
@@ -173,7 +173,7 @@
 			</font></a></font><br/>
 			</c:if>
 			<c:if test="${three.displayStartDate!=now}">
-			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${three.tipMethod}','${three.isComplete}','${week3.sdate}','${three.uuid}','${three.scheduleName}','${three.address}','${three.dstartDate}','${three.startTime}','${three.dendDate}','${three.endTime}','${three.isView}','${three.status}','${three.leaderNames}','${three.leaderIds}','${three.pleases}','${three.pleaseIds}','${three.views}','${three.viewIds}','${three.color}','${three.tip}','${three.tipDate}','${three.tipTime}','${three.repeat}','${three.startTime2}','${three.endTime2}','${three.tipTime2}','${three.creators}','${three.creatorIds}');">
+			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${three.status}','1','','','${three.tipMethod}','${three.isComplete}','${week3.sdate}','${three.uuid}','${three.scheduleName}','${three.address}','${three.dstartDate}','${three.startTime}','${three.dendDate}','${three.endTime}','${three.isView}','${three.status}','${three.leaderNames}','${three.leaderIds}','${three.pleases}','${three.pleaseIds}','${three.views}','${three.viewIds}','${three.color}','${three.tip}','${three.tipDate}','${three.tipTime}','${three.repeat}','${three.startTime2}','${three.endTime2}','${three.tipTime2}','${three.creators}','${three.creatorIds}','${three.isLeaderView}','${three.inviteeNames}','${three.inviteeIds}','${three.acceptIds }','${three.acceptNames }','${three.refuseIds}','${three.refuseNames}','${three.tag.uuid}');">
 			<font color="${three.color}">
 			<c:if test="${three.isComplete=='1'}">
 			<strike><c:if test="${three.startTime=='' or three.startTime==null}"><spring:message code="schedule.info.allDay" /> </c:if><c:if test="${three.startTime!='' and three.startTime!=null}"><c:out value="${three.startTime}"/>:<c:out value="${three.startTime2}"/> </c:if>
@@ -187,7 +187,7 @@
 			 </font></a><br/>
 			 </c:if>
 			</c:forEach>
-			<div id="${row2.userNo}three" style="display: none;"><font size="1"><a class="addschedule_css"  href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week3.sdate}','${ldate}','${mtype}','${now}');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
+			<div id="${row2.userNo}three" style="display: none;"><font size="1"><a class="addschedule_css"  href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week3.sdate}','${ldate}','${mtype}','${now}','','','');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
 			</div>
 			</td>
 			<td class="tr_content_td" onmouseover="showorno('${row2.userNo}','four','1');" onmouseout="showorno('${row2.userNo}','four','2');"> 
@@ -196,7 +196,7 @@
 			<c:if test="${addCss=='yes'}"><img src="${ctx}/resources/theme/images/v1_rc_l_icon.png"  /></c:if>
 			<c:if test="${addCss!='yes'}"><img src="${ctx}/resources/schedule/img/star-on.png"  /></c:if>
 			<c:if test="${four.displayStartDate==now}">
-			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${four.tipMethod}','${four.isComplete}','${week4.sdate}','${four.uuid}','${four.scheduleName}','${four.address}','${four.dstartDate}','${four.startTime}','${four.dendDate}','${four.endTime}','${four.isView}','${four.status}','${four.leaderNames}','${four.leaderIds}','${four.pleases}','${four.pleaseIds}','${four.views}','${four.viewIds}','${four.color}','${four.tip}','${four.tipDate}','${four.tipTime}','${four.repeat}','${four.startTime2}','${four.endTime2}','${four.tipTime2}','${four.creators}','${four.creatorIds}');">
+			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${four.status}','1','','','${four.tipMethod}','${four.isComplete}','${week4.sdate}','${four.uuid}','${four.scheduleName}','${four.address}','${four.dstartDate}','${four.startTime}','${four.dendDate}','${four.endTime}','${four.isView}','${four.status}','${four.leaderNames}','${four.leaderIds}','${four.pleases}','${four.pleaseIds}','${four.views}','${four.viewIds}','${four.color}','${four.tip}','${four.tipDate}','${four.tipTime}','${four.repeat}','${four.startTime2}','${four.endTime2}','${four.tipTime2}','${four.creators}','${four.creatorIds}','${four.isLeaderView}','${four.inviteeNames}','${four.inviteeIds}','${four.acceptIds }','${four.acceptNames }','${four.refuseIds}','${four.refuseNames}','${four.tag.uuid}');">
 			<font color="${four.color}">
 			<c:if test="${four.isComplete=='1'}">
 			<strike><c:if test="${four.startTime=='' or four.startTime==null}"><spring:message code="schedule.info.allDay" /> </c:if><c:if test="${four.startTime!='' and four.startTime!=null}"><c:out value="${four.startTime}"/>:<c:out value="${four.startTime2}"/> </c:if>
@@ -211,7 +211,7 @@
 			</font></a></font><br/>
 			</c:if>
 			<c:if test="${four.displayStartDate!=now}">
-			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${four.tipMethod}','${four.isComplete}','${week4.sdate}','${four.uuid}','${four.scheduleName}','${four.address}','${four.dstartDate}','${four.startTime}','${four.dendDate}','${four.endTime}','${four.isView}','${four.status}','${four.leaderNames}','${four.leaderIds}','${four.pleases}','${four.pleaseIds}','${four.views}','${four.viewIds}','${four.color}','${four.tip}','${four.tipDate}','${four.tipTime}','${four.repeat}','${four.startTime2}','${four.endTime2}','${four.tipTime2}','${four.creators}','${four.creatorIds}');">
+			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${four.status}','1','','','${four.tipMethod}','${four.isComplete}','${week4.sdate}','${four.uuid}','${four.scheduleName}','${four.address}','${four.dstartDate}','${four.startTime}','${four.dendDate}','${four.endTime}','${four.isView}','${four.status}','${four.leaderNames}','${four.leaderIds}','${four.pleases}','${four.pleaseIds}','${four.views}','${four.viewIds}','${four.color}','${four.tip}','${four.tipDate}','${four.tipTime}','${four.repeat}','${four.startTime2}','${four.endTime2}','${four.tipTime2}','${four.creators}','${four.creatorIds}','${four.isLeaderView}','${four.inviteeNames}','${four.inviteeIds}','${four.acceptIds }','${four.acceptNames }','${four.refuseIds}','${four.refuseNames}','${four.tag.uuid}');">
 			<font color="${four.color}">
 			<c:if test="${four.isComplete=='1'}">
 			<strike><c:if test="${four.startTime=='' or four.startTime==null}"><spring:message code="schedule.info.allDay" /> </c:if><c:if test="${four.startTime!='' and four.startTime!=null}"><c:out value="${four.startTime}"/>:<c:out value="${four.startTime2}"/> </c:if>
@@ -225,7 +225,7 @@
 			 </font></a><br/>
 			 </c:if>
 			</c:forEach>
-			<div id="${row2.userNo}four" style="display: none;"><font size="1"><a class="addschedule_css"  href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week4.sdate}','${ldate}','${mtype}','${now}');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
+			<div id="${row2.userNo}four" style="display: none;"><font size="1"><a class="addschedule_css"  href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week4.sdate}','${ldate}','${mtype}','${now}','','','');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
 			</div>
 			</td>
 			<td class="tr_content_td" onmouseover="showorno('${row2.userNo}','five','1');" onmouseout="showorno('${row2.userNo}','five','2');"> 
@@ -234,7 +234,7 @@
 			<c:if test="${addCss=='yes'}"><img src="${ctx}/resources/theme/images/v1_rc_l_icon.png"  /></c:if>
 			<c:if test="${addCss!='yes'}"><img src="${ctx}/resources/schedule/img/star-on.png"  /></c:if>
 			<c:if test="${five.displayStartDate==now}">
-			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${five.tipMethod}','${five.isComplete}','${week5.sdate}','${five.uuid}','${five.scheduleName}','${five.address}','${five.dstartDate}','${five.startTime}','${five.dendDate}','${five.endTime}','${five.isView}','${five.status}','${five.leaderNames}','${five.leaderIds}','${five.pleases}','${five.pleaseIds}','${five.views}','${five.viewIds}','${five.color}','${five.tip}','${five.tipDate}','${five.tipTime}','${five.repeat}','${five.startTime2}','${five.endTime2}','${five.tipTime2}','${five.creators}','${five.creatorIds}');">
+			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${five.status}','1','','','${five.tipMethod}','${five.isComplete}','${week5.sdate}','${five.uuid}','${five.scheduleName}','${five.address}','${five.dstartDate}','${five.startTime}','${five.dendDate}','${five.endTime}','${five.isView}','${five.status}','${five.leaderNames}','${five.leaderIds}','${five.pleases}','${five.pleaseIds}','${five.views}','${five.viewIds}','${five.color}','${five.tip}','${five.tipDate}','${five.tipTime}','${five.repeat}','${five.startTime2}','${five.endTime2}','${five.tipTime2}','${five.creators}','${five.creatorIds}','${five.isLeaderView}','${five.inviteeNames}','${five.inviteeIds}','${five.acceptIds }','${five.acceptNames }','${five.refuseIds}','${five.refuseNames}','${five.tag.uuid}');">
 			<font color="${five.color}">
 			<c:if test="${five.isComplete=='1'}">
 			<strike><c:if test="${five.startTime=='' or five.startTime==null}"><spring:message code="schedule.info.allDay" /> </c:if><c:if test="${five.startTime!='' and five.startTime!=null}"><c:out value="${five.startTime}"/>:<c:out value="${five.startTime2}"/> </c:if>
@@ -249,7 +249,7 @@
 			</font></a></font><br/>
 			</c:if>
 			<c:if test="${five.displayStartDate!=now}">
-			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${five.tipMethod}','${five.isComplete}','${week5.sdate}','${five.uuid}','${five.scheduleName}','${five.address}','${five.dstartDate}','${five.startTime}','${five.dendDate}','${five.endTime}','${five.isView}','${five.status}','${five.leaderNames}','${five.leaderIds}','${five.pleases}','${five.pleaseIds}','${five.views}','${five.viewIds}','${five.color}','${five.tip}','${five.tipDate}','${five.tipTime}','${five.repeat}','${five.startTime2}','${five.endTime2}','${five.tipTime2}','${five.creators}','${five.creatorIds}');">
+			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${five.status}','1','','','${five.tipMethod}','${five.isComplete}','${week5.sdate}','${five.uuid}','${five.scheduleName}','${five.address}','${five.dstartDate}','${five.startTime}','${five.dendDate}','${five.endTime}','${five.isView}','${five.status}','${five.leaderNames}','${five.leaderIds}','${five.pleases}','${five.pleaseIds}','${five.views}','${five.viewIds}','${five.color}','${five.tip}','${five.tipDate}','${five.tipTime}','${five.repeat}','${five.startTime2}','${five.endTime2}','${five.tipTime2}','${five.creators}','${five.creatorIds}','${five.isLeaderView}','${five.inviteeNames}','${five.inviteeIds}','${five.acceptIds }','${five.acceptNames }','${five.refuseIds}','${five.refuseNames}','${five.tag.uuid}');">
 			<font color="${five.color}">
 			<c:if test="${five.isComplete=='1'}">
 			<strike><c:if test="${five.startTime=='' or five.startTime==null}"><spring:message code="schedule.info.allDay" /> </c:if><c:if test="${five.startTime!='' and five.startTime!=null}"><c:out value="${five.startTime}"/>:<c:out value="${five.startTime2}"/> </c:if>
@@ -264,7 +264,7 @@
 			 </c:if>
 			
 			</c:forEach>
-			<div id="${row2.userNo}five" style="display: none;"><font size="1"><a class="addschedule_css" href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week5.sdate}','${ldate}','${mtype}','${now}');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
+			<div id="${row2.userNo}five" style="display: none;"><font size="1"><a class="addschedule_css" href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week5.sdate}','${ldate}','${mtype}','${now}','','','');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
 			</div>
 			</td>
 			<td class="tr_content_td" onmouseover="showorno('${row2.userNo}','six','1');" onmouseout="showorno('${row2.userNo}','six','2');" > 
@@ -273,7 +273,7 @@
 			<c:if test="${addCss=='yes'}"><img src="${ctx}/resources/theme/images/v1_rc_l_icon.png"  /></c:if>
 			<c:if test="${addCss!='yes'}"><img src="${ctx}/resources/schedule/img/star-on.png"  /></c:if>
 			<c:if test="${six.displayStartDate==now}">
-			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${six.tipMethod}','${six.isComplete}','${week6.sdate}','${six.uuid}','${six.scheduleName}','${six.address}','${six.dstartDate}','${six.startTime}','${six.dendDate}','${six.endTime}','${six.isView}','${six.status}','${six.leaderNames}','${six.leaderIds}','${six.pleases}','${six.pleaseIds}','${six.views}','${six.viewIds}','${six.color}','${six.tip}','${six.tipDate}','${six.tipTime}','${six.repeat}','${six.startTime2}','${six.endTime2}','${six.tipTime2}','${six.creators}','${six.creatorIds}');">
+			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${six.status}','1','','','${six.tipMethod}','${six.isComplete}','${week6.sdate}','${six.uuid}','${six.scheduleName}','${six.address}','${six.dstartDate}','${six.startTime}','${six.dendDate}','${six.endTime}','${six.isView}','${six.status}','${six.leaderNames}','${six.leaderIds}','${six.pleases}','${six.pleaseIds}','${six.views}','${six.viewIds}','${six.color}','${six.tip}','${six.tipDate}','${six.tipTime}','${six.repeat}','${six.startTime2}','${six.endTime2}','${six.tipTime2}','${six.creators}','${six.creatorIds}','${six.isLeaderView}','${six.inviteeNames}','${six.inviteeIds}','${six.acceptIds }','${six.acceptNames }','${six.refuseIds}','${six.refuseNames}','${six.tag.uuid}');">
 			<font color="${six.color}">
 			<c:if test="${six.isComplete=='1'}">
 			<strike><c:if test="${six.startTime=='' or six.startTime==null}"><spring:message code="schedule.info.allDay" /> </c:if><c:if test="${six.startTime!='' and six.startTime!=null}"><c:out value="${six.startTime}"/>:<c:out value="${six.startTime2}"/> </c:if>
@@ -288,7 +288,7 @@
 			</font></a></font><br/>
 			</c:if>
 			<c:if test="${six.displayStartDate!=now}">
-			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${six.tipMethod}','${six.isComplete}','${week6.sdate}','${six.uuid}','${six.scheduleName}','${six.address}','${six.dstartDate}','${six.startTime}','${six.dendDate}','${six.endTime}','${six.isView}','${six.status}','${six.leaderNames}','${six.leaderIds}','${six.pleases}','${six.pleaseIds}','${six.views}','${six.viewIds}','${six.color}','${six.tip}','${six.tipDate}','${six.tipTime}','${six.repeat}','${six.startTime2}','${six.endTime2}','${six.tipTime2}','${six.creators}','${six.creatorIds}');">
+			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${six.status}','1','','','${six.tipMethod}','${six.isComplete}','${week6.sdate}','${six.uuid}','${six.scheduleName}','${six.address}','${six.dstartDate}','${six.startTime}','${six.dendDate}','${six.endTime}','${six.isView}','${six.status}','${six.leaderNames}','${six.leaderIds}','${six.pleases}','${six.pleaseIds}','${six.views}','${six.viewIds}','${six.color}','${six.tip}','${six.tipDate}','${six.tipTime}','${six.repeat}','${six.startTime2}','${six.endTime2}','${six.tipTime2}','${six.creators}','${six.creatorIds}','${six.isLeaderView}','${six.inviteeNames}','${six.inviteeIds}','${six.acceptIds }','${six.acceptNames }','${six.refuseIds}','${six.refuseNames}','${six.tag.uuid}');">
 			<font color="${six.color}">
 			<c:if test="${six.isComplete=='1'}">
 			<strike><c:if test="${six.startTime=='' or six.startTime==null}"><spring:message code="schedule.info.allDay" /> </c:if><c:if test="${six.startTime!='' and six.startTime!=null}"><c:out value="${six.startTime}"/>:<c:out value="${six.startTime2}"/> </c:if>
@@ -302,7 +302,7 @@
 			 </font></a><br/>
 			 </c:if>
 			</c:forEach>
-			<div id="${row2.userNo}six" style="display: none;"><font size="1"><a class="addschedule_css" href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week6.sdate}','${ldate}','${mtype}','${now}');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
+			<div id="${row2.userNo}six" style="display: none;"><font size="1"><a class="addschedule_css" href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week6.sdate}','${ldate}','${mtype}','${now}','','','');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
 			</div>
 			</td>
 			<td  class="tr_content_td" onmouseover="showorno('${row2.userNo}','seven','1');" onmouseout="showorno('${row2.userNo}','seven','2');"> 
@@ -311,7 +311,7 @@
 			<c:if test="${addCss=='yes'}"><img src="${ctx}/resources/theme/images/v1_rc_l_icon.png"  /></c:if>
 			<c:if test="${addCss!='yes'}"><img src="${ctx}/resources/schedule/img/star-on.png"  /></c:if>
 			<c:if test="${seven.displayStartDate==now}">
-			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${seven.tipMethod}','${seven.isComplete}','${week7.sdate}','${seven.uuid}','${seven.scheduleName}','${seven.address}','${seven.dstartDate}','${seven.startTime}','${seven.dendDate}','${seven.endTime}','${seven.isView}','${seven.status}','${seven.leaderNames}','${seven.leaderIds}','${seven.pleases}','${seven.pleaseIds}','${seven.views}','${seven.viewIds}','${seven.color}','${seven.tip}','${seven.tipDate}','${seven.tipTime}','${seven.repeat}','${seven.startTime2}','${seven.endTime2}','${seven.tipTime2}','${seven.creators}','${seven.creatorIds}');">
+			<font color="blue"><a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${seven.status}','1','','','${seven.tipMethod}','${seven.isComplete}','${week7.sdate}','${seven.uuid}','${seven.scheduleName}','${seven.address}','${seven.dstartDate}','${seven.startTime}','${seven.dendDate}','${seven.endTime}','${seven.isView}','${seven.status}','${seven.leaderNames}','${seven.leaderIds}','${seven.pleases}','${seven.pleaseIds}','${seven.views}','${seven.viewIds}','${seven.color}','${seven.tip}','${seven.tipDate}','${seven.tipTime}','${seven.repeat}','${seven.startTime2}','${seven.endTime2}','${seven.tipTime2}','${seven.creators}','${seven.creatorIds}','${seven.isLeaderView}','${seven.inviteeNames}','${seven.inviteeIds}','${seven.acceptIds }','${seven.acceptNames }','${seven.refuseIds}','${seven.refuseNames}','${seven.tag.uuid}');">
 			<font color="${seven.color}">
 			<c:if test="${seven.isComplete=='1'}">
 			<strike><c:if test="${seven.startTime=='' or seven.startTime==null}"><spring:message code="schedule.info.allDay" /> </c:if><c:if test="${seven.startTime!='' and seven.startTime!=null}"><c:out value="${seven.startTime}"/>:<c:out value="${seven.startTime2}"/> </c:if>
@@ -326,7 +326,7 @@
 			</font></a></font><br/>
 			</c:if>
 			<c:if test="${seven.displayStartDate!=now}">
-			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','1','1','','','${seven.tipMethod}','${seven.isComplete}','${week7.sdate}','${seven.uuid}','${seven.scheduleName}','${seven.address}','${seven.dstartDate}','${seven.startTime}','${seven.dendDate}','${seven.endTime}','${seven.isView}','${seven.status}','${seven.leaderNames}','${seven.leaderIds}','${seven.pleases}','${seven.pleaseIds}','${seven.views}','${seven.viewIds}','${seven.color}','${seven.tip}','${seven.tipDate}','${seven.tipTime}','${seven.repeat}','${seven.startTime2}','${seven.endTime2}','${seven.tipTime2}','${seven.creators}','${seven.creatorIds}');">
+			<a href="#" onclick="openScheduleDialog('${leaderNames}','${leaderIds}','${mtype}','${ldate}','${userno}','${seven.status}','1','','','${seven.tipMethod}','${seven.isComplete}','${week7.sdate}','${seven.uuid}','${seven.scheduleName}','${seven.address}','${seven.dstartDate}','${seven.startTime}','${seven.dendDate}','${seven.endTime}','${seven.isView}','${seven.status}','${seven.leaderNames}','${seven.leaderIds}','${seven.pleases}','${seven.pleaseIds}','${seven.views}','${seven.viewIds}','${seven.color}','${seven.tip}','${seven.tipDate}','${seven.tipTime}','${seven.repeat}','${seven.startTime2}','${seven.endTime2}','${seven.tipTime2}','${seven.creators}','${seven.creatorIds}','${seven.isLeaderView}','${seven.inviteeNames}','${seven.inviteeIds}','${seven.acceptIds }','${seven.acceptNames }','${seven.refuseIds}','${seven.refuseNames}','${seven.tag.uuid}');">
 			<font color="${seven.color}">
 			<c:if test="${seven.isComplete=='1'}">
 			<strike><c:if test="${seven.startTime=='' or seven.startTime==null}"><spring:message code="schedule.info.allDay" /> </c:if><c:if test="${seven.startTime!='' and seven.startTime!=null}"><c:out value="${seven.startTime}"/>:<c:out value="${seven.startTime2}"/> </c:if>
@@ -341,7 +341,7 @@
 			 </c:if>
 			</c:forEach>
 <!--			<div id="${row2.userNo}seven" style="display: none;"><font size="1"><a class="addschedule_css" href="#" onclick="openww('${creators}','${creatorIds}','${week7.sdate}','${ldate}','${mtype}','${now}');"><spring:message code="schedule.info.newSchedule" /></a></font></div>-->
-			<div id="${row2.userNo}seven" style="display: none;"><font size="1"><a class="addschedule_css" href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week7.sdate}','${ldate}','${mtype}','${now}');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
+			<div id="${row2.userNo}seven" style="display: none;"><font size="1"><a class="addschedule_css" href="#" onclick="openScheduleNewDialog('${row2.userName}','${row2.userNo}','${leaderNames}','${leaderIds}','1','1','','','${creators}','${creatorIds}','${week7.sdate}','${ldate}','${mtype}','${now}','','','');"><spring:message code="schedule.info.newSchedule" /></a></font></div>
 			</div>
 			</td>	
 			</tr>

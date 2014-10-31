@@ -8,6 +8,11 @@ var  WCheckBoxClass = function(){
 	/*Checkbox/radio/select都有option,在optionDataSource属性为1的情况下,option的值则来源于该字段.
 	该字段的值以map的形式保存key为值，value为备注*/ 
 	this.optionSet=[];	
+	
+	this.selectMode ="2";//选择模式，单选1，多选2
+	this.singleCheckContent ="";//单选 选中内容
+	this.singleUnCheckContent ="";//单选 取消选中内容
+	
 	this.toJSON = toJSON;
    };
 

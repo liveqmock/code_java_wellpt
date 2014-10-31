@@ -129,12 +129,8 @@ body {
     margin-top: 5px;
     text-align: left;font-family: Microsoft YaHei;">
     	<div style="height: 25px;
-    line-height: 25px;font-size:19px;letter-spacing: 14px;">厦门市审批服务云</div>
-	    <div style="border-top: 1px solid #000000;
-    font-size: 14px;
-    height: 25px;
-    line-height: 25px;
-    text-align: left;">厦门市行政审批（商事登记）信息管理平台</div>
+    line-height: 25px;font-size:19px;letter-spacing: 1px;margin-top: 14px;">厦门市行政审批信息管理平台</div>
+	   
     </div>
      
 					</div>

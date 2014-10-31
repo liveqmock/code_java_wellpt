@@ -147,3 +147,6 @@ var dyDataSourceType = {
 		dataConstant:'1',//常量
 		dataDictionary:'2'//字典
 };
+
+
+

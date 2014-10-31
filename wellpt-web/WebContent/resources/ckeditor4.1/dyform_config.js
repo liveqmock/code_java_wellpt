@@ -25,9 +25,9 @@
 	UNITCTL:"control4unit",
 	FILEUPLOADCTL:"control4fileupload",
 	FILEUPLOAD4ICONCTL:"control4fileupload4icon",
-	VIEWDISPLAYCTL:"control4viewdisplay"
-	
-	
+	FILEUPLOAD4IMAGECTL:"control4fileupload4image",
+	VIEWDISPLAYCTL:"control4viewdisplay",
+	PROPERTIESDIALOGS:"propertiesDialog"
  };
  
 CKEDITOR.editorConfig = function( config ) {
@@ -48,11 +48,14 @@ CKEDITOR.editorConfig = function( config ) {
 						","+CkPlugin.COMBOBOXCTL+ 
 						","+CkPlugin.FILEUPLOADCTL+ 
 						","+CkPlugin.FILEUPLOAD4ICONCTL+ 
+						","+CkPlugin.FILEUPLOAD4IMAGECTL+ 
 						","+CkPlugin.TEXTCTL+
 						","+CkPlugin.TEXTAREACTL+
 						","+CkPlugin.CKEDITORCTL+
 						","+CkPlugin.LABEL+ 
-						"," + CkPlugin.PREVIEW + "," + "titleClass,titleClass2,titleClass3,table";//添加插件，多个时用","隔开
+						"," + CkPlugin.PREVIEW + 
+						"," + CkPlugin.PROPERTIESDIALOGS +
+						"," + "titleClass,titleClass2,titleClass3,table";//添加插件，多个时用","隔开
 	
 	 
 	config.pasteFromWordRemoveStyles = true;
@@ -64,8 +67,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.enterMode = CKEDITOR.ENTER_P;
 	config.shiftEnterMode = CKEDITOR.ENTER_P;
 	
-	config.contentsCss = ctx+'/resources/ckeditor4.1/dyformCkeditCss.css';	
-
+	config.contentsCss = ctx+'/resources/ckeditor4.1/dyformCkeditCss.css';	 
 	config.tabIndex = 4;
 	config.tabSpaces = 8;//制表键走的空格数
 	config.ignoreEmptyParagraph = false;//是否忽略段落中的空格
@@ -129,6 +131,7 @@ CKEDITOR.getPluginContainerDomElement = function(plugin, focusedDomElement){
 			||plugin == CkPlugin.UNITCTL
 			||plugin == CkPlugin.FILEUPLOADCTL
 			||plugin == CkPlugin.FILEUPLOAD4ICONCTL
+			||plugin == CkPlugin.FILEUPLOAD4IMAGECTL
 			||plugin == CkPlugin.DIALOGCTL
 			||plugin == CkPlugin.VIEWDISPLAYCTL
 			||plugin == CkPlugin.CKEDITORCTL
@@ -170,11 +173,64 @@ function loadCommonJsFile(){
 	script.src = ctx + "/resources/ckeditor4.1/common.js";
 	script.type='text/javascript';  
 	 head.appendChild(script);
+	 
+	script = document.createElement("script");
+	script.src = ctx + "/resources/layout/1.3.0/js/jquery.layout-latest.js";
+	script.type='text/javascript';  
+	head.appendChild(script);
+	
+	script = document.createElement("script");
+	script.src = ctx + "/resources/layout/1.3.0/js/jquery-ui-latest.js";
+	script.type='text/javascript';  
+	head.appendChild(script); 
+	
+
+	script = document.createElement("script");
+	script.src = ctx + "/resources/pt/js/dyform/common/FormClass.js";
+	script.type='text/javascript';  
+	head.appendChild(script); 
+	
+	script = document.createElement("script");
+	script.src = ctx + "/resources/pt/js/dyform/common/dyform_constant.js";
+	script.type='text/javascript'; 
+	head.appendChild(script); 
+	
+	script = document.createElement("script");
+	script.src = ctx + "/resources/pt/js/dyform/common/function.js";
+	script.type='text/javascript'; 
+	head.appendChild(script);
 }
+
+
+function getWidthAndHeight(){
+	if (window.innerWidth)
+		winWidth = window.innerWidth;
+		else if ((document.body) && (document.body.clientWidth))
+		winWidth = document.body.clientWidth;
+		// 获取窗口高度
+		if (window.innerHeight)
+		winHeight = window.innerHeight;
+		else if ((document.body) && (document.body.clientHeight))
+		winHeight = document.body.clientHeight;
+		// 通过深入 Document 内部对 body 进行检测，获取窗口大小
+		if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth)
+		{
+		winHeight = document.documentElement.clientHeight;
+		winWidth = document.documentElement.clientWidth;
+	}
+	return {"height":winHeight, "width":winWidth };
+}
+
+
  
+
+ 
+
+
 function getRelativePath(absolutePath){
 	 var projectHostPrefix = window.location.host + ctx; 
 	var index = absolutePath.indexOf(projectHostPrefix);
 	var relativePath =  absolutePath.substring(index + projectHostPrefix.length + 1);// + 1表示"/"占位 
 	return relativePath;
 }
+

@@ -14,8 +14,10 @@
 			classpath*:/applicationContext-quartz.xml
 			classpath*:/applicationContext-cxf.xml
 			classpath*:/applicationContext-jms.xml
-			classpath*:/applicationContext-jms-integration.xml
+			<!-- classpath*:/applicationContext-jms-integration.xml -->
 			classpath*:/applicationContext-mq-embedded.xml
+			classpath*:/applicationContext-leedarson.xml
+			classpath*:/applicationContext-ad.xml
 		</param-value>
 	</context-param>
 
@@ -200,8 +202,19 @@
     </servlet-mapping> 
 	
 	<session-config>
-		<session-timeout>30</session-timeout>
+		<session-timeout>240</session-timeout>
 	</session-config>
+	
+	<!-- 条形码生成servlert -->
+	<servlet> 
+		<servlet-name>BarcodeServlet</servlet-name> 
+		<servlet-class>com.wellsoft.pt.ldx.servlet.BarcodeGenServlet</servlet-class> 
+	</servlet>
+	
+	<servlet-mapping> 
+		<servlet-name>BarcodeServlet</servlet-name> 
+		<url-pattern>/barCode</url-pattern> 
+	</servlet-mapping>
 	
 	<security-constraint>
 		<web-resource-collection>

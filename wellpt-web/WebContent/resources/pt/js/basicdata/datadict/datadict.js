@@ -27,9 +27,11 @@ $(function() {
 		"changedChildren" : [],
 		"attributes" : [],
 		"changedAttributes" : [],
-		"deletedAttributes" : []
+		"deletedAttributes" : [],
+		"sourceUuid":null,
+		"sourceType":null
 	};
-
+	
 	// 根据用户ID获取用户信息
 	function getDataDictionary(uuid) {
 		JDS.call({
@@ -185,6 +187,7 @@ $(function() {
 		}
 		return true;
 	}
+	
 	// JQyery zTree加载数据字典树结点
 	function loadDataDictionaryTree() {
 		$.fn.zTree.init($(datadict_tree_selector), dataDataDictionarySetting);
@@ -236,6 +239,7 @@ $(function() {
 				alert("保存成功!");
 				// 保存成功刷新树
 				loadDataDictionaryTree();
+				//console.dir($("#"+latestSelectedNode.tId));
 				showDelButton();
 			}
 		});

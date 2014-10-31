@@ -9,14 +9,18 @@ var unitDialogCount = 0;
 				initNames : null,// 仅一个目标域值时，以;分割的文本值，当为多个目标域值时则为与psTargetNames一一对应的数组成员值。?
 				initIDs : null,// 仅一个目标域值时，以;分割的文本值，当为多个目标域值时则为与psTargetNames一一对应的数组成员值。?
 				title : "人员选择",
-				multiple : true,// 不支持
-				selectType : 1,// 限制用户只能选择的节点类型(默认"1")；0-都不能选择，1-都可以选择，2-仅允许选择部门，4-仅允许选择人员，8-表示仅允许选择公共群组，其他值为0/1/2/4/8相加组合。
+				multiple : true,// 是否多选，默认为true
+				selectType : 1,// 限制用户只能选择的节点类型(默认"1")；0-都不能选择，1-都可以选择，2-仅允许选择部门，4-仅允许选择人员，8-表示仅允许选择公共群组，32-标识仅允许选择职位 其他值为0/1/2/4/8/16/32相加组合。
 				nameType : "21",// 返回的组织名称格式，两个字符(默认“21”)：分别表示部门节点/人员节点；每一个字符表示，“1”-名称，“2”-不带根全路径（集团版自动带根），“3”-带根全路径。
 				showType : true,// 是否显示类型选择下拉框。默认显示。
 				type : "MyUnit",// 备选值：集团|All;我的单位|MyUnit;我的部门|MyDept;我的领导|MyLeader;我的下属|MyUnderling;公共群组|PublicGroup;个人群组|PrivateGroup;上级部门|MyParentDept;在线人员|LoginUser;部门树|Dept也可以是节点值（可以多值，且要求支持路径值或者id），用来选择此节点树下的值。默认为MyUnit.，当值为Dept，不显示姓氏下拉框。
 				loginStatus : false,// 是否显示在线/离线状态，默认不显示
 				excludeValues : null,
 				sexField : null,
+				emailField:null,
+				employeeNumberField:null,
+				loginNameField:null,
+				filterCondition:"",
 				isSetChildWin : false
 			// 是否设置显示在父窗口
 			// 不允许选择节点值，多值以;分割。
@@ -48,6 +52,17 @@ var unitDialogCount = 0;
 			laArg["Type"] = options.type;
 			laArg["LoginStatus"] = options.loginStatus;
 			laArg["Exclude"] = options.excludeValues;
+			laArg["FilterCondition"] = options.filterCondition;
+			
+			if (options.valueField != null ){
+				laArg["email"] = $("#" + options.emailField).val();
+			}
+			if (options.employeeNumberField != null ){
+				laArg["employeeNumber"] = $("#" + options.employeeNumberField).val();
+			}
+			if (options.loginNameField != null ){
+				laArg["loginName"] = $("#" + options.loginNameField).val();
+			}
 			// if (!window.ctx) {
 			// window.ctx = getContextPath();
 			// }
@@ -108,12 +123,24 @@ var unitDialogCount = 0;
 							if (options.sexField != null) {
 								$("#" + options.sexField).val(returnValue.sex);
 							}
+							if (options.emailField != null) {
+								$("#" + options.emailField).val(returnValue.email);
+							}
+							if (options.employeeNumberField != null) {
+								$("#" + options.employeeNumberField).val(returnValue.employeeNumber);
+							}
+							if (options.loginNameField != null) {
+								$("#" + options.loginNameField).val(returnValue.loginName);
+							}
 							if (options.isSetChildWin) {
 								setChildWin();
 							}
 						}
 						if (returnValue && options.afterSelect) {
 							options.afterSelect.call(this, this.contentWindow.goUnitTree.returnValue);
+						}
+						if (returnValue && options.ok) {
+							options.ok.call(this, this.contentWindow.goUnitTree.returnValue);
 						}
 					}
 					if (options.close) {

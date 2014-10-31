@@ -34,59 +34,116 @@
 	 * CHECKBOX CLASS DEFINITION ======================
 	 */
 	var CheckBox = function(element, options) {
-		this.init("wcheckBox", element, options);
+		this.$element = $(element);
+		this.options = $.extend({}, $.fn["wcheckBox"].defaults, options,
+				this.$element.data());
 	};
 
 	CheckBox.prototype = {
 		constructor : CheckBox,
-		init : function(type, element, options) {
-			this.type = type;
-			this.$element = $(element);
-			this.options = this.getOptions(options);
-			this.initparams(this.options);
-		},
-		//默认参数初始化
-		initparams:function(options){
-			 //设置字段属性.根据不同的控件类型区分。
-			 $.ControlUtil.setCtrAttr(this.$element,this.options);		
-			 var colEnName=this.$element.attr("name");
+
+		initSelf:function(){
+			//默认参数初始化
+			var options=this.options;
+			this.$element.attr("optiondatasource",options.optiondatasource);	//radio,checkbox,select供选项来源 1.常量 2.字典
+			this.$element.attr("ctrlfield",options.ctrlfield);	//checkbox 控制隐藏字段
+			this.$element.attr("selectMode",options.selectMode);	//选择模式，单选1，多选2
+			this.$element.attr("singleCheckContent",options.singleCheckContent);	//单选 选中内容
+			this.$element.attr("singleUnCheckContent",options.singleUnCheckContent);	//单选 取消选中内容
 			//根据数据初始化元素下拉框
-			 this.$element.hide();
-				var opt = new Array();
-				var labelstyle=$.ControlUtil.getStyleHtmlByParams(options.commonProperty.textAlign,options.commonProperty.fontSize,options.commonProperty.fontColor,options.commonProperty.ctlWidth,options.commonProperty.ctlHight,'');
-				var spanstyle=labelstyle.substring(0,labelstyle.length-1)+" display: none;"+"'";
-				if(options.optionDataSource==dyDataSourceType.dataConstant){
-					var selectobj = this.options.optionSet;
-					for(attrbute in selectobj){
-						var i=0;
-						var s = '<input type=checkbox name=' + "_checkbox"+colEnName+ ' id=' + colEnName + '_' + i + ' value=' + attrbute + '>' +'<label '+labelstyle +'for=' +colEnName + '_' + i+'>'+selectobj[attrbute]+'</label>'+'<span '+spanstyle +'>;</span>';
-						opt.push(s);
-						i++;
-					}
-				}else{
-					if(options.dictCode==""&&options.dictCode==undefined){
-						return;
-					}
-					var dictcodearray=options.dictCode.split(":");
-					JDS.call({
-			       	 service:"dataDictionaryService.getDataDictionariesByType",
-			       	 data:[dictcodearray[0]],
-			       	 async: false,
-						success:function(result){
-							var datas = result.data;
-							for(var i in datas){
-								var data=datas[i];
-								var s = '<input type=checkbox name=' + "_checkbox"+colEnName+ ' id=' + colEnName + '_' + i + ' value=' + data.code + '>' +'<label  '+labelstyle +'for=' +colEnName + '_' + i+'>'+data.name+'</label>'+'<span '+spanstyle +'>;</span>';
-								opt.push(s);
-							}
-						},
-						error:function(jqXHR){
-						}
-					});
-			  }	
+			this.$element.hide();
+			var opt = new Array();
+			var labelstyle=$.ControlUtil.getStyleHtmlByParams(options.commonProperty.textAlign,options.commonProperty.fontSize,options.commonProperty.fontColor,options.commonProperty.ctlWidth,options.commonProperty.ctlHight,'');
+			var otherinputstyle=$.ControlUtil.getStyleHtmlByParams(options.commonProperty.textAlign,options.commonProperty.fontSize,options.commonProperty.fontColor,'120','');
+			var colEnName=this.$element.attr("name");
 			
-			this.$element.after(opt.join(''));
-			this.setValue(options.columnProperty.defaultValue);
+			//单选模式
+			if(options.selectMode=='1'){
+				var selectobj = eval("("+options.singleCheckContent+")");
+				for(attrbute in selectobj){
+					var i=0;
+					var s="";
+					 s = '<input type=checkbox name=' + "_checkbox"+colEnName+ ' id=' + colEnName + '_' + i + ' value="' + attrbute + '"/>' +'<label '+labelstyle +'for=' +colEnName + '_' + i+'>'+selectobj[attrbute]+'</label>';
+					 opt.push(s);
+					 i++;
+				}
+			}
+			//多选模式
+			else if(options.selectMode=='2'){
+					if(options.optionDataSource==dyDataSourceType.dataConstant){
+						var selectobj = this.options.optionSet; 
+						if(typeof selectobj =="object"){
+							selectobj = eval("(" + JSON.cStringify(selectobj) + ")");
+						}
+						for(attrbute in selectobj){
+							var i=0;
+							var s="";
+							if(selectobj[attrbute]=='其他'){
+								 s = '<input type=checkbox name=' + "_checkbox"+colEnName+ ' id=' + colEnName + '_' + i + ' value="' + attrbute + '"/>' +'<label '+labelstyle +'for=' +colEnName + '_' + i+'>'+selectobj[attrbute]+'</label>'+'<input  id=other_input'+colEnName+ '_' + i+' '+otherinputstyle+' type=text value="'+selectobj[attrbute]+'"/>';
+							}else{
+								 s = '<input type=checkbox name=' + "_checkbox"+colEnName+ ' id=' + colEnName + '_' + i + ' value="' + attrbute + '"/>' +'<label '+labelstyle +'for=' +colEnName + '_' + i+'>'+selectobj[attrbute]+'</label>';
+							}
+							opt.push(s);
+							i++;
+						}
+					}else{
+						var selectobj = this.options.optionSet; 
+						if(typeof selectobj == "undefined"){
+							return;
+						}
+						if(typeof selectobj == "string"){
+							if(   selectobj.length == 0){
+								return;
+							}else{
+								selectobj = eval("(" + selectobj + ")");
+							} 
+						}
+						 
+						 
+						var datas= selectobj;
+								for(var i in datas){
+									var data=datas[i];
+									var s="";
+									if(data.name=='其他'){
+										 s = '<input type=checkbox name=' + "_checkbox"+colEnName+ ' id=' + colEnName + '_' + i + ' value="' + data.code + '"/>' +'<label  '+labelstyle +'for=' +colEnName + '_' + i+'>'+data.name+'</label>'+'<input  id=other_input'+colEnName+ '_' + i+' '+otherinputstyle+' type=text value="'+data.name+'"/>';
+									}else{
+										 s = '<input type=checkbox name=' + "_checkbox"+colEnName+ ' id=' + colEnName + '_' + i + ' value="' + data.code + '"/>' +'<label  '+labelstyle +'for=' +colEnName + '_' + i+'>'+data.name+'</label>';
+									}
+									opt.push(s);
+								}
+				  }	
+			}
+		 
+			this.$element.after('<div id=_div_checkgroups_'+colEnName+' name=_div_checkgroups_'+colEnName+'></div>');	
+			$('#_div_checkgroups_'+colEnName).html(opt.join(''));
+		 
+		
+			
+			//其他的特殊处理
+			var $otherinput={};
+			$("input[name='"+this.getCtlName()+"']").each(function(){
+			       if($(this).next().text()=='其他'){
+			    	   $(this).next().next().hide();
+			    	   $otherinput=$(this).next().next();
+			     	   $(this).change(function(){
+			    		   if($(this).attr("checked")=='checked'){
+			    			   $otherinput.show();
+			    		   }else{
+			    			   $otherinput.hide();
+			    			   //$otherinput.val('其他');
+			    		   }
+			    	   });
+			    	   
+			       }
+			   });
+			var _this = this;
+			$("input[name='"+this.getCtlName()+"']").each(function(){
+				$(this).click(function(){
+					_this.setToRealDisplayColumn();
+				});
+			});
+			
+		
 			
 			if(options.columnProperty.showType==dyshowType.showAsLabel){
 				 this.setDisplayAsLabel();
@@ -121,49 +178,65 @@
 					
 		
 		 }
-		},
-		getOptions : function(options) {
-			options = $.extend({}, $.fn[this.type].defaults, options,
-					this.$element.data());
-			return options;
+			
+			this.setDefaultValue(options.columnProperty.defaultValue);
+			  this.addMustMark();
 		},
 		
 		//set............................................................//
 	     
 		//设值
 		 setValue:function(value){
-			 var value1=value.split(",");
-			 for(var i=0;i<value1.length;i++){
-				 $("input[name='"+this.getCtlName()+"'][value='"+value1[i]+"']").prop("checked",true);
-			 }
+			// console.log(value.length);
+			// var time1 = (new Date).getTime();
+			 //设值之前先取消选中
+			 
+			$("input[name='"+this.getCtlName()+"']:checked").each(function(){
+				$(this).prop("checked",false);
+			});
+			
+			if(value.length > 0){
+				 var value1=value.split(",");
+				 for(var i=0;i<value1.length;i++){
+					 $("input[name='"+this.getCtlName()+"'][value='"+value1[i]+"']").prop("checked",true);
+				 }
+			}
+			
 			 if(this.options.isShowAsLabel==true){
-				 this.setDisplayAsCtl();
-				 this.setDisplayAsLabel();
-			 }
+				 this.getGroupDivElement().next().html(this.getDisplayValue());
+	    	  }
+			 
+			 this.setToRealDisplayColumn();
+			 
 		 } ,
 		 
 		 setValueByMap:function(valuemap){
+			 
 			 $("input[name='"+this.getCtlName()+"']").prop('checked', false);
 			 var valueobj=eval("("+valuemap+")");
-			 for(attribute in valueobj){  
-				 $("input[name='"+this.getCtlName()+"'][value='"+attribute+"']").prop("checked",true);
-				}
-			 if(this.options.isShowAsLabel==true){
-				 this.setDisplayAsCtl();
-				 this.setDisplayAsLabel();
+			 
+			 var str=new Array();
+			 for(attribute in valueobj){
+				 var $checkobj=$("input[name='"+this.getCtlName()+"'][value='"+attribute+"']");
+				 $checkobj.prop("checked",true);
+				 str.push(valueobj[attribute]);
+				 if($checkobj.next().text()=='其他'){
+					 $checkobj.next().next().val(valueobj[attribute]);
+					 if(this.options.isShowAsLabel==false){
+						 $checkobj.next().next().show();
+			    	  }
+					}
 			 }
+			 
+			 str.join("'"); 
+			 
+			 if( this.getGroupDivElement().next().size() > 0 && !this.getGroupDivElement().next().is("img")){
+				 this.getGroupDivElement().next().html(str.toString());
+			 }
+			 
+			// this.getGroupDivElement().next().html(str.toString());
+			 
 		 },
-		 
-		 //设置必输
-		 setRequired:function(isrequire){
-			 $.ControlUtil.setRequired(isrequire,this.options);
-		 } ,
-		 
-		 //设置可编辑
-		 setEditable:function(){
-			 this.setEnable(true);
-			 this.setDisplayAsCtl();
-		 } ,
 		 
 		 
 		 //设置disabled属性
@@ -174,39 +247,43 @@
 		 
 		 //设置hide属性
 		 setVisible:function(isvisible){
-			 $.ControlUtil.setVisible($("input[name='"+this.getCtlName()+"']"),isvisible);
-			 if(!isvisible){
-				  $("input[name='"+this.getCtlName()+"']").each(function(){
-			           $(this).next().hide();
-			       });
-				  } else{
-					  $("input[name='"+this.getCtlName()+"']").each(function(){
-				           $(this).next().show();
-				       });
-				 }
+			 var elment=this.getGroupDivElement();
+			 $.ControlUtil.setVisible(elment,isvisible);
 			 this.options.isHide=!isvisible;
+		 } ,
+		 
+		 
+		 setReadOnly:function(){
+			 this.setEnable(false);
 		 } ,
 		 
 		 //显示为lablel
 		 setDisplayAsLabel:function(){
-			 $("input[name='"+this.getCtlName()+"']").hide();
-			   $("input[name='"+this.getCtlName()+"']:not(:checked)").each(function(){
-				   $(this).next().hide();
-	           });
-			   $("input[name='"+this.getCtlName()+"']:checked").each(function(){
-		           $(this).next().next().show();
-		       });
-			   this.options.isShowAsLabel=true;
+			 if(this.options.isShowAsLabel==true){
+				 return;
+			 }
+			var options=this.options;
+			var elment=this.getGroupDivElement();
+			var name = elment.attr("name");
+			$("#span" + name ).remove();
+		     //只显示为label.
+			 var val=this.getDisplayValue();
+			 elment.hide();
+			 $.ControlUtil.setSpanStyle(elment,options.commonProperty.textAlign,options.commonProperty.fontSize,options.commonProperty.fontColor,options.commonProperty.ctlWidth,options.commonProperty.ctlHight,val);
+			 options.isShowAsLabel=true;
 		 } ,
 		 
 		 //显示为控件
 		 setDisplayAsCtl:function(){
-				$("input[name='"+this.getCtlName()+"']").show();
-				$("input[name='"+this.getCtlName()+"']").each(function(){
-			           $(this).next().show();
-			           $(this).next().next().hide();
-			       });
-			this.options.isShowAsLabel=false;
+			 if(this.options.isShowAsLabel==false){
+				 return;
+			 }
+			 var elment=this.getGroupDivElement();
+			 elment.show();
+			 if( elment.next().is('span')){
+				 elment.next().remove();
+			 }
+			 this.options.isShowAsLabel=false;
 		 } ,
 		 
 		 
@@ -223,22 +300,68 @@
 			 return name;
 		 },
 		 
+		 getCtlElement:function(){
+	    	 return "input[name='" + this.getCtlName() + "']";
+		 },
+		 
+		 getGroupDivElement:function(){
+			 var colEnName=this.$element.attr("name");
+			 return $('#_div_checkgroups_'+colEnName);
+		 },
+		 
 		 //返回控件值
 		 getValue:function(){
+			 //如果是单选模式的，则直接返回对应的配置项
+			 if(this.options.selectMode=='1'){
+	        	   if( $("input[name='"+this.getCtlName()+"']").prop('checked')==true){
+	        			var selectobj = eval("("+this.options.singleCheckContent+")");
+						for(attrbute in selectobj){
+							return attrbute;
+						} 
+	        	   }else{
+	        			var selectobj = eval("("+this.options.singleUnCheckContent+")");
+						for(attrbute in selectobj){
+							return attrbute;
+						}
+	        	   }
+	           }
+			 
 			 var str=new Array();
 	           $("input[name='"+this.getCtlName()+"']:checked").each(function(){
 	               var str1=$(this).val();
 	               str.push(str1);
 	           });
 	           str.join("'");
+	           
+	          
 			 return	 str.toString();
 		 },
 		 
 
 		 getDisplayValue:function(){
+			//如果是单选模式的，则直接返回对应的配置项
+			 if(this.options.selectMode=='1'){
+	        	   if( $("input[name='"+this.getCtlName()+"']").prop('checked')==true){
+	        			var selectobj = eval("("+this.options.singleCheckContent+")");
+						for(attrbute in selectobj){
+							return selectobj[attrbute];
+						} 
+	        	   }else{
+	        			var selectobj = eval("("+this.options.singleUnCheckContent+")");
+						for(attrbute in selectobj){
+							return selectobj[attrbute];
+						}
+	        	   }
+	           }
+			 
 			 var str=new Array();
 	           $("input[name='"+this.getCtlName()+"']:checked").each(function(){
 	               var str1=$(this).next().text();
+	               
+	               if(str1=='其他'){
+	            	   str1=$(this).next().next().val();
+	               }
+	               
 	               str.push(str1);
 	           });
 	           str.join("'");
@@ -246,73 +369,46 @@
 		 },
 		 
 		 getValueMap:function(){
+			//如果是单选模式的，则直接返回对应的配置项
+			 if(this.options.selectMode=='1'){
+	        	   if( $("input[name='"+this.getCtlName()+"']").prop('checked')==true){
+						return eval("("+this.options.singleCheckContent+")");
+	        	   }else{
+						return eval("("+this.options.singleUnCheckContent+")");
+	        	   }
+	           }
+			 
 			 var v={};
 	           $("input[name='"+this.getCtlName()+"']:checked").each(function(){
 	        	   var value=$(this).val();
-	               var displayvalue=$(this).next().text();
+	        	   var displayvalue=$(this).next().text();
+	               if(displayvalue=='其他'){
+	            	   displayvalue=$(this).next().next().val();
+	               }
 	               v[value]=displayvalue;
 	           });
 			 return v;
 		 },
 		 
-		 /**
-		  * 返回是否可编辑(由disabled判断)
-		  * @returns {Boolean}o
-		  */
-		 isEditable:function(){
-			 if(this.options.disabled){
-				 return false;
-			 }else{
-				 return true;
-			 }
-		 },
+
 		 
 		 isValueMap:function(){
 			 return true;
 		 },
 		 
-		 isEnable:function(){
-			 return !this.options.disabled;
-		 },
-		 
-		 isVisible:function(){
-			 return  this.options.isHide;
-		 }, 
-		 
-		 isRequired:function(){
-			 return $.ControlUtil.isRequired(this.options);
-		 },
-		 
-		 isShowAsLabel:function(){
-			 return this.options.isShowAsLabel;
-		 },
-		 
-		 getAllOptions:function(){
-		    	 return this.options;
-		     } ,  
-		     
-		 getRule:function(){
-			 return $.ControlUtil.getCheckRules(this.options);
-		 } ,
-		 
-		 getMessage:function(){
-			 return $.ControlUtil.getCheckMsg(this.options);
-		 } ,
-		 
-	     //bind函数，桥接
+		   //bind函数，桥接
 	     bind:function(eventname,event){
-	    	this.$element.bind(eventname,event);
-	    	return this;
+	    	 
+	    		$('#_div_checkgroups_'+this.$element.attr("name")).bind(eventname,event);
+	    		return this;
 	     },
 		 
 		 //unbind函数，桥接
 	     unbind:function(eventname){
-	    	this.$element.unbind(eventname);
-	    	return this;
+	    	 
+	    	 $('#_div_checkgroups_'+this.$element.attr("name")).bind(eventname);
+	    		return this;
 	     },
-	     getAllOptions:function(){
-	    	 return this.options;
-	     } ,   
 	     
 	};
 	
@@ -346,8 +442,13 @@
 					options = typeof option == 'object'
 							&& option;
 					if (!data) {
-						$this.data('wcheckBox', (data = new CheckBox(this,
-								options)));
+						 data = new CheckBox(this,options);
+						 var datacopy={};
+						 var data1=$.extend(datacopy,data);
+						 var extenddata=$.extend(data,$.wControlInterface);
+						 var data2=$.extend(extenddata,data1);
+						 data2.init();
+						 $this.data('wcheckBox',data2 );
 					}
 					if (typeof option == 'string') {
 						if (method == true && args != null) {
@@ -376,7 +477,11 @@
 			ctrlField:null,
 			optionDataSource:"1", //备选项来源1:常量,2:字段
 			optionSet:[],
-			dictCode:null
-			
+			dictCode:null,
+			dataDictionarys:[],
+			selectMode:"2",//选择模式，单选1，多选2
+			singleCheckContent :"",//单选 选中内容
+			singleUnCheckContent:""//单选 取消选中内容
+				
 	};
 })(jQuery);
