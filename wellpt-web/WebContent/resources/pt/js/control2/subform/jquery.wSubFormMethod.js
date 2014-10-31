@@ -676,6 +676,7 @@ $(function(){
 					}
 				},
 				
+				//上移
 				upSubformRowDataEvent:function(formUuid,selectRowId){
 					var tr2 = null;
 					var tr = $("#" + selectRowId);
@@ -689,6 +690,7 @@ $(function(){
 					}
 				},
 				
+				//下移
 				downSubformRowDataEvent:function(formUuid,selectRowId){
 					var tr2 = null;
 					var tr = $("#" + selectRowId);
@@ -1204,6 +1206,13 @@ $(function(){
 					return $("#gbox_" + formUuid);
 				},
 				
+				jqGrid:function(){
+					return $("#" + this.getFormUuid());
+				},
+				//获取被选中行的行ID
+				getSelectedRowId:function(){
+					return this.jqGrid('getGridParam','selarrrow');
+				},
 				
 				group:function(){ 
 					if(!this.options.groupField){

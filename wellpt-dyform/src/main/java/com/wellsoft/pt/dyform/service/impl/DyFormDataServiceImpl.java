@@ -283,12 +283,13 @@ public class DyFormDataServiceImpl implements DyFormDataService {
 			Iterator<String> it = fieldNames.iterator();
 			while (it.hasNext()) {
 				String fieldName = it.next();
+				logger.debug("processed fieldName:" + fieldName);
 				if (!dUtils.isTblField(fieldName)) {//非表单的字段
 					it.remove();
 				}
 				if (dUtils.isValueCreateBySystemWhenSave(fieldName)) {//在保存时由系统产生 
 					dataUtils.doProcessValueCreateBySystem(fieldName);
-				} else/* if (dUtils.isValueCreateByUser(fieldName))*/{//从前台插入
+				} else/* if (dUtils.isValueCreateByUser(fieldName))*/{//从前台插入 
 					dataUtils.doProcessValueCreateByUser(fieldName);
 				}
 				//dataUtils.validate(fieldName);//验证数据 
@@ -303,6 +304,7 @@ public class DyFormDataServiceImpl implements DyFormDataService {
 			Iterator<String> it = formDataColMap.keySet().iterator();
 			while (it.hasNext()) {
 				String fieldName = it.next();
+				logger.debug("processed fieldName:" + fieldName);
 				if (!dUtils.isTblField(fieldName)) {//非表单的字段
 					it.remove();
 				}
@@ -312,6 +314,7 @@ public class DyFormDataServiceImpl implements DyFormDataService {
 				if (dUtils.isValueCreateBySystemWhenSave(fieldName)) {//在保存时由系统产生 
 					dataUtils.doProcessValueCreateBySystem(fieldName);
 				} else /*if (dUtils.isValueCreateByUser(fieldName)) */{//从前台插入
+
 					dataUtils.doProcessValueCreateByUser(fieldName);
 				}
 			}

@@ -319,8 +319,9 @@
 						 return false;
 					 });
 					 
-					  _paranentthis.$("#" + btnUpId).live("click", function(){//定义操作事件--删除行 
+					  _paranentthis.$("#" + btnUpId).live("click", function(){//定义操作事件--上移
 						 try{
+							 
 							 var selectedRowId = $(this).attr("selectedrowid");
 							 if(typeof selectedRowId == "undefined" || selectedRowId == null || selectedRowId.lengh == 0){  
 									oAlert('只能选择一条记录！');
@@ -336,7 +337,7 @@
 						 return false;
 					 });
 					 
-					  _paranentthis.$("#" + btnDownId).live("click", function(){//定义操作事件--删除行 
+					  _paranentthis.$("#" + btnDownId).live("click", function(){//定义操作事件--下移
 						 try{
 							 var selectedRowId = $(this).attr("selectedrowid");
 							 if(typeof selectedRowId == "undefined" || selectedRowId == null || selectedRowId.lengh == 0){  
